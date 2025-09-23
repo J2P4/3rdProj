@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>proj.spring</groupId>
 	<artifactId>mes</artifactId>
-	<name>proj_springMES</name>
+	<name>proj_springLib</name>
 	<packaging>war</packaging>
 	<version>1.0.0-BUILD-SNAPSHOT</version>
 	<properties>
