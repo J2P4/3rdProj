@@ -6,13 +6,34 @@
 	<appender name="console" class="org.apache.log4j.ConsoleAppender">
 		<param name="Target" value="System.out" />
 		<layout class="org.apache.log4j.PatternLayout">
-			<param name="ConversionPattern" value="%-5p: %c - %m%n" />
+			<param name="ConversionPattern" value="[%-5p]:[%d{yy-MM-dd HH:mm:ss}][%c(%L)] - %m%n" />
 		</layout>
 	</appender>
+	
+	<!-- appender : discord 코드방 코드 추가. 경로 설정 필요. 주석 처리해둠. -->
+<!--     <appender name="daily" class="org.apache.log4j.DailyRollingFileAppender"> -->
+<!--         <param name="file" value="log 저장 위치"/> -->
+<!--         <param name="Append" value="true"/> -->
+<!--         <param name="DatePattern" value="'.'yyMMdd"/> -->
+<!--         <layout class="org.apache.log4j.PatternLayout"> -->
+<!--             <param name="ConversionPattern" value="[%-5p]:[%d{yy-MM-dd HH:mm:ss}][%c(%L)] - %m%n"/> -->
+<!--         </layout> -->
+<!--     </appender> -->
+
+<!-- 	<appender name="rolling" class="org.apache.log4j.RollingFileAppender"> -->
+<!--         <param name="file" value="C:/tmp/log/proj_size.log"/> -->
+<!--         <param name="Append" value="true"/> -->
+<!--         <param name="MaxFileSize" value="1KB"/> -->
+<!--         <param name="MaxBackupIndex" value="10"/>  -->
+<!--         <layout class="org.apache.log4j.PatternLayout"> -->
+<!--             <param name="ConversionPattern" value="[%-5p]:[%d{yy-MM-dd HH:mm:ss}][%c(%L)] - %m%n"/> -->
+<!--         </layout> -->
+<!--     </appender>  -->
 	
 	<!-- Application Loggers -->
 	<logger name="proj.spring.mes">
 		<level value="info" />
+<!-- 		<appender-ref ref="daily" /> -->
 	</logger>
 	
 	<!-- 3rdparty Loggers -->
@@ -37,5 +58,17 @@
 		<priority value="warn" />
 		<appender-ref ref="console" />
 	</root>
+	
+	<!-- jdbc용? -->
+	<logger name="jdbc.sqlonly" additivity="false">
+		<level value="INFO"/>
+		<appender-ref ref="console"/>
+	</logger>
+
+
+	<logger name="jdbc.resultsettable" additivity="false">
+		<level value="INFO"/>
+		<appender-ref ref="console"/>
+     </logger>
 	
 </log4j:configuration>

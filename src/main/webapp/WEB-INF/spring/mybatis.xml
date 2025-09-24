@@ -21,9 +21,21 @@
 		<property name="username" value="${jdbc.username}"></property>
 		<property name="password" value="${jdbc.password}"></property>
 	</bean>
+	
+    <!-- sql 출력을 위한 proxy (스파이, vpn...) -->
+     <bean id="dataSource2" class="net.sf.log4jdbc.Log4jdbcProxyDataSource">
+       <constructor-arg ref="dataSource" />
+       <property name="logFormatter">
+         <bean class="net.sf.log4jdbc.tools.Log4JdbcCustomFormatter">
+           <property name="loggingType" value="MULTI_LINE" />
+           <property name="sqlPrefix" value="SQL : "/>
+         </bean>
+       </property>
+     </bean>
 
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
-		<property name="dataSource" ref="dataSource"></property>
+<!-- 		<property name="dataSource" ref="dataSource"></property> -->
+		<property name="dataSource" ref="dataSource2"></property>
 		<property name="configLocation" value="classpath:mybatis/model/modelConfig.xml"></property>
 		<property name="mapperLocations" value="classpath:mybatis/mappers/*.xml"></property> 
 	</bean>
