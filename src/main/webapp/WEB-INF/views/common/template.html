@@ -6,288 +6,155 @@
     <title>템플릿</title>
     <!-- 깨끗하고 현대적인 느낌을 주는 Inter 폰트 사용 -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- 동적 차트를 위한 Chart.js CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f3f4f6;
-        }
-
-        /* 차트 캔버스의 최대 높이 설정 */
-        canvas {
-            max-height: 200px;
-        }
-        
-        /* Tailwind 클래스 대신 직접 정의한 색상 변수 */
-        :root {
-            --header-bg: rgb(24, 33, 49);
-            --nav-bg: rgb(17, 24, 39);
-        }
-
-        /* 호버 및 활성화 스타일 */
-        .mainList li {
-            position: relative;
-            transition-property: background-color, border-left-color;
-            transition-duration: 200ms;
-        }
-        .mainList li:hover {
-            background-color: rgb(24, 33, 49);
-        }
-        
-        /* 활성화된 부모 메뉴 스타일 */
-        .active-parent {
-            background-color: rgb(24, 33, 49);
-            border-left: 4px solid #3b82f6;
-            padding-left: 12px;
-        }
-
-        /* 활성화된 메뉴 아이템 스타일 */
-        .active-link {
-            background-color: rgb(24, 33, 49);
-            border-left: 4px solid #3b82f6;
-            padding-left: 12px;
-        }
-
-        .header-bg {
-            background-color: var(--header-bg);
-        }
-
-        .nav-bg {
-            background-color: var(--nav-bg);
-        }
-
-        /* 서브 메뉴 애니메이션 효과 */
-        .subList {
-            max-height: 0;
-            opacity: 0;
-            overflow: hidden;
-            transition: max-height 0.4s ease-in-out, opacity 0.4s ease-in-out;
-        }
-        .subList.visible {
-            max-height: 200px; /* 서브 메뉴 높이에 맞게 조절 */
-            opacity: 1;
-        }
-        
-        .drop {
-        	text-align:center; 
-        	font-weight: bold; 
-        	height: 150px; 
-        	font-size: 20px;
-        	padding: 8px;
-        }
-        .row {
-        	margin: 10px;
-        }
-    </style>
+    <link rel="stylesheet" href="/asset/3nd_template.css" />
 </head>
-<body class="bg-gray-100 text-gray-800 flex flex-col min-h-screen">
+<body>
 
-    <!-- 상단 헤더 섹션 (가로 정렬) -->
-    <header class="header-bg text-white p-4 shadow-lg flex justify-between items-center z-50 relative">
-        <div class="flex items-center space-x-2">
-        <a  href = "/proj_mes/mainpage">
-            <img src="https://i.postimg.cc/qMsq73hD/icon.png" class="w-10" alt="회사 로고">
-                       </a>
-                       
-          <a  href = "/proj_mes/mainpage">
-            <h3 class="text-xl font-bold">J2P4</h3>
-             </a>
- 
-        </div>
-        <div class="flex items-center space-x-4 sm:space-x-8">
-            <div class="search cursor-pointer">
-                <img src="https://i.postimg.cc/9QcMwQym/magnifier-white.png" class="w-6 sm:w-7" alt="검색용 아이콘">
+    <!-- 템플릿 헤더 시작 -->
+    <header>
+        <div class="header">
+            <div class="logo_header">
+                <div class="logo" >
+                    <a  href = "/proj_mes/mainpage">
+                        <!-- <img  src="https://i.postimg.cc/qMsq73hD/icon.png"  alt="회사 로고"> -->
+                    </a>
+                </div>
+                <div>
+                    <a class="logo_name" href = "/proj_mes/mainpage">J2P4</a>
+                </div>
             </div>
-            <div class="logout text-sm sm:text-base cursor-pointer hover:underline">
-
-<!--                 <form id="logoutForm" method="post" style="display:none"></form> -->
-<!--                 <a href="#" id="logoutLink">로그아웃</a> -->
-
-                <form method="post" action="/proj_mes/logout">
-                    <button type="submit">로그아웃</button>
-                </form>
-
-            </div>
-
-            <!-- 사람 아이콘 + 드롭다운 -->
-            <div class="myIcon relative">
-                <button id="myIconBtn" class="focus:outline-none" aria-haspopup="true" aria-expanded="false">
-                    <img src="https://i.postimg.cc/zfVqTbvr/user.png" class="w-8 sm:w-9 rounded-full bg-white" alt="마이페이지 아이콘">
-                </button>
-
-                <!-- 드롭다운 메뉴 -->
-                <div id="userMenu"
-                    class="absolute right-0 mt-2 w-40 bg-white text-gray-800 rounded-lg shadow-lg border hidden z-50 drop" >
-                    <div class="row">
-                    	<a href="/proj_mes/AccountManage">계정관리</a><br>
+            <div class="logo_header">
+                <div class="searchicon">
+                    <img src="https://i.postimg.cc/9QcMwQym/magnifier-white.png" alt="검색용 아이콘">
+                </div>
+                <div>
+                    <form method="post" action="/proj_mes/logout">
+                        <button class="logout" type="submit">로그아웃</button>
+                    </form>
+                </div>
+                
+                <!-- 사람 아이콘 + 드롭다운 -->
+                <div>
+                    <div class="myicon">
+                        <img src="https://i.postimg.cc/zfVqTbvr/user.png" alt="마이페이지 아이콘">
                     </div>
-                    <div class="row">
-                    	<a href="/proj_mes/IssueCtrl">이슈처리</a><br>
-                    </div>
-                    <div class="row">
-                    	<a href="/proj_mes/Client">거래처 관리</a>
+                    
+                    <!-- 드롭다운 메뉴 -->
+                    <div id="usermenu" class="hide">
+                        <div class="user_row">
+                            <a href="/proj_mes/AccountManage">계정관리</a>
+                        </div>
+                        <div class="user_row">
+                            <a href="/proj_mes/IssueCtrl">이슈처리</a>
+                        </div>
+                        <div class="user_row">
+                            <a href="/proj_mes/Client">거래처 관리</a>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </header>
 
-
-    <!-- 메인 레이아웃: 사이드바 + 콘텐츠 -->
-    <div class="flex flex-1">
-        <!-- 좌측 사이드바 (세로 정렬) -->
-        <aside class="nav-bg text-white p-4 w-56 shadow-inner flex-shrink-0">
-            <ul class="mainList space-y-2 text-base">
-                <!-- 메인 메뉴 추가 -->
-                <li class="relative p-3 rounded-md cursor-pointer transition-colors duration-200">메인</li>
-
-                <li class="parent-menu relative p-3 rounded-md cursor-pointer transition-colors duration-200">
-                    <div class="flex items-center justify-between">
-                        <span>기준 관리</span>
-                        <svg class="w-4 h-4 transition-transform duration-200" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
-                        </svg>
-                    </div>
-                    <ul class="subList space-y-1 mt-2 pl-4">
-                        <li class="py-2 px-3 rounded-md cursor-pointer transition-colors duration-200">재고 관리</li>
-                        <li class="py-2 px-3 rounded-md cursor-pointer transition-colors duration-200">거래처 관리</li>
-<!--                         <li class="py-2 px-3 rounded-md cursor-pointer transition-colors duration-200">품목 관리</li> -->
-                        <li class="py-2 px-3 rounded-md cursor-pointer transition-colors duration-200">BOM 관리</li>
-                        <li class="py-2 px-3 rounded-md cursor-pointer transition-colors duration-200">공정 관리</li>
-                    </ul>
-                </li>
-
-
-
-
-                <li class="relative p-3 rounded-md cursor-pointer transition-colors duration-200">발주 관리</li>
-<!--                 <li class="relative p-3 rounded-md cursor-pointer transition-colors duration-200">생산 관리</li> -->
-<!--                 <li class="relative p-3 rounded-md cursor-pointer transition-colors duration-200">품질 관리</li> -->
-
-                <li class="parent-menu relative p-3 rounded-md cursor-pointer transition-colors duration-200">
-                    <div class="flex items-center justify-between">
-                        <span>생산 관리</span>
-                        <svg class="w-4 h-4 transition-transform duration-200" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
-                        </svg>
-                    </div>
-                    <ul class="subList space-y-1 mt-2 pl-4">
-                        <li class="py-2 px-3 rounded-md cursor-pointer transition-colors duration-200">생산 기획</li>
-                        <li class="py-2 px-3 rounded-md cursor-pointer transition-colors duration-200">공작업 지시서</li>
-                        <li class="py-2 px-3 rounded-md cursor-pointer transition-colors duration-200">생산 실적</li>
-                    </ul>
-                </li>
-
-                
-                <!-- 품질 관리 메뉴와 하위 메뉴 추가 -->
-                <li class="parent-menu relative p-3 rounded-md cursor-pointer transition-colors duration-200">
-                    <div class="flex items-center justify-between">
-                        <span>품질 관리</span>
-                        <svg class="w-4 h-4 transition-transform duration-200" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
-                        </svg>
-                    </div>
-                    <ul class="subList space-y-1 mt-2 pl-4">
-                        <li class="py-2 px-3 rounded-md cursor-pointer transition-colors duration-200">입고 검사</li>
-                        <li class="py-2 px-3 rounded-md cursor-pointer transition-colors duration-200">공정 검사</li>
-                        <li class="py-2 px-3 rounded-md cursor-pointer transition-colors duration-200">불량 보고서</li>
-                    </ul>
-                </li>
-                
-
-            </ul>
-        </aside>
-
-        <!-- 메인 콘텐츠 영역 -->
-        <main class="main-content flex-1 p-8 overflow-y-auto">
-            
-        </main>
+    <!-- 메인 내비게이션 -->
+    <div>
+        <ul class="nav">
+            <a href = "/proj_mes/StandardCtrl">
+                <li class="nav_li">기준 관리</li>
+            </a>
+            <a href = "/proj_mes/process">
+                <li class="nav_li">공정 관리</li>
+            </a>
+            <a href = "/proj_mes/bom">
+                <li class="nav_li">BOM 관리</li>
+            </a>
+            <a href = "/proj_mes/orderList">
+                <li class="nav_li">발주 관리</li>
+            </a>
+            <a href = "/proj_mes/stockList">
+                <li class="nav_li">재고 관리</li>
+            </a>
+            <a href = "/proj_mes/proplan">
+                <li class="nav_li">생산 관리</li>
+            </a>
+            <a href = "/proj_mes/items">
+                <li class="nav_li">품목 관리</li>
+            </a>           
+            <a href = "/proj_mes/inspection">
+                <li class="nav_li">품질 관리</li>
+            </a>
+        </ul>
     </div>
+    <!-- 템플릿 헤더 끝 -->
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const menuItems = document.querySelectorAll('.mainList > li:not(.parent-menu)');
-            const parentMenus = document.querySelectorAll('.parent-menu');
-            const allItems = [...menuItems, ...document.querySelectorAll('.subList li')];
+    <!-- 여기부터 내용 작성하시면 됩니다. -->
+    <div class="titleBox">
+        <div class="title"> </div><!-- 여기다 title 입력 -->
+        <div class="wrap"> <!-- 여기는 필터영역 -->
+            <div class="filter">
+                <!-- 여기에 필터할 select나 date 중 안쓰는 건 주석처리 하세요 -->
+                <div class="filter_date"><!-- 여긴 기간 date-->
+                    <div class="period">기간</div>
+                    <div>
+                        <input type="date">
+                        <span>~</span>
+                        <input type="date">
+                    </div>
+                </div>
+                <div class="filter_type"><!-- 여긴 분류 select -->
+                    <div class="label">분류</div><!-- 여긴 select label 이름 작성-->
+                    <div>
+                        <select>
+                            <option>전체</option>
+                        </select>
+                    </div>
+                </div> 
+                <div>
+                    <!-- 여기에 검색버튼이나 조회버튼 넣으세요-->
+                    <button class="gray_btn" type="button">조회</button> 
+                </div>
+            </div>
+        </div>
+        <div class="wrap_list"> <!-- 여기는 테이블 목록 영역입니다 -->
+            <div class="action">
+                <!-- 여기는 등록이나 삭제 버튼이 필요하면 여기에 넣으세요 -->
+                <div>
+                    <button class="red_btn" type="button">삭제</button>
+                </div>
+                <div>
+                    <button class="green_btn" type="button">등록</button>
+                </div>
+            </div>
+            <div class="table-wrap" tabindex="0">
+                <table class="tables">
+                    <thead>
+                        <!-- 고정할 테이블 th 작성 -->
+                         <tr>
+                             <th>제목 1</th>
+                             <th>제목 2</th>
+                             <th>제목 3</th>
+                        </tr>
+                    </thead>
+                    <tbody class="tables_body">
+                        <!-- 내용 추가할 td 작성 -->
+                         <tr>
+                            <td>내용 1</td>
+                            <td>내용 2</td>
+                            <td>내용 3</td>
+                         </tr>
+                         <tr>
+                            <td>내용 1</td>
+                            <td>내용 2</td>
+                            <td>내용 3</td>
+                         </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <!-- 내용 부분 끝 -->
 
-            // 모든 메뉴의 활성화 상태를 초기화하는 함수
-            function deactivateAll() {
-                allItems.forEach(item => {
-                    item.classList.remove('active-link');
-                    item.classList.add('transition-colors', 'duration-200');
-                });
-                parentMenus.forEach(menu => {
-                    menu.classList.remove('active-parent');
-                    const subList = menu.querySelector('.subList');
-                    const arrow = menu.querySelector('svg');
-                    subList.classList.remove('visible');
-                    arrow.style.transform = 'rotate(0deg)';
-                });
-            }
-
-            // 초기 상태: '메인' 항목을 활성화합니다.
-            const mainMenuItem = document.querySelector('.mainList > li:first-child');
-            if (mainMenuItem) {
-                mainMenuItem.classList.add('active-link');
-                mainMenuItem.classList.remove('transition-colors', 'duration-200');
-            }
-
-            // 일반 메뉴 항목에 대한 클릭 리스너
-            menuItems.forEach(item => {
-                item.addEventListener('click', () => {
-                    deactivateAll();
-                    item.classList.add('active-link');
-                    item.classList.remove('transition-colors', 'duration-200');
-                });
-            });
-
-            // 부모 메뉴('생산 관리', '품질 관리')에 대한 클릭 리스너
-            parentMenus.forEach(parentMenu => {
-                const subList = parentMenu.querySelector('.subList');
-                const subMenuItems = subList.querySelectorAll('li');
-                const arrow = parentMenu.querySelector('svg');
-
-                parentMenu.addEventListener('click', () => {
-                    const isParentActive = parentMenu.classList.contains('active-parent');
-                    
-                    if (isParentActive) {
-                        subList.classList.remove('visible');
-                        parentMenu.classList.remove('active-parent');
-                    } else {
-                        deactivateAll();
-                        subList.classList.add('visible');
-                        parentMenu.classList.add('active-parent');
-                    }
-                    
-                    if (subList.classList.contains('visible')) {
-                        arrow.style.transform = 'rotate(90deg)';
-                    } else {
-                        arrow.style.transform = 'rotate(0deg)';
-                    }
-                });
-
-                // 서브 메뉴 항목에 대한 클릭 리스너
-                subMenuItems.forEach(item => {
-                    item.addEventListener('click', (event) => {
-                        deactivateAll();
-                        item.classList.add('active-link');
-                        item.classList.remove('transition-colors', 'duration-200');
-                        parentMenu.classList.add('active-parent');
-                        subList.classList.add('visible');
-                        parentMenu.querySelector('svg').style.transform = 'rotate(90deg)';
-                        event.stopPropagation();
-                    });
-                });
-            });
-        });
-    </script>
-
-
-
-
+<!-- js 부분 -->
 <script>
 
 const myIconBtn = document.getElementById('myIconBtn');
@@ -317,4 +184,8 @@ document.addEventListener('keydown', (e) => {
 
 
 </body>
+
+
+
+
 </html>
