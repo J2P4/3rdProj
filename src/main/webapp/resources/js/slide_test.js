@@ -4,7 +4,7 @@
 
 document.addEventListener('DOMContentLoaded', () => {
     const newBtn = document.querySelector('.btm-btn.new');
-    const slideInput = document.getElementById('slide-input');
+    const slideInput = document.querySelector('#slide-input');
 
     newBtn.addEventListener('click', () => {
         slideInput.classList.add('open');

@@ -1,17 +1,17 @@
 <!-- 추후 jsp로 변경 시, 하단 코드 삽입하기-->
-<!-- <%@ page language="java" contentType="text/html; charset=UTF-8"
+<%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %> -->
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>재고 관리 < 기준 관리 < J2P4</title>
-    <link rel = "stylesheet" href = "temp_asset/common.css" type = "text/css">
-    <script src = "temp_asset/slide_test.js"></script>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/common.css">
+    <script src="${pageContext.request.contextPath}/resources/js/slide_test.js"></script>
 </head>
 <body>
     <!-- 페이지 제목 -->
@@ -28,18 +28,16 @@
             <div class = "filter-item">
                 <div class = "filitem-name">· 재고 ID</div>
                 <div class = "filitem-input">
-                    <select name = "변수명" size = "1">
-                        <option value = "전달값1" selected>나중에 불러오도록</option>
-                        <option value = "전달값2">나중에 불러오도록</option>
-                    </select>
+                    <input type="text" placeholder=" ID를 입력해주세요">
                 </div>
             </div>
             <div class = "filter-item">
                 <div class = "filitem-name">· 구분</div>
                 <div class = "filitem-input">
                     <select name = "변수명" size = "1">
-                        <option value = "전달값1" selected>나중에 불러오도록</option>
-                        <option value = "전달값2">나중에 불러오도록</option>
+                        <option value = "1" selected>완제</option>
+                        <option value = "2">반제</option>
+                        <option value = "3">재료</option>
                     </select>                    
                 </div>
             </div>
@@ -47,8 +45,10 @@
                 <div class = "filitem-name">· 보관 위치</div>
                 <div class = "filitem-input">
                     <select name = "변수명" size = "1">
-                        <option value = "전달값1" selected>나중에 불러오도록</option>
-                        <option value = "전달값2">나중에 불러오도록</option>
+                        <option value = "1" selected>창고1</option>
+                        <option value = "2">창고2</option>
+                        <option value = "3">창고3</option>
+                        <option value = "4">창고4</option>
                     </select>
                 </div>
             </div>
