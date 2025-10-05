@@ -1,0 +1,205 @@
+/*
+    현재 css는 따로 색 통합 나온 것 없어서 색 적용 안 해둠 
+    추후 수정 필요
+*/
+
+/* 제목 영역 */
+.title {
+    margin-bottom: 50px;
+}
+
+/* 조회 조건 선택 영역 */
+
+.filter {
+    border: 1px solid #000000;
+    width: 100%;
+    display: flex;
+}
+
+.filter-item-box {
+    margin: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    width: 85%;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.filter-item {
+    display: flex;
+    width: 45%;
+    align-items: center;
+}
+
+.filitem-name {
+    width: 30%;
+    font-size: 1.2rem;
+    font-weight: bold;
+    line-height: 1.1rem;
+}
+.filitem-input {
+    width: 70%;
+}
+
+.filitem-input > select, .filitem-input > input {
+    font-size: 1.1rem;
+    padding: 2px;
+}
+
+.filter-btn {
+    width: 15%;
+    margin: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.filter-btn > input {
+    width: 70%;
+    height: 50px;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+
+/* 테이블 영역, 슬라이드 영역 테이블도 일부 적용됨 */
+
+.table {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin: 50px auto;
+}
+
+.table > table {
+    margin: 0;
+    width: 100%;
+    text-align: center;
+    border: 1px solid #000000;
+    background-color: #ffffff;
+}
+
+th {
+    font-size: 1.3rem;
+    padding: 10px;
+}
+
+td {
+    font-size: 1.1rem;
+    padding: 10px;
+}
+
+/* 테이블 width 분배 계산 잘하기
+    chkbox : 체크박스
+    id : ~~id
+    type : 분류, 폐기 여부
+    name : 불량사유명
+    date : 일자
+*/
+
+.chkbox {
+    width: 5%;
+}
+
+.id, .date {
+    width: 35%;
+}
+
+.type {
+    width: 10%;
+}
+
+.name {
+    width: 30%;
+}
+
+/* 테이블 하단 버튼 영역 */
+
+.bottom-btn {
+    width: 100%;
+}
+
+.page {
+    text-align: center;
+    z-index: 1;
+}
+
+.bottom-btn-box {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.btm-btn {
+    width: 5%;
+    font-size: 1.2rem;
+    font-weight: bold;
+    padding: 5px;
+}
+
+/* 
+    슬라이드 공통 : .silde 기준
+    템플릿 적용 후에 width 더 줄여야 할 듯.
+*/
+
+.slide {
+    position: fixed;
+    top: 0;
+    /* 지금 템플릿 미적용 기준으로 width, right 설정. 변경 필요.*/
+    right: -110%;
+    width: 100%;
+    height: 100%;
+    background-color: #f3f3f3;
+    box-shadow: -2px 0 6px rgba(0,0,0,0.2);
+    transition: right 1s ease;
+    overflow-y: auto;
+}
+
+.slide.open {
+    right: 0;
+}
+
+.slide-contents {
+    margin: 50px 30px;
+}
+
+.slide-id {
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.slide-contents > .slide-tb {
+    margin: 30px 0;
+}
+
+.slide-contents > .slide-tb > table {
+    background-color: #ffffff;
+    width: 100%;
+    text-align: center;
+}
+
+.slide-btnbox {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.slide-btnbox > input {
+    width: 5%;
+    font-size: 1.2rem;
+    font-weight: bold;
+    padding: 5px;
+}
+
+
+/* 입력 & 수정용 슬라이드 : #slide-input 기준 */
+
+#slide-input {
+    z-index: 2000;
+}
+
+/* 상세 슬라이드 : #slide-detail 기준 */
+
+#slide-detail {
+    z-index: 1000;
+}

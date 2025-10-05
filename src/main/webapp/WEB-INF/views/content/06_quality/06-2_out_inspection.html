@@ -10,6 +10,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>출고 검사 < 품질 관리 < J2P4</title>
+    <link rel = "stylesheet" href="../04_standard/temp_asset/common.css" type="text/css">
+    <script src = "../04_standard/temp_asset/slide_test.js"></script>
 </head>
 <body>
     <div class = "title"><h1>출고 검사</h1></div>
@@ -49,9 +51,9 @@
     <div class = "table">
         <table>
             <thead>
-                <th><input type="checkbox"></th>
-                <th>검사 결과 ID</th>
-                <th>검사일</th>
+                <th class = "chkbox"><input type="checkbox"></th>
+                <th class = "id">검사 결과 ID</th>
+                <th class = "date">검사일</th>
                 <th>양품 수</th>
                 <th>불량 수</th>
             </thead>
@@ -73,80 +75,84 @@
             <input type = "button" class = "btm-btn del" value="삭제">
         </div>
     </div>
-    <div class = "slide input">
-        <div class = "silde-title"><h2>출고 검사 등록</h2></div>
-        <div class = "slide-id">출고 검사 ID: </div>
-        <div class = "slide-tb">
-            <table>
-                <thead>
-                    <th>검사일</th>
-                    <th>양품 수</th>
-                    <th>불량 수</th>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>1</td>
-                        <td>1</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        <div class = "slide-tb">
-            <table>
-                <thead>
-                    <th>검사 대상</th>
-                    <th>담당 사원</th>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>2</td>
-                        <td>2</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        <div class = "slide-btnbox">
-            <input type = "button" value = "등록">
-            <input type = "button" value = "취소">
+    <div class = "slide" id = "slide-input">
+        <div class = "slide-contents">
+            <div class = "silde-title"><h2>출고 검사 등록</h2></div>
+            <div class = "slide-id">출고 검사 ID: </div>
+            <div class = "slide-tb">
+                <table>
+                    <thead>
+                        <th>검사일</th>
+                        <th>양품 수</th>
+                        <th>불량 수</th>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>1</td>
+                            <td>1</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class = "slide-tb">
+                <table>
+                    <thead>
+                        <th>검사 대상</th>
+                        <th>담당 사원</th>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>2</td>
+                            <td>2</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class = "slide-btnbox">
+                <input type = "button" value = "등록">
+                <input type = "button" class = "close-btn" value = "취소">
+            </div>
         </div>
     </div>
-    <div class = "slide detail">
-        <div class = "silde-title"><h2>출고 검사 상세</h2></div>
-        <div class = "slide-id">출고 검사 ID: </div>
-        <div class = "slide-tb">
-            <table>
-                <thead>
-                    <th>검사일</th>
-                    <th>양품 수</th>
-                    <th>불량 수</th>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>1</td>
-                        <td>1</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        <div class = "slide-tb">
-            <table>
-                <thead>
-                    <th>검사 대상</th>
-                    <th>담당 사원</th>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>2</td>
-                        <td>2</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        <div class = "slide-btnbox">
-            <input type = "button" value = "수정">
-            <input type = "button" value = "취소">
+    <div class = "slide" id = "slide-detail">
+        <div class = "slide-contents">
+            <div class = "silde-title"><h2>출고 검사 상세</h2></div>
+            <div class = "slide-id">출고 검사 ID: </div>
+            <div class = "slide-tb">
+                <table>
+                    <thead>
+                        <th>검사일</th>
+                        <th>양품 수</th>
+                        <th>불량 수</th>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>1</td>
+                            <td>1</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class = "slide-tb">
+                <table>
+                    <thead>
+                        <th>검사 대상</th>
+                        <th>담당 사원</th>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>2</td>
+                            <td>2</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class = "slide-btnbox">
+                <input type = "button" value = "수정">
+                <input type = "button" class = "close-btn" value = "취소">
+            </div>
         </div>
     </div>
 </body>
