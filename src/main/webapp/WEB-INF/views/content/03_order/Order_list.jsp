@@ -27,7 +27,6 @@
     *{ box-sizing:border-box; }
     body{
         margin:0;
-        font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans KR","Malgun Gothic",Apple SD Gothic Neo,"Helvetica Neue",Arial,sans-serif;
         color:var(--text);
         background:var(--bg);
     }
@@ -40,27 +39,38 @@
         letter-spacing:-0.3px;
     }
 
-    /* 검색 패널(스샷과 동일한 테두리/여백) */
+	/* 검색 조건 */
     .panel{
         position:relative;
         background:#fff;
         border:2px solid var(--border);
         padding:12px 12px 12px 12px;
+
+        /* 레이아웃 */
+        display:grid;
+        grid-template-columns: 1fr auto;  
+        column-gap:28px;
+        row-gap:10px;
+        align-items:center;                
     }
+
     .fields{
         display:grid;
-        grid-template-columns: 1fr 1fr;
-        gap:12px 28px;
+        grid-template-columns: auto auto;  
+        column-gap:28px;
+        row-gap:10px;
         align-items:center;
+
+        /* 패널 그리드의 왼쪽 컬럼에 배치 */
+        grid-column:1;
     }
     
-    
-    
-    
-    
-    
-    
-    .field{ display:flex; align-items:center; gap:8px; }
+    .field{
+        display:flex; 
+        align-items:center;
+        gap:8px;
+    }
+    	
     .label{
         position:relative;
         padding-left:12px;
@@ -73,9 +83,10 @@
         color:#555;
         font-weight:700;
     }
+
     input[type="text"], input[type="date"]{
         height:28px;
-        border:1px solid black;
+        border:1px solid black; 
         padding:0 8px;
         min-width:210px;
         background:#fff;
@@ -85,9 +96,14 @@
     input[type="date"]{ min-width:190px; }
     .tilde{ margin:0 6px; color:#333; }
 
-    /* 조회 버튼(우측) */
+ 
     .search-actions{
-        position:absolute; right:12px; top:10px;
+        grid-column:2;           /* 우측 컬럼 */
+        grid-row:1 / span 2;     /* 두 줄(1~2행) 차지 */
+        justify-self:end;        /* 오른쪽 끝 정렬 */
+        align-self:center;       /* 세로 중앙 */
+        display:flex;
+        align-items:center;
     }
     
     .btn{
@@ -99,9 +115,7 @@
         transition:all .15s ease;
     }
     .btn:hover{ background:var(--primary-600); border-color:var(--primary-600); }
-    .btn.secondary{
-        background:#fff; color:var(--primary);
-    }
+    .btn.secondary{ background:#fff; color:#7e75ff; }
 
     /* 표 컨테이너 */
     .container{
@@ -111,10 +125,7 @@
         border-radius:var(--radius);
         overflow:hidden;
     }
-     .table-wrap{
-         max-height:none; 
-         overflow:visible;
-    } 
+    .table-wrap{ max-height:none; overflow:visible; }
     table{
         width:100%;
         border-collapse:collapse;
@@ -125,7 +136,7 @@
         background:var(--header);
         border-bottom:1px solid var(--grid);
         border-right:1px solid var(--grid);
-        height:44px;              /* 스샷보다 살짝 여유 */
+        height:44px;
         text-align: center;
         padding:0 10px;
         font-weight:700;
@@ -134,7 +145,7 @@
     tbody td{
         border-bottom:1px solid var(--grid);
         border-right:1px solid var(--grid);
-        height:52px;              /* 행 높이 크게 */
+        height:52px;              
         padding:0 10px;
         vertical-align:middle;
         overflow:hidden; 
@@ -143,17 +154,11 @@
         background:#fff;
     }
     tbody td:last-child{ border-right:none; }
-    tbody tr:nth-child(odd){ background:#fff; } /* 스샷은 스트라이프 없음 */
+    tbody tr:nth-child(odd){ background:#fff; }
 
-    .col-check{ 
-    	width:44px; 
-    	text-align:center;
-    	 }
+    .col-check{ width:44px; text-align:center; }
     .col-id{ width:140px; }
-    .col-qty{ 
-    	width:120px; 
-    	text-align:right;
-     }
+    .col-qty{ width:120px; text-align:right; }
     .col-maker{ width:160px; }
     .col-owner{ width:160px; }
     .col-date{ width:140px; }
@@ -169,16 +174,54 @@
         justify-content:flex-end;
         gap:10px;
         padding:14px;
-     
     }
     .count{ margin-right:auto; color:var(--muted); font-size:12px; }
 
-
-
-    /* 하단 오른쪽 버튼 */
     .actions{
         display:flex; justify-content:flex-end; gap:12px;
         padding:8px 0 0;
+    }
+
+
+    @media (max-width: 1200px){
+        .fields{ grid-template-columns: minmax(0,auto) minmax(0,auto); }
+        input[type="text"], input[type="date"]{ min-width: 180px; }
+        input[type="date"]{ min-width: 160px; }
+    }
+
+
+    @media (max-width: 900px){
+        .panel{
+            grid-template-columns: 1fr;   
+        }
+        .search-actions{
+            grid-column:1;
+            grid-row:auto;
+            justify-self:end;            
+            align-self:center;
+            margin-top:0;
+        }
+        .fields{
+            grid-template-columns: 1fr;  
+        }
+        .field{
+            flex-wrap: wrap;             
+            gap:6px 8px;
+        }
+        .label{ white-space:nowrap; }
+        input[type="text"], input[type="date"]{
+            min-width:0;                  
+            width: 260px;              
+            max-width:100%;
+        }
+    }
+
+    /* 3) 작은 모바일: 입력은 100% 사용 */
+    @media (max-width: 520px){
+        input[type="text"], input[type="date"]{
+            width:100%;
+        }
+        .tilde{ margin:0 4px; }
     }
 </style>
 </head>
@@ -191,19 +234,19 @@
                 <span class="label">발주번호</span>
                 <input type="text" name="orderNo" value="${fn:escapeXml(param.orderNo)}">
             </div>
-
-            <div class="field">
-                <span class="label">품명</span>
-                <input type="text" name="itemName" value="${fn:escapeXml(param.itemName)}">
-            </div>
-
             <div class="field">
                 <span class="label">발주일</span>
                 <input type="date" name="fromDate" id="fromDate" value="${empty param.fromDate ? '' : param.fromDate}">
                 <span class="tilde">~</span>
                 <input type="date" name="toDate" id="toDate" value="${empty param.toDate ? todayStr : param.toDate}">
             </div>
+        </div>
 
+        <div class="fields">		
+            <div class="field">
+                <span class="label">품명</span>
+                <input type="text" name="itemName" value="${fn:escapeXml(param.itemName)}">
+            </div>
             <div class="field">
                 <span class="label">거래처</span>
                 <input type="text" name="publisher_name" value="${fn:escapeXml(param.publisher_name)}">
@@ -229,7 +272,7 @@
                 </colgroup>
                 <thead>
                     <tr>
-                        <th class="col-check" ><input type="checkbox" id="chkAll"></th>
+                        <th class="col-check"><input type="checkbox" id="chkAll"></th>
                         <th>발주 ID</th>
                         <th>품명</th>
                         <th>수량</th>
@@ -256,7 +299,7 @@
                             </c:forEach>
                         </c:when>
                         <c:otherwise>
-                            <c:forEach var="i" begin="1" end="12">
+                            <c:forEach var="i" begin="1" end="10">
                                 <tr>
                                     <td class="col-check"><input type="checkbox" name="rowChk"></td>
                                     <td></td><td></td><td class="col-qty"></td><td></td><td></td><td></td>
@@ -267,71 +310,68 @@
                 </tbody>
             </table>
         </div>
-
-
     </div>
-		<div>
-		
-		<!--  페이징이 구현될 부분 -->
-		</div>
 
-        <div class="toolbar">
-            <div class="count">
-                <c:if test="${not empty totalCount}">총 ${totalCount}건</c:if>
-            </div>
-            <div class="actions">
-                <button type="button" class="btn" id="btnNew">신규</button>
-                <button type="button" class="btn" id="btnDelete">삭제</button>
-            </div>
+    <div><!--  페이징 영역 --></div>
+
+    <div class="toolbar">
+        <div class="count">
+            <c:if test="${not empty totalCount}">총 ${totalCount}건</c:if>
         </div>
+        <div class="actions">
+            <button type="button" class="btn" id="btnNew">신규</button>
+            <button type="button" class="btn" id="btnDelete">삭제</button>
+        </div>
+    </div>
 
-	<script>
-		document.addEventListener('DOMContentLoaded', function(){
-		    /* 날짜 범위 유효성(오른쪽이 왼쪽보다 빠르면 보정/차단) */
-		    const form = document.querySelector('form.panel');
-		    const from = document.getElementById('fromDate');
-		    const to   = document.getElementById('toDate');
-		
-		    function clampMinMax(){
-		        if (from.value) to.min = from.value; else to.removeAttribute('min');
-		        if (to.value)   from.max = to.value; else from.removeAttribute('max');
-		    }
-		    function fixIfInvalid(){
-		        if(from.value && to.value && to.value < from.value){ to.value = from.value; }
-		    }
-		    clampMinMax(); fixIfInvalid();
-		    from.addEventListener('change', () => { clampMinMax(); fixIfInvalid(); });
-		    to.addEventListener('change',   () => { clampMinMax(); fixIfInvalid(); });
-		    form.addEventListener('submit', function(e){
-		        if(from.value && to.value && to.value < from.value){
-		            e.preventDefault();
-		            alert('끝 날짜는 시작 날짜보다 빠를 수 없습니다.');
-		            to.focus();
-		        }
-		    });
-		
-		    /* 체크박스 전체선택 */
-		    const chkAll = document.getElementById('chkAll');
-		    const tbody = document.querySelector('tbody');
-		    const getRowChecks = () => tbody.querySelectorAll('input[name="rowChk"]');
-		
-		    chkAll?.addEventListener('change', () => {
-		        getRowChecks().forEach(chk => chk.checked = chkAll.checked);
-		    });
-		
-		    /* 버튼 동작 (필요 시 URL 교체) */
-		    document.getElementById('btnNew').addEventListener('click', function(){
-		        const url = '<c:out value="${pageContext.request.contextPath}"/>/po/new';
-		        window.location.href = url;
-		    });
-		    document.getElementById('btnDelete').addEventListener('click', function(){
-		        const ids = Array.from(getRowChecks()).filter(x=>x.checked && x.value).map(x=>x.value);
-		        if(ids.length===0){ alert('삭제할 항목을 선택하세요.'); return; }
-		        if(confirm(ids.length + '건을 삭제하시겠습니까?')){
-		            alert('개발용 더미 동작: ' + ids.join(', '));
-		        }
-		    });
-		});
-	</script>
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+    /* 날짜 범위 유효성(오른쪽이 왼쪽보다 빠르면 보정/차단) */
+    const form = document.querySelector('form.panel');
+    const from = document.getElementById('fromDate');
+    const to   = document.getElementById('toDate');
+
+    function clampMinMax(){
+        if (from.value) to.min = from.value; else to.removeAttribute('min');
+        if (to.value)   from.max = to.value; else from.removeAttribute('max');
+    }
+    function fixIfInvalid(){
+        if(from.value && to.value && to.value < from.value){ to.value = from.value; }
+    }
+    clampMinMax(); fixIfInvalid();
+    from.addEventListener('change', () => { clampMinMax(); fixIfInvalid(); });
+    to.addEventListener('change',   () => { clampMinMax(); fixIfInvalid(); });
+    form.addEventListener('submit', function(e){
+        if(from.value && to.value && to.value < from.value){
+            e.preventDefault();
+            alert('끝 날짜는 시작 날짜보다 빠를 수 없습니다.');
+            to.focus();
+        }
+    });
+
+    /* 체크박스 전체선택 */
+    const chkAll = document.getElementById('chkAll');
+    const tbody = document.querySelector('tbody');
+    const getRowChecks = () => tbody.querySelectorAll('input[name="rowChk"]');
+
+    chkAll?.addEventListener('change', () => {
+        getRowChecks().forEach(chk => chk.checked = chkAll.checked);
+    });
+
+    /* 버튼 동작 */
+    document.getElementById('btnNew').addEventListener('click', function(){
+        const url = '<c:out value="${pageContext.request.contextPath}"/>/po/new';\
+//         url은 아직 고민중 수정가능성 농후
+        window.location.href = url;
+    });
+    document.getElementById('btnDelete').addEventListener('click', function(){
+        const ids = Array.from(getRowChecks()).filter(x=>x.checked && x.value).map(x=>x.value);
+        if(ids.length===0){ alert('삭제할 항목을 선택하세요.'); return; }
+        if(confirm(ids.length + '건을 삭제하시겠습니까?')){
+            alert('개발 테스트: ' + ids.join(', '));
+        }
+    });
+});
+</script>
 </body>
 </html>
