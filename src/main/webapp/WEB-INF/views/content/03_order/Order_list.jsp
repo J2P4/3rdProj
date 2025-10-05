@@ -39,14 +39,13 @@
         letter-spacing:-0.3px;
     }
 
-	/* 검색 조건 */
+	/* 검색 조건 (디자인 유지, 레이아웃만 Grid) */
     .panel{
         position:relative;
         background:#fff;
         border:2px solid var(--border);
         padding:12px 12px 12px 12px;
 
-        /* 레이아웃 */
         display:grid;
         grid-template-columns: 1fr auto;  
         column-gap:28px;
@@ -60,8 +59,6 @@
         column-gap:28px;
         row-gap:10px;
         align-items:center;
-
-        /* 패널 그리드의 왼쪽 컬럼에 배치 */
         grid-column:1;
     }
     
@@ -96,12 +93,11 @@
     input[type="date"]{ min-width:190px; }
     .tilde{ margin:0 6px; color:#333; }
 
- 
     .search-actions{
-        grid-column:2;           /* 우측 컬럼 */
-        grid-row:1 / span 2;     /* 두 줄(1~2행) 차지 */
-        justify-self:end;        /* 오른쪽 끝 정렬 */
-        align-self:center;       /* 세로 중앙 */
+        grid-column:2;           
+        grid-row:1 / span 2;     
+        justify-self:end;        
+        align-self:center;       
         display:flex;
         align-items:center;
     }
@@ -124,6 +120,7 @@
         border:2px solid var(--border);
         border-radius:var(--radius);
         overflow:hidden;
+        width : 100%;
     }
     .table-wrap{ max-height:none; overflow:visible; }
     table{
@@ -177,79 +174,95 @@
     }
     .count{ margin-right:auto; color:var(--muted); font-size:12px; }
 
-    .actions{
-        display:flex; justify-content:flex-end; gap:12px;
-        padding:8px 0 0;
+    .slide-btnbox{
+        display:flex;
+        justify-content:flex-end;
+        align-items:center;
+        gap:10px;
+    }
+    .slide-btnbox > .btn{
+        width:auto;             
+        min-width:72px;         
     }
 
+    /* ---- 슬라이드 디자인 ---- */
+    .slide {
+        position: fixed;
+        top: 0;
+        right: -110%;
+        width: 100%;
+        height: 100%;
+        background-color: #f3f3f3;
+        box-shadow: -2px 0 6px rgba(0,0,0,0.2);
+        transition: right 1s ease;
+        overflow-y: auto;
+        z-index: 1000;
+    }
+    .slide.open { right: 0; }
+    .slide-contents { margin: 50px 30px; }
+    .slide-id { font-weight: bold; font-size: 1.2rem; }
+    .slide-contents > .slide-tb { margin: 30px 0; }
+    .slide-contents > .slide-tb > table {
+        background-color: #ffffff;
+        width: 100%;
+        text-align: center;
+    }
 
+    /* 반응형(레이아웃만 변경) */
     @media (max-width: 1200px){
         .fields{ grid-template-columns: minmax(0,auto) minmax(0,auto); }
         input[type="text"], input[type="date"]{ min-width: 180px; }
         input[type="date"]{ min-width: 160px; }
     }
-
-
     @media (max-width: 900px){
-        .panel{
-            grid-template-columns: 1fr;   
-        }
+        .panel{ grid-template-columns: 1fr; }
         .search-actions{
-            grid-column:1;
-            grid-row:auto;
-            justify-self:end;            
-            align-self:center;
+            grid-column:1; grid-row:auto;
+            justify-self:end; align-self:center;
             margin-top:0;
         }
-        .fields{
-            grid-template-columns: 1fr;  
-        }
-        .field{
-            flex-wrap: wrap;             
-            gap:6px 8px;
-        }
+        .fields{ grid-template-columns: 1fr; }
+        .field{ flex-wrap: wrap; gap:6px 8px; }
         .label{ white-space:nowrap; }
         input[type="text"], input[type="date"]{
-            min-width:0;                  
-            width: 260px;              
-            max-width:100%;
+            min-width:0; width: 260px; max-width:100%;
         }
     }
-
-    /* 3) 작은 모바일: 입력은 100% 사용 */
     @media (max-width: 520px){
-        input[type="text"], input[type="date"]{
-            width:100%;
-        }
+        input[type="text"], input[type="date"]{ width:100%; }
         .tilde{ margin:0 4px; }
     }
 </style>
 </head>
 <body>
     <h1>발주 리스트</h1>
-
+    
     <form class="panel" method="get" action="">
+                <input type="text" name="itemName" value="${fn:escapeXml(param.itemName)}">
+                                <input type="text" name="publisher_name" value="${fn:escapeXml(param.publisher_name)}">
+<!--     검색필터 -->
         <div class="fields">
             <div class="field">
                 <span class="label">발주번호</span>
-                <input type="text" name="orderNo" value="${fn:escapeXml(param.orderNo)}">
+                <span class="label">발주일</span>
             </div>
             <div class="field">
-                <span class="label">발주일</span>
+                <input type="text" name="orderNo" value="${fn:escapeXml(param.orderNo)}">
                 <input type="date" name="fromDate" id="fromDate" value="${empty param.fromDate ? '' : param.fromDate}">
                 <span class="tilde">~</span>
                 <input type="date" name="toDate" id="toDate" value="${empty param.toDate ? todayStr : param.toDate}">
+
             </div>
         </div>
 
         <div class="fields">		
             <div class="field">
                 <span class="label">품명</span>
-                <input type="text" name="itemName" value="${fn:escapeXml(param.itemName)}">
+
             </div>
             <div class="field">
                 <span class="label">거래처</span>
-                <input type="text" name="publisher_name" value="${fn:escapeXml(param.publisher_name)}">
+
             </div>
         </div>
 
@@ -312,65 +325,118 @@
         </div>
     </div>
 
-    <div><!--  페이징 영역 --></div>
-
     <div class="toolbar">
         <div class="count">
             <c:if test="${not empty totalCount}">총 ${totalCount}건</c:if>
         </div>
-        <div class="actions">
-            <button type="button" class="btn" id="btnNew">신규</button>
-            <button type="button" class="btn" id="btnDelete">삭제</button>
+        <div class="slide-btnbox">
+            <button type="button" class="btn" id="openSlideBtn">등록</button>
+            <button type="button" class="btn close-btn">취소</button>
+        </div>
+    </div>
+
+    <!-- 상세 슬라이드 -->
+    <div class="slide" id="slide-detail">
+        <div class="slide-contents">
+            <div class="silde-title"><h2>재고 상세</h2></div>
+            <div class="slide-id">재고 ID: </div>
+
+            <div class="slide-tb">
+                <table>
+                    <thead>
+                        <tr><th>품목 ID</th><th>품목 분류</th><th>품목 이름</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>1</td><td>1</td><td>1</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="slide-tb">
+                <table>
+                    <thead>
+                        <tr><th>재고 수량</th><th>보관 위치</th><th>입/출고</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>2</td><td>2</td><td>2</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="slide-btnbox">
+                <button type="button" class="btn">수정</button>
+                <button type="button" class="btn close-btn">취소</button>
+            </div>
         </div>
     </div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function(){
-    /* 날짜 범위 유효성(오른쪽이 왼쪽보다 빠르면 보정/차단) */
-    const form = document.querySelector('form.panel');
-    const from = document.getElementById('fromDate');
-    const to   = document.getElementById('toDate');
+  /* ===== 날짜 범위 유효성 ===== */
+  const form = document.querySelector('form.panel');
+  const from = document.getElementById('fromDate');
+  const to   = document.getElementById('toDate');
 
-    function clampMinMax(){
-        if (from.value) to.min = from.value; else to.removeAttribute('min');
-        if (to.value)   from.max = to.value; else from.removeAttribute('max');
+  function clampMinMax(){
+    if (from.value) to.min = from.value; else to.removeAttribute('min');
+    if (to.value)   from.max = to.value; else from.removeAttribute('max');
+  }
+  function fixIfInvalid(){
+    if(from.value && to.value && to.value < from.value){ to.value = from.value; }
+  }
+  clampMinMax(); fixIfInvalid();
+  from.addEventListener('change', () => { clampMinMax(); fixIfInvalid(); });
+  to.addEventListener('change',   () => { clampMinMax(); fixIfInvalid(); });
+  form.addEventListener('submit', function(e){
+    if(from.value && to.value && to.value < from.value){
+      e.preventDefault();
+      alert('끝 날짜는 시작 날짜보다 빠를 수 없습니다.');
+      to.focus();
     }
-    function fixIfInvalid(){
-        if(from.value && to.value && to.value < from.value){ to.value = from.value; }
+  });
+
+  /* ===== 체크박스 전체선택 ===== */
+  const chkAll = document.getElementById('chkAll');
+  const tbody  = document.querySelector('tbody');
+  const getRowChecks = () => tbody.querySelectorAll('input[name="rowChk"]');
+  chkAll?.addEventListener('change', () => {
+    getRowChecks().forEach(chk => chk.checked = chkAll.checked);
+  });
+
+  /* ===== 슬라이드 열고/닫기 ===== */
+  const slideDetail = document.getElementById('slide-detail');
+
+  const openBtnTop  = document.getElementById('openSlideBtn');
+  const closeBtnTop = document.querySelector('.toolbar .slide-btnbox .close-btn');
+
+  const closeBtnsInSlide = document.querySelectorAll('#slide-detail .close-btn');
+  const slideIdEl = document.querySelector('#slide-detail .slide-id');
+
+  function openSlide(){
+    slideDetail.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeSlide(){
+    slideDetail.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  openBtnTop?.addEventListener('click', () => openSlide());
+  closeBtnTop?.addEventListener('click', () => closeSlide());
+  closeBtnsInSlide.forEach(btn => btn.addEventListener('click', () => closeSlide()));
+
+
+
+  // 표 행 더블클릭 시 슬라이드 열고 ID 채움(원치 않으면 이 블록 삭제)
+  tbody?.addEventListener('dblclick', (e) => {
+    const tr = e.target.closest('tr');
+    if (!tr || tr.querySelector('th')) return;
+    const idCell = tr.children[1]; // 0: 체크박스, 1: 발주 ID
+    if (idCell && slideIdEl){
+      slideIdEl.textContent = '발주 ID: ' + idCell.textContent.trim();
     }
-    clampMinMax(); fixIfInvalid();
-    from.addEventListener('change', () => { clampMinMax(); fixIfInvalid(); });
-    to.addEventListener('change',   () => { clampMinMax(); fixIfInvalid(); });
-    form.addEventListener('submit', function(e){
-        if(from.value && to.value && to.value < from.value){
-            e.preventDefault();
-            alert('끝 날짜는 시작 날짜보다 빠를 수 없습니다.');
-            to.focus();
-        }
-    });
-
-    /* 체크박스 전체선택 */
-    const chkAll = document.getElementById('chkAll');
-    const tbody = document.querySelector('tbody');
-    const getRowChecks = () => tbody.querySelectorAll('input[name="rowChk"]');
-
-    chkAll?.addEventListener('change', () => {
-        getRowChecks().forEach(chk => chk.checked = chkAll.checked);
-    });
-
-    /* 버튼 동작 */
-    document.getElementById('btnNew').addEventListener('click', function(){
-        const url = '<c:out value="${pageContext.request.contextPath}"/>/po/new';\
-//         url은 아직 고민중 수정가능성 농후
-        window.location.href = url;
-    });
-    document.getElementById('btnDelete').addEventListener('click', function(){
-        const ids = Array.from(getRowChecks()).filter(x=>x.checked && x.value).map(x=>x.value);
-        if(ids.length===0){ alert('삭제할 항목을 선택하세요.'); return; }
-        if(confirm(ids.length + '건을 삭제하시겠습니까?')){
-            alert('개발 테스트: ' + ids.join(', '));
-        }
-    });
+    openSlide();
+  });
 });
 </script>
 </body>
