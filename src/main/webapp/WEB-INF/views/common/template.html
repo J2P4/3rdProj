@@ -62,12 +62,12 @@
         /* 서브 메뉴 애니메이션 효과 */
         .subList {
             max-height: 0;
-            opacity: 0;
+            opacity: 1;
             overflow: hidden;
             transition: max-height 0.4s ease-in-out, opacity 0.4s ease-in-out;
         }
         .subList.visible {
-            max-height: 200px; /* 서브 메뉴 높이에 맞게 조절 */
+            max-height: 210px; /* 서브 메뉴 높이에 맞게 조절 */
             opacity: 1;
         }
         
@@ -149,12 +149,12 @@
                                 <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
                             </svg>
                         </div>
-                        <ul class="subList space-y-1 mt-2 pl-4">
-                            <li class="py-2 px-3 rounded-md cursor-pointer transition-colors duration-200">재고 계획</li>
-                            <li class="py-2 px-3 rounded-md cursor-pointer transition-colors duration-200">거래처 지시서</li>
-                            <li class="py-2 px-3 rounded-md cursor-pointer transition-colors duration-200">품목 실적</li>
-                            <li class="py-2 px-3 rounded-md cursor-pointer transition-colors duration-200">BOM 불량률</li>
-                            <li class="py-2 px-3 rounded-md cursor-pointer transition-colors duration-200">공정 불량률</li>
+                        <ul class="subList space-y-1 mt-2 pl-5">
+                            <li class="py-2 px-3 rounded-md cursor-pointer transition-colors duration-200">재고 관리</li>
+                            <li class="py-2 px-3 rounded-md cursor-pointer transition-colors duration-200">거래처 관리</li>
+                            <li class="py-2 px-3 rounded-md cursor-pointer transition-colors duration-200">품목 관리</li>
+                            <li class="py-2 px-3 rounded-md cursor-pointer transition-colors duration-200">BOM 관리</li>
+                            <li class="py-2 px-3 rounded-md cursor-pointer transition-colors duration-200">공정 관리</li>
                         </ul>
                     </li>
 
