@@ -1,24 +1,23 @@
-<!-- 추후 jsp로 변경 시, 하단 코드 삽입하기-->
-<!-- <%@ page language="java" contentType="text/html; charset=UTF-8"
+<%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %> -->
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BOM 관리 < 기준 관리 < J2P4</title>
-    <link rel = "stylesheet" href = "temp_asset/common.css" type = "text/css">
-    <script src = "temp_asset/slide_test.js"></script>
+    <title>불량 보고서 < 품질 관리 < J2P4</title>
+    <link rel = "stylesheet" href="../04_standard/temp_asset/common.css" type="text/css">
+    <script src = "../04_standard/temp_asset/slide_test.js"></script>
 </head>
 <body>
-    <div class = "title"><h1>BOM 관리</h1></div>
+    <div class = "title"><h1>불량 보고서</h1></div>
     <div class = "filter">
         <div class = "filter-item-box">
             <div class = "filter-item">
-                <div class = "filitem-name">· BOM ID</div>
+                <div class = "filitem-name">· 검사 ID</div>
                 <div class = "filitem-input">
                     <select name = "변수명" size = "1">
                         <option value = "전달값1" selected>나중에 불러오도록</option>
@@ -27,16 +26,15 @@
                 </div>
             </div>
             <div class = "filter-item">
-                <div class = "filitem-name">· 분류</div>
+                <div class = "filitem-name">· 검사일</div>
                 <div class = "filitem-input">
-                    <select name = "변수명" size = "1">
-                        <option value = "전달값1" selected>나중에 불러오도록</option>
-                        <option value = "전달값2">나중에 불러오도록</option>
-                    </select>                    
+                    <input type = "date">
+                    <span class="tilde">~</span>
+                    <input type = "date">
                 </div>
             </div>
             <div class = "filter-item">
-                <div class = "filitem-name">· 품목 ID</div>
+                <div class = "filitem-name">· 품명</div>
                 <div class = "filitem-input">
                     <select name = "변수명" size = "1">
                         <option value = "전달값1" selected>나중에 불러오도록</option>
@@ -44,7 +42,15 @@
                     </select>
                 </div>
             </div>
-            <div class = "filter-item"></div>
+            <div class = "filter-item">
+                <div class = "filitem-name">· 폐기 여부</div>
+                <div class = "filitem-input">
+                    <select name = "inout" size = "1">
+                        <option value = "1" selected>나중에 입력</option>
+                        <option value = "2">나중에 입력</option>
+                    </select>
+                </div>
+            </div>
         </div>
         <div class = "filter-btn">
             <input type = "submit" class = "fil-btn" value="조회">
@@ -54,10 +60,9 @@
         <table>
             <thead>
                 <th class = "chkbox"><input type="checkbox"></th>
-                <th class = "id">BOM ID</th>
-                <th class = "id">품목 ID</th>
-                <th class = "type">분류</th>
-                <th>소요량</th>
+                <th class = "id">불량 사유 ID</th>
+                <th class = "name">불량사유명</th>
+                <th class = "type">폐기 여부</th>
             </thead>
             <tbody>
                 <tr>
@@ -65,13 +70,12 @@
                     <td>1</td>
                     <td>2</td>
                     <td>3</td>
-                    <td>4</td>
                 </tr>
             </tbody>
         </table>
     </div>
     <div class = "bottom-btn">
-        <div class = "page">페이징 위치 확인용</div>
+        <div class = "page"></div>
         <div class = "bottom-btn-box">
             <input type = "button" class = "btm-btn new" value="신규">
             <input type = "button" class = "btm-btn del" value="삭제">
@@ -79,18 +83,16 @@
     </div>
     <div class = "slide" id = "slide-input">
         <div class = "slide-contents">
-            <div class = "silde-title"><h2>BOM 등록</h2></div>
-            <div class = "slide-id">목표 품목 ID: </div>
+            <div class = "silde-title"><h2>불량 보고서 등록</h2></div>
+            <div class = "slide-id">불량 보고서 ID: </div>
             <div class = "slide-tb">
                 <table>
                     <thead>
-                        <th>목표 품목 ID</th>
-                        <th>품목명</th>
-                        <th>분류</th>
+                        <th>불량 사유명</th>
+                        <th>폐기 여부</th>
                     </thead>
                     <tbody>
                         <tr>
-                            <td>1</td>
                             <td>1</td>
                             <td>1</td>
                         </tr>
@@ -100,47 +102,37 @@
             <div class = "slide-tb">
                 <table>
                     <thead>
-                        <th><input type=checkbox></th>
-                        <th>재료 품목 ID</th>
-                        <th>품목명</th>
-                        <th>분류</th>
-                        <th>소요량</th>
+                        <th>검사 ID</th>
+                        <th>검사일</th>
+                        <th>검사 대상</th>
                     </thead>
                     <tbody>
                         <tr>
-                            <td><input type="checkbox"></td>
-                            <td>2</td>
                             <td>2</td>
                             <td>2</td>
                             <td>2</td>
                         </tr>
                     </tbody>
                 </table>
-                <div class = "slide-tb-btnbox">
-                    <input type="button" value="재료 추가">
-                    <input type="button" value="재료 삭제">
-                </div>
             </div>
             <div class = "slide-btnbox">
-                <input type = "button" value = "등록">
-                <input type = "button" class = "close-btn" value = "취소">
+                <input type = "button" class = "slide-btn" value = "등록">
+                <input type = "button" class = "close-btn slide-btn" value = "취소">
             </div>
         </div>
     </div>
     <div class = "slide" id = "slide-detail">
         <div class = "slide-contents">
-            <div class = "silde-title"><h2>BOM 상세</h2></div>
-            <div class = "slide-id">목표 품목 ID: </div>
+            <div class = "silde-title"><h2>불량 보고서 상세</h2></div>
+            <div class = "slide-id">불량 보고서 ID: </div>
             <div class = "slide-tb">
                 <table>
                     <thead>
-                        <th>목표 품목 ID</th>
-                        <th>품목명</th>
-                        <th>분류</th>
+                        <th>불량 사유명</th>
+                        <th>폐기 여부</th>
                     </thead>
                     <tbody>
                         <tr>
-                            <td>1</td>
                             <td>1</td>
                             <td>1</td>
                         </tr>
@@ -150,16 +142,12 @@
             <div class = "slide-tb">
                 <table>
                     <thead>
-                        <th><input type=checkbox></th>
-                        <th>재료 품목 ID</th>
-                        <th>품목명</th>
-                        <th>분류</th>
-                        <th>소요량</th>
+                        <th>검사 ID</th>
+                        <th>검사일</th>
+                        <th>검사 대상</th>
                     </thead>
                     <tbody>
                         <tr>
-                            <td><input type="checkbox"></td>
-                            <td>2</td>
                             <td>2</td>
                             <td>2</td>
                             <td>2</td>
@@ -168,8 +156,8 @@
                 </table>
             </div>
             <div class = "slide-btnbox">
-                <input type = "button" value = "수정">
-                <input type = "button" class = "close-btn" value = "취소">
+                <input type = "button" class = "slide-btn" value = "수정">
+                <input type = "button" class = "close-btn slide-btn" value = "취소">
             </div>
         </div>
     </div>

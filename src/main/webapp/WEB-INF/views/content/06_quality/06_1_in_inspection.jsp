@@ -1,20 +1,19 @@
-<!-- 추후 jsp로 변경 시, 하단 코드 삽입하기-->
-<!-- <%@ page language="java" contentType="text/html; charset=UTF-8"
+<%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %> -->
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>출고 검사 < 품질 관리 < J2P4</title>
+    <title>입고 검사 < 품질 관리 < J2P4</title>
     <link rel = "stylesheet" href="../04_standard/temp_asset/common.css" type="text/css">
     <script src = "../04_standard/temp_asset/slide_test.js"></script>
 </head>
 <body>
-    <div class = "title"><h1>출고 검사</h1></div>
+    <div class = "title"><h1>입고 검사</h1></div>
     <div class = "filter">
         <div class = "filter-item-box">
             <div class = "filter-item">
@@ -77,8 +76,8 @@
     </div>
     <div class = "slide" id = "slide-input">
         <div class = "slide-contents">
-            <div class = "silde-title"><h2>출고 검사 등록</h2></div>
-            <div class = "slide-id">출고 검사 ID: </div>
+            <div class = "silde-title"><h2>입고 검사 등록</h2></div>
+            <div class = "slide-id">입고 검사 ID: </div>
             <div class = "slide-tb">
                 <table>
                     <thead>
@@ -110,15 +109,15 @@
                 </table>
             </div>
             <div class = "slide-btnbox">
-                <input type = "button" value = "등록">
-                <input type = "button" class = "close-btn" value = "취소">
+                <input type = "button" class = "slide-btn" value = "등록">
+                <input type = "button" class = "close-btn slide-btn" value = "취소">
             </div>
         </div>
     </div>
     <div class = "slide" id = "slide-detail">
         <div class = "slide-contents">
-            <div class = "silde-title"><h2>출고 검사 상세</h2></div>
-            <div class = "slide-id">출고 검사 ID: </div>
+            <div class = "silde-title"><h2>입고 검사 상세</h2></div>
+            <div class = "slide-id">입고 검사 ID: </div>
             <div class = "slide-tb">
                 <table>
                     <thead>
@@ -150,8 +149,8 @@
                 </table>
             </div>
             <div class = "slide-btnbox">
-                <input type = "button" value = "수정">
-                <input type = "button" class = "close-btn" value = "취소">
+                <input type = "button" class = "slide-btn" value = "수정">
+                <input type = "button" class = "close-btn slide-btn" value = "취소">
             </div>
         </div>
     </div>

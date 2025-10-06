@@ -1,4 +1,3 @@
-<!-- 추후 jsp로 변경 시, 하단 코드 삽입하기-->
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -144,8 +143,8 @@
                 </table>
             </div>
             <div class = "slide-btnbox">
-                <input type = "button" value = "등록">
-                <input type = "button" class = "close-btn" value = "취소">
+                <input type = "button" class = "slide-btn" value = "등록">
+                <input type = "button" class = "close-btn slide-btn" value = "취소">
             </div>
         </div>
     </div>
@@ -187,8 +186,8 @@
                 </table>
             </div>
             <div class = "slide-btnbox">
-                <input type = "button" value = "수정">
-                <input type = "button" class = "close-btn" value = "취소">
+                <input type = "button" class = "slide-btn" value = "수정">
+                <input type = "button" class = "close-btn slide-btn" value = "취소">
             </div>
         </div>
     </div>

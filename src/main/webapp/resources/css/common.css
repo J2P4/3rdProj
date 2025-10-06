@@ -19,7 +19,7 @@ body {
     color: var(--text);
 }
 
-button, input[type="button"], input[type="submit"] {
+.fil-btn, .btm-btn, .slide-btn {
     background: var(--primary);
     border:1px solid var(--primary);
     cursor: pointer;
@@ -27,7 +27,7 @@ button, input[type="button"], input[type="submit"] {
     color: #ffffff;
 }
 
-button:hover, input[type="button"]:hover, input[type="submit"]:hover {
+.fil-btn:hover, .btm-btn:hover, .slide-btn:hover {
     background: var(--primary-600);
     border-color:var(--primary-600);
 }
