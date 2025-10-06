@@ -11,4 +11,8 @@
         <setting name="jdbcTypeForNull" value="NULL" />
     </settings>
 
+	<typeAliases>
+    	<typeAlias type= "proj.spring.mes.dto.WorkerDTO" alias="workerDTO" />
+    	<typeAlias type= "proj.spring.mes.dto.OrderDTO" alias="OrderDTO" />
+    </typeAliases>
 </configuration>

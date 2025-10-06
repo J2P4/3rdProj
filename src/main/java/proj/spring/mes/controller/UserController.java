@@ -31,7 +31,7 @@ public class UserController {
 //    public String list(Model model, String workerId, String deptCode, String workerName, String roleCode) {
 //        List<WorkerDTO> list = workerService.list();
 //        model.addAttribute("list", list);
-//        return "02_user/02_user.tiles"; // JSP or Tiles 정의명
+//        return "02_user/02_user.tiles"; 
 //    }
 //
 //    /** 상세 */

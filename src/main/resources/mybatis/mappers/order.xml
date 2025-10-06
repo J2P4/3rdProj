@@ -68,7 +68,7 @@
 	
 	<!-- 1번과 2번은 동일한 구문 -->
 	<!-- 1. 시퀀스로 먼저 DTO에 넣고 인서트하기 -->
-	<insert id="insertEmp3" parameterType="empDTO">
+	<insert id="insertEmp3" parameterType="OrderDTO">
 		
 		<!-- selectKey 미리 sql문을 실행함 -->
 		<!-- 
