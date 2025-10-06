@@ -22,54 +22,56 @@
     <h1>발주 리스트</h1>
     
     <form class="panel" method="get" action="">
-                <input type="text" name="itemName" value="${fn:escapeXml(param.itemName)}">
-                                <input type="text" name="publisher_name" value="${fn:escapeXml(param.publisher_name)}">
+               
 <!--     검색필터 -->
-        <div class="fields">
-            <div class="field">
-                <span class="label">발주번호</span>
-                <span class="label">발주일</span>
-            </div>
-            <div class="field">
-                <input type="text" name="orderNo" value="${fn:escapeXml(param.orderNo)}">
-                <input type="date" name="fromDate" id="fromDate" value="${empty param.fromDate ? '' : param.fromDate}">
-                <span class="tilde">~</span>
-                <input type="date" name="toDate" id="toDate" value="${empty param.toDate ? todayStr : param.toDate}">
+        <div class="filter">
+            <div class="filter-item-box">
+				<div class = "filter-item">
+		                	<span class="filitem-name">· 발주ID</span>
+		                	<div class = "filitem-input">
+		              			<input type="text" name="orderNo" value="${fn:escapeXml(param.orderNo)}">
+		               		 </div>
+				</div>
 
-            </div>
+
+	            <div class = "filter-item">
+	                <div class = "filitem-name">· 발주일</div>
+	                <div class = "filitem-input">
+	                	<input type="date" name="fromDate" id="fromDate" value="${empty param.fromDate ? '' : param.fromDate}">
+	                	<span class="tilde">~</span>
+	                	<input type="date" name="toDate" id="toDate" value="${empty param.toDate ? todayStr : param.toDate}">
+	                   
+	               	 </div>
+				</div>
+
+				<div class = "filter-item">
+		                	<span class="filitem-name">· 거래처</span>
+		                	<div class = "filitem-input">
+		              			<input type="text" name="publisher_name" value="${fn:escapeXml(param.publisher_name)}">
+		               		 </div>
+				</div>
+
+          <div class="filter-item">		
+                <span class="filitem-name">· 품명</span>
+                	<div class = "filitem-input">
+                             <input type="text" name="itemName" value="${fn:escapeXml(param.itemName)}">
+               		 </div>
+
+
+			</div>
+		</div>
+		<div class = "filter-btn">
+            <input type = "submit" class = "fil-btn" value="조회">
         </div>
-
-        <div class="fields">		
-            <div class="field">
-                <span class="label">품명</span>
-
-            </div>
-            <div class="field">
-                <span class="label">거래처</span>
-
-            </div>
-        </div>
-
-        <div class="search-actions">
-            <button type="submit" class="btn">조회</button>
-        </div>
+	</div>
     </form>
 
-    <div class="container">
-        <div class="table-wrap">
+    <div class="table">
+     
             <table>
-                <colgroup>
-                    <col class="col-check">
-                    <col class="col-id">
-                    <col> <!-- 품명 -->
-                    <col class="col-qty">
-                    <col class="col-maker">
-                    <col class="col-owner">
-                    <col class="col-date">
-                </colgroup>
                 <thead>
                     <tr>
-                        <th class="col-check"><input type="checkbox" id="chkAll"></th>
+                        <th class="chkbox"><input type="checkbox" id="chkAll"></th>
                         <th>발주 ID</th>
                         <th>품명</th>
                         <th>수량</th>
@@ -106,21 +108,21 @@
                     </c:choose>
                 </tbody>
             </table>
-        </div>
+       
     </div>
 
-    <div class="toolbar">
-        <div class="count">
-            <c:if test="${not empty totalCount}">총 ${totalCount}건</c:if>
-        </div>
-        <div class="slide-btnbox">
-            <button type="button" class="btn" id="openSlideBtn">등록</button>
-            <button type="button" class="btn close-btn">취소</button>
-        </div>
+    <div class="bottom-btn">
+		<div class = "page"></div>
+		<div class = "bottom-btn-box">
+			<input type = "button" class = "btm-btn new" value = "신규">
+			<input type = "button" class = "btm-btn del" value = "삭제">
+			
+		</div>
+		
     </div>
 
     <!-- 상세 슬라이드 -->
-    <div class="slide" id="slide-detail">
+    <div class="slide" id="slide-input">
         <div class="slide-contents">
             <div class="silde-title"><h2>재고 상세</h2></div>
             <div class="slide-id">재고 ID: </div>
@@ -148,8 +150,8 @@
             </div>
 
             <div class="slide-btnbox">
-                <button type="button" class="btn">수정</button>
-                <button type="button" class="btn close-btn">취소</button>
+                <input type="button" class="slide-btn" value = "수정">
+                <input type="button" class="close-btn slide-btn" value = "취소">
             </div>
         </div>
     </div>
