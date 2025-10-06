@@ -1,0 +1,83 @@
+:root{
+    --primary:#7e75ff;           /* 버튼/포커스 보라 */
+    --primary-600:#6b64e6;
+    --header:#dfe4ff;            /* 테이블 헤더 배경 */
+    --border:#aeb3c7;            /* 외곽선 색 */
+    --grid:#d7d9e3;              /* 셀 경계선 */
+    --bg:#fafbff;
+    --text:#222;
+    --muted:#666;
+    --radius: 12px;           	/* 모달 radius */  
+}
+
+.hide {
+	display: none !important;
+}
+/* 어두운 배경 */
+.modal-bg {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+
+/* 모달 박스 */
+.add-modal {
+    background: #fff;
+    border-radius: 16px;
+    padding: 40px;
+    width: 500px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    text-align: center;
+    animation: fadeIn 0.3s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 20px;
+}
+
+.modal-title {
+    font-size: 26px;
+    font-weight: 800;
+    color: #222;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 10px;
+}
+
+.modal-content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 30px 0 0;
+    font-size: 20px;
+}
+
+.field {
+    padding: 0 50px;
+}
+.confirm {
+    margin: 20px auto 0;
+    padding: 25px 0;
+    font-weight:  bold;
+}
+
+.modal-btnbox {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.m-btn {
+    min-width: 90px;
+    padding: 10px 0;
+    font-weight: 600;
+    font-size: 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+}

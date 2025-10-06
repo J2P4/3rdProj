@@ -35,7 +35,7 @@
 	<context:component-scan base-package="proj.spring.mes" />
 	
 	<!--  @Mapper 설정 -->
-	<mybatis-spring:scan base-package="prog.spring.lib.dao.mapper" />
+	<mybatis-spring:scan base-package="proj.spring.mes.dao.mapper" />
 
 	<!-- tiles용 -->
     <beans:bean id="tilesConfigurer"
