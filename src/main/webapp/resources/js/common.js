@@ -55,8 +55,10 @@ document.addEventListener('DOMContentLoaded', () => {
     mainTable.addEventListener('change', (event) => {
         if (event.target.name === 'rowChk' && chkAll) {
             const rowChecks = getRowChecks();
-            const checkedCount = rowChecks.filter(chk => chk.checked).length;
+            const checkedCount = Array.from(rowChecks).every(chk => chk.checked);
             
+            console.log('checkedCount: ', checkedCount);
+
             // 전체 체크박스의 상태를 현재 체크된 개수와 전체 개수를 비교하여 설정
             chkAll.checked = (checkedCount === rowChecks.length);
         }
