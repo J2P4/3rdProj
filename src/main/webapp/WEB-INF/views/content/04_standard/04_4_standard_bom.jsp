@@ -14,11 +14,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BOM 관리 < 기준 관리 < J2P4</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/common.css" type="text/css">
-    <script src="${pageContext.request.contextPath}/resources/js/slide_test.js"></script>
+    <script src="${pageContext.request.contextPath}/resources/js/common.js" defer></script>
 </head>
 <body>
     <div class = "title"><h1>BOM 관리</h1></div>
-    <div class = "filter">
+    <form class = "filter" method="get" action="">
         <div class = "filter-item-box">
             <div class = "filter-item">
                 <div class = "filitem-name">· BOM ID</div>
@@ -52,19 +52,21 @@
         <div class = "filter-btn">
             <input type = "submit" class = "fil-btn" value="조회">
         </div>
-    </div>
+    </form>
     <div class = "table">
         <table>
             <thead>
-                <th class = "chkbox"><input type="checkbox"></th>
-                <th class = "id">BOM ID</th>
-                <th class = "id">품목 ID</th>
-                <th class = "type">분류</th>
-                <th>소요량</th>
+                <tr>
+                    <th class = "chkbox"><input type="checkbox" id="chkAll"></th>
+                    <th class = "id">BOM ID</th>
+                    <th class = "id">품목 ID</th>
+                    <th class = "type">분류</th>
+                    <th>소요량</th>
+                </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td><input type="checkbox"></td>
+                    <td><input type="checkbox" name="rowChk"></td>
                     <td>1</td>
                     <td>2</td>
                     <td>3</td>

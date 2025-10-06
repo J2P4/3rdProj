@@ -14,11 +14,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>출고 검사 < 품질 관리 < J2P4</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/common.css" type="text/css">
-    <script src="${pageContext.request.contextPath}/resources/js/slide_test.js"></script>
+    <script src="${pageContext.request.contextPath}/resources/js/common.js" defer></script>
 </head>
 <body>
     <div class = "title"><h1>출고 검사</h1></div>
-    <div class = "filter">
+    <form class = "filter" method="get" action="">
         <div class = "filter-item-box">
             <div class = "filter-item">
                 <div class = "filitem-name">· 결과 ID</div>
@@ -32,9 +32,9 @@
             <div class = "filter-item">
                 <div class = "filitem-name">· 검사일</div>
                 <div class = "filitem-input">
-                    <input type = "date">
+                    <input type = "date" name="fromDate" id="fromDate">
                     <span class="tilde">~</span>
-                    <input type = "date">
+                    <input type = "date" name="toDate"id="toDate">
                 </div>
             </div>
             <div class = "filter-item">
@@ -50,19 +50,21 @@
         <div class = "filter-btn">
             <input type = "submit" class = "fil-btn" value="조회">
         </div>
-    </div>
+    </form>
     <div class = "table">
         <table>
             <thead>
-                <th class = "chkbox"><input type="checkbox"></th>
-                <th class = "id">검사 결과 ID</th>
-                <th class = "date">검사일</th>
-                <th>양품 수</th>
-                <th>불량 수</th>
+                <tr>
+                    <th class = "chkbox"><input type="checkbox" id="chkAll"></th>
+                    <th class = "id">검사 결과 ID</th>
+                    <th class = "date">검사일</th>
+                    <th>양품 수</th>
+                    <th>불량 수</th>
+                </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td><input type="checkbox"></td>
+                    <td><input type="checkbox" name="rowChk"></td>
                     <td>1</td>
                     <td>2</td>
                     <td>3</td>

@@ -14,7 +14,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>재고 관리 < 기준 관리 < J2P4</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/common.css" type="text/css">
-    <script src="${pageContext.request.contextPath}/resources/js/slide_test.js"></script>
+    <script src="${pageContext.request.contextPath}/resources/js/common.js" defer></script>
 </head>
 <body>
     <!-- 페이지 제목 -->
@@ -26,7 +26,7 @@
                 * filitem-input : 실제 select 영역
         - filter-btn : 조회 버튼 영억
     -->
-    <div class = "filter">
+    <form class = "filter" method="get" action="">
         <div class = "filter-item-box">
             <div class = "filter-item">
                 <div class = "filitem-name">· 재고 ID</div>
@@ -68,7 +68,7 @@
         <div class = "filter-btn">
             <input type = "submit" class = "fil-btn" value="조회">
         </div>
-    </div>
+    </form>
     <!-- 테이블 영역(table)
         - table(클래스 X) : 실제 테이블 영역
             + thead : 제목 영역. 너비 조정 위해서 일부 속성에 클래스 넣음.
@@ -77,16 +77,18 @@
     <div class = "table">
         <table>
             <thead>
-                <th class = "chkbox"><input type="checkbox"></th>
-                <th class = "id">재고 ID</th>
-                <th>재고량</th>
-                <th class = "type">구분</th>
-                <th>보관 위치</th>
-                <th>입/출고</th>
+                <tr>
+                    <th class = "chkbox"><input type="checkbox" id="chkAll"></th>
+                    <th class = "id">재고 ID</th>
+                    <th>재고량</th>
+                    <th class = "type">구분</th>
+                    <th>보관 위치</th>
+                    <th>입/출고</th>
+                </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td><input type="checkbox"></td>
+                    <td><input type="checkbox" name="rowChk"></td>
                     <td>1</td>
                     <td>2</td>
                     <td>3</td>

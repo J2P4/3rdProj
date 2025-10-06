@@ -45,7 +45,7 @@ input, select {
 }
 
 h1{
-    margin:10px 0;
+    margin: 10px 0;
     font-size: 2.2rem;
     font-weight: bold;
     letter-spacing: -0.3px;
@@ -85,12 +85,15 @@ h1{
     width: 75%;
 }
 
-.filitem-input > select, .filitem-input > input {
+.filitem-input > select, .filitem-input > input[type="text"], .filitem-input > input[type="button"] {
     font-size: 1.1rem;
     padding: 2px;
 }
 
-.tilde{ margin:0 6px; color:#333; }
+.tilde{
+	margin:0 6px;
+	color:#333333;
+}
 
 .filter-btn {
     width: 10%;
@@ -112,8 +115,6 @@ h1{
 
 .table {
     width: 100%;
-    display: flex;
-    justify-content: center;
     margin: 50px auto;
     max-height: none; 
     overflow: visible;
