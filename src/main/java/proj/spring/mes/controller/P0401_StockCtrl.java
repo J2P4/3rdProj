@@ -12,27 +12,8 @@ public class P0401_StockCtrl {
 	
 	@RequestMapping("/stocklist")
 	public String stockList() {
+		System.out.println("재고 기본 조회");
 		return "04_standard/04_1_standard_stock.tiles";
-	}
-	
-	@RequestMapping("/bomlist")
-	public String bomList() {
-		return "04_standard/04_4_standard_bom.tiles";
-	}
-	
-	@RequestMapping("/inInslist")
-	public String inInsList() {
-		return "06_quality/06_1_in_inspection.tiles";
-	}
-	
-	@RequestMapping("/outInslist")
-	public String outInsList() {
-		return "06_quality/06_2_out_inspection.tiles";
-	}
-	
-	@RequestMapping("/errorlist")
-	public String errorList() {
-		return "06_quality/06_3_error_report.tiles";
 	}
 	
 }
