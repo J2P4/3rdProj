@@ -21,15 +21,16 @@
 	
 	
 	<!-- contents만 있는 경우 -->
-	<definition name="baseLayout2" template="/WEB-INF/views/layout/layout.jsp2">
+	<definition name="baseLayout2" template="/WEB-INF/views/layout/layout2.jsp">
 	</definition>
 	<!-- contents만 있는 경우 설정. 아니면 개별 페이지로 설정? -->
-	<definition name="*.tiles" extends="baseLayout2">
-		<put-attribute name="content" value="/WEB-INF/views/content/{1}.jsp" />
-	</definition>
-	<definition name="*/*.tiles" extends="baseLayout2">
-		<put-attribute name="content" value="/WEB-INF/views/content/{1}/{2}.jsp" />
-	</definition>
+	<!-- name 중복으로 주석처리했습니다. -->
+<!-- 	<definition name="*.tiles" extends="baseLayout2"> -->
+<!-- 		<put-attribute name="content" value="/WEB-INF/views/content/{1}.jsp" /> -->
+<!-- 	</definition> -->
+<!-- 	<definition name="*/*.tiles" extends="baseLayout2"> -->
+<!-- 		<put-attribute name="content" value="/WEB-INF/views/content/{1}/{2}.jsp" /> -->
+<!-- 	</definition> -->
 	
 	<!--  발주 목록 -->
 	<definition name="03_order/Order_list.tiles" extends="baseLayout">
@@ -37,6 +38,7 @@
 	    <put-attribute name="content" value="/WEB-INF/views/content/03_order/Order_list.jsp" />
 	    <put-attribute name="title" value="발주목록" />
 	</definition>
+	
 	
 	
 	

@@ -7,16 +7,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-public class LoginController {
+public class UserController {
 
 	private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
 	
 	@Autowired
 	
-	@RequestMapping("/login")
+	@RequestMapping("/user")
 	public String login() {
-		System.out.println("로그인");
-		return "forward:/login.jsp";
+		System.out.println("계정관리");
+		return "02_user/02_user.tiles";
 	}
-	
 }
