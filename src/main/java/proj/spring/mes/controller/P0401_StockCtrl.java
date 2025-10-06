@@ -6,33 +6,33 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-public class StockController {
+public class P0401_StockCtrl {
 	
-	private static final Logger logger = LoggerFactory.getLogger(StockController.class);
+	private static final Logger logger = LoggerFactory.getLogger(P0401_StockCtrl.class);
 	
 	@RequestMapping("/stocklist")
 	public String stockList() {
-		return "content/04_standard/04_1_standard_stock";
+		return "04_standard/04_1_standard_stock.tiles";
 	}
 	
 	@RequestMapping("/bomlist")
 	public String bomList() {
-		return "content/04_standard/04_4_standard_bom";
+		return "04_standard/04_4_standard_bom.tiles";
 	}
 	
 	@RequestMapping("/inInslist")
 	public String inInsList() {
-		return "content/06_quality/06_1_in_inspection";
+		return "06_quality/06_1_in_inspection.tiles";
 	}
 	
 	@RequestMapping("/outInslist")
 	public String outInsList() {
-		return "content/06_quality/06_2_out_inspection";
+		return "06_quality/06_2_out_inspection.tiles";
 	}
 	
 	@RequestMapping("/errorlist")
 	public String errorList() {
-		return "content/06_quality/06_3_error_report";
+		return "06_quality/06_3_error_report.tiles";
 	}
 	
 }

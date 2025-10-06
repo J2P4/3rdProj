@@ -3,13 +3,17 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%
+    String todayStr = new java.text.SimpleDateFormat("yyyy-MM-dd").format(new java.util.Date());
+    request.setAttribute("todayStr", todayStr);
+%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>재고 관리 < 기준 관리 < J2P4</title>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/common.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/common.css" type="text/css">
     <script src="${pageContext.request.contextPath}/resources/js/slide_test.js"></script>
 </head>
 <body>
