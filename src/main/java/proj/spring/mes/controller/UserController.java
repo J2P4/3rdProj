@@ -1,5 +1,6 @@
 package proj.spring.mes.controller;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -20,43 +21,58 @@ public class UserController {
 	@Autowired
 	WorkerService workerService;
 	
-	@RequestMapping("/user")
-	public String list() {
-		System.out.println("계정관리");
-		return "02_user/02_user.tiles";
-	}
+//	@RequestMapping("/user")
+//	public String list() {
+//		System.out.println("계정관리");
+//		return "02_user/02_user.tiles";
+//	}
 	
-//	/** 목록 */
-//	@RequestMapping("/list")
-//    public String list(Model model, String workerId, String deptCode, String workerName, String roleCode) {
-//        List<WorkerDTO> list = workerService.list();
-//        model.addAttribute("list", list);
-//        return "02_user/02_user.tiles"; 
-//    }
-//
-//    /** 상세 */
-//	@RequestMapping("/view")
-//    public String view(Model model, String workerId) {
-//        WorkerDTO dto = workerService.get(workerId);
-//        model.addAttribute("worker", dto);
-//        return "02_user/02_user.tiles";
-//    }
-//
-//    /** 등록 폼 */
-//	@RequestMapping("/insertForm")
-//    public String insertForm(Model model) {
-//        // 기본값이 필요하면 model에 put
-//        return "02_user/02_user.tiles";
-//    }
-//
-//    /** 등록 처리*/
-//	@RequestMapping("/insert")
-//    public String insert(WorkerDTO dto) {
-//        // WorkerService.add에서 비번 해시 처리/시퀀스 ID 생성(MyBatis selectKey) 수행
-//        workerService.add(dto);
-//        return "redirect: list";
-//    }
-//
+	/** 목록 */
+	@RequestMapping("/list")
+    public String list(Model model, String workerId, String deptCode, String workerName, String roleCode) {
+        List<WorkerDTO> list = workerService.list();
+        model.addAttribute("list", list);
+        return "02_user/02_user.tiles"; 
+    }
+
+    /** 상세 */
+	@RequestMapping("/detail")
+    public String detail(Model model, String workerId) {
+        WorkerDTO dto = workerService.get(workerId);
+        model.addAttribute("worker", dto);
+        return "02_user/02_user.tiles";
+    }
+
+    /** 등록 */
+	@RequestMapping("/insert")
+	public String insert(WorkerDTO dto, Model model) {
+        
+        
+        // worker_birth(Date) → 6자리 문자열 변환 (YYMMDD)
+        String birth6 = "";
+        if (dto.getWorker_birth() != null) {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyMMdd");
+            birth6 = sdf.format(dto.getWorker_birth());
+            // 초기 비밀번호 세팅
+            dto.setWorker_pw(birth6); 
+        } 
+        
+        // 이메일 합치기
+        if (dto.getWorker_email() != null && !dto.getWorker_email().isEmpty()) {
+            dto.setWorker_email(dto.getWorker_email() + "@naver.com");
+        }
+        
+        workerService.add(dto);
+        
+        // JSP에서 ${worker_id}로 접근 가능하도록 model에 담기
+        model.addAttribute("worker_id", dto.getWorker_id());
+        model.addAttribute("worker_birth6", birth6);
+        model.addAttribute("worker_email", dto.getWorker_email());
+        model.addAttribute("worker", dto);
+        // 결과 페이지로 이동 
+        return "02_user/02_userResult.tiles";
+	}
+
 //    /** 수정 폼 */
 //	@RequestMapping("/updateForm")
 //    public String updateForm(Model model, String workerId) {
@@ -65,18 +81,11 @@ public class UserController {
 //        return "02_user/02_user.tiles";
 //    }
 //
-//    /** 수정 처리 (x-www-form-urlencoded) */
-//	@RequestMapping("/update")
-//    public String update(WorkerDTO dto) {
-//        workerService.edit(dto);
-//        return "redirect:list";
-//    }
-//
-//    /** 삭제 (단건) */
-//	@RequestMapping("/delete")
-//    public String delete(String workerId) {
-//        workerService.remove(workerId);
-//        return "redirect:list";
-//    }
+    /** 삭제 */
+	@RequestMapping("/delete")
+    public String delete(String workerId) {
+        workerService.remove(workerId);
+        return "redirect:list";
+    }
 	
 }

@@ -12,5 +12,7 @@ public class WorkerDTO {
 	private String worker_pw;		// 비밀번호
 	private String worker_email;	// 이메일
 	private String worker_code;		// 권한
+	private Date worker_join;		// 입사일
 	private String department_id;	// 부서ID
+	private String department_name;	// 부서명
 }

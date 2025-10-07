@@ -10,9 +10,6 @@
     --radius: 12px;           	/* 모달 radius */  
 }
 
-.hide {
-	display: none !important;
-}
 /* 어두운 배경 */
 .modal-bg {
     position: fixed;
@@ -21,7 +18,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 999;
+    z-index: 5000;
 }
 
 /* 모달 박스 */
@@ -37,6 +34,7 @@
     flex-direction: column;
     align-items: stretch;
     gap: 20px;
+    z-index: 6000;
 }
 
 .modal-title {
@@ -58,6 +56,9 @@
 
 .field {
     padding: 0 50px;
+}
+.field > span {
+	font-weight: bold;
 }
 .confirm {
     margin: 20px auto 0;

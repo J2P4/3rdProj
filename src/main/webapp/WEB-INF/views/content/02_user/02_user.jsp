@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/common.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/user.css">
     <script src="${pageContext.request.contextPath}/resources/js/common.js" defer></script>
+    <script src="${pageContext.request.contextPath}/resources/js/02_user.js"></script>
 </head>
 <body>
     <div class = "title">
@@ -20,16 +21,7 @@
     <form class = "filter" method="get" action="">
         <div class = "filter-item-box">
             <div class = "filter-item">
-                <div class = "filitem-name">· 사원번호</div>
-                <div class = "filitem-input">
-                    <select name = "변수명" size = "1">
-                        <option value = "전달값1" selected>나중에 불러오도록</option>
-                        <option value = "전달값2">나중에 불러오도록</option>
-                    </select>
-                </div>
-            </div>
-            <div class = "filter-item">
-                <div class = "filitem-name">· 부서</div>
+                <div class = "filitem-name">· 사원명</div>
                 <div class = "filitem-input">
                     <select name = "변수명" size = "1">
                         <option value = "전달값1" selected>나중에 불러오도록</option>
@@ -38,7 +30,7 @@
                 </div>
             </div>
             <div class = "filter-item">
-                <div class = "filitem-name">· 사원명</div>
+                <div class = "filitem-name">· 부서</div>
                 <div class = "filitem-input">
                     <select name = "변수명" size = "1">
                         <option value = "전달값1" selected>나중에 불러오도록</option>
@@ -50,8 +42,19 @@
                 <div class = "filitem-name">· 권한</div>
                 <div class = "filitem-input">
                     <select name = "inout" size = "1">
-                        <option value = "1" selected>전체</option>
+                        <option value = "" selected>전체</option>
                         <option value = "2">관리자</option>
+                        <option value = "3">부서장</option>
+                        <option value = "4">사원</option>
+                    </select>
+                </div>
+            </div>
+            <div class = "filter-item">
+                <div class = "filitem-name">· 입사일</div>
+                <div class = "filitem-input">
+                    <select name = "inout" size = "1">
+                        <option value = "" selected>전체</option>
+                        <option value = "2">입사일 빠른순</option>
                         <option value = "3">부서장</option>
                         <option value = "4">사원</option>
                     </select>
@@ -63,7 +66,7 @@
         </div>
     </form>
     <div class = "table">
-        <table>
+		<table border=1>
             <thead>
             	<tr>
 	                <th><input type="checkbox" class = "chkbox" id="chkAll"></th>
@@ -75,15 +78,24 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td><input type="checkbox" name="rowChk"></td>
-                    <td>1</td>
-                    <td>2</td>
-                    <td>3</td>
-                    <td>4</td>
-                    <td>5</td>
-                </tr>
-            </tbody>s
+	            <c:if test="${empty list }">
+					<tr>
+						<td colspan="6"> 조회 내역이 없습니다.</td>
+					</tr>
+				</c:if>
+				<c:if test="${not empty list }">
+					<c:forEach var="workerDTO" items="${list }">			 
+		                <tr>
+		                    <td><input type="checkbox" name="rowChk"></td>
+		                    <td>${workerDTO.worker_id }</td>
+		                    <td><a href="detail?worker_id=${workerDTO.worker_id }">${workerDTO.worker_name }</a></td>
+		                    <td>${workerDTO.department_name }</td>
+		                    <td>${workerDTO.worker_join }</td>
+		                    <td>${workerDTO.worker_code }</td>
+		                </tr>
+	                </c:forEach>
+	            </c:if>	
+            </tbody>
         </table>
     </div>
     <div class = "bottom-btn">
@@ -93,22 +105,25 @@
             <input type = "button" class = "btm-btn del" value="삭제">
         </div>
     </div>
+    <form id="workerForm" method="post" action="insert">
     <div class = "slide" id = "slide-input">
     	<div class = "slide-contents">
 	        <div class = "silde-title"><h2>사원 등록</h2></div>
-	        <div class = "slide-id">사번 : </div>
+	        <div class = "slide-id">사번 : 자동생성</div>
 	        <div class = "slide-tb">
 	            <table>
 	                <thead>
-	                    <th>이름</th>
-	                    <th>생년월일</th>
-	                    <th>입사일</th>
+		                <tr>
+		                    <th>이름</th>
+		                    <th>생년월일</th>
+		                    <th>이메일</th>
+	                    </tr>
 	                </thead>
 	                <tbody>
 	                    <tr>
-	                        <td>1</td>
-	                        <td><input type="date"></td>
-	                        <td><input type="date"></td>
+	                        <td><input type="text" name="worker_name"></td>
+	                        <td><input type="date" name="worker_birth"></td>
+	                        <td><input type="text" name="worker_email"> @naver.com</td>
 	                    </tr>
 	                </tbody>
 	            </table>
@@ -116,28 +131,30 @@
 	        <div class = "slide-tb">
 	            <table>
 	                <thead>
-	                    <th>부서</th>
-	                    <th>직급</th>
-	                    <th>권한</th>
+		                <tr>
+		                    <th>입사일</th>
+		                    <th>부서</th>
+		                    <th>권한</th>
+	                    </tr>
 	                </thead>
 	                <tbody>
 	                    <tr>
-	                        <td>2</td>
+	                        <td><input type="date" name="worker_join"></td>
 	                        <td>
-	                        	<select>
-	                        		<option value="1" selected>전체</option>
-	                        		<option value="2">부장</option>
-	                        		<option value="3">과장</option>
-	                        		<option value="4">대리</option>
-	                        		<option value="5">사원</option>
+	                        	<select name="department_id">
+	                        		<option value="" selected>선택</option>
+	                        		<option value="P01">생산1팀</option>
+	                        		<option value="P02">생산2팀</option>
+	                        		<option value="I01">품질1팀</option>
+	                        		<option value="I02">품질2팀</option>
 	                        	</select>
 							</td>
 	                        <td>
-	                        	<select>
-	                        		<option value="1" selected>전체</option>
-	                        		<option value="2">admin</option>
-	                        		<option value="3">부서장</option>
-	                        		<option value="4">평사원</option>
+	                        	<select name="worker_code">
+	                        		<option value="1" selected>선택</option>
+	                        		<option value="ADMIN">admin</option>
+	                        		<option value="HEAD">부서장</option>
+	                        		<option value="STAFF">사원</option>
 	                        	</select>
 	                       	</td>
 	                    </tr>
@@ -145,73 +162,39 @@
 	            </table>
         	</div>
 	        <div class = "slide-btnbox">
-                <input type = "button" class = "slide-btn" value = "등록">
+                <input type = "submit" class = "slide-btn" value = "등록">
                 <input type = "button" class = "close-btn slide-btn" value = "취소">
             </div>
        	</div>
     </div>
-    <div class="modal-bg hide">
-        <div class = "add-modal">
-            <div class="modal-title">J2P4 MES</div>
-            <div class="modal-content">
-                <div class="field">
-                    <label class="label">아이디</label>
-                </div>
-                <div class="field">
-                    <label class="label">초기 비밀번호</label>
-                </div>
-                <div class="confirm">
-                    <div>등록하시겠습니까?</div>
-                </div>
-            </div>
-            <div class = "modal-btnbox">
-                <input type = "button" class = "m-btn slide-btn" value = "등록">
-                <input type = "button" class = "close-btn m-btn slide-btn" value = "취소">
-            </div>
-        </div>
-    </div>
+    </form>
     <div class = "slide detail modify">
         <div class = "silde-title"><h2>사원 정보 상세</h2></div>
         <div class = "slide-id">사원번호: </div>
         <div class = "slide-tb">
             <table>
                 <thead>
-                    <th>이름</th>
-                    <th>생년월일</th>
-                    <th>입사일</th>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td><input type="date"></td>
-                        <td><input type="date"></td>
+	                <tr>
+	                    <th>입사일</th>
+	                    <th>부서</th>
+	                    <th>권한</th>
                     </tr>
-                </tbody>
-            </table>
-        </div>
-        <div class = "slide-tb">
-            <table>
-                <thead>
-                    <th>부서</th>
-                    <th>직급</th>
-                    <th>권한</th>
                 </thead>
                 <tbody>
                     <tr>
-                        <td>2</td>
+                        <td><input type="date"></td>
                         <td>
                         	<select>
-                        		<option value="1" selected>전체</option>
-                        		<option value="2">부장</option>
-                        		<option value="3">과장</option>
-                        		<option value="4">대리</option>
-                        		<option value="5">사원</option>
+                        		<option value="1" selected>선택</option>
+                        		<option value="2">품질</option>
+                        		<option value="3">생산</option>
+                        		<option value="4">포장</option>
                         	</select>
 						</td>
                         <td>
                         	<select>
-                        		<option value="1" selected>전체</option>
-                        		<option value="2">관리자</option>
+                        		<option value="1" selected>선택</option>
+                        		<option value="2">admin</option>
                         		<option value="3">부서장</option>
                         		<option value="4">평사원</option>
                         	</select>

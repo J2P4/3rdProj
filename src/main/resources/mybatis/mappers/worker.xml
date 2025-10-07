@@ -7,7 +7,20 @@
 	
 	<!-- 전체 조회 -->
 	<select id="selectWorker" resultType="workerDTO">
-		select * from V3_worker
+		select 
+	        w.worker_id,
+	        w.worker_name,
+	        w.worker_birth,
+	        w.worker_pw,
+	        w.worker_email,
+	        w.worker_code,
+	        w.worker_join,
+	        w.department_id,
+	        d.department_name
+	    from V3_worker w
+	    LEFT JOIN V3_department d
+	        on w.department_id = d.department_id
+	    order by w.worker_id
 	</select>
 	
 	<!-- 
@@ -42,7 +55,9 @@
 			worker_birth = #{worker_birth},
 			worker_pw = #{worker_pw},
 			worker_email = #{worker_email},
-			worker_code = #{worker_code}
+			worker_code = #{worker_code},
+			worker_join = #{worker_join},
+			department_id = #{department_id}
 		where worker_id = #{worker_id}
 	</update>
 
@@ -55,18 +70,23 @@
 	
 	<!-- insert -->
 	<insert id="insertWorker" parameterType="workerDTO">
-	  INSERT INTO V3_worker (worker_id, worker_name, worker_birth, worker_pw, worker_email, worker_code)
-	  VALUES (
-	    'A' || TO_CHAR(SYSDATE, 'YYMMDD') || TO_CHAR(WORKER_ID_SEQ.NEXTVAL, 'FM00'),
-	    #{worker_name}, #{worker_birth}, #{worker_pw}, #{worker_email}, #{worker_code}
-	  )
-	
-	  <!-- 같은 커넥션 내에서 CURRVAL로 방금 쓴 값을 안전하게 회수 -->
-	  <selectKey keyProperty="worker_id" resultType="string" order="AFTER">
-	    SELECT 'A' || TO_CHAR(SYSDATE, 'YYMMDD') || TO_CHAR(WORKER_ID_SEQ.CURRVAL, 'FM00')
+  
+	  <!-- 먼저 worker_id 생성 -->
+	  <selectKey keyProperty="worker_id" resultType="string" order="BEFORE">
+	    SELECT 'A' || TO_CHAR(SYSDATE, 'YYMMDD') || LPAD(worker_id_seq.NEXTVAL, 2, '0')
 	    FROM dual
 	  </selectKey>
+	
+	  INSERT INTO V3_worker (
+	      worker_id, worker_name, worker_birth, worker_pw,
+	      worker_email, worker_code, worker_join, department_id
+	  )
+	  VALUES (
+	      #{worker_id}, #{worker_name}, #{worker_birth}, #{worker_pw},
+	      #{worker_email}, #{worker_code}, #{worker_join}, #{department_id}
+	  )
 	</insert>
+
 
 </mapper>
 
