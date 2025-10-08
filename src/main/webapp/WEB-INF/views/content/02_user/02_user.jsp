@@ -73,7 +73,7 @@
 	                <th>사원번호</th>
 	                <th>이름</th>
 	                <th>부서</th>
-	                <th>직급</th>
+	                <th>입사일</th>
 	                <th>권한</th>
                 </tr>
             </thead>

@@ -6,13 +6,13 @@
 	<!-- SQL문 작성 영역 -->
 	
 	<!-- 전체 조회 -->
-	<select id = "selectError" resultType = "P0603_ErrorDTO">
-		select
-			defect_reason_id, defect_reason, defect_exhaust,
-			inspection_result_id
-		from v3_defect
-		order by defect_reason_id
-	</select>
+<!-- 	<select id = "selectError" resultType = "P0603_ErrorDTO"> -->
+<!-- 		select -->
+<!-- 			defect_reason_id, defect_reason, defect_exhaust, -->
+<!-- 			inspection_result_id -->
+<!-- 		from v3_defect -->
+<!-- 		order by defect_reason_id -->
+<!-- 	</select> -->
 
 	
 	<!-- 단일 조회 -->

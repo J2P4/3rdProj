@@ -45,7 +45,7 @@
 	</delete>
 	
 	<!-- 삽입 -->
-	<insert id = "insertOutIns" parameterType = "P0602_InInsDTO">
+	<insert id = "insertOutIns" parameterType = "P0602_OutInsDTO">
 		<selectKey keyProperty="inspection_result_id" resultType="string" order="BEFORE">
 		  select 'L' || TO_CHAR(SYSDATE, 'YYMMDD') || LPAD(worker_id_seq.NEXTVAL, 2, '0')
 		  from dual
