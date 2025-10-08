@@ -3,20 +3,21 @@
 	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="proj.spring.mes.dao.mapper.P0603_ErrorMapperDAO">
-	<!-- SQL문 작성 영역 -->
+	<!-- SQL문 작성 영역 : 여기도 담당자 입력 있던가 자동 조회였던가 -->
+	<!-- 일단 확실한 건 검사 id로 담당자 조회였던 걸로 기억함 -->
 	
 	<!-- 전체 조회 -->
-<!-- 	<select id = "selectError" resultType = "P0603_ErrorDTO"> -->
-<!-- 		select -->
-<!-- 			defect_reason_id, defect_reason, defect_exhaust, -->
-<!-- 			inspection_result_id -->
-<!-- 		from v3_defect -->
-<!-- 		order by defect_reason_id -->
-<!-- 	</select> -->
+	<select id = "selectError" resultType = "P0603_ErrorDTO">
+		select
+			defect_reason_id, defect_reason, defect_exhaust,
+			inspection_result_id
+		from v3_defect
+		order by defect_reason_id
+	</select>
 
 	
 	<!-- 단일 조회 -->
-	<select id = "selectError" resultType = "P0603_ErrorDTO">
+	<select id = "selectOneError" resultType = "P0603_ErrorDTO">
 		select
 			d.defect_reason_id, d.defect_reason, d.defect_exhaust,
 			d.inspection_result_id, i.inspection_result_date, i.stock_id

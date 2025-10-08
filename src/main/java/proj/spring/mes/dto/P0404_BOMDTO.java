@@ -1,5 +1,10 @@
 package proj.spring.mes.dto;
 
-public class P0404_BOMDTO {
+import lombok.Data;
 
+@Data
+public class P0404_BOMDTO {
+	private String bom_id;
+	private int bom_amount;
+	private String item_id;
 }

@@ -27,6 +27,14 @@
 		where i.inspection_result_id = #{_parameter}
 	</select>
 	
+	<!-- 조회 : 작업자 입력용 -->
+	<select id="selectWorkerName" resultType="workerDTO">
+		select 
+	        w.worker_id, w.worker_name
+	    from V3_worker w
+	    order by w.worker_id
+	</select>
+	
 	<!-- 수정 -->
 	<update id = "updateOutIns" parameterType = "P0602_OutInsDTO">
 		update v3_inspection_result

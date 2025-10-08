@@ -1,5 +1,42 @@
 package proj.spring.mes.service;
 
-public class P0603_ErrorServiceImpl {
+import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import proj.spring.mes.dao.mapper.P0603_ErrorMapperDAO;
+import proj.spring.mes.dto.P0603_ErrorDTO;
+
+@Service
+public class P0603_ErrorServiceImpl implements P0603_ErrorService {
+
+	@Autowired
+	P0603_ErrorMapperDAO errorMapperDAO;
+	
+	@Override
+	public List<P0603_ErrorDTO> errorList() {
+		return errorMapperDAO.selectError();
+	}
+	
+	@Override
+	public P0603_ErrorDTO getOneStock(String defect_id) {
+		return errorMapperDAO.selectOneError(defect_id);
+	}
+	
+	@Override
+	public int editStock(P0603_ErrorDTO dto) {
+		return errorMapperDAO.updateError(dto);
+	}
+	
+	@Override
+	public int removeStock(P0603_ErrorDTO dto) {
+		return errorMapperDAO.deleteError(dto);
+	}
+	
+	@Override
+	public int addStock(P0603_ErrorDTO dto) {
+		return errorMapperDAO.insertError(dto);
+	}	
+	
 }

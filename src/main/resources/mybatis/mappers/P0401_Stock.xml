@@ -5,7 +5,7 @@
 <mapper namespace="proj.spring.mes.dao.mapper.P0401_StockMapperDAO">
 	<!-- SQL문 작성 영역 -->
 	
-	<!-- 전체 조회 -->
+	<!-- 전체 조회 : 여기는 ㅇㅋ -->
 	<select id = "selectStock" resultType = "P0401_StockDTO">
 		select
 			s.stock_id, s.stock_amount, s.stock_wrap, s.item_id,
@@ -16,18 +16,18 @@
 	</select>
 
 	
-	<!-- 단일 조회 -->
+	<!-- 단일 조회 : 아마 ㅇㅋ -->
 	<select id = "selectOneStock" resultType = "P0401_StockDTO">
 		select
 			s.stock_id, s.stock_amount, s.stock_wrap, s.item_id,
 			i.item_div, i.item_name
 		from v3_stock s left outer join v3_item i
 		on s.item_id = i.item_id
-		where s.item_id = #{_parameter}
+		where s.item_id = #{item_id}
 		order by s.stock_id	
 	</select>
 	
-	<!-- 수정 -->
+	<!-- 수정 : 아마 ㅇㅋ-->
 	<update id = "updateStock" parameterType = "P0401_StockDTO">
 		update v3_stock
 		set stock_amount = #{stock_amount},
@@ -36,16 +36,16 @@
 		where stock_id = #{stock_id}
 	</update>
 	
-	<!-- 삭제 -->
+	<!-- 삭제 : 아마 ㅇㅋ-->
 	<delete id = "deleteStock" parameterType = "P0401_StockDTO">
 		delete from v3_stock
 		where stock_id = #{stock_id}
 	</delete>
 	
-	<!-- 삽입 -->
+	<!-- 삽입 : 아마 ㅇㅋ -->
 	<insert id = "insertStock" parameterType = "P0401_StockDTO">
 		<selectKey keyProperty="stock_id" resultType="string" order="BEFORE">
-		  select 'C' || TO_CHAR(SYSDATE, 'YYMMDD') || LPAD(worker_id_seq.NEXTVAL, 2, '0')
+		  select 'C' || TO_CHAR(SYSDATE, 'YYMMDD') || LPAD(stock_id_seq.NEXTVAL, 4, '0')
 		  from dual
 		</selectKey>
 		

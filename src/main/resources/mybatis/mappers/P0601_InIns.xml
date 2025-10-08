@@ -26,7 +26,16 @@
 		from v3_inspection_result i
 			left outer join v3_worker w
 				on i.worker_id = w.worker_id
-		where i.inspection_result_id = #{_parameter}
+		where i.inspection_result_id = #{inspection_result_id}
+	</select>
+	
+	<!-- 조회 : 작업자 입력할 때 편하도록... -->
+	
+	<select id="selectWorkerName" resultType="workerDTO">
+		select 
+	        w.worker_id, w.worker_name
+	    from V3_worker w
+	    order by w.worker_id
 	</select>
 	
 	<!-- 수정 -->
@@ -49,7 +58,7 @@
 	<!-- 삽입 -->
 	<insert id = "insertInIns" parameterType = "P0601_InInsDTO">
 		<selectKey keyProperty="inspection_result_id" resultType="string" order="BEFORE">
-		  select 'K' || TO_CHAR(SYSDATE, 'YYMMDD') || LPAD(worker_id_seq.NEXTVAL, 2, '0')
+		  select 'K' || TO_CHAR(SYSDATE, 'YYMMDD') || LPAD(inspection_result_id_seq.NEXTVAL, 2, '0')
 		  from dual
 		</selectKey>
 		

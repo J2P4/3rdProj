@@ -1,5 +1,11 @@
 package proj.spring.mes.dto;
 
-public class P0603_ErrorDTO {
+import lombok.Data;
 
+@Data
+public class P0603_ErrorDTO {
+	private String defect_reason_id;
+	private String defect_reason;
+	private String defect_exhaust;
+	private String inspection_result_id;
 }

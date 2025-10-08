@@ -1,5 +1,18 @@
 package proj.spring.mes.dao.mapper;
 
-public class P0401_StockMapperDAO {
+import java.util.List;
 
+import org.apache.ibatis.annotations.Mapper;
+
+import proj.spring.mes.dto.P0401_StockDTO;
+
+@Mapper
+public interface P0401_StockMapperDAO {
+	
+	List<P0401_StockDTO> selectStock();
+	P0401_StockDTO selectOneStock(String stock_id);
+	int updateStock(P0401_StockDTO dto);
+	int deleteStock(P0401_StockDTO dto);
+	int insertStock(P0401_StockDTO dto);
+	
 }
