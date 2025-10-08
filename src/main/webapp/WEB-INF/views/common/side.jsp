@@ -4,6 +4,7 @@
             <ul class="mainList space-y-2 text-base">
                 <!-- 메인 메뉴 추가 -->
                 <li class="relative p-3 rounded-md cursor-pointer transition-colors duration-200">메인</li>
+                <li class="relative p-3 rounded-md cursor-pointer transition-colors duration-200">발주 관리</li>
                 
                 <!-- 기준 관리 메뉴와 하위 메뉴 -->
                 <li class="parent-menu relative p-3 rounded-md cursor-pointer transition-colors duration-200">
@@ -15,6 +16,7 @@
                     </div>
                     <ul class="subList space-y-1 mt-2 pl-5">
                         <li class="py-2 px-3 rounded-md cursor-pointer transition-colors duration-200">재고 관리</li>
+
                         <li class="py-2 px-3 rounded-md cursor-pointer transition-colors duration-200">거래처 관리</li>
                         <li class="py-2 px-3 rounded-md cursor-pointer transition-colors duration-200">품목 관리</li>
                         <li class="py-2 px-3 rounded-md cursor-pointer transition-colors duration-200">BOM 관리</li>
