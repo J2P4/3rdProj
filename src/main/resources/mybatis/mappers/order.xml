@@ -2,11 +2,11 @@
 <!DOCTYPE mapper
 	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="mapper.order">
+<mapper namespace="proj.spring.mes.dao.mapper.OrderMapperDAO">
 	<!-- SQL문 작성 영역 -->
 	
 	<!-- 전체 조회 -->
-	<select id="selectorder" resultType="OrderDTO">
+	<select id="selectOrder" resultType="OrderDTO">
 		select * from V3_order
 	</select>
 	
@@ -44,7 +44,7 @@
 <!-- 	</insert> -->
 
 	<!-- update -->
-	<update id="updateorder" parameterType="OrderDTO">
+	<update id="updateOrder" parameterType="OrderDTO">
 		update V3_order
 		set	order_id = #{order_id},
 			order_payment_day = #{order_payment_day },
@@ -60,7 +60,7 @@
 
 	<!-- delete -->
 	<!-- resultType이 정해져 있어 따로 안써도 됨 -->
-	<delete id="orderWorker" parameterType="OrderDTO">
+	<delete id="deleteOrder" parameterType="OrderDTO">
 		delete from V3_order
 		where order_id= #{order_id}	
 	</delete>
@@ -97,10 +97,10 @@
 		keyProperty를 지정하면 parameterType에 저장된다.
 		위의 selectKey와 비슷함.
 	 -->
-	<insert id="insertorder" parameterType="OrderDTO" useGeneratedKeys="true" keyProperty="order">
+	<insert id="insertOrder" parameterType="OrderDTO" useGeneratedKeys="true" keyProperty="order">
 	
-		insert into emp2 (empno, ename, job, mgr, hiredate, sal, comm, deptno)
-		values (seq_emp2.nextval, #{ename} , #{job}, #{mgr}, #{hiredate}, #{sal}, #{comm}, #{deptno})
+		insert into V3_order (order_id, order_payment_day, order_date, order_amount, order_receive_date, order_stat, worker_id, client_id, item_id, order_payment_duedate, order_receive_duedate)
+		values (#{order_id}, #{order_payment_day} , #{order_date}, #{order_amount}, #{order_receive_date}, #{order_stat}, #{worker_id}, #{client_id}, #{item_id}, #{order_payment_duedate}, #{order_receive_duedate})
 	
 	</insert>
 </mapper>

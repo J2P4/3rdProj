@@ -32,12 +32,7 @@
 <!-- 		<put-attribute name="content" value="/WEB-INF/views/content/{1}/{2}.jsp" /> -->
 <!-- 	</definition> -->
 	
-	<!--  발주 목록 -->
-	<definition name="03_order/Order_list.tiles" extends="baseLayout">
-	    <!-- ↓ 실제 파일 경로를 직접 지정 -->
-	    <put-attribute name="content" value="/WEB-INF/views/content/03_order/Order_list.jsp" />
-	    <put-attribute name="title" value="발주목록" />
-	</definition>
+
 	
 	
 	

@@ -85,15 +85,15 @@
                         <c:when test="${not empty orders}">
                             <c:forEach var="o" items="${orders}">
                                 <tr>
-                                    <td class="col-check"><input type="checkbox" name="rowChk" value="${o.id}"></td>
-                                    <td>${o.id}</td>
+                                    <td class="col-check"><input type="checkbox" name="rowChk" value="${o.order_id}"></td>
+                                    <td>${o.order_id}</td>
                                     <td>
-                                        <a href="${pageContext.request.contextPath}/po/detail?id=${o.id}" style="color:inherit; text-decoration:none;">${o.itemName}</a>
+                                        <a href="${pageContext.request.contextPath}/po/detail?id=${o.order_id}" style="color:inherit; text-decoration:none;">${o.item_id}</a>
                                     </td>
-                                    <td class="col-qty"><fmt:formatNumber value="${o.qty}" pattern="#,##0"/></td>
-                                    <td>${o.maker}</td>
-                                    <td>${o.owner}</td>
-                                    <td><fmt:formatDate value="${o.orderDate}" pattern="yyyy-MM-dd"/></td>
+                                    <td class="col-qty"><${o.order_amount}</td>
+                                    <td>${o.client_id}</td>
+                                    <td>${o.worker_id}</td>
+                                    <td><fmt:formatDate value="${o.order_date}" pattern="yyyy-MM-dd"/></td>
                                 </tr>
                             </c:forEach>
                         </c:when>
