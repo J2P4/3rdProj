@@ -1,0 +1,60 @@
+<html>
+    <head></head>
+    <script
+        src="https://code.jquery.com/jquery-3.7.1.js"
+        integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+        crossorigin="anonymous"></script>
+    <script src="SimpleTableCellEditor.es6.min.js"></script>
+    <script src="test.js" defer></script>
+    <body>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-header">
+                            Basic editable table
+                        </div>
+                        <div class="card-body">
+                            <!-- 내가 봐야 하는 부분 -->
+                            <table
+                                id="slide-detail"
+                                class="table table-dark table-striped"
+                                style="width:100%;">
+                                <thead>
+                                    <tr>
+                                        <th>Editable cell is beneath</th>
+                                        <th>Some column header</th>
+                                        <th>Another column header</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="editMe">Editable text</td>
+                                        <td>Uneditable text</td>
+                                        <td>Uneditable text</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="editMe">Editable text</td>
+                                        <td>Uneditable text</td>
+                                        <td>Uneditable text</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- html은 여기까지 -->
+                        <div class="card-footer bg-transparent border-success">
+                            <div class="form-check">
+                                <input
+                                    type="checkbox"
+                                    class="form-check-input"
+                                    id="basicToggle"
+                                    checked="checked">
+                                <label class="form-check-label" for="basicToggle">Toggled</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

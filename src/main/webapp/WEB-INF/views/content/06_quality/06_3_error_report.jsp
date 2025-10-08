@@ -140,7 +140,7 @@
                     <tbody>
                         <tr>
                             <td>1</td>
-                            <td>1</td>
+                            <td data-type = "select">1</td>
                         </tr>
                     </tbody>
                 </table>
@@ -154,9 +154,9 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td>2</td>
-                            <td>2</td>
-                            <td>2</td>
+                            <td data-type = "select">2</td>
+                            <td data-type = "date">2</td>
+                            <td data-type = "select">2</td>
                         </tr>
                     </tbody>
                 </table>

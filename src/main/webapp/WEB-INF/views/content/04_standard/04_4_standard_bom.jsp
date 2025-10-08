@@ -145,9 +145,9 @@
                     </thead>
                     <tbody>
                         <tr>
+                            <td data-type = "select">1</td>
                             <td>1</td>
-                            <td>1</td>
-                            <td>1</td>
+                            <td data-type = "select">1</td>
                         </tr>
                     </tbody>
                 </table>
@@ -164,9 +164,9 @@
                     <tbody>
                         <tr>
                             <td><input type="checkbox"></td>
+                            <td data-type = "select">2</td>
                             <td>2</td>
-                            <td>2</td>
-                            <td>2</td>
+                            <td data-type = "select">2</td>
                             <td>2</td>
                         </tr>
                     </tbody>

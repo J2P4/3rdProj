@@ -111,7 +111,7 @@
             <input type = "button" class = "btm-btn del" value="삭제">
         </div>
     </div>
-    <!-- 입력 & 수정용 슬라이드 -->
+    <!-- 입력용 슬라이드 -->
     <div class = "slide" id = "slide-input">
         <div class = "slide-contents">
             <div class = "silde-title"><h2>재고 등록</h2></div>
@@ -126,7 +126,7 @@
                     <tbody>
                         <tr>
                             <td>1</td>
-                            <td>1</td>
+                            <td data-type = "select">1</td>
                             <td>1</td>
                         </tr>
                     </tbody>
@@ -142,8 +142,8 @@
                     <tbody>
                         <tr>
                             <td>2</td>
-                            <td>2</td>
-                            <td>2</td>
+                            <td data-type = "select">2</td>
+                            <td data-type = "select">2</td>
                         </tr>
                     </tbody>
                 </table>
@@ -160,7 +160,7 @@
             <div class = "silde-title"><h2>재고 상세</h2></div>
             <div class = "slide-id">재고 ID: </div>
             <div class = "slide-tb">
-                <table>
+                <table id="simpleEditableTable">
                     <thead>
                         <th>품목 ID</th>
                         <th>품목 분류</th>
@@ -168,9 +168,9 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td>1</td>
-                            <td>1</td>
-                            <td>1</td>
+                            <td class = "editMe">1</td>
+                            <td class = "editMe">1</td>
+                            <td class = "editMe">1</td>
                         </tr>
                     </tbody>
                 </table>
@@ -184,9 +184,9 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td>2</td>
-                            <td>2</td>
-                            <td>2</td>
+                            <td class = "editMe">2</td>
+                            <td class = "editMe">2</td>
+                            <td class = "editMe">2</td>
                         </tr>
                     </tbody>
                 </table>
