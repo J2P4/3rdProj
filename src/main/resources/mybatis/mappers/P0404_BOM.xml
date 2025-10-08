@@ -4,14 +4,55 @@
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="proj.spring.mes.dao.mapper.P0404_BOMMapperDAO">
 	<!-- SQL문 작성 영역 -->
+	<!-- 지금 삭제 제외한 코드들은 전부 한 번씩 고민해봐야 함. 지금은 임의 복붙한 것. -->
 	
 	<!-- 전체 조회 -->
+	<select id = "selectBOM" resultType = "P0402_BOMDTO">
+		select
+			b.bom_id, b.bom_amount, i.item_id, i.item_div
+		from v3_bom b left outer join v3_item i
+		on b.item_id = i.item_id
+		order by b.bom_id	
+	</select>
+
 	
-	<!-- 단일 조회 -->
+	<!-- 단일 조회 - 정확히는 item_id 같은 것만 조회 -->
+	<select id = "selectOneBOM" resultType = "P0402_BOMDTO">
+		select
+			b.bom_id, b.bom_amount, i.item_id, i.item_div
+		from v3_bom b left outer join v3_item i
+		on b.item_id = i.item_id
+		<!-- where 영역 split 등 줘서 가져와야 함 -->
+		where b.item_id = #{_parameter}
+		order by b.bom_id	
+	</select>
 	
 	<!-- 수정 -->
+	<update id = "updateBOM" parameterType = "P0402_BOMDTO">
+		update v3_bom
+		set bom_amount = #{stock_amount},
+			item_id = #{item_id}
+		where bom_id = #{bom_id}
+	</update>
 	
 	<!-- 삭제 -->
+	<delete id = "deleteBOM" parameterType = "P0402_BOMDTO">
+		delete from v3_bom
+		where bom_id = #{bom_id}
+	</delete>
 	
 	<!-- 삽입 -->
+	<insert id = "insertBOM" parameterType = "P0402_BOMDTO">
+		<selectKey keyProperty="BOM_id" resultType="string" order="BEFORE">
+		  select 'F' || TO_CHAR(SYSDATE, 'YYMMDD') || LPAD(worker_id_seq.NEXTVAL, 2, '0')
+		  from dual
+		</selectKey>
+		
+		insert into v3_bom (
+			bom_id, bom_amount, item_id
+		)
+		values (
+			#{bom_id}, #{bom_amount}, #{item_id}
+		)
+	</insert>
 </mapper>

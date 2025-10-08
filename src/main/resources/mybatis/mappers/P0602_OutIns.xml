@@ -6,12 +6,59 @@
 	<!-- SQL문 작성 영역 -->
 	
 	<!-- 전체 조회 -->
+	<select id = "selectOutIns" resultType = "P0602_OutInsDTO">
+		select
+			inspection_result_id, inspection_result_date, inspection_result_good,
+			inspection_result_bad
+		from v3_inspection_result
+		where inspection_type = 1
+		order by inspection_result_id
+	</select>
+
 	
 	<!-- 단일 조회 -->
+	<select id = "selectOneOutIns" resultType = "P0602_OutInsDTO">
+		select
+			i.inspection_result_id, i.inspection_result_date, i.inspection_result_good,
+			i.inspection_result_bad, w.worker_name, i.stock_id
+		from v3_inspection_result i
+			left outer join v3_worker w
+				on i.worker_id = w.worker_id
+		where i.inspection_result_id = #{_parameter}
+	</select>
 	
 	<!-- 수정 -->
+	<update id = "updateOutIns" parameterType = "P0602_OutInsDTO">
+		update v3_inspection_result
+		set inspection_result_date = #{inspection_result_date},
+			inspection_result_good = #{inspection_result_good},
+			inspection_result_bad = #{inspection_result_bad},
+			worker_id = #{worker_id},
+			stock_id = #{stock_id}
+		where inspection_result_id = #{inspection_result_id}
+	</update>
 	
 	<!-- 삭제 -->
+	<delete id = "deleteOutIns" parameterType = "P0602_OutInsDTO">
+		delete from v3_inspection_result
+		where inspection_result_id = #{inspection_result_id}
+	</delete>
 	
 	<!-- 삽입 -->
+	<insert id = "insertOutIns" parameterType = "P0602_InInsDTO">
+		<selectKey keyProperty="inspection_result_id" resultType="string" order="BEFORE">
+		  select 'L' || TO_CHAR(SYSDATE, 'YYMMDD') || LPAD(worker_id_seq.NEXTVAL, 2, '0')
+		  from dual
+		</selectKey>
+		
+		insert into v3_inspection_result (
+			inspection_result_id, inspection_result_date, inspection_result_good,
+			inspection_result_bad, worker_id, stock_id
+		)
+		values (
+			#{inspection_result_id}, #{inspection_result_date},
+			#{inspection_result_good}, #{inspection_result_bad},
+			#{worker_id}, #{stock_id}
+		)
+	</insert>
 </mapper>

@@ -55,15 +55,7 @@
                     </select>
                 </div>
             </div>
-            <div class = "filter-item">
-                <div class = "filitem-name">· 입/출고</div>
-                <div class = "filitem-input">
-                    <select name = "inout" size = "1">
-                        <option value = "1" selected>입고</option>
-                        <option value = "2">출고</option>
-                    </select>
-                </div>
-            </div>
+            <div class = "filter-item"></div>
         </div>
         <div class = "filter-btn">
             <input type = "submit" class = "fil-btn" value="조회">
@@ -83,7 +75,6 @@
                     <th>재고량</th>
                     <th class = "type">구분</th>
                     <th>보관 위치</th>
-                    <th>입/출고</th>
                 </tr>
             </thead>
             <tbody>
@@ -93,7 +84,6 @@
                     <td>2</td>
                     <td>3</td>
                     <td>4</td>
-                    <td>5</td>
                 </tr>
             </tbody>
         </table>
@@ -137,12 +127,10 @@
                     <thead>
                         <th>재고 수량</th>
                         <th>보관 위치</th>
-                        <th>입/출고</th>
                     </thead>
                     <tbody>
                         <tr>
                             <td>2</td>
-                            <td data-type = "select">2</td>
                             <td data-type = "select">2</td>
                         </tr>
                     </tbody>
@@ -180,11 +168,9 @@
                     <thead>
                         <th>재고 수량</th>
                         <th>보관 위치</th>
-                        <th>입/출고</th>
                     </thead>
                     <tbody>
                         <tr>
-                            <td class = "editMe">2</td>
                             <td class = "editMe">2</td>
                             <td class = "editMe">2</td>
                         </tr>
