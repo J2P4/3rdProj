@@ -1,103 +1,61 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
-	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
 <mapper namespace="proj.spring.mes.dao.mapper.ItemMapperDAO">
-	<!-- SQL문 작성 영역 -->
-	
-	<!-- 전체 조회 -->
-	<select id="selectItem" resultType="ItemDTO">
-		select * from V3_item
-	</select>
-	
-<!-- 	<첫 페이지 조회> -->
-<!-- 	<select id="selectdetailorder" resultType="orderDTO"> -->
-<!-- 		select order_id, 품명, order_amount, 거래처 이름, 발주 담당자 이름, irder_date from V3_order -->
-<!-- 	</select> -->
-	
-	
-	
-	
-	<!-- 
-		resultType을 별칭을 쓸 수 있는 이유는 
-		modelConfig.xml에서 typeAlias 별칭을 설정해놨기 때문이다. 
-	-->
-	
-	<!-- 하나만 조회 -->
-	<select id="selectOneItem" resultType="ItemDTO">
-		select * from V3_item
-		where item_id = #{_parameter}
-	</select>
 
-		
-	<!-- 시퀀스 사용할 시 -->
-<!-- 	<select id="getSeqEmp2" resultType="int"> -->
-<!-- 		select seq_emp2.nextval from dual -->
-<!-- 	</select> -->
-	
-	<!-- insert -->
-	<!-- resultType이 정해져 있어 따로 안써도 됨 -->
-	<!-- 시퀀스를 따지만 DTO에 넣어주진 않는다. -->
-<!-- 	<insert id="insertEmp2" parameterType="empDTO"> -->
-<!-- 		insert into emp2 (empno, ename, job, mgr, hiredate, sal, comm, deptno) -->
-<!-- 		values (seq_emp2.nextval, #{ename} , #{job}, #{mgr}, #{hiredate}, #{sal}, #{comm}, #{deptno})	 -->
-<!-- 	</insert> -->
+  <!-- 목록 -->
+  <select id="selectItemList"
+          resultType="proj.spring.mes.dto.ItemDTO">
+    SELECT
+      item_id,
+      item_price,
+      item_div,
+      item_name,
+      item_unit
+    FROM V3_item
+    ORDER BY item_name ASC
+  </select>
 
-	<!-- update -->
-	<update id="updateItem" parameterType="ItemDTO">
-		update V3_item
-		set	item_id = #{item_id},
-			item_price = #{item_price},
-			item_div = #{item_div},
-			item_name = #{item_name},
-			item_unit = #{item_unit}			
-			
-		where item_id = #{item_id}
-	</update>
+  <!-- 단건 -->
+  <select id="selectItemOne"
+          parameterType="string"
+          resultType="proj.spring.mes.dto.ItemDTO">
+    SELECT
+      item_id,
+      item_price,
+      item_div,
+      item_name,
+      item_unit
+    FROM V3_item
+    WHERE item_id = #{item_id}
+  </select>
 
-	<!-- delete -->
-	<!-- resultType이 정해져 있어 따로 안써도 됨 -->
-	<delete id="deleteOrder" parameterType="OrderDTO">
-		delete from V3_item
-		where item_id= #{item_id}	
-	</delete>
-	
-	
-	<!-- 1번과 2번은 동일한 구문 -->
-	<!-- 1. 시퀀스로 먼저 DTO에 넣고 인서트하기 -->
-	<insert id="insertitem" parameterType="itemDTO">
-		
-		<!-- selectKey 미리 sql문을 실행함 -->
-		<!-- 
-			order는 순서 before는 
-			insert문이 실행하기 전에 실행해서 
-			parameterType=empDTO에 넣어둠
-		-->
-		<selectKey resultType="int" keyProperty="item_id" order="BEFORE">
-			select seq_emp2.nextval from dual
-		</selectKey>
-	
-		insert into emp2 (empno, ename, job, mgr, hiredate, sal, comm, deptno)
-		values (#{empno}, #{ename} , #{job}, #{mgr}, #{hiredate}, #{sal}, #{comm}, #{deptno})	
-	</insert>
-	
-	
-	<!-- 2. 인서트할 때 시퀀스를 따서 DTO에 넣어줌 -->
-	<!-- 
-		keyProperty는 DTO의 필드명
-		즉, setter 호출용이다. 
-		얕은 복사로 넘어온 parameterType에 저장됨
-		호출 주체인 DAO에서 저장된 empno등의 값을 사용 가능
-	-->
-	<!-- 
-		useGeneratedKeys를 true로 하고
-		keyProperty를 지정하면 parameterType에 저장된다.
-		위의 selectKey와 비슷함.
-	 -->
-	<insert id="insertItem" parameterType="ItemDTO" useGeneratedKeys="true" keyProperty="item">
-	
-		insert into V3_order (item_id, item_price, item_div, item_name, item_unit)
-		values (#{item_id}, #{item_price} , #{item_div}, #{item_name}, #{item_unit} )
-	
-	</insert>
+  <!-- 등록 -->
+  <insert id="insertItem" parameterType="proj.spring.mes.dto.ItemDTO">
+    INSERT INTO V3_item (
+      item_id, item_price, item_div, item_name, item_unit
+    ) VALUES (
+      #{item_id}, #{item_price}, #{item_div}, #{item_name}, #{item_unit}
+    )
+  </insert>
+
+  <!-- 수정 -->
+  <update id="updateItem" parameterType="proj.spring.mes.dto.ItemDTO">
+    UPDATE V3_item
+    SET
+      item_price = #{item_price},
+      item_div   = #{item_div},
+      item_name  = #{item_name},
+      item_unit  = #{item_unit}
+    WHERE item_id = #{item_id}
+  </update>
+
+  <!-- 삭제 -->
+  <delete id="deleteItem" parameterType="string">
+    DELETE FROM V3_item
+    WHERE item_id = #{item_id}
+  </delete>
+
 </mapper>

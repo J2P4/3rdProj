@@ -19,9 +19,7 @@
 <c:url var="common2Url" value="/resources/js/common2.js"/>
 <script src="${common2Url}"></script>
 
-
 <title>품목 리스트</title>
-
 </head>
 <body>
     <h1>품목 리스트</h1>
@@ -83,37 +81,24 @@
             </thead>
             <tbody>
                 <c:choose>
-                    <%-- 컨트롤러에서 List<Item> items로 내려받자 --%>
-                    <c:when test="${not empty items}">
-                        <c:forEach var="it" items="${items}">
-                            <tr
-                              data-id="${it.id}"
-                              data-itemname="${fn:escapeXml(it.itemName)}"
-                              data-itemdiv="${fn:escapeXml(it.itemDiv)}"
-                              data-unitprice="${it.unitPrice}"
-                              data-unit="${fn:escapeXml(it.unit)}">
-                                <td class="col-check">
-                                    <input type="checkbox" name="rowChk" value="${it.id}">
-                                </td>
-                                <td>${it.id}</td>
-                                <td>
-                                    <c:url var="detailUrl" value="/item/detail">
-                                        <c:param name="id" value="${it.id}"/>
-                                    </c:url>
-                                    <a href="${detailUrl}" style="color:inherit; text-decoration:none;">
-                                        ${fn:escapeXml(it.itemName)}
-                                    </a>
-                                </td>
-                                <td>${fn:escapeXml(it.itemDiv)}</td>
-                                <td class="col-qty"><fmt:formatNumber value="${it.unitPrice}" pattern="#,##0"/></td>
-                                <td>${fn:escapeXml(it.unit)}</td>
+                    <c:when test="${not empty list}">
+                        <c:forEach var="row" items="${list}">
+                            <tr>
+                                <td class="chkbox"><input type="checkbox" name="rowChk"></td>
+                                <!-- ItemDTO에 맞춘 바인딩 (snake_case) -->
+                                <td>${row.item_id}</td>
+                                <td>${row.item_name}</td>
+                                <!-- DTO에 item_div가 없으므로 화면상 표시는 '-' -->
+                                <td>-</td>
+                                <td><fmt:formatNumber value="${row.item_price}" pattern="#,##0"/></td>
+                                <td>${row.item_unit}</td>
                             </tr>
                         </c:forEach>
                     </c:when>
                     <c:otherwise>
                         <c:forEach var="i" begin="1" end="10">
                             <tr aria-hidden="true">
-                                <td class="col-check"><input type="checkbox" name="rowChk"></td>
+                                <td class="chkbox"><input type="checkbox" name="rowChk"></td>
                                 <td>&nbsp;</td>
                                 <td></td>
                                 <td></td>
@@ -140,7 +125,6 @@
     <c:url var="deleteUrl" value="/item/delete"/>
     <form id="deleteForm" method="post" action="${deleteUrl}" style="display:none;">
         <input type="hidden" name="ids" id="deleteIds">
-
     </form>
 
     <c:url var="saveUrl" value="/item/save"/>
@@ -172,9 +156,6 @@
                             <tr>
                                 <td><input type="text" name="vendorId" id="vendorId"></td>
                                 <td><input type="text" name="itemDiv" id="itemDiv"></td>
-                                
-                                
-                                <!--  값을 무조건 0보다 크거나 같은 조건을 설정해야 한다, number로 안되나??? -->
                                 <td><input type="number" name="unitPrice" id="unitPrice" min="0"></td>
                                 <td><input type="text" name="unit" id="unit"></td>
                             </tr>
@@ -242,10 +223,5 @@
             </div>
         </div>
     </div>
-
-
-
-
-
 </body>
 </html>

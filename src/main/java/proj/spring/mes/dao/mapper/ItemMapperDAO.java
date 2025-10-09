@@ -1,22 +1,13 @@
 package proj.spring.mes.dao.mapper;
 
 import java.util.List;
-
+import org.apache.ibatis.annotations.Param;
 import proj.spring.mes.dto.ItemDTO;
 
 public interface ItemMapperDAO {
-	//전체 조회
-    List<ItemDTO> selectItem();
-    
-    //하나만 추출할떄
-    ItemDTO selectOneItem(String item_id);
-    
-    //삽입
+    List<ItemDTO> selectItemList();
+    ItemDTO selectItemOne(@Param("item_id") String itemId);
     int insertItem(ItemDTO dto);
-    
-    //수정
     int updateItem(ItemDTO dto);
-    
-    //삭제
-    int deleteItem(String item_id);
+    int deleteItem(@Param("item_id") String itemId);
 }
