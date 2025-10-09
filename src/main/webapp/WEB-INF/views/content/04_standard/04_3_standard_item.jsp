@@ -16,15 +16,19 @@
 <c:url var="jsUrl" value="/resources/js/common.js"/>
 <link rel="stylesheet" href="${cssUrl}" type="text/css">
 <script src="${jsUrl}"></script>
+<c:url var="common2Url" value="/resources/js/common2.js"/>
+<script src="${common2Url}"></script>
+
 
 <title>품목 리스트</title>
+
 </head>
 <body>
     <h1>품목 리스트</h1>
 
-    <c:url var="selfUrl" value="">
-        <!-- 나중에 controller에서 목록 URL이 바뀌어도 안전 , 시험해보는중 -->
-    </c:url>
+    <c:url var="selfUrl" value=""/>
+    <c:set var="qs" value="${pageContext.request.queryString}" />
+
     <form class="panel" method="get" action="${selfUrl}">
         <!-- 검색필터 -->
         <div class="filter">
@@ -37,7 +41,7 @@
                 </div>
 
                 <div class="filter-item">
-                    <div class="filitem-name">· 품목 이름</div>
+                    <span class="filitem-name">· 품목 이름</span>
                     <div class="filitem-input">
                         <input type="text" name="itemName" value="${fn:escapeXml(param.itemName)}">
                     </div>
@@ -53,13 +57,11 @@
                 <div class="filter-item">
                     <span class="filitem-name">· 단가</span>
                     <div class="filitem-input">
-                        <input type="text" name="item_min" value="${fn:escapeXml(param.item_min)}">
+                        <input type="text" name="item_min" style="width:40%" value="${fn:escapeXml(param.item_min)}">
                         <span class="tilde">~</span>
-                        <input type="text" name="item_max" value="${fn:escapeXml(param.item_max)}">
+                        <input type="text" name="item_max" style="width:40%" value="${fn:escapeXml(param.item_max)}">
                     </div>
                 </div>
-
-
             </div>
             <div class="filter-btn">
                 <input type="submit" class="fil-btn" value="조회">
@@ -72,46 +74,46 @@
             <thead>
                 <tr>
                     <th class="chkbox"><input type="checkbox" id="chkAll"></th>
-                    <th>
-                        <a href="${selfUrl}?${pageContext.request.queryString}&sort=${fn:escapeXml('id,asc')}">품목 ID</a>
-                    </th>
-                    <th>
-                        <a href="${selfUrl}?${pageContext.request.queryString}&sort=${fn:escapeXml('itemName,asc')}">품목 이름</a>
-                    </th>
+                    <th>품목 ID</th>
+                    <th>품목 이름</th>
                     <th>구분</th>
-                    <th>
-                        <a href="${selfUrl}?${pageContext.request.queryString}&sort=${fn:escapeXml('unitPrice,asc')}">단가</a>
-                    </th>
+                    <th>단가</th>
                     <th>단위</th>
                 </tr>
             </thead>
             <tbody>
                 <c:choose>
-                    <%-- 컨트롤러에서 List<Item> items로 내려 --%>
+                    <%-- 컨트롤러에서 List<Item> items로 내려받자 --%>
                     <c:when test="${not empty items}">
-                        <c:forEach var="o" items="${items}">
-                            <tr>
-                                <td class="col-check"><input type="checkbox" name="rowChk" value="${o.id}"></td>
-                                <td>${o.id}</td>
+                        <c:forEach var="it" items="${items}">
+                            <tr
+                              data-id="${it.id}"
+                              data-itemname="${fn:escapeXml(it.itemName)}"
+                              data-itemdiv="${fn:escapeXml(it.itemDiv)}"
+                              data-unitprice="${it.unitPrice}"
+                              data-unit="${fn:escapeXml(it.unit)}">
+                                <td class="col-check">
+                                    <input type="checkbox" name="rowChk" value="${it.id}">
+                                </td>
+                                <td>${it.id}</td>
                                 <td>
                                     <c:url var="detailUrl" value="/item/detail">
-                                        <c:param name="id" value="${o.id}"/>
+                                        <c:param name="id" value="${it.id}"/>
                                     </c:url>
                                     <a href="${detailUrl}" style="color:inherit; text-decoration:none;">
-                                        ${fn:escapeXml(o.itemName)}
+                                        ${fn:escapeXml(it.itemName)}
                                     </a>
                                 </td>
-                                <td>${fn:escapeXml(o.itemDiv)}</td>
-                                <td class="col-qty"><fmt:formatNumber value="${o.unitPrice}" pattern="#,##0"/></td>
-                                <td>${fn:escapeXml(o.unit)}</td>
+                                <td>${fn:escapeXml(it.itemDiv)}</td>
+                                <td class="col-qty"><fmt:formatNumber value="${it.unitPrice}" pattern="#,##0"/></td>
+                                <td>${fn:escapeXml(it.unit)}</td>
                             </tr>
                         </c:forEach>
                     </c:when>
                     <c:otherwise>
-
                         <c:forEach var="i" begin="1" end="10">
                             <tr aria-hidden="true">
-                                <td class="col-check"><input type="checkbox" name="rowChk" disabled></td>
+                                <td class="col-check"><input type="checkbox" name="rowChk"></td>
                                 <td>&nbsp;</td>
                                 <td></td>
                                 <td></td>
@@ -125,70 +127,71 @@
         </table>
     </div>
 
-	<!-- 하단 버튼 -->
-	<div class="bottom-btn">
-	    <div class="page"></div>
-	    <div class="bottom-btn-box">
-	        <input type="button" class="btm-btn new" value="신규">
-	        <input type="button" class="btm-btn del" value="삭제">
-	    </div>
-	</div>
-
-
-    <!-- 상세용 슬라이드-->
-    <div class="slide" id="slide-detail">
-        <div class="slide-contents">
-            <div class="silde-title"><h2>발주 상세</h2></div>
-            <div class="slide-id">발주 ID: </div>
-            <div class="date">
-                <div class="slide-id" style="display:flex">
-                    <div>발주일 <input type="date" name="orderdate" id="orderdate-detail-1"></div>
-                    <div>결제일 <input type="date" name="orderdate" id="orderdate-detail-2"></div>
-                    <div>수주일 <input type="date" name="orderdate" id="orderdate-detail-3"></div>
-                </div>
-            </div>
-
-            <div class="slide-tb">
-                <table>
-                    <thead>
-                        <tr><th>발주 상태</th><th>발주량</th><th>발주 담당자 사번</th></tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>1</td><td>1</td><td>1</td></tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="slide-tb">
-                <table>
-                    <thead>
-                        <tr><th>품목 ID</th><th>품목 분류</th><th>품목 이름</th></tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>2</td><td>2</td><td>2</td></tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="slide-tb">
-                <table>
-                    <thead>
-                        <tr><th>거래처 ID</th><th>거래처 이름</th><th>거래처 담당자 사번</th></tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>2</td><td>2</td><td>2</td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <div class="slide-btnbox">
-            <input type="button" class="slide-btn" value="수정">
-            <input type="button" class="close-btn slide-btn" value="취소">
+    <!-- 하단 버튼 -->
+    <div class="bottom-btn">
+        <div class="page"></div>
+        <div class="bottom-btn-box">
+            <input type="button" class="btm-btn new" value="신규">
+            <input type="button" class="btm-btn del" value="삭제">
         </div>
     </div>
 
-    <!-- 등록 슬라이드 -->
+    <!-- 삭제용 POST 폼(체크박스 일괄 삭제) -->
+    <c:url var="deleteUrl" value="/item/delete"/>
+    <form id="deleteForm" method="post" action="${deleteUrl}" style="display:none;">
+        <input type="hidden" name="ids" id="deleteIds">
+
+    </form>
+
+    <c:url var="saveUrl" value="/item/save"/>
+
+    <!-- 등록용 슬라이드 (조회/수정/추가) -->
     <div class="slide" id="slide-input">
+        <div class="slide-contents">
+            <div class="silde-title"><h2>품목 상세</h2></div>
+
+            <!-- 저장용 POST 폼: id가 비어있으면 INSERT, 있으면 UPDATE -->
+            <form id="slideSaveForm" method="post" action="${saveUrl}">
+
+                <div class="slide-id">품목 ID :
+                    <input type="text" name="itemIdView" id="itemIdView" readonly>
+                    <input type="hidden" name="id" id="id">
+                    <input type="hidden" name="version" id="version">
+                </div>
+
+                <div class="slide-id"> 품목 이름 :
+                    <input type="text" name="itemName" id="itemName">
+                </div>
+
+                <div class="slide-tb">
+                    <table>
+                        <thead>
+                            <tr><th>거래처 ID</th><th>구분</th><th>단가</th><th>단위 </th></tr>
+                        </thead>
+                        <tbody id="editRows">
+                            <tr>
+                                <td><input type="text" name="vendorId" id="vendorId"></td>
+                                <td><input type="text" name="itemDiv" id="itemDiv"></td>
+                                
+                                
+                                <!--  값을 무조건 0보다 크거나 같은 조건을 설정해야 한다, number로 안되나??? -->
+                                <td><input type="number" name="unitPrice" id="unitPrice" min="0"></td>
+                                <td><input type="text" name="unit" id="unit"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="slide-btnbox">
+                    <input type="submit" class="slide-btn" value="수정">
+                    <input type="button" class="close-btn slide-btn" value="취소">
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 상세 슬라이드  -->
+    <div class="slide" id="slide-detail">
         <div class="slide-contents">
             <div class="silde-title"><h2>발주 등록</h2></div>
             <div class="slide-id">발주 ID: </div>
@@ -239,6 +242,10 @@
             </div>
         </div>
     </div>
+
+
+
+
 
 </body>
 </html>

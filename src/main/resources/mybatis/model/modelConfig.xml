@@ -12,6 +12,7 @@
     </settings>
 
 	<typeAliases>
+   		<typeAlias type= "proj.spring.mes.dto.ItemDTO" alias="ItemDTO" />	
     	<typeAlias type= "proj.spring.mes.dto.WorkerDTO" alias="workerDTO" />
     	<typeAlias type= "proj.spring.mes.dto.OrderDTO" alias="OrderDTO" />
     	<typeAlias type= "proj.spring.mes.dto.P0401_StockDTO" alias="P0401_StockDTO" />
@@ -20,4 +21,6 @@
     	<typeAlias type= "proj.spring.mes.dto.P0602_OutInsDTO" alias="P0602_OutInsDTO" />
     	<typeAlias type= "proj.spring.mes.dto.P0603_ErrorDTO" alias="P0603_ErrorDTO" />
     </typeAliases>
+    
+    
 </configuration>
