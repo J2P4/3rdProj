@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import proj.spring.mes.dto.DeptDTO;
 import proj.spring.mes.dto.WorkerDTO;
 import proj.spring.mes.service.WorkerService;
 
@@ -29,23 +30,36 @@ public class UserController {
 	
 	/** 목록 */
 	@RequestMapping("/list")
-    public String list(Model model, String workerId, String deptCode, String workerName, String roleCode) {
+    public String list(Model model) {
         List<WorkerDTO> list = workerService.list();
+        List<DeptDTO> deptList = workerService.deptList();
+        
         model.addAttribute("list", list);
+        model.addAttribute("deptList", deptList);
+        System.out.println("목록페이지");
         return "02_user/02_user.tiles"; 
     }
 
     /** 상세 */
 	@RequestMapping("/detail")
-    public String detail(Model model, String workerId) {
-        WorkerDTO dto = workerService.get(workerId);
-        model.addAttribute("worker", dto);
-        return "02_user/02_user.tiles";
+    public String detail(Model model, String worker_id) {
+		
+        WorkerDTO dto = workerService.get(worker_id);
+        List<DeptDTO> deptList = workerService.deptList();
+        
+        model.addAttribute("dto", dto);
+        model.addAttribute("deptList", deptList);
+        
+//        model.addAttribute("mode", "view"); // 읽기모드
+        
+        System.out.println("상세페이지");
+        System.out.println("worker_id: "+worker_id);
+        return "02_user/02_userDetail.tiles";
     }
 
     /** 등록 */
 	@RequestMapping("/insert")
-	public String insert(WorkerDTO dto, Model model) {
+	public String insert(Model model, WorkerDTO dto) {
         
         
         // worker_birth(Date) → 6자리 문자열 변환 (YYMMDD)
@@ -63,29 +77,47 @@ public class UserController {
         }
         
         workerService.add(dto);
-        
+        List<DeptDTO> deptList = workerService.deptList();
         // JSP에서 ${worker_id}로 접근 가능하도록 model에 담기
         model.addAttribute("worker_id", dto.getWorker_id());
         model.addAttribute("worker_birth6", birth6);
         model.addAttribute("worker_email", dto.getWorker_email());
         model.addAttribute("worker", dto);
+        model.addAttribute("deptList", deptList);
+        
+//        model.addAttribute("mode", "add"); // 등록 모드
+        
         // 결과 페이지로 이동 
         return "02_user/02_userResult.tiles";
 	}
 
-//    /** 수정 폼 */
-//	@RequestMapping("/updateForm")
-//    public String updateForm(Model model, String workerId) {
-//        WorkerDTO dto = workerService.get(workerId);
-//        model.addAttribute("worker", dto);
-//        return "02_user/02_user.tiles";
-//    }
-//
+	/** 수정 후 상세 */
+	@RequestMapping("/modify")
+	public String modify(Model model, WorkerDTO dto) {
+		WorkerDTO workerdto = workerService.get(dto.getWorker_id());
+		List<DeptDTO> deptList = workerService.deptList();
+		model.addAttribute("dto", workerdto);
+		model.addAttribute("deptList", deptList);
+		
+		return "02_user/02_userModify.tiles";
+	}
+    /** 수정 후 상세 */
+	@RequestMapping("/modifyDetail")
+    public String modifyDetail(Model model, WorkerDTO dto) {
+		workerService.edit(dto);
+		List<DeptDTO> deptList = workerService.deptList();
+        
+		model.addAttribute("worker", dto);
+        model.addAttribute("deptList", deptList);
+        return "redirect:/detail?worker_id=" + dto.getWorker_id();
+    }
+
     /** 삭제 */
 	@RequestMapping("/delete")
-    public String delete(String workerId) {
-        workerService.remove(workerId);
-        return "redirect:list";
+    public String delete(Model model, String worker_id) {
+        int result = workerService.remove(worker_id);
+        System.out.println("삭제결과 : "+ result);
+        return "redirect:/list";
     }
 	
 }

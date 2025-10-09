@@ -14,6 +14,7 @@
 	<typeAliases>
    		<typeAlias type= "proj.spring.mes.dto.ItemDTO" alias="ItemDTO" />	
     	<typeAlias type= "proj.spring.mes.dto.WorkerDTO" alias="workerDTO" />
+    	<typeAlias type= "proj.spring.mes.dto.DeptDTO" alias="deptDTO" />
     	<typeAlias type= "proj.spring.mes.dto.OrderDTO" alias="OrderDTO" />
     	<typeAlias type= "proj.spring.mes.dto.P0401_StockDTO" alias="P0401_StockDTO" />
     	<typeAlias type= "proj.spring.mes.dto.P0404_BOMDTO" alias="P0404_BOMDTO" />

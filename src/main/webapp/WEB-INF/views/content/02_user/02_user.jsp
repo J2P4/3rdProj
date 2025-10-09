@@ -23,19 +23,31 @@
             <div class = "filter-item">
                 <div class = "filitem-name">· 사원명</div>
                 <div class = "filitem-input">
-                    <select name = "변수명" size = "1">
-                        <option value = "전달값1" selected>나중에 불러오도록</option>
-                        <option value = "전달값2">나중에 불러오도록</option>
-                    </select>                    
+                    <select name="worker_name">
+					      <option value="">
+					        전체
+					      </option>
+					    <c:forEach var="worker" items="${list}">
+					      <option value="${worker_name}">
+					        ${worker.worker_name}
+					      </option>
+					    </c:forEach>
+				  	</select>                    
                 </div>
             </div>
             <div class = "filter-item">
                 <div class = "filitem-name">· 부서</div>
                 <div class = "filitem-input">
-                    <select name = "변수명" size = "1">
-                        <option value = "전달값1" selected>나중에 불러오도록</option>
-                        <option value = "전달값2">나중에 불러오도록</option>
-                    </select>
+                    <select class="edit-only" name="department_id" id="deptSelect">
+                    	<option value="">
+					        전체
+					    </option>
+					    <c:forEach var="dept" items="${deptList}">
+					      <option value="${dept.department_id}">
+					        ${dept.department_name}
+					      </option>
+					    </c:forEach>
+				  	</select>
                 </div>
             </div>
             <div class = "filter-item">
@@ -65,11 +77,12 @@
             <input type = "submit" class = "fil-btn" value="조회">
         </div>
     </form>
+   	<form id="deleteForm" method="post" action="delete">
     <div class = "table">
 		<table border=1>
             <thead>
             	<tr>
-	                <th><input type="checkbox" class = "chkbox" id="chkAll"></th>
+	                <th class = "chkbox"><input type="checkbox"  id="chkAll"></th>
 	                <th>사원번호</th>
 	                <th>이름</th>
 	                <th>부서</th>
@@ -86,7 +99,7 @@
 				<c:if test="${not empty list }">
 					<c:forEach var="workerDTO" items="${list }">			 
 		                <tr>
-		                    <td><input type="checkbox" name="rowChk"></td>
+		                    <td><input type="checkbox" class="rowChk" name="worker_id" value="${workerDTO.worker_id }"></td>
 		                    <td>${workerDTO.worker_id }</td>
 		                    <td><a href="detail?worker_id=${workerDTO.worker_id }">${workerDTO.worker_name }</a></td>
 		                    <td>${workerDTO.department_name }</td>
@@ -102,9 +115,10 @@
         <div class = "page"></div>
         <div class = "bottom-btn-box">
             <input type = "button" class = "btm-btn new" value="신규">
-            <input type = "button" class = "btm-btn del" value="삭제">
+            <input type = "submit" class = "btm-btn del" value="삭제">
         </div>
     </div>
+    </form>
     <form id="workerForm" method="post" action="insert">
     <div class = "slide" id = "slide-input">
     	<div class = "slide-contents">
@@ -168,46 +182,56 @@
        	</div>
     </div>
     </form>
-    <div class = "slide detail modify">
-        <div class = "silde-title"><h2>사원 정보 상세</h2></div>
-        <div class = "slide-id">사원번호: </div>
-        <div class = "slide-tb">
-            <table>
-                <thead>
-	                <tr>
-	                    <th>입사일</th>
-	                    <th>부서</th>
-	                    <th>권한</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><input type="date"></td>
-                        <td>
-                        	<select>
-                        		<option value="1" selected>선택</option>
-                        		<option value="2">품질</option>
-                        		<option value="3">생산</option>
-                        		<option value="4">포장</option>
-                        	</select>
-						</td>
-                        <td>
-                        	<select>
-                        		<option value="1" selected>선택</option>
-                        		<option value="2">admin</option>
-                        		<option value="3">부서장</option>
-                        		<option value="4">평사원</option>
-                        	</select>
-                       	</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+    
+	<!--  상세 슬라이드 -->
+    <div class = "slide" id = "slide-detail">
+	    <form id="workerForm" method="post" action="/update">
+        <div class = "slide-contents">
+	        <div class = "silde-title"><h2>사원 상세</h2></div>
+	        <div class = "slide-id">사번 : ${worker_id }</div>
+	        <div class = "slide-tb">
+	            <table>
+	                <thead>
+		                <tr>
+		                    <th>이름</th>
+		                    <th>생년월일</th>
+		                    <th>이메일</th>
+	                    </tr>
+	                </thead>
+	                <tbody>
+		                <tr>
+		                    <td>${worker.worker_name }</td>
+		                    <td>${worker.worker_birth }</td>
+		                    <td>${worker.worker_email }</td>
+		                </tr>
+	            </table>
+	        </div>
+	        <div class = "slide-tb">
+	            <table>
+	                <thead>
+		                <tr>
+		                    <th>입사일</th>
+		                    <th>부서</th>
+		                    <th>권한</th>
+	                    </tr>
+	                </thead>
+	                <tbody>
+		                <tr>
+		                    <td>${worker.worker_join }</td>
+		                    <td>${worker.department_id }</td>
+		                    <td>${worker.worker_code }</td>
+		                </tr>
+	                </tbody>
+	            </table>
+        	</div>
+       	</div>
         <div class = "slide-btnbox">
-            <input type = "button" class = "slide-btn" value = "등록">
-            <input type = "button" class = "slide-btn" value = "수정">
-            <input type = "button" class = "close-btn slide-btn" value = "취소">
+            <input id="btnSave"   class="slide-btn" type="submit" value="등록" style="display: none">
+		    <input id="btnEdit"   class="slide-btn" type="button" value="수정">
+		    <input id="btnCancel" class="close-btn slide-btn" type="button" value="취소">
         </div>
+    </form>
     </div>
+    
 </body>
 </html>

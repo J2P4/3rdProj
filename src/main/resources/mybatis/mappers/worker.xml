@@ -23,6 +23,7 @@
 	    order by w.worker_id
 	</select>
 	
+	
 	<!-- 
 		resultType을 별칭을 쓸 수 있는 이유는 
 		modelConfig.xml에서 typeAlias 별칭을 설정해놨기 때문이다. 
@@ -33,20 +34,16 @@
 		select * from V3_worker
 		where worker_id = #{_parameter}
 	</select>
-
-		
-	<!-- 시퀀스 사용할 시 -->
-<!-- 	<select id="getSeqEmp2" resultType="int"> -->
-<!-- 		select seq_emp2.nextval from dual -->
-<!-- 	</select> -->
 	
-	<!-- insert -->
-	<!-- resultType이 정해져 있어 따로 안써도 됨 -->
-	<!-- 시퀀스를 따지만 DTO에 넣어주진 않는다. -->
-<!-- 	<insert id="insertEmp2" parameterType="empDTO"> -->
-<!-- 		insert into emp2 (empno, ename, job, mgr, hiredate, sal, comm, deptno) -->
-<!-- 		values (seq_emp2.nextval, #{ename} , #{job}, #{mgr}, #{hiredate}, #{sal}, #{comm}, #{deptno})	 -->
-<!-- 	</insert> -->
+	<select id="selectDept" resultType="deptDTO">
+		select * from V3_department
+	</select>
+	
+	<select id="selectOneDept" resultType="workerDTO">
+		select * from V3_department
+		where department_id = #{_parameter}
+	</select>
+
 
 	<!-- update -->
 	<update id="updateWorker" parameterType="workerDTO">

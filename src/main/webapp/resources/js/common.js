@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('mainTable:', mainTable);
     const tbody = mainTable.querySelector('tbody');
     console.log('tbody:', tbody);
-    const getRowChecks = () => tbody.querySelectorAll('input[name="rowChk"]');
+    const getRowChecks = () => tbody.querySelectorAll('input.rowChk');
     // 모두 선택 체크되어 있으면 바꾸도록
     if (chkAll) {
         chkAll.addEventListener('change', () => {
@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     // tbody에 있는 거 체크 해제되면 전체 선택도 해제되도록
     mainTable.addEventListener('change', (event) => {
-        if (event.target.name === 'rowChk' && chkAll) {
+        if (event.target.classList.contains('rowChk') && chkAll) {
             const rowChecks = getRowChecks();
             const checkedCount = Array.from(rowChecks).every(chk => chk.checked);
             

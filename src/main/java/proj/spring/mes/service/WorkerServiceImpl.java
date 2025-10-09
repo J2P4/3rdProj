@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import proj.spring.mes.dao.mapper.WorkerMapperDAO;
+import proj.spring.mes.dto.DeptDTO;
 import proj.spring.mes.dto.WorkerDTO;
 
 @Service
@@ -16,13 +17,18 @@ public class WorkerServiceImpl implements WorkerService{
 
 
 	@Override
-	   public List<WorkerDTO> list() {
-	       return workerMapperDao.selectWorker();
-	   }
+    public List<WorkerDTO> list() {
+       return workerMapperDao.selectWorker();
+    }
+
+	@Override
+	public List<DeptDTO> deptList() {
+		return workerMapperDao.selectDept();
+	}
 
     @Override
-    public WorkerDTO get(String workerId) {
-        return workerMapperDao.selectOneWorker(workerId);
+    public WorkerDTO get(String worker_id) {
+        return workerMapperDao.selectOneWorker(worker_id);
     }
 
     @Override
@@ -36,8 +42,9 @@ public class WorkerServiceImpl implements WorkerService{
     }
 
     @Override
-    public int remove(String workerId) {
-        return workerMapperDao.deleteWorker(workerId);
+    public int remove(String worker_id) {
+        return workerMapperDao.deleteWorker(worker_id);
     }
 
+	
 }
