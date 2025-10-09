@@ -48,10 +48,10 @@
                 <div class = "filitem-name">· 보관 위치</div>
                 <div class = "filitem-input">
                     <select name = "변수명" size = "1">
-                        <option value = "1" selected>창고1</option>
-                        <option value = "2">창고2</option>
-                        <option value = "3">창고3</option>
-                        <option value = "4">창고4</option>
+                        <option value = "1" selected>WH1</option>
+                        <option value = "2">WH2</option>
+                        <option value = "3">WH3</option>
+                        <option value = "4">WH4</option>
                     </select>
                 </div>
             </div>
@@ -78,13 +78,22 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td><input type="checkbox" name="rowChk"></td>
-                    <td>1</td>
-                    <td>2</td>
-                    <td>3</td>
-                    <td>4</td>
-                </tr>
+               	<c:if test="${empty list}">
+                	<tr>
+                		<td colspan="5"> 조회 내역이 없습니다.</td>
+                	</tr>
+               	</c:if>
+               	<c:if test="${not empty list}">
+               		<c:forEach var="P0401_StockDTO" items="${list}">
+	               		<tr>
+		                    <td><input type="checkbox" name="rowChk"></td>
+		                    <td>${P0401_StockDTO.stock_id}</td>
+		                    <td>${P0401_StockDTO.stock_amount}</td>
+		                    <td>${P0401_StockDTO.item_div}</td>
+		                    <td>${P0401_StockDTO.stock_wrap}</td>
+	                    </tr>
+                    </c:forEach>
+                 </c:if>
             </tbody>
         </table>
     </div>
@@ -94,13 +103,13 @@
             + btm-btn : 공통 양식 지정
             + new, del : 개별 양식 지정
     -->
-    <div class = "bottom-btn">
+    <form class = "bottom-btn">
         <div class = "page"></div>
         <div class = "bottom-btn-box">
             <input type = "button" class = "btm-btn new" value="신규">
             <input type = "button" class = "btm-btn del" value="삭제">
         </div>
-    </div>
+    </form>
     <!-- 입력용 슬라이드 -->
     <div class = "slide" id = "slide-input">
         <div class = "slide-contents">
@@ -146,7 +155,7 @@
     <div class = "slide" id = "slide-detail">
         <div class = "slide-contents">
             <div class = "silde-title"><h2>재고 상세</h2></div>
-            <div class = "slide-id">재고 ID: </div>
+            <div class = "slide-id">재고 ID: ${P0401_StockDTO.stock_id}</div>
             <div class = "slide-tb">
                 <table id="simpleEditableTable">
                     <thead>
@@ -156,9 +165,9 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td class = "editMe">1</td>
-                            <td class = "editMe">1</td>
-                            <td class = "editMe">1</td>
+                            <td class = "editMe">${P0401_StockDTO.item_id}</td>
+                            <td class = "editMe">${P0401_StockDTO.item_div}</td>
+                            <td class = "editMe">${P0401_StockDTO.item_name}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -171,8 +180,8 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td class = "editMe">2</td>
-                            <td class = "editMe">2</td>
+                            <td class = "editMe">${P0401_StockDTO.stock_amount}</td>
+                            <td class = "editMe">${P0401_StockDTO.stock_wrap}</td>
                         </tr>
                     </tbody>
                 </table>

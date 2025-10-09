@@ -9,7 +9,7 @@ public interface P0401_StockService {
 	public List<P0401_StockDTO> stockList();
 	public P0401_StockDTO getOneStock(String stock_id);
 	public int editStock(P0401_StockDTO dto);
-	public int removeStock(P0401_StockDTO dto);
+	public int removeStock(String stock_id);
 	public int addStock(P0401_StockDTO dto);
 	
 }

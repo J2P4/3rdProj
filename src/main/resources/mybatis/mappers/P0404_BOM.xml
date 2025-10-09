@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
 	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="proj.spring.mes.dao.mapper.P0404_BOMMapperDAO">
+<mapper namespace="proj.spring.mes.dao.mapper.P0404_BomMapperDAO">
 	<!-- SQL문 작성 영역 -->
 	<!-- 지금 삭제 제외한 코드들은 전부 한 번씩 고민해봐야 함. 지금은 임의 복붙한 것. -->
 	

@@ -7,4 +7,6 @@ public class P0404_BOMDTO {
 	private String bom_id;
 	private int bom_amount;
 	private String item_id;
+	
+	private String item_div;
 }

@@ -30,8 +30,8 @@ public class P0401_StockServiceImpl implements P0401_StockService {
 	}
 	
 	@Override
-	public int removeStock(P0401_StockDTO dto) {
-		return stockMapperDAO.deleteStock(dto);
+	public int removeStock(String stock_id) {
+		return stockMapperDAO.deleteStock(stock_id);
 	}
 	
 	@Override

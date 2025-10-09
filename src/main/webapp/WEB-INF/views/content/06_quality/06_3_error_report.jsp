@@ -71,12 +71,21 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td><input type="checkbox" name="rowChk"></td>
-                    <td>1</td>
-                    <td>2</td>
-                    <td>3</td>
-                </tr>
+           		<c:if test="${empty list}">
+					<tr>
+						<td colspan="4"> 조회 내역이 없습니다.</td>
+					</tr>
+				</c:if>
+				<c:if test="${not empty list}">
+					<c:forEach var="P0603_ErrorDTO" items="${list}">
+		                <tr>
+		                    <th class = "chkbox"><input type="checkbox" id="chkAll"></th>
+		                    <th class = "id">${P0603_ErrorDTO.defect_id}</th>
+		                    <th class = "date">${P0603_ErrorDTO.defect_name}</th>
+		                    <th>${P0603_ErrorDTO.defect_exhaust}</th>
+		                </tr>
+	                </c:forEach>
+	            </c:if>
             </tbody>
         </table>
     </div>
@@ -130,7 +139,7 @@
     <div class = "slide" id = "slide-detail">
         <div class = "slide-contents">
             <div class = "silde-title"><h2>불량 보고서 상세</h2></div>
-            <div class = "slide-id">불량 보고서 ID: </div>
+            <div class = "slide-id">불량 보고서 ID: ${P0603_ErrorDTO.defect_id}</div>
             <div class = "slide-tb">
                 <table>
                     <thead>
@@ -139,8 +148,8 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td>1</td>
-                            <td data-type = "select">1</td>
+                            <td>${P0603_ErrorDTO.defect_name}</td>
+                            <td data-type = "select">${P0603_ErrorDTO.defect_exhaust}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -154,9 +163,9 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td data-type = "select">2</td>
-                            <td data-type = "date">2</td>
-                            <td data-type = "select">2</td>
+                            <td data-type = "select">${P0603_ErrorDTO.inspection_result_id}</td>
+                            <td data-type = "date">${P0603_ErrorDTO.inspection_result_date}</td>
+                            <td data-type = "select">${P0603_ErrorDTO.stock_id}</td>
                         </tr>
                     </tbody>
                 </table>

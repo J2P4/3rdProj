@@ -65,13 +65,22 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td><input type="checkbox" name="rowChk"></td>
-                    <td>1</td>
-                    <td>2</td>
-                    <td>3</td>
-                    <td>4</td>
-                </tr>
+            	<c:if test="${empty list}">
+					<tr>
+						<td colspan="5"> 조회 내역이 없습니다.</td>
+					</tr>
+				</c:if>
+				<c:if test="${not empty list}">
+					<c:forEach var="P0404_BOMDTO" items="${list}">
+		                <tr>
+		                    <td><input type="checkbox" name="rowChk"></td>
+		                    <td>${P0404_BOMDTO.bom_id}</td>
+		                    <td>${P0404_BOMDTO.item_id}</td>
+		                    <td>${P0404_BOMDTO.item_div}</td>
+		                    <td>${P0404_BOMDTO.bom_amount}</td>
+		                </tr>
+		            </c:forEach>
+                </c:if>
             </tbody>
         </table>
     </div>

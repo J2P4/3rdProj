@@ -9,7 +9,7 @@ public interface P0404_BOMService {
 	public List<P0404_BOMDTO> bomList();
 	public P0404_BOMDTO getOneBOM(String bom_id);
 	public int editBOM(P0404_BOMDTO dto);
-	public int removeBOM(P0404_BOMDTO dto);
+	public int removeBOM(String bom_id);
 	public int addBOM(P0404_BOMDTO dto);
 	
 }

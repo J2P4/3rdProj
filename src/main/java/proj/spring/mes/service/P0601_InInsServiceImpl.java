@@ -31,8 +31,8 @@ public class P0601_InInsServiceImpl implements P0601_InInsService {
 	}
 	
 	@Override
-	public int removeInIns(P0601_InInsDTO dto) {
-		return inInsMapperDAO.deleteInIns(dto);
+	public int removeInIns(String inspection_result_id) {
+		return inInsMapperDAO.deleteInIns(inspection_result_id);
 	}
 	
 	@Override

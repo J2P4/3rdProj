@@ -20,22 +20,22 @@ public class P0603_ErrorServiceImpl implements P0603_ErrorService {
 	}
 	
 	@Override
-	public P0603_ErrorDTO getOneStock(String defect_id) {
+	public P0603_ErrorDTO getOneError(String defect_id) {
 		return errorMapperDAO.selectOneError(defect_id);
 	}
 	
 	@Override
-	public int editStock(P0603_ErrorDTO dto) {
+	public int editError(P0603_ErrorDTO dto) {
 		return errorMapperDAO.updateError(dto);
 	}
 	
 	@Override
-	public int removeStock(P0603_ErrorDTO dto) {
-		return errorMapperDAO.deleteError(dto);
+	public int removeError(String defect_id) {
+		return errorMapperDAO.deleteError(defect_id);
 	}
 	
 	@Override
-	public int addStock(P0603_ErrorDTO dto) {
+	public int addError(P0603_ErrorDTO dto) {
 		return errorMapperDAO.insertError(dto);
 	}	
 	
