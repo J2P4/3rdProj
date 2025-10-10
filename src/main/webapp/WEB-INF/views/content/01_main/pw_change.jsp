@@ -8,7 +8,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>J2P4 로그인</title>
+  <title>J2P4 비밀번호 변경</title>
   <style>
     :root { 
     	--border:#9aa0a6;
@@ -81,7 +81,6 @@
     label{
     	font-size:16px;
     	color:var(--muted);
-    	padding-left:8px;
     }
     
     input[type="text"],input[type="password"]{
@@ -125,6 +124,9 @@
         font-weight: bold;
         color: #6b6b6b;
     }
+    .confirm-text {
+    	text-align: center;
+    }
     @media (max-width:768px){
         .form-row{
             grid-template-columns:1fr;
@@ -137,39 +139,40 @@
   </style>
 </head>
 <body>
-<form method="post" action="login">
+<form method="post" action="change_page">
   <div class="wrap">
     <h1 class="title">J2P4 <span>MES</span></h1>
 
     <div class="card">
         <div class="form-row">
           <label for="userid">아이디</label>
-          <input id="userid" name="worker_id" type="text" value="A25101045">
+        <input id="userid" type="text" value="${sessionScope.loginUser.worker_id}" readonly>
+        <input type="hidden" name="worker_id" value="${sessionScope.loginUser.worker_id}">
+        </div>
+        
+        <div class="form-row">
+        	<label for="currentPw">현재 비밀번호</label>
+        	<input id="currentPw" name="currentPw" type="password" required>
+        </div>
+        
+        <div class="form-row">
+          <label for="newPw">비밀번호</label>
+          <input id="newPw" name="newPw" type="password" placeholder="변경할 비밀번호를 입력하세요">
         </div>
 
         <div class="form-row">
-          <label for="userpw">비밀번호</label>
-          <input id="userpw" name="worker_pw" type="password">
+          <label for="pw-confirm">비밀번호 확인</label>
+          <input id="pw-confirm" name="pw_confirm" type="password" >
+        </div>
+        <div class="confirm-text">
+        	안전한 암호입니다.
         </div>
 
         <div class="actions">
-          <button type="submit" class="btn">로 그 인</button>
+          <button type="submit" class="btn">비밀번호 변경</button>
         </div>
     </div>
-    <div class="pw_reset">
-        비밀번호 분실시 관리자에게 문의하세요
-    </div>
   </div>
-</form>
-  <!-- 실패 시 ?error=1 로 되돌아오면 알림 -->
-  <script>
-    (function () {
-      const p = new URLSearchParams(location.search);
-      if (p.get('error') === '1') {
-        alert('아이디 또는 비밀번호가 올바르지 않습니다.');
-        history.replaceState(null, '', location.pathname);
-      }
-    })();
-  </script>
+ </form>
 </body>
 </html>

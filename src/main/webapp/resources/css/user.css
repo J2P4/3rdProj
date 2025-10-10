@@ -14,6 +14,34 @@
 .hide {
 	display : none;
 }
+.slide-worker {
+/* 	margin: 0 30px; */
+    font-weight: bold;
+    font-size: 1.6rem;
+}
+.slide-btn {
+    width: 5%;
+    font-size: 1.2rem;
+    font-weight: bold;
+    padding: 5px;
+    text-align: center;
+}
+.title-box {
+	display: flex;
+	justify-content: space-between;
+	padding: 0 30px;
+}
+.pw-reset {
+	background: blue;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all .15s ease;
+    color: #ffffff;
+    font-size: 18px;
+    font-weight: bold;
+    padding: 10px;
+}
 /* 어두운 배경 */
 .modal-bg {
     position: fixed;

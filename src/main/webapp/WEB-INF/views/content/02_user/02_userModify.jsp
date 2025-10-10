@@ -43,7 +43,16 @@
 	              <input type="date" name="worker_birth" value="${dto.worker_birth}">
 	            </td>
 	            <td>
-	              <input type="email" name="worker_email" value="${dto.worker_email}">
+	            	<c:set var="email"  value="${dto.worker_email}" />
+					<c:set var="local"  value="${fn:substringBefore(email, '@')}" />
+					<c:set var="domain" value="${fn:substringAfter(email, '@')}" />
+	                <input type="text" name="person_email" value="${local}" >@
+				    <!-- 도메인은 select에서 선택 -->
+				    <select id="email_domain" name="domain_email">
+					    <option value="naver.com" ${domain == 'naver.com' ? 'selected' : ''}>naver.com</option>
+					    <option value="gmail.com" ${domain == 'gmail.com' ? 'selected' : ''}>gmail.com</option>
+					    <option value="daum.net"  ${domain == 'daum.net'  ? 'selected' : ''}>daum.net</option>
+				    </select>
 	            </td>
 	          </tr>
 	        </tbody>
@@ -92,7 +101,7 @@
 	    
 	      <input type="hidden" name="worker_pw" value="${dto.worker_pw}">
 	      <input type="submit" class="save-btn slide-btn" value="저장">
-	      <a href="list"><input type="button" class="close-btn slide-btn" value="취소"></a>
+	      <a href="list" class="slide-btn close-btn">취소</a>
 	    </div>
 	  </div>
 	</form>

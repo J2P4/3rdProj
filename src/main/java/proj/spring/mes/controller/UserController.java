@@ -59,7 +59,7 @@ public class UserController {
 
     /** 등록 */
 	@RequestMapping("/insert")
-	public String insert(Model model, WorkerDTO dto) {
+	public String insert(Model model, WorkerDTO dto, String person_email, String domain_email) {
         
         
         // worker_birth(Date) → 6자리 문자열 변환 (YYMMDD)
@@ -72,12 +72,13 @@ public class UserController {
         } 
         
         // 이메일 합치기
-        if (dto.getWorker_email() != null && !dto.getWorker_email().isEmpty()) {
-            dto.setWorker_email(dto.getWorker_email() + "@naver.com");
+        if (person_email != null && !person_email.isEmpty() && domain_email != null && !domain_email.isEmpty()) {
+                dto.setWorker_email(person_email + "@" + domain_email);
         }
         
         workerService.add(dto);
         List<DeptDTO> deptList = workerService.deptList();
+        
         // JSP에서 ${worker_id}로 접근 가능하도록 model에 담기
         model.addAttribute("worker_id", dto.getWorker_id());
         model.addAttribute("worker_birth6", birth6);
@@ -103,12 +104,25 @@ public class UserController {
 	}
     /** 수정 후 상세 */
 	@RequestMapping("/modifyDetail")
-    public String modifyDetail(Model model, WorkerDTO dto) {
-		workerService.edit(dto);
-		List<DeptDTO> deptList = workerService.deptList();
+    public String modifyDetail(Model model, WorkerDTO dto, String person_email, String domain_email) {
+		
+		if (domain_email != null && domain_email.startsWith("@")) {
+			domain_email = domain_email.substring(1);
+	    }
+
+	    // 최종 이메일 합치기
+	    if (person_email != null && !person_email.isEmpty()) {
+	        dto.setWorker_email(person_email + "@" + domain_email);
+	    } else {
+	        dto.setWorker_email(null); 
+	    }
         
-		model.addAttribute("worker", dto);
+	    workerService.edit(dto);
+	    List<DeptDTO> deptList = workerService.deptList();
+
+	    model.addAttribute("dto", dto);
         model.addAttribute("deptList", deptList);
+        
         return "redirect:/detail?worker_id=" + dto.getWorker_id();
     }
 

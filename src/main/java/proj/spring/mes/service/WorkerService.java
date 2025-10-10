@@ -14,5 +14,6 @@ public interface WorkerService {
     int add(WorkerDTO dto);
     int edit(WorkerDTO dto);
     int remove(String worker_id);
-	
+    int updatePassword(String workerId, String rawPw); // 해시 저장용
+	boolean match(String rawPw, String hashed);
 }

@@ -17,8 +17,13 @@
    	</div>
     <div class = "slide open" id = "slide-input">
     	<div class = "slide-contents">
-	        <div class = "silde-title"><h2>사원 상세</h2></div>
-	        <div class = "slide-id">사번 : ${dto.worker_id }</div>
+	        <div class = "silde-title">
+	        	<h2 >사원 상세</h2>
+	        </div>
+	        <div class="title-box">
+		        <div class = "slide-worker">사번 : ${dto.worker_id }</div>
+		        <input type="button" class="pw-reset" value="비밀번호 초기화">
+	        </div>
 	        <div class = "slide-tb">
 	            <table>
 	                <thead>
@@ -61,8 +66,8 @@
 	            </table>
         	</div>
 	        <div class = "slide-btnbox">
-                <a href="modify?worker_id=${dto.worker_id }"><input type = "button" class = "modify-btn slide-btn" value = "수정"></a>
-                <a href="list"><input type="button" class="close-btn slide-btn" value="취소"></a>
+                <a href="modify?worker_id=${dto.worker_id}" class="slide-btn modify-btn">수정</a>
+				<a href="list" class="slide-btn close-btn">취소</a>
             </div>
        	</div>
     </div>

@@ -233,6 +233,13 @@
 	        <artifactId>tiles-jsp</artifactId>
 	        <version>3.0.8</version>
 	      </dependency>
+	      
+	      <!-- 암호화 -->
+	      <dependency>
+			  <groupId>org.springframework.security</groupId>
+			  <artifactId>spring-security-crypto</artifactId>
+			  <version>5.8.10</version>
+		  </dependency>
 	</dependencies>
     <build>
         <plugins>

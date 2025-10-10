@@ -137,7 +137,14 @@
 	                    <tr>
 	                        <td><input type="text" name="worker_name"></td>
 	                        <td><input type="date" name="worker_birth"></td>
-	                        <td><input type="text" name="worker_email"> @naver.com</td>
+	                        <td>
+		                        <input type="text" name="person_email">@
+								<select name="domain_email">
+								    <option value="naver.com">naver.com</option>
+								    <option value="gmail.com">gmail.com</option>
+								    <option value="daum.net">daum.net</option>
+								</select>
+							</td>
 	                    </tr>
 	                </tbody>
 	            </table>
@@ -155,19 +162,20 @@
 	                    <tr>
 	                        <td><input type="date" name="worker_join"></td>
 	                        <td>
-	                        	<select name="department_id">
-	                        		<option value="" selected>선택</option>
-	                        		<option value="P01">생산1팀</option>
-	                        		<option value="P02">생산2팀</option>
-	                        		<option value="I01">품질1팀</option>
-	                        		<option value="I02">품질2팀</option>
-	                        	</select>
+	                        	<select name="department_id" id="deptSelect">
+	                        		<option value="">선택</option>
+					                <c:forEach var="dept" items="${deptList}">
+					                  <option value="${dept.department_id}">
+					                    ${dept.department_name}
+					                  </option>
+					                </c:forEach>
+					            </select>
 							</td>
 	                        <td>
 	                        	<select name="worker_code">
 	                        		<option value="1" selected>선택</option>
-	                        		<option value="ADMIN">admin</option>
-	                        		<option value="HEAD">부서장</option>
+	                        		<option value="ADMIN">관리자</option>
+	                        		<option value="MANAGER">부서장</option>
 	                        		<option value="STAFF">사원</option>
 	                        	</select>
 	                       	</td>

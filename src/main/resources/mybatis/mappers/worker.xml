@@ -84,6 +84,11 @@
 	  )
 	</insert>
 
+	<update id="updatePassword">
+	  UPDATE V3_worker
+	     SET worker_pw = #{hashed}
+	   WHERE worker_id = #{worker_id}
+	</update>
 
 </mapper>
 

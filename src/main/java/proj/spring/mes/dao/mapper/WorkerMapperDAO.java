@@ -3,6 +3,7 @@ package proj.spring.mes.dao.mapper;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import proj.spring.mes.dto.DeptDTO;
 import proj.spring.mes.dto.WorkerDTO;
@@ -17,5 +18,7 @@ public interface WorkerMapperDAO {
     int insertWorker(WorkerDTO dto);                // 등록
     int updateWorker(WorkerDTO dto);                // 수정
     int deleteWorker(String worker_id);             // 삭제
+	int updatePassword(@Param("worker_id") String worker_id, @Param("hashed") String hashed);
+	
 	
 }
