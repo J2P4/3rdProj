@@ -8,4 +8,5 @@ public class ItemDTO {
 	private  int item_price;
 	private  String item_name;
 	private  String item_unit;
+	private	 String item_div;
 }

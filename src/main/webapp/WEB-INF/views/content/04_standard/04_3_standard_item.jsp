@@ -88,8 +88,7 @@
                                 <!-- ItemDTO에 맞춘 바인딩 (snake_case) -->
                                 <td>${row.item_id}</td>
                                 <td>${row.item_name}</td>
-                                <!-- DTO에 item_div가 없으므로 화면상 표시는 '-' -->
-                                <td>-</td>
+                                <td>${row.item_div}</td>
                                 <td><fmt:formatNumber value="${row.item_price}" pattern="#,##0"/></td>
                                 <td>${row.item_unit}</td>
                             </tr>
