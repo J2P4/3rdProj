@@ -19,7 +19,7 @@ body {
     color: var(--text);
 }
 
-.fil-btn, .btm-btn, .slide-btn {
+.fil-btn, .btm-btn, .slide-btn, .material {
     background: var(--primary);
     border: 1px solid var(--primary);
     cursor: pointer;
@@ -27,7 +27,7 @@ body {
     color: #ffffff;
 }
 
-.fil-btn:hover, .btm-btn:hover, .slide-btn:hover {
+.fil-btn:hover, .btm-btn:hover, .slide-btn:hover, .material:hover {
     background: var(--primary-600);
     border-color:var(--primary-600);
 }
@@ -149,6 +149,7 @@ td {
     type : 분류, 폐기 여부
     name : 불량사유명
     date : 일자
+    amount : 수량
 */
 
 .chkbox {
@@ -165,6 +166,10 @@ td {
 
 .name {
     width: 30%;
+}
+
+.amount {
+    width: 50%;
 }
 
 /* 테이블 하단 버튼 영역 */
@@ -246,12 +251,27 @@ td {
     margin: 30px;
 }
 
-.slide-btnbox > input {
-    width: 5%;
+.slide-btnbox > input, .slide-tb-btnbox > input {
+    width: 10%;
     font-size: 1.2rem;
     font-weight: bold;
     padding: 5px;
 }
+
+.slide-tb-btnbox {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 30px;
+}
+
+
+/* .material {
+    width: 5%;
+    font-size: 1.2rem;
+    font-weight: bold;
+    padding: 5px;
+} */
 
 
 /* 입력 & 수정용 슬라이드 : #slide-input 기준 */

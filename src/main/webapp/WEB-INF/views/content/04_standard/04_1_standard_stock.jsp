@@ -80,13 +80,14 @@
             <tbody>
                	<c:if test="${empty list}">
                 	<tr>
+                        <td><input type="checkbox" class="rowChk" disabled></td>
                 		<td colspan="5"> 조회 내역이 없습니다.</td>
                 	</tr>
                	</c:if>
                	<c:if test="${not empty list}">
                		<c:forEach var="P0401_StockDTO" items="${list}">
 	               		<tr>
-		                    <td><input type="checkbox" name="rowChk"></td>
+		                    <td><input type="checkbox" class="rowChk"></td>
 		                    <td>${P0401_StockDTO.stock_id}</td>
 		                    <td>${P0401_StockDTO.stock_amount}</td>
 		                    <td>${P0401_StockDTO.item_div}</td>
@@ -124,9 +125,19 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td>1</td>
-                            <td data-type = "select">1</td>
-                            <td>1</td>
+                            <td>
+                                <select size = "1">
+                                        <option value = "">아래 select에 따라 달라지도록 입력하기!!</option>
+                                </select>
+                            </td>
+                            <td data-type = "select">
+                                <select size="1">
+                                    <option value = "1" selected>도서</option>
+                                    <option value = "2">포장지</option>
+                                    <option value = "3">완제품</option>
+                                </select>
+                            </td>
+                            <td><input type = "text" placehoder = "품목명을 입력해주세요"></td>
                         </tr>
                     </tbody>
                 </table>
@@ -134,13 +145,20 @@
             <div class = "slide-tb">
                 <table>
                     <thead>
-                        <th>재고 수량</th>
+                        <th class = "amount">재고 수량</th>
                         <th>보관 위치</th>
                     </thead>
                     <tbody>
                         <tr>
-                            <td>2</td>
-                            <td data-type = "select">2</td>
+                            <td><input type = "number"></td>
+                            <td data-type = "select">
+                                <select>
+                                    <option value = "wh1">WH1 :: 1번 창고</option>
+                                    <option value = "wh2">WH2 :: 2번 창고</option>
+                                    <option value = "wh3">WH3 :: 3번 창고</option>
+                                    <option value = "wh4">WH4 :: 4번 창고</option>
+                                </select>
+                            </td>
                         </tr>
                     </tbody>
                 </table>

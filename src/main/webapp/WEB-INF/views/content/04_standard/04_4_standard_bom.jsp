@@ -67,13 +67,14 @@
             <tbody>
             	<c:if test="${empty list}">
 					<tr>
+                        <td><input type="checkbox" class="rowChk" disabled></td>
 						<td colspan="5"> 조회 내역이 없습니다.</td>
 					</tr>
 				</c:if>
 				<c:if test="${not empty list}">
 					<c:forEach var="P0404_BOMDTO" items="${list}">
 		                <tr>
-		                    <td><input type="checkbox" name="rowChk"></td>
+		                    <td><input type="checkbox" class="rowChk"></td>
 		                    <td>${P0404_BOMDTO.bom_id}</td>
 		                    <td>${P0404_BOMDTO.item_id}</td>
 		                    <td>${P0404_BOMDTO.item_div}</td>
@@ -104,9 +105,19 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td>1</td>
-                            <td>1</td>
-                            <td>1</td>
+                            <td>
+                                <select size = "1">
+                                        <option value = "">아래 select에 따라 달라지도록 입력하기!!</option>
+                                </select>
+                            </td>
+                            <td><input type = "text" placehoder = "품목명을 입력해주세요"></td>
+                            <td>
+                                <select size="1">
+                                    <option value = "1" selected>도서</option>
+                                    <option value = "2">포장지</option>
+                                    <option value = "3">완제품</option>
+                                </select>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
@@ -123,16 +134,27 @@
                     <tbody>
                         <tr>
                             <td><input type="checkbox"></td>
-                            <td>2</td>
-                            <td>2</td>
-                            <td>2</td>
-                            <td>2</td>
+                            <td>
+                                <select size = "1">
+                                        <option value = "">아래 select에 따라 달라지도록 입력하기!!</option>
+                                </select>                                
+                            </td>
+                            <td>
+                                <input type = "text" placehoder = "품목명을 입력해주세요">
+                            </td>
+                            <td>
+                                <select size="1">
+                                    <option value = "1" selected>도서</option>
+                                    <option value = "2">포장지</option>
+                                </select>
+                            </td>
+                            <td><input type = "number"></td>
                         </tr>
                     </tbody>
                 </table>
                 <div class = "slide-tb-btnbox">
-                    <input type="button" value="재료 추가">
-                    <input type="button" value="재료 삭제">
+                    <input type="button" class = "material" value="재료 추가">
+                    <input type="button" class = "material" value="재료 삭제">
                 </div>
             </div>
             <div class = "slide-btnbox">

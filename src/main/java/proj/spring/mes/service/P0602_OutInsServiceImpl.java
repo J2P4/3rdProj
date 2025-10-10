@@ -21,7 +21,7 @@ public class P0602_OutInsServiceImpl implements P0602_OutInsService {
 	}
 	
 	@Override
-	public P0602_OutInsDTO getOneInIns(String inspection_result_id) {
+	public P0602_OutInsDTO getOneOutIns(String inspection_result_id) {
 		return outInsMapperDAO.selectOneOutIns(inspection_result_id);
 	}
 	

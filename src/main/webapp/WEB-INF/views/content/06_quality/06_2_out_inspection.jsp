@@ -65,13 +65,14 @@
             <tbody>
            		<c:if test="${empty list}">
 					<tr>
+                        <td><input type="checkbox" class="rowChk" disabled></td>
 						<td colspan="5"> 조회 내역이 없습니다.</td>
 					</tr>
 				</c:if>
 				<c:if test="${not empty list}">
 					<c:forEach var="P0602_OutInsDTO" items="${list}">
 		                <tr>
-		                    <th class = "chkbox"><input type="checkbox" id="chkAll"></th>
+		                    <th class = "chkbox"><input type="checkbox" class="rowChk"></th>
 		                    <th class = "id">${P0602_OutInsDTO.inspection_result_id}</th>
 		                    <th class = "date">${P0602_OutInsDTO.inspection_result_date}</th>
 		                    <th>${P0602_OutInsDTO.inspection_result_good}</th>

@@ -33,9 +33,13 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('chkAll:', chkAll);
     const mainTable = document.querySelector('.table table');
     console.log('mainTable:', mainTable);
-    const tbody = mainTable.querySelector('tbody');
+    const tbody =  mainTable ? mainTable.querySelector('tbody') : null;
     console.log('tbody:', tbody);
-    const getRowChecks = () => tbody.querySelectorAll('input.rowChk');
+    const getRowChecks = () => {
+        // tbody가 없을 경우 빈 배열 반환하여 오류 방지
+        if (!tbody) return []; 
+        return tbody.querySelectorAll('input.rowChk:not([disabled])');
+    };
     // 모두 선택 체크되어 있으면 바꾸도록
     if (chkAll) {
         chkAll.addEventListener('change', () => {
@@ -60,9 +64,24 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log('checkedCount: ', checkedCount);
 
             // 전체 체크박스의 상태를 현재 체크된 개수와 전체 개수를 비교하여 설정
-            chkAll.checked = (checkedCount === rowChecks.length);
+            chkAll.checked = checkedCount && (rowChecks.length > 0); // 데이터가 아예 없을 경우 (길이가 0)에는 체크 해제 상태 유지
         }
-    });
+    // });
+
+    // mainTable.addEventListener('change', (event) => {
+    // if (event.target.classList.contains('rowChk') && chkAll) {
+    //     const rowChecks = getRowChecks();
+        
+    //     // 모든 행 체크박스가 체크되어 있는지 여부 확인
+    //     const allChecked = Array.from(rowChecks).every(chk => chk.checked);
+        
+    //     // 전체 체크박스 상태 갱신
+    //     chkAll.checked = allChecked;
+    // }
+});
+
+    // tbody가 전부 체크되면 전체 선택도 체크되도록
+
 
 
     // ============================
