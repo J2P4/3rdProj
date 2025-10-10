@@ -150,6 +150,7 @@ td {
     name : 불량사유명
     date : 일자
     amount : 수량
+    gb : 검사의 good, bad
 */
 
 .chkbox {
@@ -170,6 +171,10 @@ td {
 
 .amount {
     width: 50%;
+}
+
+.gb {
+    width: 15%;
 }
 
 /* 테이블 하단 버튼 영역 */

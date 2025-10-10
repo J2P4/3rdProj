@@ -58,8 +58,8 @@
                     <th class = "chkbox"><input type="checkbox" id="chkAll"></th>
                     <th class = "id">검사 결과 ID</th>
                     <th class = "date">검사일</th>
-                    <th>양품 수</th>
-                    <th>불량 수</th>
+                    <th class = "gb">양품 수</th>
+                    <th class = "gb">불량 수</th>
                 </tr>
             </thead>
             <tbody>
@@ -103,9 +103,15 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td>1</td>
-                            <td>1</td>
-                            <td>1</td>
+                            <td>
+                                <input type = "date">
+                            </td>
+                            <td>
+                                <input type = "number">
+                            </td>
+                            <td>
+                                <input type = "number">
+                            </td>
                         </tr>
                     </tbody>
                 </table>
@@ -118,8 +124,16 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td>2</td>
-                            <td>2</td>
+                            <td>
+                                <select name = "변수명" size = "1">
+                                    <option>검사 대상</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select name = "변수명" size = "1">
+                                    <option>담당 사원</option>
+                                </select>
+                            </td>
                         </tr>
                     </tbody>
                 </table>

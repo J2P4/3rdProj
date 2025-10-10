@@ -101,7 +101,6 @@
                     <thead>
                         <th>목표 품목 ID</th>
                         <th>품목명</th>
-                        <th>분류</th>
                     </thead>
                     <tbody>
                         <tr>
@@ -111,13 +110,6 @@
                                 </select>
                             </td>
                             <td><input type = "text" placehoder = "품목명을 입력해주세요"></td>
-                            <td>
-                                <select size="1">
-                                    <option value = "1" selected>도서</option>
-                                    <option value = "2">포장지</option>
-                                    <option value = "3">완제품</option>
-                                </select>
-                            </td>
                         </tr>
                     </tbody>
                 </table>
