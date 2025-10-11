@@ -68,19 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     // });
 
-    // mainTable.addEventListener('change', (event) => {
-    // if (event.target.classList.contains('rowChk') && chkAll) {
-    //     const rowChecks = getRowChecks();
-        
-    //     // 모든 행 체크박스가 체크되어 있는지 여부 확인
-    //     const allChecked = Array.from(rowChecks).every(chk => chk.checked);
-        
-    //     // 전체 체크박스 상태 갱신
-    //     chkAll.checked = allChecked;
-    // }
 });
-
-    // tbody가 전부 체크되면 전체 선택도 체크되도록
 
 
 
@@ -94,6 +82,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     console.log('from:', from, 'to:', to, 'plz...');
 
+
+    // 날짜 관련 input 없는 페이지면 devTools 콘솔 오류 뜰 수 있음. 신경 쓰지 말고 진행.
     function clampMinMax() {
         if (from.value) 
             to.min = from.value;
@@ -126,5 +116,6 @@ document.addEventListener('DOMContentLoaded', () => {
             to.focus();
         }
     });
+ 
 
 });

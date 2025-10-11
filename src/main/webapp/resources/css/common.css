@@ -209,7 +209,6 @@ td {
 .slide {
     position: fixed;
     top: 0;
-    /* 지금 템플릿 미적용 기준으로 width, right 설정. 변경 필요.*/
     right: -110%;
     width: calc(100% - 14rem);
     height: 100%;

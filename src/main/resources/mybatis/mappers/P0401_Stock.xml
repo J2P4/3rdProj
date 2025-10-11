@@ -23,7 +23,7 @@
 			i.item_div, i.item_name
 		from v3_stock s left outer join v3_item i
 		on s.item_id = i.item_id
-		where s.item_id = #{item_id}
+		where s.stock_id = #{stock_id}
 		order by s.stock_id	
 	</select>
 	

@@ -1,5 +1,7 @@
 package proj.spring.mes.controller;
 
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -8,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import proj.spring.mes.dto.P0401_StockDTO;
 import proj.spring.mes.service.P0401_StockService;
@@ -32,10 +36,11 @@ public class P0401_StockCtrl {
 	}
 	
 	@RequestMapping("/stockdetail")
-	public String detail(Model model, String stock_id) {
-		P0401_StockDTO dto = service.getOneStock(stock_id);
-		model.addAttribute("stock", dto);
-		return "04_standard/04_1_standard_stock.tiles";
+	@ResponseBody
+	public P0401_StockDTO detail(@RequestParam("stock_id") String stock_id) {
+	    P0401_StockDTO dto = service.getOneStock(stock_id);
+	    System.out.println(dto);
+	    return dto;
 	}
 	
 //	@RequestMapping("/stockinsert")

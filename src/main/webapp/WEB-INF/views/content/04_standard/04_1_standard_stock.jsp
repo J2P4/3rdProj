@@ -14,7 +14,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>재고 관리 < 기준 관리 < J2P4</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/common.css" type="text/css">
+    <!-- 상세 뜰 수 있도록 아래 script 영역 필수 추가!! -->
+    <script>
+        const contextPath = '${pageContext.request.contextPath}';
+    </script>
     <script src="${pageContext.request.contextPath}/resources/js/common.js" defer></script>
+    <script src="${pageContext.request.contextPath}/resources/js/04_1_stock.js" defer></script>
 </head>
 <body>
     <!-- 페이지 제목 -->
@@ -48,10 +53,10 @@
                 <div class = "filitem-name">· 보관 위치</div>
                 <div class = "filitem-input">
                     <select name = "변수명" size = "1">
-                        <option value = "1" selected>WH1</option>
-                        <option value = "2">WH2</option>
-                        <option value = "3">WH3</option>
-                        <option value = "4">WH4</option>
+                        <option value = "wh1">WH1 :: 1번 창고</option>
+                        <option value = "wh2">WH2 :: 2번 창고</option>
+                        <option value = "wh3">WH3 :: 3번 창고</option>
+                        <option value = "wh4">WH4 :: 4번 창고</option>
                     </select>
                 </div>
             </div>
@@ -77,6 +82,7 @@
                     <th>보관 위치</th>
                 </tr>
             </thead>
+            <!-- 데이터 행 tr에 data-id 속성 잊지 말기! (상세 슬라이드에 필수) -->
             <tbody>
                	<c:if test="${empty list}">
                 	<tr>
@@ -86,7 +92,7 @@
                	</c:if>
                	<c:if test="${not empty list}">
                		<c:forEach var="P0401_StockDTO" items="${list}">
-	               		<tr>
+	               		<tr data-id="${P0401_StockDTO.stock_id}">
 		                    <td><input type="checkbox" class="rowChk"></td>
 		                    <td>${P0401_StockDTO.stock_id}</td>
 		                    <td>${P0401_StockDTO.stock_amount}</td>
@@ -169,13 +175,14 @@
             </div>
         </div>
     </div>
-    <!-- 상세용 슬라이드-->
+    <!-- 상세용 슬라이드 : ajax로 채울 거라 el 태그 사용 필요 X -->
     <div class = "slide" id = "slide-detail">
         <div class = "slide-contents">
             <div class = "silde-title"><h2>재고 상세</h2></div>
-            <div class = "slide-id">재고 ID: ${P0401_StockDTO.stock_id}</div>
+            <div class = "slide-id">재고 ID: </div>
             <div class = "slide-tb">
-                <table id="simpleEditableTable">
+                <!-- 상세 데이터 표시용 id 주는 영역 1 -->
+                <table id="itemDetail">
                     <thead>
                         <th>품목 ID</th>
                         <th>품목 분류</th>
@@ -183,23 +190,24 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td class = "editMe">${P0401_StockDTO.item_id}</td>
-                            <td class = "editMe">${P0401_StockDTO.item_div}</td>
-                            <td class = "editMe">${P0401_StockDTO.item_name}</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
                         </tr>
                     </tbody>
                 </table>
             </div>
             <div class = "slide-tb">
-                <table>
+                <!-- 상세 데이터 표시용 id 주는 영역 1 -->
+                <table id="stockDetail">
                     <thead>
                         <th>재고 수량</th>
                         <th>보관 위치</th>
                     </thead>
                     <tbody>
                         <tr>
-                            <td class = "editMe">${P0401_StockDTO.stock_amount}</td>
-                            <td class = "editMe">${P0401_StockDTO.stock_wrap}</td>
+                            <td></td>
+                            <td></td>
                         </tr>
                     </tbody>
                 </table>
