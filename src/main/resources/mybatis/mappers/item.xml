@@ -64,6 +64,25 @@
     WHERE item_id = #{value}
     ]]>
   </select>
+  
+  <!-- 여러 개 ID 배치 삭제 -->
+<delete id="deleteItems" parameterType="java.util.List">
+  <![CDATA[
+  DELETE FROM V3_item
+  WHERE item_id IN
+  ]]>
+  <foreach item="id" collection="list" open="(" separator="," close=")">
+    #{id}
+  </foreach>
+</delete>
+  
+  
+  
+  
+  
+  
+  
+  
 
   <!-- 등록 -->
   <insert id="insertItem" parameterType="proj.spring.mes.dto.ItemDTO">

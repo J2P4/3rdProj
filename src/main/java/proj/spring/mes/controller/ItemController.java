@@ -2,9 +2,13 @@ package proj.spring.mes.controller;
 
 import org.springframework.stereotype.Controller;         
 import org.springframework.web.bind.annotation.RequestMapping; 
-import org.springframework.ui.Model;                  
+import org.springframework.ui.Model;
+
+import java.io.UnsupportedEncodingException;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestParam;   
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import proj.spring.mes.service.ItemService;             
 @Controller                                              
@@ -34,7 +38,7 @@ public class ItemController {
         if (page > totalPages) page = totalPages;        // 요청 페이지가 마지막 페이지 초과하면 마지막 페이지로 보정
 
         // ===================== 4) 목록 조회 =====================
-        // 주의: 실제 OFFSET 계산((page-1)*pagePerRows)은 Service/Mapper에서 처리하도록 위임
+        //실제 OFFSET 계산((page-1)*pagePerRows)은 Service/Mapper에서 처리하도록 위임
         model.addAttribute("list", itemService.list(page, pagePerRows)); // 현재 페이지에 해당하는 데이터 목록
 
         // ===================== 5) 블록 페이지네이션 계산(10개 단위) =====================
@@ -63,4 +67,66 @@ public class ItemController {
 
         return "04_standard/04_3_standard_item.tiles";
     }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+
+@RequestMapping(value = "/item/delete", method = org.springframework.web.bind.annotation.RequestMethod.POST)
+public String deleteItems(
+        @RequestParam("ids") String ids,
+        @RequestParam(value = "page", required = false, defaultValue = "1") int page,
+        @RequestParam(value = "size", required = false, defaultValue = "10") int size,
+        @RequestParam(value = "itemNo",   required = false) String itemNo,
+        @RequestParam(value = "itemName", required = false) String itemName,
+        @RequestParam(value = "item_div", required = false) String itemDiv,
+        @RequestParam(value = "item_min", required = false) String itemMin,
+        @RequestParam(value = "item_max", required = false) String itemMax,
+        org.springframework.web.servlet.mvc.support.RedirectAttributes ra
+) {
+    // ids 파싱 (공백/중복 제거, 순서 보존)
+    java.util.LinkedHashSet<String> set = new java.util.LinkedHashSet<String>();
+    if (ids != null) {
+        String[] arr = ids.split(",");
+        for (int i = 0; i < arr.length; i++) {
+            String s = arr[i];
+            if (s == null) continue;
+            s = s.trim();
+            if (s.length() > 0) set.add(s);
+        }
+    }
+    java.util.List<String> idList = new java.util.ArrayList<String>(set);
+
+    int deleted = itemService.removeAll(idList);
+    ra.addFlashAttribute("msg", deleted + "건 삭제되었습니다.");
+
+    // 리다이렉트 URL 구성 (자동 인코딩, Checked 예외 없음)
+    UriComponentsBuilder b = UriComponentsBuilder.fromPath("/itemlist")
+            .queryParam("page", page)
+            .queryParam("size", size);
+
+    if (itemNo   != null && itemNo.length()   > 0) b.queryParam("itemNo",   itemNo);
+    if (itemName != null && itemName.length() > 0) b.queryParam("itemName", itemName);
+    if (itemDiv  != null && itemDiv.length()  > 0) b.queryParam("item_div", itemDiv);
+    if (itemMin  != null && itemMin.length()  > 0) b.queryParam("item_min", itemMin);
+    if (itemMax  != null && itemMax.length()  > 0) b.queryParam("item_max", itemMax);
+
+    return "redirect:" + b.build().encode().toUriString();
+}
+    
+    
+    
+    
+    
+    
+    
 }

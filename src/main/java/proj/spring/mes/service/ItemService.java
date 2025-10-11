@@ -11,7 +11,7 @@ public interface ItemService {
     int add(ItemDTO dto);
     int edit(ItemDTO dto);
     int remove(String ItemId);
-
+    int removeAll(List<String> itemIds);
     
     
     

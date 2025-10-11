@@ -88,18 +88,18 @@
           <c:forEach var="row" items="${list}">                       <%-- 각 행 렌더링 --%>
             <tr>
               <td class="chkbox"><input type="checkbox" class="rowChk"></td>  <%-- 행 선택 --%>
-              <td>${row.item_id}</td>                                 <%-- DTO 필드 그대로 표시 --%>
-              <td>${row.item_name}</td>
-              <td>${row.item_div}</td>
+              <td>${fn:escapeXml(row.item_id)}</td>                   <%-- DTO 필드 그대로 표시 --%>
+              <td>${fn:escapeXml(row.item_name)}</td>
+              <td>${fn:escapeXml(row.item_div)}</td>
               <td><fmt:formatNumber value="${row.item_price}" pattern="#,##0"/></td> 
-              <td>${row.item_unit}</td>
+              <td>${fn:escapeXml(row.item_unit)}</td>
             </tr>
           </c:forEach>
         </c:when>
         <c:otherwise>                                                 <%-- 데이터 없을 때 자리 채우기 --%>
           <c:forEach var="i" begin="1" end="10">
             <tr aria-hidden="true">
-              <td class="chkbox"><input type="checkbox" name="rowChk"></td>
+              <td class="chkbox"><input type="checkbox" name="rowChk" disabled aria-hidden="true"></td> <%-- 비활성화로 오작동 방지 --%>
               <td>&nbsp;</td><td></td><td></td><td class="col-qty"></td><td></td>
             </tr>
           </c:forEach>
@@ -131,11 +131,11 @@
 
       <label>Rows:
         <select name="size" onchange="document.getElementById('sizeForm').submit()">
-          <option value="1"   ${pagePerRows==1   ? 'selected' : ''}>1</option>      <%-- 1행 보기(블록 전환 테스트에 유용) --%>
-          <option value="10"  ${pagePerRows==10  ? 'selected' : ''}>10</option>
-          <option value="20"  ${pagePerRows==20  ? 'selected' : ''}>20</option>
-          <option value="50"  ${pagePerRows==50  ? 'selected' : ''}>50</option>
-          <option value="100" ${pagePerRows==100 ? 'selected' : ''}>100</option>
+          <option value="1"  ><c:if test="${pagePerRows==1}">selected</c:if>1</option>      <%-- 1행 보기(블록 전환 테스트에 유용) --%>
+          <option value="10" ><c:if test="${pagePerRows==10}">selected</c:if>10</option>
+          <option value="20" ><c:if test="${pagePerRows==20}">selected</c:if>20</option>
+          <option value="50" ><c:if test="${pagePerRows==50}">selected</c:if>50</option>
+          <option value="100"><c:if test="${pagePerRows==100}">selected</c:if>100</option>
         </select>
       </label>
     </form>
@@ -199,18 +199,26 @@
       </c:otherwise>
     </c:choose>
 
+  </div> <!-- 수정: .page 닫음 -->
 
   <!-- 우측 하단 버튼 -->
   <div class="bottom-btn-box">
     <input type="button" class="btm-btn new" value="신규">                           <%-- 신규 등록(예정) --%>
-    <input type="button" class="btm-btn del" value="삭제">                           <%-- 선택 삭제(예정) --%>
+    <input type="button" id="btnDelete" class="btm-btn del" value="삭제">            <%-- 선택 삭제(예정) --%>
   </div>
-</div>
+</div> <!-- .bottom-btn 닫음 -->
 
 <!-- 삭제용 히든 폼 (체크된 행들을 한번에 삭제할 때 사용) -->
 <c:url var="deleteUrl" value="/item/delete"/>                                       
 <form id="deleteForm" method="post" action="${deleteUrl}" style="display:none;">
   <input type="hidden" name="ids" id="deleteIds">                                   
+  <input type="hidden" name="page" value="${page}">
+  <input type="hidden" name="size" value="${pagePerRows}">
+  <input type="hidden" name="itemNo"   value="${fn:escapeXml(param.itemNo)}"/>
+  <input type="hidden" name="itemName" value="${fn:escapeXml(param.itemName)}"/>
+  <input type="hidden" name="item_div" value="${fn:escapeXml(param.item_div)}"/>
+  <input type="hidden" name="item_min" value="${fn:escapeXml(param.item_min)}"/>
+  <input type="hidden" name="item_max" value="${fn:escapeXml(param.item_max)}"/>
 </form>
 
 <!-- 등록/수정 저장 액션 URL -->
@@ -264,8 +272,8 @@
     <div class="date">
       <div class="slide-id" style="display:flex; gap:12px;">
         <div>발주일 <input type="date" name="orderdate" id="orderdate-input-1" value="${todayStr}"></div> 
-        <div>결제(예정일) <input type="date" name="orderdate" id="orderdate-input-2"></div>
-        <div>수주(예정일) <input type="date" name="orderdate" id="orderdate-input-3"></div>
+        <div>결제(예정일) <input type="date" name="orderdate_due" id="orderdate-input-2"></div>   <!-- 수정: name 충돌 분리 -->
+        <div>수주(예정일) <input type="date" name="orderdate_recv" id="orderdate-input-3"></div>  <!-- 수정: name 충돌 분리 -->
       </div>
     </div>
 
@@ -296,6 +304,55 @@
     </div>
   </div>
 </div>
+
+<script>
+(function() {
+  function textOf(el){ return (el && el.textContent ? el.textContent : '').replace(/\u00A0/g,' ').trim(); }
+
+  var chkAll = document.getElementById('chkAll');
+  if (chkAll) {
+    chkAll.addEventListener('change', function(){
+      var nodes = document.querySelectorAll('tbody .rowChk');
+      for (var i=0; i<nodes.length; i++) {
+        if (!nodes[i].disabled) nodes[i].checked = chkAll.checked;
+      }
+    });
+  }
+  document.addEventListener('change', function(e){
+    var t = e.target;
+    if (t && t.classList && t.classList.contains('rowChk')) {
+      var rows = document.querySelectorAll('tbody .rowChk:not(:disabled)');
+      var checked = document.querySelectorAll('tbody .rowChk:not(:disabled):checked');
+      if (chkAll && rows.length > 0) chkAll.checked = (rows.length === checked.length);
+    }
+  });
+
+  var btnDel = document.getElementById('btnDelete');
+  if (!btnDel) return;
+  btnDel.addEventListener('click', function(){
+    var checks = document.querySelectorAll('tbody .rowChk:checked');
+    if (!checks || checks.length === 0) { alert('삭제할 항목을 선택하세요.'); return; }
+
+    var ids = [];
+    for (var i=0; i<checks.length; i++) {
+      var tr = checks[i].closest ? checks[i].closest('tr') : null;
+      if (!tr || tr.getAttribute('aria-hidden') === 'true') continue; // 자리채움행 무시
+      var tds = tr.querySelectorAll('td');
+      if (tds.length < 2) continue;
+      var idVal = textOf(tds[1]); // 2번째 컬럼 = 품목 ID
+      if (idVal) ids.push(idVal);
+    }
+
+    if (ids.length === 0) { alert('선택된 행에서 품목 ID를 찾지 못했습니다.'); return; }
+    if (!confirm(ids.length + '건 삭제하시겠습니까?')) return;
+
+    var form = document.getElementById('deleteForm');
+    if (!form) { alert('삭제 폼을 찾을 수 없습니다.'); return; }
+    document.getElementById('deleteIds').value = ids.join(',');
+    form.submit();
+  });
+})();
+</script>
 
 </body>
 </html>
