@@ -5,9 +5,9 @@
 
 <mapper namespace="proj.spring.mes.dao.mapper.ItemMapperDAO">
 
-  <!-- 목록 -->
-  <select id="selectItemList"
-          resultType="proj.spring.mes.dto.ItemDTO">
+  <!-- 전체 목록 (무페이징) -->
+  <select id="selectItemList" resultType="proj.spring.mes.dto.ItemDTO">
+    <![CDATA[
     SELECT
       item_id,
       item_price,
@@ -16,12 +16,44 @@
       item_unit
     FROM V3_item
     ORDER BY item_name ASC
+    ]]>
   </select>
 
-  <!-- 단건 -->
-  <select id="selectItemOne"
-          parameterType="string"
-          resultType="proj.spring.mes.dto.ItemDTO">
+  <!-- 페이징 목록 (Oracle ROWNUM 방식, limit/offset 그대로 받음) -->
+  <!-- Mapper 인터페이스: selectItemListPage(@Param("limit") int limit, @Param("offset") int offset) -->
+  <select id="selectItemListPage" resultType="proj.spring.mes.dto.ItemDTO">
+    <bind name="startRow" value="offset + 1"/>
+    <bind name="endRow"   value="offset + limit"/>
+    <![CDATA[
+    SELECT *
+    FROM (
+      SELECT t.*, ROWNUM rn
+      FROM (
+        SELECT
+          item_id,
+          item_price,
+          item_div,
+          item_name,
+          item_unit
+        FROM V3_item
+        ORDER BY item_name ASC
+      ) t
+      WHERE ROWNUM <= #{endRow}
+    )
+    WHERE rn >= #{startRow}
+    ]]>
+  </select>
+
+  <!-- 총 레코드 수 -->
+  <select id="selectItemCount" resultType="long">
+    <![CDATA[
+    SELECT COUNT(*) FROM V3_item
+    ]]>
+  </select>
+
+  <!-- 단건: 단일 문자열 파라미터는 #{value} -->
+  <select id="selectItemOne" parameterType="string" resultType="proj.spring.mes.dto.ItemDTO">
+    <![CDATA[
     SELECT
       item_id,
       item_price,
@@ -29,20 +61,24 @@
       item_name,
       item_unit
     FROM V3_item
-    WHERE item_id = #{item_id}
+    WHERE item_id = #{value}
+    ]]>
   </select>
 
   <!-- 등록 -->
   <insert id="insertItem" parameterType="proj.spring.mes.dto.ItemDTO">
+    <![CDATA[
     INSERT INTO V3_item (
       item_id, item_price, item_div, item_name, item_unit
     ) VALUES (
       #{item_id}, #{item_price}, #{item_div}, #{item_name}, #{item_unit}
     )
+    ]]>
   </insert>
 
   <!-- 수정 -->
   <update id="updateItem" parameterType="proj.spring.mes.dto.ItemDTO">
+    <![CDATA[
     UPDATE V3_item
     SET
       item_price = #{item_price},
@@ -50,12 +86,15 @@
       item_name  = #{item_name},
       item_unit  = #{item_unit}
     WHERE item_id = #{item_id}
+    ]]>
   </update>
 
-  <!-- 삭제 -->
+  <!-- 삭제: 단일 문자열 파라미터는 #{value} -->
   <delete id="deleteItem" parameterType="string">
+    <![CDATA[
     DELETE FROM V3_item
-    WHERE item_id = #{item_id}
+    WHERE item_id = #{value}
+    ]]>
   </delete>
 
 </mapper>

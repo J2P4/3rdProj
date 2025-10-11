@@ -1,12 +1,18 @@
 package proj.spring.mes.dto;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import java.io.Serializable;
 
-@Data
-public class ItemDTO {
-	private  String item_id;
-	private  int item_price;
-	private  String item_name;
-	private  String item_unit;
-	private	 String item_div;
+@Getter
+@Setter
+public class ItemDTO implements Serializable {
+    private static final long serialVersionUID = 1L;
+
+    private String item_id;
+    private int item_price;  
+    private String item_name;
+    private String item_unit;
+    private String item_div;
+
 }

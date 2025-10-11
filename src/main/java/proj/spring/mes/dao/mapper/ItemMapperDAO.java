@@ -5,9 +5,16 @@ import org.apache.ibatis.annotations.Param;
 import proj.spring.mes.dto.ItemDTO;
 
 public interface ItemMapperDAO {
+    // 기존
     List<ItemDTO> selectItemList();
-    ItemDTO selectItemOne(@Param("item_id") String itemId);
+    ItemDTO selectItemOne(@Param("itemId") String itemId);
     int insertItem(ItemDTO dto);
     int updateItem(ItemDTO dto);
-    int deleteItem(@Param("item_id") String itemId);
+    int deleteItem(@Param("itemId") String itemId);
+
+    // 신규(페이징)
+    List<ItemDTO> selectItemListPage(@Param("limit") int limit, @Param("offset") int offset);
+
+    // 신규(총계)
+    long selectItemCount();
 }
