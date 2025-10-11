@@ -12,12 +12,21 @@
     </settings>
 
 	<typeAliases>
-   		<typeAlias type= "proj.spring.mes.dto.ItemDTO" alias="ItemDTO" />	
     	<typeAlias type= "proj.spring.mes.dto.WorkerDTO" alias="workerDTO" />
     	<typeAlias type= "proj.spring.mes.dto.DeptDTO" alias="deptDTO" />
+    	
     	<typeAlias type= "proj.spring.mes.dto.OrderDTO" alias="OrderDTO" />
+    	
     	<typeAlias type= "proj.spring.mes.dto.P0401_StockDTO" alias="P0401_StockDTO" />
+    	<typeAlias type= "proj.spring.mes.dto.P0402_ClientDTO" alias="P0402_ClientDTO" />
+   		<typeAlias type= "proj.spring.mes.dto.ItemDTO" alias="ItemDTO" />
     	<typeAlias type= "proj.spring.mes.dto.P0404_BOMDTO" alias="P0404_BOMDTO" />
+    	<typeAlias type= "proj.spring.mes.dto.P0405_ProcessDTO" alias="P0405_ProcessDTO" />
+    	
+    	<typeAlias type= "proj.spring.mes.dto.P0501_ProPlanDTO" alias="P0501_ProPlanDTO" />
+    	<typeAlias type= "proj.spring.mes.dto.P0502_WorkOrderDTO" alias="P0502_WorkOrderDTO" />
+    	<typeAlias type= "proj.spring.mes.dto.P0503_CPDTO" alias="P0503_CPDTO" />
+    	
     	<typeAlias type= "proj.spring.mes.dto.P0601_InInsDTO" alias="P0601_InInsDTO" />
     	<typeAlias type= "proj.spring.mes.dto.P0602_OutInsDTO" alias="P0602_OutInsDTO" />
     	<typeAlias type= "proj.spring.mes.dto.P0603_ErrorDTO" alias="P0603_ErrorDTO" />
