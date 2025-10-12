@@ -14,9 +14,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>재고 관리 < 기준 관리 < J2P4</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/common.css" type="text/css">
-    <!-- 상세 뜰 수 있도록 아래 script 영역 필수 추가!! -->
+    <!-- 상세, 품목 select 뜰 수 있도록 아래 script 영역 필수 추가!! -->
     <script>
         const contextPath = '${pageContext.request.contextPath}';
+        // 품목 목록을 JSON 형식으로 js 변수에 저장하려고 작성
+        const allItemsJson = `${itemListJson}`; 
     </script>
     <script src="${pageContext.request.contextPath}/resources/js/common.js" defer></script>
     <script src="${pageContext.request.contextPath}/resources/js/04_1_stock.js" defer></script>
@@ -125,25 +127,36 @@
             <div class = "slide-tb">
                 <table>
                     <thead>
-                        <th>품목 ID</th>
+                        <!-- select 데이터 글씨가 너무 많으면 테이블이 깨져서 강제로 style 속성 지정 1 -->
+                        <th style = "width: 40%">품목 ID</th>
                         <th>품목 분류</th>
                         <th>품목 이름</th>
                     </thead>
                     <tbody>
                         <tr>
                             <td>
-                                <select size = "1">
-                                        <option value = "">아래 select에 따라 달라지도록 입력하기!!</option>
+                                <!-- select에 DB의 품목 id 데이터 불러와서 채워넣기 -->
+                                <!-- select 데이터 글씨가 너무 많으면 테이블이 깨져서 강제로 style 속성 지정 2 -->
+                                <select id="input_item_id" name="item_id" size = "1" style = "width: 100%;">
+                                    <option value="">품목 ID 선택</option>
+                                    <c:forEach var="item" items="${itemList}">
+                                        <option 
+                                            value="${item.item_id}"
+                                            data-div="${item.item_div}"
+                                            data-name="${item.item_name}">
+                                            ${item.item_id} - ${item.item_name}
+                                        </option>
+                                    </c:forEach>
                                 </select>
                             </td>
                             <td data-type = "select">
-                                <select size="1">
-                                    <option value = "1" selected>도서</option>
-                                    <option value = "2">포장지</option>
-                                    <option value = "3">완제품</option>
+                                <select id="input_item_div" name="item_div" size="1" style = "width: 100%;">
+                                    <option value = "도서" selected>도서</option>
+                                    <option value = "포장지">포장지</option>
+                                    <option value = "완제품">완제품</option>
                                 </select>
                             </td>
-                            <td><input type = "text" placehoder = "품목명을 입력해주세요"></td>
+                            <td><input type = "text" id="input_item_name" placeholder = "품목명을 입력해주세요" style = "width: 100%;"></td>
                         </tr>
                     </tbody>
                 </table>
@@ -156,9 +169,9 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td><input type = "number"></td>
+                            <td><input type = "number" style = "width: 100%;"></td>
                             <td data-type = "select">
-                                <select>
+                                <select style = "width: 100%;">
                                     <option value = "wh1">WH1 :: 1번 창고</option>
                                     <option value = "wh2">WH2 :: 2번 창고</option>
                                     <option value = "wh3">WH3 :: 3번 창고</option>

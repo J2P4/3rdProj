@@ -27,6 +27,14 @@
 		order by s.stock_id	
 	</select>
 	
+	<!-- 품목 조회용 -->
+	<select id = "selectStockItem" resultType = "P0401_StockDTO">
+		select
+			item_id, item_div, item_name
+		from v3_item
+	</select>
+	
+	
 	<!-- 수정 : 아마 ㅇㅋ-->
 	<update id = "updateStock" parameterType = "P0401_StockDTO">
 		update v3_stock

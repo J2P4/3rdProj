@@ -71,6 +71,131 @@ document.addEventListener('DOMContentLoaded', () => {
             detail.classList.remove('open')
         });
     }
+
+// ============================
+// 등록 / 수정 슬라이드 - 품목 select용
+// ============================
+//
+// 사용 시 수정 필요 영역 : 
+//                          - Controller 전체 조회에 품목 조회용 기능 추가시켜둠. 이스케이프 작성 영역 주의해서 적용하기.
+//                          - jsp에서 품목 선택 쪽에 name, data~ 등 적용
+//                          - 또... 나중에 생각함.
+//                          
+// ==================================================================================
+
+    // JSP에서 저장된 전체 품목 목록 데이터 로드 및 parse
+    const allItems = JSON.parse(allItemsJson || '[]'); 
+
+    // 품목 분류, 품목 ID, 품목명, 등록/수정 슬라이드 전체 지정
+    const inputItemDiv = document.querySelector('#input_item_div');
+    const inputItemId = document.querySelector('#input_item_id');
+    const inputItemName = document.querySelector('#input_item_name');
+    const slideInput = document.querySelector('#slide-input');
+
+    // 뭐 하나라도 없으면 경고~
+    // console.warn이라고 하는 것도 있더라
+    // 말고 console.error, console.table()-테이블 형식????, console.trace()-함수 호출 경로 파악용
+    //      console.time() & console.timeEnd()-실행 시간 측정용
+    //      console.group() & console.groupEnd()–콘솔 그룹화... 오 유용할 듯
+    //      console.count()–특정 코드 실행 수 확인
+    if (!inputItemDiv || !inputItemId || !inputItemName || allItems.length === 0) {
+        console.warn('품목 데이터 뭐 빠짐');
+        return; 
+    }
+
+     // 함수 1: 품목 ID select의 옵션을 갱신
+
+    function upItemIdOpt(itemToUp) {
+        // 첫 번째 옵션 (index 0 - 선택이라고 해둔 부분)을 제외하고 모두 삭제
+        while (inputItemId.options.length > 1) {
+            inputItemId.remove(1);
+        }
+        
+        // 새로운 옵션 추가
+        itemToUp.forEach(item => {
+            // 옵션 만들기
+            const option = document.createElement('option');
+            // value는 item_id
+            option.value = item.item_id;
+            // id와 함께 이름 표시
+            option.textContent = `${item.item_id} - ${item.item_name}`;
+            // item_name을 data-name 속성에 저장
+            option.dataset.name = item.item_name; 
+            inputItemId.appendChild(option);
+        });
+
+        // 품목 ID select를 "선택" 상태로 초기화
+        inputItemId.value = '';
+    }
+
+    // 함수 2: 품목 분류 및 품목 이름 검색 조건에 따라 품목 목록을 필터링
+
+    function filterItems() {
+        // 선택된 품목 분류, 입력된 품목명 검색어
+        const selectedDiv = inputItemDiv.value;
+        const searchName = inputItemName.value.trim().toLowerCase();
+        
+        let filteredItems = allItems;
+
+        // 품목 분류 필터링
+        // 분류가 ''가 아니면(비어 있지 않으면) 코드 실행 
+        if (selectedDiv !== '') {
+            // filteredItems에서 item_div가 selectedDiv랑 같은 것만 남겨서 새로 갱신
+            filteredItems = filteredItems.filter((item) => {
+                return item.item_div === selectedDiv;
+            });
+        }
+
+        // 품목 이름 검색 필터링 (대소문자 구분 없이 부분 일치 검색)
+        // 분류가 ''가 아니면(안 비어 있으면) 코드 실행
+        if (searchName !== '') {   
+            filteredItems = filteredItems.filter((item) => {
+                return item.item_name && item.item_name.toLowerCase().includes(searchName)
+            });
+        }
+
+        // 품목 ID select 갱신
+        upItemIdOpt(filteredItems);
+    }
+
+    // 품목 분류 또는 품목 이름 입력 시 필터링(함수 2) 실행
+    inputItemDiv.addEventListener('change', filterItems);
+    inputItemName.addEventListener('input', filterItems);
+
+    // 품목 ID 선택 시 품목 이름 input 자동 채우기
+    inputItemId.addEventListener('change', (evt) => {
+        const selectedOption = evt.target.options[evt.target.selectedIndex];
+        
+        // 선택된 품목 ID의 품목명으로 검색 필드를 채우기
+        if (selectedOption && selectedOption.dataset.name) {
+            inputItemName.value = selectedOption.dataset.name; 
+        } 
+    });
+
+    // 신규(등록) 버튼 클릭 시 슬라이드 열기 및 초기화
+    document.querySelector('.btm-btn.new').addEventListener('click', () => {
+        slideInput.classList.add('open');
+        // 초기화 : 모든 필터와 선택값 초기화
+        inputItemDiv.value = '';
+        inputItemName.value = '';
+        // 전체 품목으로 다시 갱신
+        upItemIdOpt(allItems); 
+        inputItemId.value = '';
+    });
+
+
+
+
+// ============================
+// 등록 / 수정 슬라이드 - 데이터 저장
+// ============================
+//
+// 사용 시 수정 필요 영역 : 
+//                          -
+//                          
+// ==================================================================================
+
+
 });
 
 // 상세 슬라이드에 데이터를 채우는 함수
@@ -96,4 +221,7 @@ function fillDetail(slide, data) {
         stockRow.children[0].textContent = data.stock_amount || '';
         stockRow.children[1].textContent = data.stock_wrap || '';
     }
+
 }
+
+

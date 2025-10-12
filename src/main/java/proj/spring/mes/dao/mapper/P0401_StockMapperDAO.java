@@ -11,6 +11,7 @@ public interface P0401_StockMapperDAO {
 	
 	List<P0401_StockDTO> selectStock();
 	P0401_StockDTO selectOneStock(String stock_id);
+	List<P0401_StockDTO> selectStockItem();
 	int updateStock(P0401_StockDTO dto);
 	int deleteStock(String stock_id);
 	int insertStock(P0401_StockDTO dto);
