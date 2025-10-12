@@ -36,6 +36,8 @@ public class ItemServiceImpl implements ItemService {
     public long count() {
         return itemMapper.selectItemCount();
     }
+    
+    
 
     @Override
     public ItemDTO get(String ItemId) {

@@ -51,17 +51,24 @@
     ]]>
   </select>
 
-  <!-- 단건: 단일 문자열 파라미터는 #{value} -->
+  <!-- 단건: 단일 문자열 파라미터는  -->
   <select id="selectItemOne" parameterType="string" resultType="proj.spring.mes.dto.ItemDTO">
     <![CDATA[
-    SELECT
-      item_id,
-      item_price,
-      item_div,
-      item_name,
-      item_unit
-    FROM V3_item
-    WHERE item_id = #{value}
+	SELECT
+	  COALESCE(c.client_id, ci.client_id) AS client_id,  -- 조인 안 된 쪽도 아이디 보이게
+	  c.client_name,
+	  COALESCE(i.item_id, ci.item_id)     AS item_id,
+	  i.item_name,
+	  i.item_div,
+	  i.item_price,
+	  i.item_unit
+	FROM v3_client c
+	FULL OUTER JOIN v3_client_items ci
+	  ON ci.client_id = c.client_id
+	FULL OUTER JOIN v3_item i
+	  ON i.item_id = ci.item_id 
+
+    WHERE i.item_id = #{itemId}
     ]]>
   </select>
   
@@ -104,7 +111,7 @@
       item_div   = #{item_div},
       item_name  = #{item_name},
       item_unit  = #{item_unit}
-    WHERE item_id = #{item_id}
+    WHERE item_id = #{itemId}
     ]]>
   </update>
 
@@ -112,7 +119,7 @@
   <delete id="deleteItem" parameterType="string">
     <![CDATA[
     DELETE FROM V3_item
-    WHERE item_id = #{value}
+    WHERE item_id = #{itemId}
     ]]>
   </delete>
 

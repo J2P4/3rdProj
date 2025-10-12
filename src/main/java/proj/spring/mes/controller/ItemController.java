@@ -8,8 +8,11 @@ import java.io.UnsupportedEncodingException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import proj.spring.mes.dto.ItemDTO;
+import proj.spring.mes.dto.P0401_StockDTO;
 import proj.spring.mes.service.ItemService;             
 @Controller                                              
 public class ItemController {
@@ -123,7 +126,15 @@ public String deleteItems(
     return "redirect:" + b.build().encode().toUriString();
 }
     
-    
+
+
+@RequestMapping("/item/detail")
+@ResponseBody
+public ItemDTO detail(@RequestParam("item_id") String item_id) {
+    ItemDTO dto = itemService.get(item_id);
+    System.out.println(dto);
+    return dto;
+}
     
     
     
