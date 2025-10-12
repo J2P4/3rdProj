@@ -36,8 +36,6 @@ public class UserController {
     		@RequestParam(value = "size", required = false, defaultValue = "10") int pagePerRows, // 페이지당 행 수 파라미터 (기본 10)
             @RequestParam(value = "page", required = false, defaultValue = "1")  int page         // 현재 페이지 번호 파라미터 (기본 1, 1-base)
             ) {
-        List<WorkerDTO> list = workerService.list();
-        List<DeptDTO> deptList = workerService.deptList();
         
      // ===================== 1) 입력값 방어/보정 =====================
         int minSize = 1;                                 // 한 페이지 최소 1행
@@ -54,6 +52,7 @@ public class UserController {
         if (page > totalPages) page = totalPages;        // 요청 페이지가 마지막 페이지 초과하면 마지막 페이지로 보정
 
         // ===================== 4) 목록 조회 =====================
+        List<WorkerDTO> list = workerService.list(page, pagePerRows);
         //실제 OFFSET 계산((page-1)*pagePerRows)은 Service/Mapper에서 처리하도록 위임
         model.addAttribute("list", workerService.list(page, pagePerRows)); // 현재 페이지에 해당하는 데이터 목록
 
@@ -81,9 +80,9 @@ public class UserController {
         model.addAttribute("prevBlockStart", prevBlockStart); // 이전 블록이동 시 타깃 페이지(예: 11→1)
         model.addAttribute("nextBlockStart", nextBlockStart); // 다음 블록이동 시 타깃 페이지(예: 1→11)
 
-        
-        model.addAttribute("list", list);
+        List<DeptDTO> deptList = workerService.deptList();
         model.addAttribute("deptList", deptList);
+        
         System.out.println("목록페이지");
         
         

@@ -138,7 +138,7 @@
 	
 	        <c:choose>
 	            <c:when test="${hasPrevBlock}"> <%-- 이전 블록이 있으면 링크 활성 --%>
-	                <c:url var="prevBlockUrl" value="${selfPath}"> <%-- /itemlist 에 파라미터 조합 --%>
+	                <c:url var="prevBlockUrl" value="${selfPath}"> <%-- /list 에 파라미터 조합 --%>
 	                    <c:param name="page" value="${prevBlockStart}"/> <%-- 이전 블록 첫 페이지로 이동 --%>
 	                    <c:param name="size" value="${pagePerRows}"/> <%-- Rows 유지 --%>
 	                    <c:param name="worker_name" value="${param.worker_name}"/> <%-- 필터 유지 --%>
