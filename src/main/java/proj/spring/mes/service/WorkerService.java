@@ -3,7 +3,6 @@ package proj.spring.mes.service;
 import java.util.List;
 
 import proj.spring.mes.dto.DeptDTO;
-import proj.spring.mes.dto.ItemDTO;
 import proj.spring.mes.dto.WorkerDTO;
 
 public interface WorkerService {

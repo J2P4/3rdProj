@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import proj.spring.mes.dao.mapper.WorkerMapperDAO;
 import proj.spring.mes.dto.DeptDTO;
-import proj.spring.mes.dto.ItemDTO;
 import proj.spring.mes.dto.WorkerDTO;
 
 @Service
@@ -77,12 +76,12 @@ public class WorkerServiceImpl implements WorkerService{
         int offset = (p - 1) * size;
 
         // Mapper는 LIMIT/OFFSET 받는 메서드가 필요함
-        return workerMapperDao.selectItemListPage(size, offset);
+        return workerMapperDao.selectWorkerListPage(p, offset);
     }
 
     //  총 레코드 수
     @Override
     public long count() {
-        return workerMapperDao.selectItemCount();
+        return workerMapperDao.selectWorkerCount();
     }
 }

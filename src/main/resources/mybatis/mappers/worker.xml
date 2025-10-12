@@ -25,7 +25,7 @@
 	
 	<!-- 페이징 목록 (Oracle ROWNUM 방식, limit/offset 그대로 받음) -->
 	<!-- Mapper 인터페이스: selectItemListPage(@Param("limit") int limit, @Param("offset") int offset) -->
-	<select id="selectItemListPage" resultType="workerDTO">
+	<select id="selectWorkerListPage" resultType="workerDTO">
 	    <bind name="startRow" value="offset + 1"/>
 	    <bind name="endRow"   value="offset + limit"/>
 	    <![CDATA[
@@ -55,9 +55,9 @@
 	  </select>
 	
 	  <!-- 총 레코드 수 -->
-	  <select id="selectItemCount" resultType="long">
+	  <select id="selectWorkerCount" resultType="long">
 	    <![CDATA[
-	    SELECT COUNT(*) FROM V3_item
+	    SELECT COUNT(*) FROM V3_worker
 	    ]]>
 	  </select>
 	
