@@ -121,7 +121,7 @@ public class LoginController {
 	        }
 	    }
 
-	    // 저장 (서비스 내부에서 BCrypt encode)
+	    // 저장 (서비스에서 암호화)
 	    workerService.updatePassword(worker_id, newPw);
 
 	    // 강제 변경 플래그 해제

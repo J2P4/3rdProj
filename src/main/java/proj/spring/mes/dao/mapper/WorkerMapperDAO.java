@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import proj.spring.mes.dto.DeptDTO;
+import proj.spring.mes.dto.ItemDTO;
 import proj.spring.mes.dto.WorkerDTO;
 
 @Mapper
@@ -20,5 +21,8 @@ public interface WorkerMapperDAO {
     int deleteWorker(String worker_id);             // 삭제
 	int updatePassword(@Param("worker_id") String worker_id, @Param("hashed") String hashed);
 	
-	
+	// 신규(페이징)
+    List<WorkerDTO> selectItemListPage(@Param("limit") int limit, @Param("offset") int offset);
+	// 신규(총계)
+    long selectItemCount();
 }
