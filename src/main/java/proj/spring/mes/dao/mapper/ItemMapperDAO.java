@@ -1,6 +1,8 @@
 package proj.spring.mes.dao.mapper;
 
 import java.util.List;
+import java.util.Map;
+
 import org.apache.ibatis.annotations.Param;
 import proj.spring.mes.dto.ItemDTO;
 
@@ -17,4 +19,7 @@ public interface ItemMapperDAO {
 
     // 신규(총계)
     long selectItemCount();
+    
+    
+    List<Map<String, Object>> clientlist();
 }

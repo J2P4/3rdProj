@@ -24,7 +24,7 @@
 <body>
 <h1>품목 리스트</h1>
 
-<c:url var="itemlistUrl" value="/itemlist"/> <%-- 모든 내부 링크의 기준 URL(중복 /mes/mes 방지) 이거 떄믄에 한시간.... --%>
+<c:url var="itemlistUrl" value="/itemlist"/> <%-- 모든 내부 링크의 기준 URL(중복 /mes/mes 방지) --%>
 <c:set var="selfPath" value="/itemlist"/> <%-- c:url value에 사용할 경로 문자열 --%>
 
 <form class="panel" method="get" action="${itemlistUrl}">
@@ -33,21 +33,21 @@
             <div class="filter-item">
                 <span class="filitem-name">· 품목 ID</span>
                 <div class="filitem-input">
-                    <input type="text" name="itemNo" value="${fn:escapeXml(param.itemNo)}"> <%-- 이전 입력 유지 --%>
+                    <input type="text" name="itemNo" value="${fn:escapeXml(param.itemNo)}">
                 </div>
             </div>
 
             <div class="filter-item">
                 <span class="filitem-name">· 품목 이름</span>
                 <div class="filitem-input">
-                    <input type="text" name="itemName" value="${fn:escapeXml(param.itemName)}"> <%-- 이전 입력 유지 --%>
+                    <input type="text" name="itemName" value="${fn:escapeXml(param.itemName)}">
                 </div>
             </div>
 
             <div class="filter-item">
                 <span class="filitem-name">· 구분</span>
                 <div class="filitem-input">
-                    <input type="text" name="item_div" value="${fn:escapeXml(param.item_div)}"> <%-- 이전 입력 유지 --%>
+                    <input type="text" name="item_div" value="${fn:escapeXml(param.item_div)}">
                 </div>
             </div>
 
@@ -62,8 +62,8 @@
         </div>
 
         <div class="filter-btn">
-            <input type="hidden" name="page" value="1"/> <%-- 조회 시 항상 1페이지부터 --%>
-            <input type="hidden" name="size" value="${pagePerRows != null ? pagePerRows : 10}"/> <%-- 현재 Rows 유지 --%>
+            <input type="hidden" name="page" value="1"/>
+            <input type="hidden" name="size" value="${pagePerRows != null ? pagePerRows : 10}"/>
             <input type="submit" class="fil-btn" value="조회">
         </div>
     </div>
@@ -73,7 +73,7 @@
     <table>
         <thead>
             <tr>
-                <th class="chkbox"><input type="checkbox" id="chkAll"></th> <%-- 전체선택 --%>
+                <th class="chkbox"><input type="checkbox" id="chkAll"></th>
                 <th>품목 ID</th>
                 <th>품목 이름</th>
                 <th>구분</th>
@@ -83,11 +83,11 @@
         </thead>
         <tbody>
             <c:choose>
-                <c:when test="${not empty list}"> <%-- 데이터가 있을 때 --%>
-                    <c:forEach var="row" items="${list}"> <%-- 각 행 렌더링 --%>
-                        <tr data-id="${row.item_id}"> <%-- 수정: ItemDTO.item_id 대신 row.item_id 사용 --%>
-                            <td class="chkbox"><input type="checkbox" class="rowChk"></td> <%-- 행 선택 --%>
-                            <td>${fn:escapeXml(row.item_id)}</td> <%-- DTO 필드 그대로 표시 --%>
+                <c:when test="${not empty list}">
+                    <c:forEach var="row" items="${list}">
+                        <tr data-id="${row.item_id}">
+                            <td class="chkbox"><input type="checkbox" class="rowChk"></td>
+                            <td>${fn:escapeXml(row.item_id)}</td>
                             <td>${fn:escapeXml(row.item_name)}</td>
                             <td>${fn:escapeXml(row.item_div)}</td>
                             <td><fmt:formatNumber value="${row.item_price}" pattern="#,##0"/></td>
@@ -95,10 +95,10 @@
                         </tr>
                     </c:forEach>
                 </c:when>
-                <c:otherwise> <%-- 데이터 없을 때 자리 채우기 --%>
+                <c:otherwise>
                     <c:forEach var="i" begin="1" end="10">
                         <tr aria-hidden="true">
-                            <td class="chkbox"><input type="checkbox" name="rowChk" disabled aria-hidden="true"></td> <%-- 비활성화로 오작동 방지 --%>
+                            <td class="chkbox"><input type="checkbox" name="rowChk" disabled aria-hidden="true"></td>
                             <td>&nbsp;</td><td></td><td></td><td class="col-qty"></td><td></td>
                         </tr>
                     </c:forEach>
@@ -111,15 +111,15 @@
 <div class="bottom-btn">
     <div class="page">
 
-        <c:if test="${empty page}"><c:set var="page" value="1"/></c:if> <%-- 현재 페이지 기본 1 --%>
-        <c:if test="${empty pagePerRows}"><c:set var="pagePerRows" value="10"/></c:if> <%-- Rows 기본 10 --%>
-        <c:if test="${empty totalPages}"><c:set var="totalPages" value="1"/></c:if> <%-- 총페이지 기본 1 --%>
-        <c:if test="${empty startPage}"><c:set var="startPage" value="1"/></c:if> <%-- 블록 시작 기본 1 --%>
-        <c:if test="${empty endPage}"><c:set var="endPage" value="${totalPages}"/></c:if> <%-- 블록 끝 기본 총페이지 --%>
+        <c:if test="${empty page}"><c:set var="page" value="1"/></c:if>
+        <c:if test="${empty pagePerRows}"><c:set var="pagePerRows" value="10"/></c:if>
+        <c:if test="${empty totalPages}"><c:set var="totalPages" value="1"/></c:if>
+        <c:if test="${empty startPage}"><c:set var="startPage" value="1"/></c:if>
+        <c:if test="${empty endPage}"><c:set var="endPage" value="${totalPages}"/></c:if>
 
         <form id="sizeForm" method="get" action="${itemlistUrl}" style="display:inline-block; margin-right:8px;">
-            <input type="hidden" name="page" value="1"/> <%-- Rows 바꾸면 1페이지로 --%>
-            <input type="hidden" name="itemNo" value="${fn:escapeXml(param.itemNo)}"/> <%-- 기존 필터 유지 --%>
+            <input type="hidden" name="page" value="1"/>
+            <input type="hidden" name="itemNo" value="${fn:escapeXml(param.itemNo)}"/>
             <input type="hidden" name="itemName" value="${fn:escapeXml(param.itemName)}"/>
             <input type="hidden" name="item_div" value="${fn:escapeXml(param.item_div)}"/>
             <input type="hidden" name="item_min" value="${fn:escapeXml(param.item_min)}"/>
@@ -127,7 +127,7 @@
 
             <label>Rows:
                 <select name="size" onchange="document.getElementById('sizeForm').submit()">
-                    <option value="1" ${pagePerRows==1 ? 'selected' : ''}>1</option> <%-- 1행 보기(블록 전환 테스트에 유용) --%>
+                    <option value="1" ${pagePerRows==1 ? 'selected' : ''}>1</option>
                     <option value="10" ${pagePerRows==10 ? 'selected' : ''}>10</option>
                     <option value="20" ${pagePerRows==20 ? 'selected' : ''}>20</option>
                     <option value="50" ${pagePerRows==50 ? 'selected' : ''}>50</option>
@@ -137,25 +137,25 @@
         </form>
 
         <c:choose>
-            <c:when test="${hasPrevBlock}"> <%-- 이전 블록이 있으면 링크 활성 --%>
-                <c:url var="prevBlockUrl" value="${selfPath}"> <%-- /itemlist 에 파라미터 조합 --%>
-                    <c:param name="page" value="${prevBlockStart}"/> <%-- 이전 블록 첫 페이지로 이동 --%>
-                    <c:param name="size" value="${pagePerRows}"/> <%-- Rows 유지 --%>
-                    <c:param name="itemNo" value="${param.itemNo}"/> <%-- 필터 유지 --%>
+            <c:when test="${hasPrevBlock}">
+                <c:url var="prevBlockUrl" value="${selfPath}">
+                    <c:param name="page" value="${prevBlockStart}"/>
+                    <c:param name="size" value="${pagePerRows}"/>
+                    <c:param name="itemNo" value="${param.itemNo}"/>
                     <c:param name="itemName" value="${param.itemName}"/>
                     <c:param name="item_div" value="${param.item_div}"/>
                     <c:param name="item_min" value="${param.item_min}"/>
                     <c:param name="item_max" value="${param.item_max}"/>
                 </c:url>
-                <a class="page-link" href="${prevBlockUrl}">이전</a> <%-- 클릭 시 이전 블록 시작으로 --%>
+                <a class="page-link" href="${prevBlockUrl}">이전</a>
             </c:when>
             <c:otherwise>
-                <span class="page-link disabled">이전</span> <%-- 이전 블록이 없으면 비활성 --%>
+                <span class="page-link disabled">이전</span>
             </c:otherwise>
         </c:choose>
 
         <c:forEach var="p" begin="${startPage}" end="${endPage}">
-            <c:url var="pUrl" value="${selfPath}"> <%-- 각 페이지 숫자 링크 --%>
+            <c:url var="pUrl" value="${selfPath}">
                 <c:param name="page" value="${p}"/>
                 <c:param name="size" value="${pagePerRows}"/>
                 <c:param name="itemNo" value="${param.itemNo}"/>
@@ -166,10 +166,10 @@
             </c:url>
             <c:choose>
                 <c:when test="${p == page}">
-                    <span class="page-link current"><strong>${p}</strong></span> <%-- 현재 페이지는 강조(링크 X) --%>
+                    <span class="page-link current"><strong>${p}</strong></span>
                 </c:when>
                 <c:otherwise>
-                    <a class="page-link" href="${pUrl}">${p}</a> <%-- 다른 페이지는 링크 --%>
+                    <a class="page-link" href="${pUrl}">${p}</a>
                 </c:otherwise>
             </c:choose>
         </c:forEach>
@@ -177,7 +177,7 @@
         <c:choose>
             <c:when test="${hasNextBlock}">
                 <c:url var="nextBlockUrl" value="${selfPath}">
-                    <c:param name="page" value="${nextBlockStart}"/> <%-- 다음 블록 시작 페이지 --%>
+                    <c:param name="page" value="${nextBlockStart}"/>
                     <c:param name="size" value="${pagePerRows}"/>
                     <c:param name="itemNo" value="${param.itemNo}"/>
                     <c:param name="itemName" value="${param.itemName}"/>
@@ -185,18 +185,21 @@
                     <c:param name="item_min" value="${param.item_min}"/>
                     <c:param name="item_max" value="${param.item_max}"/>
                 </c:url>
-                <a class="page-link" href="${nextBlockUrl}">다음</a> <%-- 클릭 시 11, 21, … --%>
+                <a class="page-link" href="${nextBlockUrl}">다음</a>
             </c:when>
             <c:otherwise>
-                <span class="page-link disabled">다음</span> <%-- 다음 블록 없으면 비활성 --%>
+                <span class="page-link disabled">다음</span>
             </c:otherwise>
         </c:choose>
 
-    </div> <div class="bottom-btn-box">
-        <input type="button" class="btm-btn new" value="신규"> <%-- 신규 등록(예정) --%>
-        <input type="button" id="btnDelete" class="btm-btn del" value="삭제"> <%-- 선택 삭제(예정) --%>
+    </div> 
+    <div class="bottom-btn-box">
+        <input type="button" class="btm-btn new" value="신규">
+        <input type="button" id="btnDelete" class="btm-btn del" value="삭제">
     </div>
-</div> <c:url var="deleteUrl" value="/item/delete"/>
+</div>
+
+<c:url var="deleteUrl" value="/item/delete"/>
 <form id="deleteForm" method="post" action="${deleteUrl}" style="display:none;">
     <input type="hidden" name="ids" id="deleteIds">
     <input type="hidden" name="page" value="${page}">
@@ -283,55 +286,8 @@
 </div>
 
 
-<script>
-// 기존의 체크박스 및 삭제 로직은 그대로 유지했습니다.
-(function() {
-    function textOf(el){ return (el && el.textContent ? el.textContent : '').replace(/\u00A0/g,' ').trim(); }
 
-    var chkAll = document.getElementById('chkAll');
-    if (chkAll) {
-        chkAll.addEventListener('change', function(){
-            var nodes = document.querySelectorAll('tbody .rowChk');
-            for (var i=0; i<nodes.length; i++) {
-                if (!nodes[i].disabled) nodes[i].checked = chkAll.checked;
-            }
-        });
-    }
-    document.addEventListener('change', function(e){
-        var t = e.target;
-        if (t && t.classList && t.classList.contains('rowChk')) {
-            var rows = document.querySelectorAll('tbody .rowChk:not(:disabled)');
-            var checked = document.querySelectorAll('tbody .rowChk:not(:disabled):checked');
-            if (chkAll && rows.length > 0) chkAll.checked = (rows.length === checked.length);
-        }
-    });
 
-    var btnDel = document.getElementById('btnDelete');
-    if (!btnDel) return;
-    btnDel.addEventListener('click', function(){
-        var checks = document.querySelectorAll('tbody .rowChk:checked');
-        if (!checks || checks.length === 0) { alert('삭제할 항목을 선택하세요.'); return; }
-
-        var ids = [];
-        for (var i=0; i<checks.length; i++) {
-            var tr = checks[i].closest ? checks[i].closest('tr') : null;
-            if (!tr || tr.getAttribute('aria-hidden') === 'true') continue; // 자리채움행 무시
-            var tds = tr.querySelectorAll('td');
-            if (tds.length < 2) continue;
-            var idVal = textOf(tds[1]); // 2번째 컬럼 = 품목 ID
-            if (idVal) ids.push(idVal);
-        }
-
-        if (ids.length === 0) { alert('선택된 행에서 품목 ID를 찾지 못했습니다.'); return; }
-        if (!confirm(ids.length + '건 삭제하시겠습니까?')) return;
-
-        var form = document.getElementById('deleteForm');
-        if (!form) { alert('삭제 폼을 찾을 수 없습니다.'); return; }
-        document.getElementById('deleteIds').value = ids.join(',');
-        form.submit();
-    });
-})();
-</script>
 
 </body>
 </html>

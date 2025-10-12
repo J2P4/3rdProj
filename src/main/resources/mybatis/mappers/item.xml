@@ -111,7 +111,7 @@
       item_div   = #{item_div},
       item_name  = #{item_name},
       item_unit  = #{item_unit}
-    WHERE item_id = #{itemId}
+   WHERE item_id = #{item_id}
     ]]>
   </update>
 
@@ -122,5 +122,18 @@
     WHERE item_id = #{itemId}
     ]]>
   </delete>
+  
+  
+  
+<select id="clientlist" resultType="proj.spring.mes.dto.ItemDTO">
+  SELECT
+    client_id,
+    client_name
+  FROM V3_client
+  ORDER BY client_id
+</select>
+  
+  
+  
 
 </mapper>

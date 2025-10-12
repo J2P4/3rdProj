@@ -1,7 +1,8 @@
 package proj.spring.mes.controller;                   
 
 import org.springframework.stereotype.Controller;         
-import org.springframework.web.bind.annotation.RequestMapping; 
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.ui.Model;
 
 import java.io.UnsupportedEncodingException;
@@ -137,7 +138,59 @@ public ItemDTO detail(@RequestParam("item_id") String item_id) {
 }
     
     
+
+@RequestMapping("/item/save")
+@ResponseBody
+public ItemDTO edit(@RequestParam("item_id") String item_id) {
+    ItemDTO dto = itemService.get(item_id);
+    System.out.println(dto);
+    return dto;
+}
     
     
+
+@RequestMapping(value="/item/save", method=RequestMethod.POST)
+@ResponseBody
+public ItemDTO save(
+    @RequestParam(value="item_id",   required=false) String item_id, // 신규면 null 허용
+    @RequestParam("item_name") String item_name,
+    @RequestParam("item_div")  String item_div,
+    @RequestParam("item_price") int item_price,
+    @RequestParam("item_unit") String item_unit
+) {
+    ItemDTO dto = new ItemDTO();
+    dto.setItem_id(item_id);
+    dto.setItem_name(item_name);
+    dto.setItem_div(item_div);
+    dto.setItem_price(item_price);
+    dto.setItem_unit(item_unit);
+
+    if (item_id == null || item_id.isEmpty()) {
+        itemService.add(dto);
+        // dto = itemService.get(dto.getItem_id());
+    } else {
+        itemService.edit(dto);
+    }
+    return dto;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     
 }
