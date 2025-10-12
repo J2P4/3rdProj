@@ -97,9 +97,12 @@
 
 	<!-- delete -->
 	<!-- resultType이 정해져 있어 따로 안써도 됨 -->
-	<delete id="deleteWorker" parameterType="workerDTO">
+	<delete id="deleteWorkers" parameterType="workerDTO">
 		delete from V3_worker
-		where worker_id= #{worker_id}	
+		where worker_id in
+		<foreach collection="worker_ids" item="id" open="(" separator="," close=")">
+		    #{id} <!-- item이 id로 정의되어 있으므로 id -->
+		</foreach>
 	</delete>
 	
 	<!-- insert -->

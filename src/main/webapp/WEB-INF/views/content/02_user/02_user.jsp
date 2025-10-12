@@ -93,7 +93,7 @@
 				<c:if test="${not empty list }">
 					<c:forEach var="workerDTO" items="${list }">			 
 		                <tr>
-		                    <td><input type="checkbox" class="rowChk" name="worker_id" value="${workerDTO.worker_id }"></td>
+		                    <td><input type="checkbox" class="rowChk" name="many_workers" value="${workerDTO.worker_id }"></td>
 		                    <td>${workerDTO.worker_id }</td>
 		                    <td><a href="detail?worker_id=${workerDTO.worker_id }">${workerDTO.worker_name }</a></td>
 		                    <td>${workerDTO.department_name }</td>
@@ -105,6 +105,9 @@
             </tbody>
         </table>
     </div>
+    <!-- 현재 페이지 유지 -->
+    <input type="hidden" name="page" value="${page}">
+    <input type="hidden" name="size" value="${pagePerRows}">
     <div class = "bottom-btn">
     	<div class = "bottom-btn-box">
             <input type = "button" class = "btm-btn new" value="신규">

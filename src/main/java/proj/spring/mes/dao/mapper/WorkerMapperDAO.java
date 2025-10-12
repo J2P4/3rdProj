@@ -17,7 +17,7 @@ public interface WorkerMapperDAO {
     WorkerDTO selectOneWorker(String worker_id);    // 하나만 조회
     int insertWorker(WorkerDTO dto);                // 등록
     int updateWorker(WorkerDTO dto);                // 수정
-    int deleteWorker(String worker_id);             // 삭제
+    int deleteWorkers(@Param("worker_ids") List<String> worker_ids);
 	int updatePassword(@Param("worker_id") String worker_id, @Param("hashed") String hashed);
 	
 	// 신규(페이징)

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import proj.spring.mes.dto.DeptDTO;
 import proj.spring.mes.dto.WorkerDTO;
@@ -54,7 +55,7 @@ public class UserController {
         // ===================== 4) 목록 조회 =====================
         List<WorkerDTO> list = workerService.list(page, pagePerRows);
         //실제 OFFSET 계산((page-1)*pagePerRows)은 Service/Mapper에서 처리하도록 위임
-        model.addAttribute("list", workerService.list(page, pagePerRows)); // 현재 페이지에 해당하는 데이터 목록
+        model.addAttribute("list", list); // 현재 페이지에 해당하는 데이터 목록
 
         // ===================== 5) 블록 페이지네이션 계산(10개 단위) =====================
         final int blockSize = 10;                        // 페이지 번호를 묶어서 보여주기
@@ -177,10 +178,23 @@ public class UserController {
 
     /** 삭제 */
 	@RequestMapping("/delete")
-    public String delete(Model model, String worker_id) {
-        int result = workerService.remove(worker_id);
-        System.out.println("삭제결과 : "+ result);
-        return "redirect:/list";
+    public String delete(@RequestParam(value = "many_workers", required = false) List<String> many_workers,
+    	    @RequestParam(defaultValue = "1") int page,
+    	    @RequestParam(defaultValue = "10") int size,
+    	    RedirectAttributes re
+    	) {
+    	    if (many_workers == null || many_workers.isEmpty()) {
+    	    	re.addFlashAttribute("msg", "선택된 항목이 없습니다.");
+    	    	re.addAttribute("page", page);
+    	    	re.addAttribute("size", size);
+    	        return "redirect:/list";
+    	    }
+    	    int deleted = workerService.deleteWorkers(many_workers);
+    	    re.addFlashAttribute("msg", deleted + "건 삭제했습니다.");
+    	    // ★ 삭제 후에도 보고 있던 페이지로 돌아가기
+    	    re.addAttribute("page", page);
+    	    re.addAttribute("size", size);
+    	    return "redirect:/list";
     }
 	
 }

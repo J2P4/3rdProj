@@ -50,8 +50,9 @@ public class WorkerServiceImpl implements WorkerService{
     }
 
     @Override
-    public int remove(String worker_id) {
-        return workerMapperDao.deleteWorker(worker_id);
+    public int deleteWorkers(List<String> worker_ids) {
+        if (worker_ids == null || worker_ids.isEmpty()) return 0;
+        return workerMapperDao.deleteWorkers(worker_ids);
     }
 
     // 암호화
@@ -76,7 +77,7 @@ public class WorkerServiceImpl implements WorkerService{
         int offset = (p - 1) * size;
 
         // Mapper는 LIMIT/OFFSET 받는 메서드가 필요함
-        return workerMapperDao.selectWorkerListPage(p, offset);
+        return workerMapperDao.selectWorkerListPage(size, offset);
     }
 
     //  총 레코드 수
