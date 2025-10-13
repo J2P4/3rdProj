@@ -211,7 +211,6 @@
     <input type="hidden" name="item_max" value="${fn:escapeXml(param.item_max)}"/>
 </form>
 
-<c:url var="saveUrl" value="/item/save"/>
 
 <div class="slide" id="slide-input">
     <div class="slide-contents">
@@ -231,7 +230,16 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td><input type="text" name="vendorId" id="vendorId"></td>
+                        <td>
+                            <!-- 기존 입력 유지 주석 -->
+                            <!-- <input type="text" name="vendorId" id="vendorId"> -->
+                            <!-- 스크롤 가능한 listbox(select size)로 변경 -->
+                            <select name="vendorId" id="vendorId" size="8" required>
+                                <!-- JS가 옵션 주입 -->
+                            </select>
+                         
+                            
+                        </td>
                         <td>
                         
 <!--                         <input type="text" name="itemDiv" id="itemDiv"> -->
@@ -269,7 +277,7 @@
         <thead>
           <tr>
             <th>거래처 ID</th>
-            <th>거래처 이름</th>
+<!--             <th>거래처 이름</th> -->
             <th>품목 구분</th>
             <th>단가</th>
             <th>단위</th>
@@ -278,7 +286,7 @@
         <tbody>
           <tr>
             <td id="d-clientId"></td>
-            <td id="d-clientName"></td>
+<!--             <td id="d-clientName"></td> -->
             <td id="d-itemDiv"></td>
             <td id="d-itemPrice"></td>
             <td id="d-itemUnit"></td>
@@ -293,10 +301,6 @@
     </div>
   </div>
 </div>
-
-
-
-
 
 </body>
 </html>
