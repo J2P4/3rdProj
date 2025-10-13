@@ -1,5 +1,5 @@
 package proj.spring.mes.dao.mapper;
 
-public class P0405_ProcessMapperDAO {
+public interface P0405_ProcessMapperDAO {
 
 }

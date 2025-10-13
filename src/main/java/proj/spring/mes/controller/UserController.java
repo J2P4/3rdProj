@@ -187,14 +187,14 @@ public class UserController {
     	    	re.addFlashAttribute("msg", "선택된 항목이 없습니다.");
     	    	re.addAttribute("page", page);
     	    	re.addAttribute("size", size);
-    	        return "redirect:/list";
+    	        return "redirect:/workerlist";
     	    }
     	    int deleted = workerService.deleteWorkers(many_workers);
     	    re.addFlashAttribute("msg", deleted + "건 삭제했습니다.");
     	    // ★ 삭제 후에도 보고 있던 페이지로 돌아가기
     	    re.addAttribute("page", page);
     	    re.addAttribute("size", size);
-    	    return "redirect:/list";
+    	    return "redirect:/workerlist";
     }
 	
 }

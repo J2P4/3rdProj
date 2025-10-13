@@ -76,7 +76,7 @@
 		select * from V3_department
 	</select>
 	
-	<select id="selectOneDept" resultType="workerDTO">
+	<select id="selectOneDept" resultType="deptDTO">
 		select * from V3_department
 		where department_id = #{_parameter}
 	</select>

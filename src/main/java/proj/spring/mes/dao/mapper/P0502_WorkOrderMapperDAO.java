@@ -1,5 +1,5 @@
 package proj.spring.mes.dao.mapper;
 
-public class P0502_WorkOrderMapperDAO {
+public interface P0502_WorkOrderMapperDAO {
 
 }

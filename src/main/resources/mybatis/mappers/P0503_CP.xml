@@ -3,4 +3,119 @@
 	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="proj.spring.mes.dao.mapper.P0503_CPMapperDAO">
+	<!-- SQL문 작성 영역 -->
+	
+	<!-- 전체 조회 -->
+	<select id="selectCP" resultType="P0503_CPDTO">
+		select 
+	        c.cp_id,
+	        c.cp_amount,
+	        c.cp_start,
+	        c.cp_end,
+	        c.item_code,
+	        i.item_name
+	    from V3_cp c
+	    LEFT JOIN V3_item i
+	        on c.item_code = i.item_code
+	    order by c.cp_id
+	</select>
+	
+	<!-- 페이징 목록 (Oracle ROWNUM 방식, limit/offset 그대로 받음) -->
+	<!-- Mapper 인터페이스: selectItemListPage(@Param("limit") int limit, @Param("offset") int offset) -->
+	<select id="selectCPListPage" resultType="P0503_CPDTO">
+	    <bind name="startRow" value="offset + 1"/>
+	    <bind name="endRow"   value="offset + limit"/>
+	    <![CDATA[
+		    SELECT *
+			FROM (
+			  SELECT t.*, ROWNUM rn
+			  FROM (
+			    SELECT
+		      		c.cp_id,
+			        c.cp_amount,
+			        c.cp_start,
+			        c.cp_end,
+			        c.item_code,
+			        i.item_name
+			    from V3_cp c
+			    LEFT JOIN V3_item i
+			      on c.item_code = i.item_code
+			    order by c.cp_id ASC
+			  ) t
+			  WHERE ROWNUM <= #{endRow}
+			)
+			WHERE rn >= #{startRow}
+	    ]]>
+	  </select>
+	
+	  <!-- 총 레코드 수 -->
+	  <select id="selectCPCount" resultType="long">
+	    <![CDATA[
+	    SELECT COUNT(*) FROM V3_cp
+	    ]]>
+	  </select>
+	
+	<!-- 
+		resultType을 별칭을 쓸 수 있는 이유는 
+		modelConfig.xml에서 typeAlias 별칭을 설정해놨기 때문이다. 
+	-->
+	
+	<!-- 하나만 조회 -->
+	<select id="selectOneCP" resultType="P0503_CPDTO">
+		select * from V3_cp
+		where cp_id = #{_parameter}
+	</select>
+	
+	<select id="selectItem" resultType="ItemDTO">
+		select * from V3_item
+	</select>
+	
+	<select id="selectOneItem" resultType="ItemDTO">
+		select * from V3_item
+		where item_code = #{_parameter}
+	</select>
+
+
+	<!-- update -->
+	<update id="updateCP" parameterType="P0503_CPDTO">
+		update V3_cp
+		set	cp_amount = #{cp_amount},
+			cp_start = #{cp_start},
+			cp_end = #{cp_end},
+			item_code = #{item_code}
+		where cp_id = #{cp_id}
+	</update>
+
+	<!-- delete -->
+	<!-- resultType이 정해져 있어 따로 안써도 됨 -->
+	<delete id="deleteCPs" parameterType="P0503_CPDTO">
+		delete from V3_cp
+		where cp_id in
+		<foreach collection="cp_ids" item="id" open="(" separator="," close=")">
+		    #{id} <!-- item이 id로 정의되어 있으므로 id -->
+		</foreach>
+	</delete>
+	
+	<!-- insert -->
+	<insert id="insertCP" parameterType="P0503_CPDTO">
+  
+	  <!-- 먼저 cp_id 생성 -->
+	  <selectKey keyProperty="cp_id" resultType="string" order="BEFORE">
+	    SELECT 'H' || TO_CHAR(SYSDATE, 'YYMMDD') || LPAD(cp_id_seq.NEXTVAL, 2, '0')
+	    FROM dual
+	  </selectKey>
+	
+	  INSERT INTO V3_cp (
+	      cp_id, cp_amount, cp_start, cp_end, item_code
+	  )
+	  VALUES (
+	      #{cp_id}, #{cp_amount}, #{cp_start}, #{cp_end}, #{item_code}
+	  )
+	</insert>
+
+	
 </mapper>
+
+
+
+
