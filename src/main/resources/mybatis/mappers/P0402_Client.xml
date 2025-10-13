@@ -8,7 +8,7 @@
 
 
   <!-- 전체 목록 (무페이징) -->
-  <select id="selectClientList" resultType="proj.spring.mes.dto.ClientDTO">
+  <select id="selectClientList" resultType="proj.spring.mes.dto.P0402_ClientDTO">
     <![CDATA[
     SELECT
       client_id,
