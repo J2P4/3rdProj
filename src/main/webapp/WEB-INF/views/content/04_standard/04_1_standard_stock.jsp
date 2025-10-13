@@ -121,9 +121,12 @@
     </form>
     <!-- 입력용 슬라이드 -->
     <div class = "slide" id = "slide-input">
-        <div class = "slide-contents">
-            <div class = "silde-title"><h2>재고 등록</h2></div>
-            <div class = "slide-id">재고 ID: </div>
+        <form class = "slide-contents" id="stockInsertForm">
+            <div class = "silde-title"><h2 id="slide-title">재고 등록</h2></div>
+            <div class = "slide-id" id="stock-id-show" style = "display: none">
+                재고 ID: <span id="stock-id-val"></span>
+                <input type="hidden" id="input_stock_id" name="stock_id" value="">
+            </div>
             <div class = "slide-tb">
                 <table>
                     <thead>
@@ -151,7 +154,8 @@
                             </td>
                             <td data-type = "select">
                                 <select id="input_item_div" name="item_div" size="1" style = "width: 100%;">
-                                    <option value = "도서" selected>도서</option>
+                                    <option value="" selected>품목 ID 선택</option>
+                                    <option value = "도서">도서</option>
                                     <option value = "포장지">포장지</option>
                                     <option value = "완제품">완제품</option>
                                 </select>
@@ -169,13 +173,13 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td><input type = "number" style = "width: 100%;"></td>
+                            <td><input type = "number"  id="input_stock_amount" name="stock_amount" style = "width: 100%;"></td>
                             <td data-type = "select">
-                                <select style = "width: 100%;">
-                                    <option value = "wh1">WH1 :: 1번 창고</option>
-                                    <option value = "wh2">WH2 :: 2번 창고</option>
-                                    <option value = "wh3">WH3 :: 3번 창고</option>
-                                    <option value = "wh4">WH4 :: 4번 창고</option>
+                                <select id="input_stock_wrap" name="stock_wrap" style = "width: 100%;">
+                                    <option value = "WH1 :: 1번 창고">WH1 :: 1번 창고</option>
+                                    <option value = "WH2 :: 2번 창고">WH2 :: 2번 창고</option>
+                                    <option value = "WH3 :: 3번 창고">WH3 :: 3번 창고</option>
+                                    <option value = "WH4 :: 4번 창고">WH4 :: 4번 창고</option>
                                 </select>
                             </td>
                         </tr>
@@ -183,10 +187,10 @@
                 </table>
             </div>
             <div class = "slide-btnbox">
-                <input type = "button" class = "slide-btn" value = "등록">
+                <input type = "button" class = "submit-btn slide-btn" value = "등록">
                 <input type = "button" class = "close-btn slide-btn" value = "취소">
             </div>
-        </div>
+        </form>
     </div>
     <!-- 상세용 슬라이드 : ajax로 채울 거라 el 태그 사용 필요 X -->
     <div class = "slide" id = "slide-detail">
@@ -226,7 +230,7 @@
                 </table>
             </div>
             <div class = "slide-btnbox">
-                <input type = "button" class = "slide-btn" value = "수정">
+                <input type = "button" class = "slide-btn" id="detailEditBtn" value = "수정">
                 <input type = "button" class = "close-btn slide-btn" value = "취소">
             </div>
         </div>

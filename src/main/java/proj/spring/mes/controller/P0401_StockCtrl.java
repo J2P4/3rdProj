@@ -51,6 +51,7 @@ public class P0401_StockCtrl {
 			
 			// JSON 난리 나서 이스케이프...
 			// 진짜 가만 안 둬.
+			// 아마 품목 조회처럼 특문 많은 경우 아니면 이 영역은 지워도 될 듯.
 			itemListJson = rawJson.replaceAll("[\n\r]", "");
 			itemListJson = itemListJson.replaceAll("'", "\\\\'");
 			itemListJson = itemListJson.replaceAll("\"", "\\\\\""); 
