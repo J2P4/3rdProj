@@ -33,32 +33,37 @@
                 * filitem-input : 실제 select 영역
         - filter-btn : 조회 버튼 영억
     -->
-    <form class = "filter" method="get" action="">
+    <form class = "filter" method="get" action="${pageContext.request.contextPath}/stocklist">
         <div class = "filter-item-box">
             <div class = "filter-item">
                 <div class = "filitem-name">· 재고 ID</div>
                 <div class = "filitem-input">
-                    <input type="text" placeholder=" ID를 입력해주세요">
+                    <input type="text" name="stock_id" placeholder=" ID를 입력해주세요">
                 </div>
             </div>
             <div class = "filter-item">
                 <div class = "filitem-name">· 구분</div>
                 <div class = "filitem-input">
-                    <select name = "변수명" size = "1">
-                        <option value = "1" selected>완제</option>
-                        <option value = "2">반제</option>
-                        <option value = "3">재료</option>
+                    <select name = "item_div" size = "1">
+                        <c:set var="selectedDiv" value="${param.item_div}" />
+                        <!-- 삼항 연산자로 selected 상태인지 아닌지 지정 -->
+                        <option value = "" ${empty selectedDiv ? 'selected' : ''}>재고 구분 선택</option>
+                        <option value = "도서" ${selectedDiv eq '도서' ? 'selected' : ''}>도서</option>
+                        <option value = "포장지" ${selectedDiv eq '포장지' ? 'selected' : ''}>포장지</option>
+                        <option value = "완제품" ${selectedDiv eq '완제품' ? 'selected' : ''}>완제품</option>
                     </select>                    
                 </div>
             </div>
             <div class = "filter-item">
                 <div class = "filitem-name">· 보관 위치</div>
                 <div class = "filitem-input">
-                    <select name = "변수명" size = "1">
-                        <option value = "wh1">WH1 :: 1번 창고</option>
-                        <option value = "wh2">WH2 :: 2번 창고</option>
-                        <option value = "wh3">WH3 :: 3번 창고</option>
-                        <option value = "wh4">WH4 :: 4번 창고</option>
+                    <select name = "stock_wrap" size = "1">
+                        <c:set var="selectedWrap" value="${param.stock_wrap}" />
+                        <option value = "" ${empty selectedWrap ? 'selected' : ''}>보관 위치 선택</option>
+                        <option value = "WH1 :: 1번 창고" ${selectedWrap eq 'WH1 :: 1번 창고' ? 'selected' : ''}>WH1 :: 1번 창고</option>
+                        <option value = "WH2 :: 2번 창고" ${selectedWrap eq 'WH2 :: 2번 창고' ? 'selected' : ''}>WH2 :: 2번 창고</option>
+                        <option value = "WH3 :: 3번 창고" ${selectedWrap eq 'WH3 :: 3번 창고' ? 'selected' : ''}>WH3 :: 3번 창고</option>
+                        <option value = "WH4 :: 4번 창고" ${selectedWrap eq 'WH4 :: 4번 창고' ? 'selected' : ''}>WH4 :: 4번 창고</option>
                     </select>
                 </div>
             </div>
@@ -95,7 +100,7 @@
                	<c:if test="${not empty list}">
                		<c:forEach var="P0401_StockDTO" items="${list}">
 	               		<tr data-id="${P0401_StockDTO.stock_id}">
-		                    <td><input type="checkbox" class="rowChk"></td>
+		                    <td><input type="checkbox" class="rowChk" name="delete_stock_id" value="${P0401_StockDTO.stock_id}"></td>
 		                    <td>${P0401_StockDTO.stock_id}</td>
 		                    <td>${P0401_StockDTO.stock_amount}</td>
 		                    <td>${P0401_StockDTO.item_div}</td>

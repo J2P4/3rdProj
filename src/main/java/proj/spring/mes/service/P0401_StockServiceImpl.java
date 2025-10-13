@@ -15,8 +15,8 @@ public class P0401_StockServiceImpl implements P0401_StockService {
 	P0401_StockMapperDAO stockMapperDAO;
 	
 	@Override
-	public List<P0401_StockDTO> stockList() {
-		return stockMapperDAO.selectStock();
+	public List<P0401_StockDTO> stockList(P0401_StockDTO searchCondition) {
+		return stockMapperDAO.selectStock(searchCondition);
 	}
 	
 	@Override
@@ -34,9 +34,14 @@ public class P0401_StockServiceImpl implements P0401_StockService {
 		return stockMapperDAO.updateStock(dto);
 	}
 	
-	@Override
-	public int removeStock(String stock_id) {
-		return stockMapperDAO.deleteStock(stock_id);
+//	@Override
+//	public int removeStock(String stock_id) {
+//		return stockMapperDAO.deleteStock(stock_id);
+//	}
+	
+    @Override
+	public int removeStocks(List<String> stockIds) {
+		return stockMapperDAO.deleteStocks(stockIds);
 	}
 	
 	@Override

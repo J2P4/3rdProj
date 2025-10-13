@@ -6,12 +6,26 @@
 	<!-- SQL문 작성 영역 -->
 	
 	<!-- 전체 조회 : 여기는 ㅇㅋ -->
-	<select id = "selectStock" resultType = "P0401_StockDTO">
+	<select id = "selectStock" resultType = "P0401_StockDTO" parameterType="P0401_StockDTO">
 		select
 			s.stock_id, s.stock_amount, s.stock_wrap, s.item_id,
 			i.item_div, i.item_name
 		from v3_stock s left outer join v3_item i
 		on s.item_id = i.item_id
+		
+		<where>
+			<if test="stock_id != null and stock_id != ''">
+				and s.stock_id like '%' || #{stock_id} || '%'
+			</if>
+			
+			<if test="item_div != null and item_div != ''">
+				and i.item_div = #{item_div}
+			</if>
+			
+			<if test="stock_wrap != null and stock_wrap != ''">
+				and s.stock_wrap = #{stock_wrap}
+			</if>
+		</where>
 		order by s.stock_id	
 	</select>
 
@@ -44,10 +58,19 @@
 		where stock_id = #{stock_id}
 	</update>
 	
-	<!-- 삭제 : 아마 ㅇㅋ-->
-	<delete id = "deleteStock" parameterType = "P0401_StockDTO">
+<!-- 	삭제(개별) : 아마 ㅇㅋ -->
+<!-- 	<delete id = "deleteStock" parameterType = "P0401_StockDTO"> -->
+<!-- 		delete from v3_stock -->
+<!-- 		where stock_id = #{stock_id} -->
+<!-- 	</delete> -->
+	
+	<!-- 삭제(다중) : 다중 삭제는 parameterType을 DTO로 하면 안 됨 -->
+	<delete id = "deleteStocks" parameterType = "java.util.List">
 		delete from v3_stock
-		where stock_id = #{stock_id}
+		where stock_id in
+		<foreach item="id" collection="list" open="(" separator="," close=")">
+			#{id}
+		</foreach>
 	</delete>
 	
 	<!-- 삽입 : 아마 ㅇㅋ -->
