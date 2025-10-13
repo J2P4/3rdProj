@@ -67,7 +67,7 @@
         	</div>
 	        <div class = "slide-btnbox">
                 <a href="modify?worker_id=${dto.worker_id}" class="slide-btn modify-btn">수정</a>
-				<a href="list" class="slide-btn close-btn">취소</a>
+				<a href="workerlist" class="slide-btn close-btn">취소</a>
             </div>
        	</div>
     </div>

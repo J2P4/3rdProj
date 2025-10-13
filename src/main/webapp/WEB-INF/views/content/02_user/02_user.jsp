@@ -18,8 +18,8 @@
     <div class = "title">
     	<h1>계정 관리</h1>
    	</div>
-   	<c:url var="workerlistUrl" value="/list"/> <%-- 모든 내부 링크의 기준 URL(중복 /mes/mes 방지) 이거 떄믄에 한시간.... --%>
-	<c:set var="selfPath" value="/list"/> <%-- c:url value에 사용할 경로 문자열 --%>
+   	<c:url var="workerlistUrl" value="/workerlist"/> <%-- 모든 내부 링크의 기준 URL(중복 /mes/mes 방지) 이거 떄믄에 한시간.... --%>
+	<c:set var="selfPath" value="/workerlist"/> <%-- c:url value에 사용할 경로 문자열 --%>
 	
     <form class = "filter" method="get" action="${workerlistUrl}">
         <div class = "filter-item-box">

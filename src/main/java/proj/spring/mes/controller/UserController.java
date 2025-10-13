@@ -31,7 +31,7 @@ public class UserController {
 //	}
 	
 	/** 목록 */
-	@RequestMapping("/list")
+	@RequestMapping("/workerlist")
     public String list(
     		Model model,
     		@RequestParam(value = "size", required = false, defaultValue = "10") int pagePerRows, // 페이지당 행 수 파라미터 (기본 10)

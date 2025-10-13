@@ -84,7 +84,7 @@
     const okBtn = document.querySelector('.m-btn.close-btn');
     if (okBtn) {
       okBtn.addEventListener('click', () => {
-        window.location.href = '${pageContext.request.contextPath}/list';
+        window.location.href = '${pageContext.request.contextPath}/workerlist';
       });
     }
   });

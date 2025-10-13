@@ -101,7 +101,7 @@
 	    
 	      <input type="hidden" name="worker_pw" value="${dto.worker_pw}">
 	      <input type="submit" class="save-btn slide-btn" value="저장">
-	      <a href="list" class="slide-btn close-btn">취소</a>
+	      <a href="workerlist" class="slide-btn close-btn">취소</a>
 	    </div>
 	  </div>
 	</form>

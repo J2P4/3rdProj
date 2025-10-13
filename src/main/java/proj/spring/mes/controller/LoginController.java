@@ -33,12 +33,19 @@ public class LoginController {
 	
 	// 비밀번호 변경페이지 접속
 	@RequestMapping("/pw_change")
-	public String pwChange(HttpSession session) {
+	public String pwChange(HttpSession session, String mode) {
+	    
 	    Boolean must = (Boolean) session.getAttribute("mustChangePw");
-	    if (!Boolean.TRUE.equals(must)) {
-	        return "redirect:/list"; // 강제 변경 상황 아닐 때 접근 차단
+
+	    // 강제 변경 모드일 때만 제한 걸기
+	    if ("force".equals(mode)) {
+	        if (!Boolean.TRUE.equals(must)) {
+	            return "redirect:/workerlist"; // 강제 변경 아님 → 차단
+	        }
 	    }
-	    return "content/01_main/pw_change"; 
+
+	    // 자발적 변경(normal)은 누구나 접근 가능
+	    return "content/01_main/pw_change";
 	}
 	
 	@RequestMapping("/login")
@@ -84,11 +91,15 @@ public class LoginController {
         
         // 초기비밀번호라면 변경페이지로 이동
         if (mustChange) {
-        	newSession.setAttribute("mustChangePw", true); 
-            return "redirect:/pw_change";
+            // 강제 변경 모드 URL에 mode=force
+        	newSession.setAttribute("mustChangePw", true);
+            return "redirect:/pw_change?mode=force"; 
+        } else {
+            // 일반 로그인 성공 시 
+        	newSession.setAttribute("mustChangePw", false); 
         }
         
-	    return "redirect:/list";
+	    return "redirect:/workerlist";
 	}
 	
 	@RequestMapping("/change_page")
