@@ -215,7 +215,7 @@
 
 <div class="slide" id="slide-input">
     <div class="slide-contents">
-        <div class="silde-title"><h2>품목 상세</h2></div>
+        <div class="silde-title"><h2>품목 등록</h2></div>
         <div class="slide-id">품목 ID : </div>
         <div class="slide-id"> 품목 이름 :
             <input type="text" name="itemName" id="itemName">
@@ -232,7 +232,16 @@
                 <tbody>
                     <tr>
                         <td><input type="text" name="vendorId" id="vendorId"></td>
-                        <td><input type="text" name="itemDiv" id="itemDiv"></td>
+                        <td>
+                        
+<!--                         <input type="text" name="itemDiv" id="itemDiv"> -->
+                        	<select name = "itemDiv">
+                        		<option value="도서">도서</option>
+                        		<option value="포장지">포장지</option>
+                        		<option value="완제품">완제품</option>
+                        	</select>
+                        
+                        </td>
                         <td><input type="number" name="unitPrice" id="unitPrice" min="0"></td>
                         <td><input type="text" name="unit" id="unit"></td>
                     </tr>

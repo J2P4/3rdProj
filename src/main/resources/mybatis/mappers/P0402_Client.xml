@@ -3,4 +3,32 @@
 	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="proj.spring.mes.dao.mapper.P0402_ClientMapperDAO">
+
+
+
+
+  <!-- 전체 목록 (무페이징) -->
+  <select id="selectClientList" resultType="proj.spring.mes.dto.ClientDTO">
+    <![CDATA[
+    SELECT
+      client_id,
+      client_name,
+      client_tel,
+      worker_id
+    FROM V3_client
+    ORDER BY client_name ASC
+    ]]>
+  </select>
+
+
+
+
+
+
+
+
+
+
+
+
 </mapper>
