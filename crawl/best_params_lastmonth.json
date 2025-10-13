@@ -1,0 +1,8 @@
+{
+  "metric": "mae",
+  "score": 11.582328261790943,
+  "n_estimators": 300,
+  "learning_rate": 0.03,
+  "max_depth": 2,
+  "min_samples_leaf": 40
+}
