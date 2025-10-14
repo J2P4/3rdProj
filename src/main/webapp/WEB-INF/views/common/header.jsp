@@ -15,15 +15,30 @@
     </a>
   </div>
 
+    <script>
+	    // 서버(JSP) → 클라이언트(JS) 데이터 전달
+	    const sessionInfo = {
+	      isLogin: true,
+	      userName: "${sessionScope.loginUser.worker_name}",    // 로그인 사용자 이름
+	      remainSec: ${remainSec != null ? remainSec : 1800},    // 남은시간 (초)
+	      contextPath: "${pageContext.request.contextPath}"      // 프로젝트 루트 경로
+	    };
+    </script>
   <div class="flex items-center space-x-4 sm:space-x-8">
-    <button type="button" class="search cursor-pointer" aria-label="검색">
-      <img src="https://i.postimg.cc/9QcMwQym/magnifier-white.png" class="w-6 sm:w-7" alt="검색용 아이콘">
-    </button>
-
+    <c:if test="${not empty sessionScope.loginUser}">
+      <div id="sess-box"
+           style="padding:5px 12px; background-color: rgb(24, 33, 49);
+                  border: none; border-radius:8px;
+                  font-size:14px; font-weight: bold; color: white;">
+        남은 시간: <span id="sess-remaining" >--:--</span>
+        <button id="sess-extend" type="button" style="margin-left:8px; border-radius:8px; padding: 5px 8px; color: rgb(250, 250, 0);">연장</button>
+      </div>
+    </c:if>
+	
     <div class="logout text-sm sm:text-base cursor-pointer hover:underline">
-      <form method="post" action="<c:url value='/logout'/>">
-        <button type="submit">로그아웃</button>
-      </form>
+        <c:if test="${not empty sessionScope.loginUser}">
+		    <a href="${pageContext.request.contextPath}/logout">로그아웃</a>
+	    </c:if>
     </div>
 
     <div class="myIcon relative">
@@ -44,7 +59,7 @@
     </div>
   </div>
 </div>
-
+<script src="${pageContext.request.contextPath}/resources/js/session.js"></script>
 <script>
   (function () {
     const myIconBtn = document.getElementById('myIconBtn');

@@ -78,6 +78,7 @@ public class LoginController {
         // 필요시 새 새션 생성
         HttpSession newSession = request.getSession(true);
         newSession.setAttribute("loginUser", user);
+        newSession.setMaxInactiveInterval(30*60);
 	    
         // 초기비밀번호인지 확인 (생년월일 6자리와 현재 해시가 같은지)
         String birth6 = null;
@@ -142,7 +143,7 @@ public class LoginController {
 	}
 	
 	/** 로그아웃 */
-	@RequestMapping(value="/logout", method=RequestMethod.POST)
+	@RequestMapping("/logout")
 	public String logout(HttpSession session) {
 	    if (session != null) session.invalidate(); 
 	    return "redirect:/loginPage";
