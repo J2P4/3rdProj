@@ -35,8 +35,9 @@ public class UserController {
     public String list(
     		Model model,
     		@RequestParam(value = "size", required = false, defaultValue = "10") int pagePerRows, // 페이지당 행 수 파라미터 (기본 10)
-            @RequestParam(value = "page", required = false, defaultValue = "1")  int page         // 현재 페이지 번호 파라미터 (기본 1, 1-base)
-            ) {
+            @RequestParam(value = "page", required = false, defaultValue = "1")  int page,         // 현재 페이지 번호 파라미터 (기본 1, 1-base)
+            WorkerDTO searchFilter
+    		) {
         
      // ===================== 1) 입력값 방어/보정 =====================
         int minSize = 1;                                 // 한 페이지 최소 1행
@@ -45,7 +46,7 @@ public class UserController {
         page = Math.max(page, 1);                        // 페이지는 1보다 작을 수 없음(1-base 유지)
 
         // ===================== 2) 전체 레코드 수 조회 =====================
-        long totalCount = workerService.count();        // DB에서 아이템 총 개수 조회(서비스에 count() 구현 필요)
+        long totalCount = workerService.count(searchFilter);        // DB에서 아이템 총 개수 조회(서비스에 count() 구현 필요)
 
         // ===================== 3) 총 페이지 수 계산 및 현재 페이지 보정 =====================
         int totalPages = (int) Math.ceil((double) totalCount / pagePerRows); // 총 페이지 수 = 올림(총건수/페이지당수)
@@ -53,7 +54,7 @@ public class UserController {
         if (page > totalPages) page = totalPages;        // 요청 페이지가 마지막 페이지 초과하면 마지막 페이지로 보정
 
         // ===================== 4) 목록 조회 =====================
-        List<WorkerDTO> list = workerService.list(page, pagePerRows);
+        List<WorkerDTO> list = workerService.list(page, pagePerRows, searchFilter);
         //실제 OFFSET 계산((page-1)*pagePerRows)은 Service/Mapper에서 처리하도록 위임
         model.addAttribute("list", list); // 현재 페이지에 해당하는 데이터 목록
 
@@ -80,6 +81,7 @@ public class UserController {
         model.addAttribute("hasNextBlock", hasNextBlock);// 다음 블록 존재 여부 (JSP: "다음" 활성/비활성)
         model.addAttribute("prevBlockStart", prevBlockStart); // 이전 블록이동 시 타깃 페이지(예: 11→1)
         model.addAttribute("nextBlockStart", nextBlockStart); // 다음 블록이동 시 타깃 페이지(예: 1→11)
+        model.addAttribute("filter", searchFilter); 			// 필터 사용
 
         List<DeptDTO> deptList = workerService.deptList();
         model.addAttribute("deptList", deptList);

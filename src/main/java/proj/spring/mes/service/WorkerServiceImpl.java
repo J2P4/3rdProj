@@ -71,18 +71,18 @@ public class WorkerServiceImpl implements WorkerService{
     
     // 신규: 페이징 전용 목록
     @Override
-    public List<WorkerDTO> list(int page, int pagePerRows) {
+    public List<WorkerDTO> list(int page, int pagePerRows, WorkerDTO searchFilter) {
         int size = Math.max(1, Math.min(pagePerRows, 100));
         int p = Math.max(1, page);
         int offset = (p - 1) * size;
 
         // Mapper는 LIMIT/OFFSET 받는 메서드가 필요함
-        return workerMapperDao.selectWorkerListPage(size, offset);
+        return workerMapperDao.selectWorkerListPage(size, offset, searchFilter);
     }
 
     //  총 레코드 수
     @Override
-    public long count() {
-        return workerMapperDao.selectWorkerCount();
+    public long count(WorkerDTO searchFilter) {
+        return workerMapperDao.selectWorkerCount(searchFilter);
     }
 }

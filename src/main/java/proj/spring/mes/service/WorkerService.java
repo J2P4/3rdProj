@@ -18,8 +18,8 @@ public interface WorkerService {
 	boolean match(String rawPw, String hashed);
 	
 	//페이징 목록
-    List<WorkerDTO> list(int page, int pagePerRows);
+    List<WorkerDTO> list(int page, int pagePerRows, WorkerDTO searchFilter);
 
     //총 레코드 수
-    long count();
+    long count(WorkerDTO searchFilter);
 }

@@ -30,11 +30,12 @@
 					      <option value="">
 					        전체
 					      </option>
-					    <c:forEach var="worker" items="${list}">
-					      <option value="${worker_name}">
-					        ${worker.worker_name}
-					      </option>
-					    </c:forEach>
+					      <c:forEach var="w" items="${list}">
+				            <option value="${w.worker_name}"
+				              ${w.worker_name == filter.worker_name ? 'selected' : ''}>
+				              ${w.worker_name}
+				            </option>
+				          </c:forEach>
 				  	</select>                    
                 </div>
             </div>
@@ -57,10 +58,11 @@
                 <div class = "filitem-name">· 권한</div>
                 <div class = "filitem-input">
                     <select name = "worker_code" size = "1">
-                        <option value = "" selected>전체</option>
-                        <option value = "2">관리자</option>
-                        <option value = "3">부서장</option>
-                        <option value = "4">사원</option>
+						  <option value=""  ${empty filter.worker_code ? 'selected' : ''}>전체</option>
+						  <option value="ADMIN" ${filter.worker_code == 'ADMIN' ? 'selected' : ''}>ADMIN</option>
+						  <option value="HEAD" ${filter.worker_code == 'HEAD' ? 'selected' : ''}>HEAD</option>
+						  <option value="STAFF" ${filter.worker_code == 'STAFF' ? 'selected' : ''}>STAFF</option>
+						</select>
                     </select>
                 </div>
             </div>

@@ -25,40 +25,63 @@
 	
 	<!-- 페이징 목록 (Oracle ROWNUM 방식, limit/offset 그대로 받음) -->
 	<!-- Mapper 인터페이스: selectItemListPage(@Param("limit") int limit, @Param("offset") int offset) -->
-	<select id="selectWorkerListPage" resultType="workerDTO">
+	<select id="selectWorkerListPage" parameterType="map" resultType="workerDTO">
 	    <bind name="startRow" value="offset + 1"/>
 	    <bind name="endRow"   value="offset + limit"/>
-	    <![CDATA[
-		    SELECT *
-			FROM (
-			  SELECT t.*, ROWNUM rn
-			  FROM (
-			    SELECT
-			      w.worker_id,
-			      w.worker_name,
-			      w.worker_birth,
-			      w.worker_pw,
-			      w.worker_email,
-			      w.worker_code,
-			      w.worker_join,
-			      w.department_id,
-			      d.department_name
-			    FROM V3_worker w
-			    LEFT JOIN V3_department d
-			      ON w.department_id = d.department_id
-			    ORDER BY w.worker_id ASC
-			  ) t
-			  WHERE ROWNUM <= #{endRow}
-			)
-			WHERE rn >= #{startRow}
-	    ]]>
-	  </select>
+	      SELECT *
+		  FROM (
+		    SELECT t.*, ROWNUM rn
+		    FROM (
+		      SELECT
+		        w.worker_id,
+		        w.worker_name,
+		        w.worker_birth,
+		        w.worker_pw,
+		        w.worker_email,
+		        w.worker_code,
+		        w.worker_join,
+		        w.department_id,
+		        d.department_name
+		      FROM V3_worker w
+		      LEFT JOIN V3_department d
+		        ON w.department_id = d.department_id
+		      WHERE 1=1
+		      <if test="filter.worker_name != null and filter.worker_name != ''">
+		        AND w.worker_name = #{filter.worker_name}
+		      </if>
+		      <if test="filter.department_id != null and filter.department_id != ''">
+		        AND w.department_id = #{filter.department_id}
+		      </if>
+		      <if test="filter.worker_code != null and filter.worker_code != ''">
+		        AND w.worker_code = #{filter.worker_code}
+		      </if>
+		  <![CDATA[
+		      ORDER BY w.worker_id ASC
+		      ) t
+		      WHERE ROWNUM <= 
+		  ]]>
+		      #{endRow}
+		  <![CDATA[
+		  	  )
+		  	  WHERE rn >= 
+		  ]]>
+		     #{startRow}
+		</select>
 	
 	  <!-- 총 레코드 수 -->
-	  <select id="selectWorkerCount" resultType="long">
-	    <![CDATA[
-	    SELECT COUNT(*) FROM V3_worker
-	    ]]>
+	  <select id="selectWorkerCount" parameterType="map" resultType="long">
+	    SELECT COUNT(*) FROM V3_worker w
+	    <where>
+		    <if test="filter.worker_name != null and filter.worker_name != ''">
+	      		AND w.worker_name =#{filter.worker_name}
+	    	</if>
+	    	<if test="filter.department_id != null and filter.department_id != ''">
+	      		AND w.department_id = #{filter.department_id}
+	    	</if>
+	    	<if test="filter.worker_code != null and filter.worker_code != ''">
+	      		AND w.worker_code = #{filter.worker_code}
+	    	</if>
+	    </where>
 	  </select>
 	
 	<!-- 

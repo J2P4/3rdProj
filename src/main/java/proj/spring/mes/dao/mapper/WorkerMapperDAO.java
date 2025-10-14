@@ -20,8 +20,8 @@ public interface WorkerMapperDAO {
     int deleteWorkers(@Param("worker_ids") List<String> worker_ids);
 	int updatePassword(@Param("worker_id") String worker_id, @Param("hashed") String hashed);
 	
-	// 신규(페이징)
-    List<WorkerDTO> selectWorkerListPage(@Param("limit") int limit, @Param("offset") int offset);
+	// 신규(페이징) 및 필터
+    List<WorkerDTO> selectWorkerListPage(@Param("limit") int limit, @Param("offset") int offset, @Param("filter") WorkerDTO searchFilter);
 	// 신규(총계)
-    long selectWorkerCount();
+    long selectWorkerCount(@Param("filter") WorkerDTO searchFilter);
 }
