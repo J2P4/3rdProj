@@ -59,7 +59,7 @@
     </div>
   </div>
 </div>
-<script src="${pageContext.request.contextPath}/resources/js/session.js"></script>
+<%-- <script src="${pageContext.request.contextPath}/resources/js/session.js"></script> --%>
 <script>
   (function () {
     const myIconBtn = document.getElementById('myIconBtn');
