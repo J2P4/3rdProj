@@ -1,7 +1,11 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%> 
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> 
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %> 
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %> 
+<% // 오늘 날짜를 문자열로 만들어 EL에서 쓸 수 있게 request에 넣음
+    String todayStr = new java.text.SimpleDateFormat("yyyy-MM-dd").format(new java.util.Date());
+    request.setAttribute("todayStr", todayStr);
+%>
 
 <!DOCTYPE html>
 <html lang="ko">
@@ -14,14 +18,15 @@
 <link rel="stylesheet" href="${cssUrl}" type="text/css">
 <script src="${jsUrl}"></script>
 <script>const contextPath='${pageContext.request.contextPath}';</script>
+<!-- 필요 시 별도 JS를 붙이면 defer로 -->
+<!-- <script src="${pageContext.request.contextPath}/resources/js/04_3_client.js" defer></script> -->
 <title>거래처 리스트</title>
-
 </head>
 <body>
 <h1>거래처 리스트</h1>
 
-<c:url var="clientlistUrl" value="/clientlist"/>
-<c:set var="selfPath" value="/clientlist"/>
+<c:url var="clientlistUrl" value="/clientlist"/> <%-- 모든 내부 링크의 기준 URL(중복 /mes/mes 방지) --%>
+<c:set var="selfPath" value="/clientlist"/> <%-- c:url value에 사용할 경로 문자열 --%>
 
 <form class="panel" method="get" action="${clientlistUrl}">
     <div class="filter">
@@ -36,10 +41,12 @@
             <div class="filter-item">
                 <span class="filitem-name">· 거래처 이름</span>
                 <div class="filitem-input">
-                    <!-- name/value 통일 -->
+                    <!-- 이름 name/value 불일치 수정 -->
                     <input type="text" name="clientName" value="${fn:escapeXml(param.clientName)}">
                 </div>
             </div>
+
+            <%-- 추가 필터 항목이 있으면 여기 확장 --%>
         </div>
 
         <div class="filter-btn">
@@ -69,7 +76,7 @@
                             <td class="chkbox"><input type="checkbox" class="rowChk" value="${row.client_id}"></td>
                             <td>${fn:escapeXml(row.client_id)}</td>
                             <td>${fn:escapeXml(row.client_name)}</td>
-                            <td>${fn:escapeXml(row.client_tel)}</td>
+                            <td>${fn:escapeXml(row.client_tel)}</td>           
                             <td>${fn:escapeXml(row.worker_id)}</td>
                         </tr>
                     </c:forEach>
@@ -77,8 +84,8 @@
                 <c:otherwise>
                     <c:forEach var="i" begin="1" end="10">
                         <tr aria-hidden="true">
-                            <td class="chkbox"><input type="checkbox" disabled></td>
-                            <td>&nbsp;</td><td></td><td></td><td></td>
+                            <td class="chkbox"><input type="checkbox" name="rowChk" disabled aria-hidden="true"></td>
+                            <td>&nbsp;</td><td></td><td></td><td class="col-qty"></td>
                         </tr>
                     </c:forEach>
                 </c:otherwise>
@@ -100,13 +107,14 @@
             <input type="hidden" name="page" value="1"/>
             <input type="hidden" name="clientNo" value="${fn:escapeXml(param.clientNo)}"/>
             <input type="hidden" name="clientName" value="${fn:escapeXml(param.clientName)}"/>
+
             <label>Rows:
                 <select name="size" onchange="document.getElementById('sizeForm').submit()">
-                    <option value="1"  ${pagePerRows==1  ? 'selected' : ''}>1</option>
+                    <option value="1"  ${pagePerRows==1 ? 'selected' : ''}>1</option>
                     <option value="10" ${pagePerRows==10 ? 'selected' : ''}>10</option>
                     <option value="20" ${pagePerRows==20 ? 'selected' : ''}>20</option>
                     <option value="50" ${pagePerRows==50 ? 'selected' : ''}>50</option>
-                    <option value="100"${pagePerRows==100? 'selected' : ''}>100</option>
+                    <option value="100" ${pagePerRows==100 ? 'selected' : ''}>100</option>
                 </select>
             </label>
         </form>
@@ -158,9 +166,9 @@
             </c:otherwise>
         </c:choose>
 
-    </div>
+    </div> 
     <div class="bottom-btn-box">
-        <input type="button" class="btm-btn new" id="btnNew" value="신규">
+        <input type="button" class="btm-btn new" value="신규">
         <input type="button" id="btnDelete" class="btm-btn del" value="삭제">
     </div>
 </div>
@@ -172,103 +180,84 @@
     <input type="hidden" name="size" value="${pagePerRows}">
     <input type="hidden" name="clientNo" value="${fn:escapeXml(param.clientNo)}"/>
     <input type="hidden" name="clientName" value="${fn:escapeXml(param.clientName)}"/>
-    <!-- Spring Security CSRF 사용시 아래 주석 해제
-    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
-    -->
 </form>
 
-<!-- 등록 슬라이드 -->
+<!-- 입력 슬라이드: DTO 필드와 1:1 -->
 <div class="slide" id="slide-input">
-  <form id="client-insert-form" method="post" action="${pageContext.request.contextPath}/client/insert">
-    <!-- 목록 복귀 시 파라미터 보존 -->
-    <input type="hidden" name="page" value="${page}">
-    <input type="hidden" name="size" value="${pagePerRows}">
-    <input type="hidden" name="clientNo" value="${fn:escapeXml(param.clientNo)}">
-    <input type="hidden" name="clientName" value="${fn:escapeXml(param.clientName)}">
-    <!-- CSRF 사용시
-    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
-    -->
-
     <div class="slide-contents">
         <div class="silde-title"><h2>거래처 등록</h2></div>
 
-        <div class="slide-id">거래처 ID:
-            <input type="text" name="client_id" id="client_id" required>
+        <div class="slide-id">거래처 ID :
+            <input type="text" name="client_id" id="client_id" form="client-insert-form" required>
         </div>
-        <div class="slide-id">거래처 이름:
-            <input type="text" name="client_name" id="client_name" required>
+        <div class="slide-id">거래처 이름 :
+            <input type="text" name="client_name" id="client_name" form="client-insert-form" required>
         </div>
-        <div class="slide-id">전화번호:
-            <input type="text" name="client_tel" id="client_tel" placeholder="010-0000-0000">
+        <div class="slide-id">거래처 전화번호 :
+            <input type="text" name="client_tel" id="client_tel" form="client-insert-form" placeholder="010-0000-0000">
         </div>
-        <div class="slide-id">담당사원 ID:
-            <input type="text" name="worker_id" id="worker_id">
+        <div class="slide-id">담당사원 ID :
+            <input type="text" name="worker_id" id="worker_id" form="client-insert-form">
         </div>
 
         <div class="slide-tb">
             <table>
                 <thead>
-                    <tr>
-                        <th>Vendor</th>
-                        <th>구분</th>
-                        <th>단가</th>
-                        <th>단위</th>
-                    </tr>
+                    <tr><th>거래처 ID</th>
+                    <th>거래처 이름</th>
+                    <th>전화번호</th>
+                    <th>담당사원</th></tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td>
-                            <!-- 필요 시 JS로 옵션 주입 -->
-                            <select name="vendorId" id="vendorId" size="6">
-                                <option value="">선택</option>
-                            </select>
-                        </td>
-                        <td>
-                            <select name="clientDiv" id="clientDiv">
-                                <option value="도서">도서</option>
-                                <option value="포장지">포장지</option>
-                                <option value="완제품">완제품</option>
-                            </select>
-                        </td>
-                        <td><input type="number" name="unitPrice" id="unitPrice" min="0" step="1" required></td>
-                        <td><input type="text" name="unit" id="unit" required></td>
+                        <td><span id="preview_client_id"></span></td>
+                        <td><span id="preview_client_name"></span></td>
+                        <td><span id="preview_client_tel"></span></td>
+                        <td><span id="preview_worker_id"></span></td>
                     </tr>
                 </tbody>
             </table>
         </div>
 
+        <form id="client-insert-form" method="post" action="${pageContext.request.contextPath}/client/insert">
+            <input type="hidden" name="page" value="${page}">
+            <input type="hidden" name="size" value="${pagePerRows}">
+            <input type="hidden" name="clientNo" value="${fn:escapeXml(param.clientNo)}">
+            <input type="hidden" name="clientName" value="${fn:escapeXml(param.clientName)}">
+        </form>
+
         <div class="slide-btnbox">
-            <button type="submit" class="slide-btn">등록</button>
-            <input type="button" class="close-btn slide-btn" value="취소" id="btnCloseNew">
+            <button type="submit" class="slide-btn" form="client-insert-form">등록</button>
+            <input type="button" class="close-btn slide-btn" value="취소">
         </div>
+
     </div>
-  </form>
 </div>
 
-<!-- 상세 슬라이드 -->
+
 <div class="slide" id="slide-detail">
   <div class="slide-contents">
     <div class="silde-title"><h2>거래처 상세</h2></div>
 
-    <div class="slide-id">거래처 ID: <span id="d-clientId-text"></span></div>
-    <div class="slide-id">거래처 이름: <span id="d-clientName"></span></div>
+    <div class="slide-id">거래처 ID: <span id="d-client_id"></span></div>
+    <div class="slide-id">거래처 이름: <span id="d-client_name"></span></div>
 
     <div class="slide-tb">
       <table>
         <thead>
           <tr>
             <th>거래처 ID</th>
-            <th>거래처 구분</th>
-            <th>단가</th>
-            <th>단위</th>
+            <th>거래처 이름</th>
+            <th>전화번호</th>
+            <th>담당사원</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td id="d-clientId-cell"></td>
-            <td id="d-clientDiv"></td>
-            <td id="d-clientPrice"></td>
-            <td id="d-clientUnit"></td>
+            <td id="d-client_id_cell"></td>
+            <td id="d-client_name_cell"></td>
+            <td id="d-client_tel_cell"></td>
+            <td id="d-worker_id_cell"></td>
           </tr>
         </tbody>
       </table>
