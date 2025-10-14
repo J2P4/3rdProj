@@ -107,13 +107,21 @@ document.addEventListener('DOMContentLoaded', () => {                           
     }).observe(detail, { attributes: true, attributeFilter: ['class'] });
   }
 
-  // ---------- 수정 모드 진입 (벤더 API 호출 제거) ----------
+  // ---------- 수정 모드 진입 ----------
+  //  item, client가 들어가는 부분 각자 수정
+  //  if (titleEl) titleEl.textContent = '알아서 필요한거 넣기'; -122,163
+  //  vendor는 수정 슬라이드의 id
+  //  110~269번쨰 줄까지 수정하시면 됩니다.
+  //
+  ////////////////////////////////////////////////////////////////
+  
   function enterEdit() {                                                                                   // 수정 모드로 전환
     if (!detail) return;
     if (state.mode === 'edit') return;                                                                     // 중복 방지
     state.mode = 'edit';                                                                                   // 상태 변경
     if (titleEl) titleEl.textContent = '품목 수정';                                                        // 제목 변경
 
+	// 수정하기 전 단계를 저장, 만일 수정을 취소했을 경우 이 값을 되돌려야 한다.
     state.backup = {                                                                                       // 현 표시값 백업
       itemId:   text(detail.querySelector('#d-itemId')),
       itemName: text(detail.querySelector('#d-itemName')),
@@ -259,6 +267,20 @@ document.addEventListener('DOMContentLoaded', () => {                           
       alert('저장 중 오류가 발생했습니다.');
     }
   }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   // ---------- 버튼 이벤트 ----------
   if (btnEdit) {                                                                                            // 수정/저장 버튼
