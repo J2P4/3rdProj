@@ -1,34 +1,71 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper
-	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
 <mapper namespace="proj.spring.mes.dao.mapper.P0402_ClientMapperDAO">
 
 
+  <resultMap id="ClientMap" type="proj.spring.mes.dto.P0402_ClientDTO">
+    <id     property="client_id"  column="CLIENT_ID"/>
+    <result property="client_name" column="CLIENT_NAME"/>
+    <result property="client_tel"  column="CLIENT_TEL"/>
+    <result property="worker_id"   column="WORKER_ID"/>
+  </resultMap>
 
+  <sql id="whereClause">
+    <where>
+      <if test="clientNo != null and clientNo != ''">
+        AND CLIENT_ID LIKE '%' || #{clientNo} || '%'
+      </if>
+      <if test="clientName != null and clientName != ''">
+        AND CLIENT_NAME LIKE '%' || #{clientName} || '%'
+      </if>
+      <if test="clientTel != null and clientTel != ''">
+        AND CLIENT_TEL LIKE '%' || #{clientTel} || '%'
+      </if>
+      <if test="workerId != null and workerId != ''">
+        AND WORKER_ID LIKE '%' || #{workerId} || '%'
+      </if>
+    </where>
+  </sql>
 
-  <!-- 전체 목록 (무페이징) -->
-  <select id="selectClientList" resultType="proj.spring.mes.dto.P0402_ClientDTO">
-    <![CDATA[
-    SELECT
-      client_id,
-      client_name,
-      client_tel,
-      worker_id
-    FROM V3_client
-    ORDER BY client_name ASC
-    ]]>
+  <!-- 목록  -->
+  <select id="findClients" resultMap="ClientMap">
+    SELECT * FROM (
+      SELECT t.*, ROWNUM rn FROM (
+        SELECT CLIENT_ID, CLIENT_NAME, CLIENT_TEL, WORKER_ID
+        FROM V3_CLIENT
+        <include refid="whereClause"/>
+        ORDER BY CLIENT_ID DESC
+      ) t
+      WHERE ROWNUM &lt;= #{endRow}
+    )
+    WHERE rn &gt; #{startRow}
   </select>
 
+  <!-- 카운트 -->
+  <select id="countClients" resultType="int">
+    SELECT COUNT(1)
+    FROM V3_CLIENT
+    <include refid="whereClause"/>
+  </select>
 
+  <!-- 등록  -->
+  <insert id="insertClient" parameterType="proj.spring.mes.dto.P0402_ClientDTO">
+    INSERT INTO V3_CLIENT (
+      CLIENT_ID, CLIENT_NAME, CLIENT_TEL, WORKER_ID
+    ) VALUES (
+      #{client_id}, #{client_name}, #{client_tel}, #{worker_id}
+    )
+  </insert>
 
-
-
-
-
-
-
-
-
+  <!-- 삭제 -->
+  <delete id="deleteByIds">
+    DELETE FROM V3_CLIENT
+    WHERE CLIENT_ID IN
+    <foreach collection="ids" item="id" open="(" separator="," close=")">
+      #{id}
+    </foreach>
+  </delete>
 
 </mapper>
