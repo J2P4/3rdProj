@@ -15,7 +15,7 @@
 		
 		<where>
 			<if test="stock_id != null and stock_id != ''">
-				and s.stock_id like '%' || #{stock_id} || '%'
+				and lower(s.stock_id) like lower('%' || #{stock_id} || '%')
 			</if>
 			
 			<if test="item_div != null and item_div != ''">

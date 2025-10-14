@@ -23,14 +23,13 @@
 		<where>
 			inspection_type = 0
 			<if test="inspection_result_id != null and inspection_result_id != ''">
-				and i.inspection_result_id like '%' || #{inspection_result_id} || '%'
+				and lower(i.inspection_result_id) like lower('%' || #{inspection_result_id} || '%')
 			</if>
-			<!-- 날짜 관련 조건 조정해두기... -->
-<!-- 			<if test="inspection_result_id != null and inspection_result_id != ''"> -->
-<!-- 				and i.inspection_id like '%' || #{inspection_result_id} || '%' -->
-<!-- 			</if>			 -->
+	        <if test="fromDate != null and fromDate != '' and toDate != null and toDate != ''">
+	            and i.inspection_result_date BETWEEN #{fromDate} AND #{toDate}
+	        </if>
 			<if test="item_name != null and item_name != ''">
-				and it.item_name like '%' || #{item_name} || '%'
+				and lower(it.item_name) like lower('%' || #{item_name} || '%')
 			</if>
 		</where> 
 		order by inspection_result_id

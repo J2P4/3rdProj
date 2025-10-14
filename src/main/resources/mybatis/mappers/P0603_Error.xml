@@ -17,9 +17,9 @@
 			<if test="inspection_result_id != null and inspection_result_id != ''">
 				and inspection_result_id = #{inspection_result_id}
 			</if>
-<!-- 		날짜 나중에
-			<if text>
-			</if> -->
+	        <if test="fromDate != null and fromDate != '' and toDate != null and toDate != ''">
+	            and i.inspection_result_date BETWEEN #{fromDate} AND #{toDate}
+	        </if>
 			<!-- 품목... 여기서 조인 좀 많이 해야 한다. 잠깐만... -->
 <!-- 			<if test="item_name != null and item_name != ''"> -->
 <!-- 				and lower(it.item_name) like lower('%' || #{item_name} || '%') -->

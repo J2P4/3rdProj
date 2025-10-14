@@ -21,13 +21,13 @@
 		
 		<where>
 			<if test="bom_id != null and bom_id != ''">
-				and b.bom_id like '%' || #{bom_id} || '%'
+				and lower(b.bom_id) like lower('%' || #{bom_id} || '%')
 			</if>
 			<if test="item_div != null and item_div != ''">
 				and i.item_div = #{item_div}
 			</if>
 			<if test="item_id != null and item_id != ''">
-				and i.item_id like '%' || #{item_id} || '%'
+				and lower(i.item_id) like lower('%' || #{item_id} || '%')
 			</if>					
 		</where>
 		
@@ -35,16 +35,44 @@
 	</select>
 
 	
-	<!-- 단일 조회 - 정확히는 item_id 같은 것만 조회 -->
+	<!-- 단일 조회 -->
 	<select id = "selectOneBOM" resultType = "P0404_BOMDTO">
-		select
-			b.bom_id, b.bom_amount, i.item_id, i.item_div
-		from v3_bom b left outer join v3_item i
-		on b.item_id = i.item_id
-		<!-- where 영역 split 등 줘서 가져와야 함 -->
-		where b.item_id = #{_parameter}
-		order by b.bom_id	
+	    select
+	        b.bom_id, 
+	        b.bom_amount, 
+	        b.item_id AS item_id, 
+	        i_material.item_id AS material_item_id,
+	        i_material.item_name AS material_item_name,
+	        i_material.item_div AS material_item_div,
+	        i_product.item_name AS product_item_name
+	    from v3_bom b
+	        left join v3_item i_product
+	            on b.item_id = i_product.item_id
+	        left join v3_item i_material
+	            on i_material.item_id = 
+	                ltrim(substr(b.bom_id, 1, LENGTH(b.bom_id) - 2), 'F')
+	    where b.bom_id = #{_parameter}
 	</select>
+	
+	<!-- 조회 : 품목 id(완제) 기준 조회. 혹시 쓸 일 있을까봐. -->
+	<select id = "selectBOMByItem" resultType = "P0404_BOMDTO" parameterType="string">
+	    select
+	        b.bom_id, 
+	        b.bom_amount, 
+	        b.item_id as item_id,
+	        i_material.item_id as material_item_id,
+	        i_material.item_name as material_item_name, 
+	        i_material.item_div as material_item_div,
+	        i_product.item_name as product_item_name
+	    from v3_bom b
+	        left join V3_ITEM i_product
+	            on b.item_id = i_product.item_id
+	    left join V3_ITEM i_material
+	        on i_material.item_id = 
+	            ltrim(substr(b.bom_id, 1, length(b.bom_id) - 2), 'F')
+	    where b.item_id = #{_parameter}
+	    order by b.bom_id
+	</select>	
 	
 	<!-- 조회 : 품목 고르기용 1(완제) -->
 	<select id = "selectOneBOMItemF" resultType = "P0404_BOMDTO">

@@ -192,6 +192,25 @@ document.addEventListener('DOMContentLoaded', () => {
         inputItemName.value = '';
         upItemIdOpt(allItems); 
         inputItemId.value = '';
+
+        // 상세 -> 수정 전환 시 애니메이션 효과 없애서 바로 전환된 것처럼 보이게 하는 꼼수
+        const noAnime = (mode === 'edit');
+
+        if (noAnime) {
+            // 상세 -> 수정 전환 시 즉시 닫히는 것처럼 보이게 애니메이션 효과 없애기.
+            detail.style.transition = 'none';
+            detail.classList.remove('open');
+            // detail의 요소 전체 너비 읽어서 강제로 화면에 보이도록 렌더링시키기
+            // https://woodduru-madduru.tistory.com/16
+            // 이런 꼼수라고 함 : https://dongqui.github.io/posts/rerunani
+            void detail.offsetWidth;
+            // 애니메이션 재활성화
+            detail.style.transition = 'right 1s ease';
+
+            // 입력, 수정 영역을 즉시 열기 위한 준비
+            slideInput.style.transition = 'none';
+        }
+
         
         // mode에 따라 등록, 수정 구분
         if (mode === 'edit' && stockId) {
@@ -216,11 +235,21 @@ document.addEventListener('DOMContentLoaded', () => {
             stockIdShow.style.display = 'none';
             stockIdVal.textContent = '';
             inputStockIdHidden.value = '';
+            // 상세 슬라이드 닫기
+            if (detail.classList.contains('open')) {
+                detail.classList.remove('open');
+            }
         }
 
         // 설정한 후 슬라이드 열기
         slideInput.classList.add('open');
-        detail.classList.remove('open'); // 상세 슬라이드 닫기
+        // 수정 모드였다면 즉시 애니메이션 복구
+        if (noAnime) {
+            // 변경 강제 적용
+            void slideInput.offsetWidth; 
+            // 다음에는 애니메이션 작동되도록 설정
+            slideInput.style.transition = 'right 1s ease'; 
+        }
     }
 
 // ==========================
@@ -386,13 +415,14 @@ async function loadData(stockId) {
         // 여기 코드는 잘 보기...
         openSlideInput('new');
 
-        slideInput.classList.add('open');
-        // 초기화 : 모든 필터와 선택값 초기화
-        inputItemDiv.value = '';
-        inputItemName.value = '';
-        // 전체 품목으로 다시 갱신
-        upItemIdOpt(allItems); 
-        inputItemId.value = '';
+        // 상세 -> 수정 애니메이션 없애기 하면서 openSlideInput 함수 쪽에 넣어놔서 주석 처리
+        // slideInput.classList.add('open');
+        // // 초기화 : 모든 필터와 선택값 초기화
+        // inputItemDiv.value = '';
+        // inputItemName.value = '';
+        // // 전체 품목으로 다시 갱신
+        // upItemIdOpt(allItems); 
+        // inputItemId.value = '';
     });
 
     // 상세 슬라이드 '수정' 버튼 클릭 이벤트
