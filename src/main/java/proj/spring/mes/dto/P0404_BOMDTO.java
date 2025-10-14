@@ -9,4 +9,5 @@ public class P0404_BOMDTO {
 	private String item_id;
 	
 	private String item_div;
+	private String item_name;
 }

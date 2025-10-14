@@ -15,8 +15,8 @@ public class P0603_ErrorServiceImpl implements P0603_ErrorService {
 	P0603_ErrorMapperDAO errorMapperDAO;
 	
 	@Override
-	public List<P0603_ErrorDTO> errorList() {
-		return errorMapperDAO.selectError();
+	public List<P0603_ErrorDTO> errorList(P0603_ErrorDTO searchCondition) {
+		return errorMapperDAO.selectError(searchCondition);
 	}
 	
 	@Override

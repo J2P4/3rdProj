@@ -18,10 +18,10 @@ public class P0602_OutInsCtrl {
 	P0602_OutInsService service;
 	
 	@RequestMapping("/outInslist")
-	public String inInsList(Model model) {
+	public String inInsList(Model model, P0602_OutInsDTO searchCondition) {
 		System.out.println("출고 검사 기본 조회");
 		
-		List<P0602_OutInsDTO> list = service.outInsList();
+		List<P0602_OutInsDTO> list = service.outInsList(searchCondition);
 		
 		model.addAttribute("list", list);
 		

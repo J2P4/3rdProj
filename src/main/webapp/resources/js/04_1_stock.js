@@ -422,7 +422,7 @@ async function loadData(stockId) {
 //                          - 등록 버튼 클래스에 submit-btn 추가
 //                          - 입력 영역별 name 설정해두기
 //                          - controller는 기존 등록문만 제대로 등록해놨으면 문제 없음
-//                          
+//
 // ==================================================================================
 
     const saveBtn = document.querySelector('.submit-btn');

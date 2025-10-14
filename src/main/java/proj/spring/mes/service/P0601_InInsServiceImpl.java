@@ -16,8 +16,8 @@ public class P0601_InInsServiceImpl implements P0601_InInsService {
 	P0601_InInsMapperDAO inInsMapperDAO;
 	
 	@Override
-	public List<P0601_InInsDTO> inInsList() {
-		return inInsMapperDAO.selectInIns();
+	public List<P0601_InInsDTO> inInsList(P0601_InInsDTO searchCondition) {
+		return inInsMapperDAO.selectInIns(searchCondition);
 	}
 	
 	@Override

@@ -14,7 +14,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BOM 관리 < 기준 관리 < J2P4</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/common.css" type="text/css">
+    <script>
+        const contextPath = '${pageContext.request.contextPath}';
+        // 품목 목록을 JSON 형식으로 js 변수에 저장하려고 작성
+        const allItemsJson = `${itemListJson}`; 
+    </script>
     <script src="${pageContext.request.contextPath}/resources/js/common.js" defer></script>
+    <script src="${pageContext.request.contextPath}/resources/js/04_4_bom.js" defer></script>
 </head>
 <body>
     <div class = "title"><h1>BOM 관리</h1></div>
@@ -23,28 +29,25 @@
             <div class = "filter-item">
                 <div class = "filitem-name">· BOM ID</div>
                 <div class = "filitem-input">
-                    <select name = "변수명" size = "1">
-                        <option value = "전달값1" selected>나중에 불러오도록</option>
-                        <option value = "전달값2">나중에 불러오도록</option>
-                    </select>
+                    <input type = "text" name = "bom_id" placeholder="BOM id를 입력해주세요">
                 </div>
             </div>
             <div class = "filter-item">
                 <div class = "filitem-name">· 분류</div>
                 <div class = "filitem-input">
-                    <select name = "변수명" size = "1">
-                        <option value = "전달값1" selected>나중에 불러오도록</option>
-                        <option value = "전달값2">나중에 불러오도록</option>
+                    <select name = "item_div" size = "1">
+                        <c:set var="selectedDiv" value="${param.item_div}" />
+                        <option value = "" ${empty selectedDiv ? 'selected' : ''}>재고 구분 선택</option>
+                        <option value = "도서" ${selectedDiv eq '도서' ? 'selected' : ''}>도서</option>
+                        <option value = "포장지" ${selectedDiv eq '포장지' ? 'selected' : ''}>포장지</option>
+                        <option value = "완제품" ${selectedDiv eq '완제품' ? 'selected' : ''}>완제품</option>
                     </select>                    
                 </div>
             </div>
             <div class = "filter-item">
                 <div class = "filitem-name">· 품목 ID</div>
                 <div class = "filitem-input">
-                    <select name = "변수명" size = "1">
-                        <option value = "전달값1" selected>나중에 불러오도록</option>
-                        <option value = "전달값2">나중에 불러오도록</option>
-                    </select>
+                    <input type = "text" name = "item_id" placeholder="품목 id를 입력해주세요">   
                 </div>
             </div>
             <div class = "filter-item"></div>
@@ -61,14 +64,14 @@
                     <th class = "id">BOM ID</th>
                     <th class = "id">품목 ID</th>
                     <th class = "type">분류</th>
-                    <th>소요량</th>
+                    <th style="width: 20%;">소요량</th>
                 </tr>
             </thead>
             <tbody>
             	<c:if test="${empty list}">
 					<tr>
                         <td><input type="checkbox" class="rowChk" disabled></td>
-						<td colspan="5"> 조회 내역이 없습니다.</td>
+						<td colspan="5" style="width: 100%;"> 조회 내역이 없습니다.</td>
 					</tr>
 				</c:if>
 				<c:if test="${not empty list}">

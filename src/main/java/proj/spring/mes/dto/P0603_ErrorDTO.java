@@ -13,4 +13,5 @@ public class P0603_ErrorDTO {
 	
 	private Date inspection_result_date;
 	private String stock_id;
+	private String item_id;
 }

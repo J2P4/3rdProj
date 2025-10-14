@@ -15,8 +15,8 @@ public class P0404_BOMServiceImpl implements P0404_BOMService {
 	P0404_BomMapperDAO bomMapperDAO;
 	
 	@Override
-	public List<P0404_BOMDTO> bomList() {
-		return bomMapperDAO.selectBOM();
+	public List<P0404_BOMDTO> bomList(P0404_BOMDTO searchCondition) {
+		return bomMapperDAO.selectBOM(searchCondition);
 	}
 	
 	@Override

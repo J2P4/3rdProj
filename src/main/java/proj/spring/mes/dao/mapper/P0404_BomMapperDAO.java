@@ -9,8 +9,10 @@ import proj.spring.mes.dto.P0404_BOMDTO;
 @Mapper
 public interface P0404_BomMapperDAO {
 
-	List<P0404_BOMDTO> selectBOM();
+	List<P0404_BOMDTO> selectBOM(P0404_BOMDTO serarchCondition);
 	P0404_BOMDTO selectOneBOM(String bom_id);
+	List<P0404_BOMDTO> selectOneBOMItemF();
+	List<P0404_BOMDTO> selectOneBOMItemM();
 	
 	// 품목 고르기용 2개 넣어놔야 함
 	

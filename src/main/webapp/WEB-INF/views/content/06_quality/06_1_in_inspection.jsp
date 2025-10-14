@@ -23,10 +23,7 @@
             <div class = "filter-item">
                 <div class = "filitem-name">· 결과 ID</div>
                 <div class = "filitem-input">
-                    <select name = "변수명" size = "1">
-                        <option value = "전달값1" selected>나중에 불러오도록</option>
-                        <option value = "전달값2">나중에 불러오도록</option>
-                    </select>
+                    <input type = "text" name = "inspection_result_id" placeholder = "검사 결과 id를 입력해주세요">
                 </div>
             </div>
             <div class = "filter-item">
@@ -40,10 +37,7 @@
             <div class = "filter-item">
                 <div class = "filitem-name">· 품명</div>
                 <div class = "filitem-input">
-                    <select name = "변수명" size = "1">
-                        <option value = "전달값1" selected>나중에 불러오도록</option>
-                        <option value = "전달값2">나중에 불러오도록</option>
-                    </select>
+                    <input type = "text" name = "item_name" placeholder = "품명을 입력해주세요">
                 </div>
             </div>
         </div>
@@ -72,11 +66,11 @@
 				<c:if test="${not empty list}">
 					<c:forEach var="P0601_InInsDTO" items="${list}">
 		                <tr>
-		                    <th class = "chkbox"><input type="checkbox" class="rowChk"></th>
-		                    <th class = "id">${P0601_InInsDTO.inspection_result_id}</th>
-		                    <th class = "date">${P0601_InInsDTO.inspection_result_date}</th>
-		                    <th>${P0601_InInsDTO.inspection_result_good}</th>
-		                    <th>${P0601_InInsDTO.inspection_result_bad}</th>
+		                    <td class = "chkbox"><input type="checkbox" name="delete_inIns_id" value="${P0601_InInsDTO.inspection_result_id}" class="rowChk"></td>
+		                    <td class = "id">${P0601_InInsDTO.inspection_result_id}</td>
+		                    <td class = "date">${P0601_InInsDTO.inspection_result_date}</td>
+		                    <td class = "gb">${P0601_InInsDTO.inspection_result_good}</td>
+		                    <td class = "gb">${P0601_InInsDTO.inspection_result_bad}</td>
 		                </tr>
 	                </c:forEach>
 	            </c:if>

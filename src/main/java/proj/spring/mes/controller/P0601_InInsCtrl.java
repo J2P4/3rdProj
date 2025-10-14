@@ -19,10 +19,10 @@ public class P0601_InInsCtrl {
 	P0601_InInsService service;
 	
 	@RequestMapping("/inInslist")
-	public String inInsList(Model model) {
+	public String inInsList(Model model, P0601_InInsDTO searchCondition) {
 		System.out.println("입고 검사 기본 조회");
 		
-		List<P0601_InInsDTO> list = service.inInsList();
+		List<P0601_InInsDTO> list = service.inInsList(searchCondition);
 		
 		model.addAttribute("list", list);
 		

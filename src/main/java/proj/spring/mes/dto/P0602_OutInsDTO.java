@@ -13,4 +13,8 @@ public class P0602_OutInsDTO {
 	private String worker_id;
 	private String stock_id;
 	private int inspection_type;
+	
+	private String worker_name;
+	private String item_name;
+	private String item_id;
 }

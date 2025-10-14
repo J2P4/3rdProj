@@ -23,10 +23,7 @@
             <div class = "filter-item">
                 <div class = "filitem-name">· 검사 ID</div>
                 <div class = "filitem-input">
-                    <select name = "변수명" size = "1">
-                        <option value = "전달값1" selected>나중에 불러오도록</option>
-                        <option value = "전달값2">나중에 불러오도록</option>
-                    </select>
+                    <input type = "text" name = "inspection_result_id" placeholder = "검사 결과 id를 입력해주세요">
                 </div>
             </div>
             <div class = "filter-item">
@@ -40,10 +37,7 @@
             <div class = "filter-item">
                 <div class = "filitem-name">· 품명</div>
                 <div class = "filitem-input">
-                    <select name = "변수명" size = "1">
-                        <option value = "전달값1" selected>나중에 불러오도록</option>
-                        <option value = "전달값2">나중에 불러오도록</option>
-                    </select>
+                    <input type = "text" name = "item_name" placeholder = "품명을 입력해주세요">
                 </div>
             </div>
             <div class = "filter-item">
@@ -67,7 +61,7 @@
                     <th class = "chkbox"><input type="checkbox" id="chkAll"></th>
                     <th class = "id">불량 사유 ID</th>
                     <th class = "name">불량사유명</th>
-                    <th class = "type">폐기 여부</th>
+                    <th style = "width: 30%;">폐기 여부</th>
                 </tr>
             </thead>
             <tbody>
@@ -80,10 +74,10 @@
 				<c:if test="${not empty list}">
 					<c:forEach var="P0603_ErrorDTO" items="${list}">
 		                <tr>
-		                    <th class = "chkbox"><input type="checkbox" class="rowChk"></th>
-		                    <th class = "id">${P0603_ErrorDTO.defect_id}</th>
-		                    <th class = "date">${P0603_ErrorDTO.defect_name}</th>
-		                    <th>${P0603_ErrorDTO.defect_exhaust}</th>
+		                    <td class = "chkbox"><input type="checkbox" class="rowChk"></td>
+		                    <td class = "id">${P0603_ErrorDTO.defect_reason_id}</td>
+		                    <td class = "date">${P0603_ErrorDTO.defect_reason}</td>
+		                    <td>${P0603_ErrorDTO.defect_exhaust}</td>
 		                </tr>
 	                </c:forEach>
 	            </c:if>
@@ -140,7 +134,7 @@
     <div class = "slide" id = "slide-detail">
         <div class = "slide-contents">
             <div class = "silde-title"><h2>불량 보고서 상세</h2></div>
-            <div class = "slide-id">불량 보고서 ID: ${P0603_ErrorDTO.defect_id}</div>
+            <div class = "slide-id">불량 보고서 ID: ${P0603_ErrorDTO.defect_reason_id}</div>
             <div class = "slide-tb">
                 <table>
                     <thead>
@@ -149,7 +143,7 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td>${P0603_ErrorDTO.defect_name}</td>
+                            <td>${P0603_ErrorDTO.defect_reason}</td>
                             <td data-type = "select">${P0603_ErrorDTO.defect_exhaust}</td>
                         </tr>
                     </tbody>

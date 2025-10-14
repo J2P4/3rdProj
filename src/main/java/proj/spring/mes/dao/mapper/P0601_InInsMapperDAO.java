@@ -10,7 +10,7 @@ import proj.spring.mes.dto.WorkerDTO;
 @Mapper
 public interface P0601_InInsMapperDAO {
 	
-	List<P0601_InInsDTO> selectInIns();
+	List<P0601_InInsDTO> selectInIns(P0601_InInsDTO searchCondition);
 	P0601_InInsDTO selectOneInIns(String inspection_result_id);
 	int updateInIns(P0601_InInsDTO dto);
 	int deleteInIns(String inspection_result_id);

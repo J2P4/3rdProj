@@ -16,8 +16,8 @@ public class P0602_OutInsServiceImpl implements P0602_OutInsService {
 	P0602_OutInsMapperDAO outInsMapperDAO;
 	
 	@Override
-	public List<P0602_OutInsDTO> outInsList() {
-		return outInsMapperDAO.selectOutIns();
+	public List<P0602_OutInsDTO> outInsList(P0602_OutInsDTO searchCondition) {
+		return outInsMapperDAO.selectOutIns(searchCondition);
 	}
 	
 	@Override

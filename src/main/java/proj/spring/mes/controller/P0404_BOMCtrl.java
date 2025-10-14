@@ -18,10 +18,10 @@ public class P0404_BOMCtrl {
 	P0404_BOMService service;
 	
 	@RequestMapping("/bomlist")
-	public String bomList(Model model) {
+	public String bomList(Model model, P0404_BOMDTO searchCondition) {
 		System.out.println("BOM 기본 조회");
 		
-		List<P0404_BOMDTO> list = service.bomList();
+		List<P0404_BOMDTO> list = service.bomList(searchCondition);
 		
 		model.addAttribute("list", list);
 		

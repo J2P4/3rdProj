@@ -18,10 +18,10 @@ public class P0603_ErrorCtrl {
 	P0603_ErrorService service;
 	
 	@RequestMapping("/errorlist")
-	public String errorList(Model model) {
+	public String errorList(Model model, P0603_ErrorDTO searchCondition) {
 		System.out.println("불량 보고서 기본 조회");
 		
-		List<P0603_ErrorDTO> list = service.errorList();
+		List<P0603_ErrorDTO> list = service.errorList(searchCondition);
 		
 		model.addAttribute("list", list);
 		
