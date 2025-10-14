@@ -24,7 +24,7 @@ public class P0402_ClientCtrl {
     public String clientlist(Model model) {
         model.addAttribute("clients", clientService.clientList());
         logger.info("Loaded client list");
-        return "client/list";
+        return "04_standard/04_2_standard_client.tiles";
     }
 
     // 슬라이드에서 쓸 JSON 엔드포인트
