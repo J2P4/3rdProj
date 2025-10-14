@@ -144,12 +144,12 @@
     <div class="card">
         <div class="form-row">
           <label for="userid">아이디</label>
-          <input id="userid" name="worker_id" type="text" value="A25101045">
+          <input id="userid" name="worker_id" type="text" value="A25101468">
         </div>
 
         <div class="form-row">
           <label for="userpw">비밀번호</label>
-          <input id="userpw" name="worker_pw" type="password">
+          <input id="userpw" name="worker_pw" type="password" value="admin1234">
         </div>
 
         <div class="actions">
