@@ -152,15 +152,19 @@ document.addEventListener('DOMContentLoaded', () => {
 	        'Accept': 'application/json'
 	      },
 	      body: body.toString()
+
 	    });
 	    const raw = await res.text();
+	    console.log(body);		    
+	    console.log('client_name =' + client_name);
 	    if (!res.ok) throw new Error(`update ${res.status}: ${raw}`);
 	
 	    const saved = raw ? JSON.parse(raw) : { client_id, client_name, client_tel, worker_id };
 	
 	    const fresh = await openDetail(saved.client_id || client_id);
 	    updateTableRow(saved.client_id || client_id, fresh);
-	
+		console.log('saved =' + saved['client_name']);
+		console.log('fresh =' + fresh['client_name']);
 	    alert('저장되었습니다.');
 	  } catch (e) {
 	    console.error('update error', e);

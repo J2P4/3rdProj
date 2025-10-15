@@ -18,6 +18,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 @Controller
 public class P0402_ClientCtrl {
 
@@ -194,13 +196,39 @@ public class P0402_ClientCtrl {
         return dto;
     }
     
+
     
-    @RequestMapping("/client/update")
-    @ResponseBody
-    public P0402_ClientDTO update(P0402_ClientDTO dto) {
-    	return clientService.update(dto);
- 
-    }    
+    
+    @RequestMapping(value="/client/update", method=RequestMethod.POST, 
+            consumes="application/x-www-form-urlencoded", produces="application/json")
+@ResponseBody
+public P0402_ClientDTO update(HttpServletRequest req) {
+String clientId   = req.getParameter("client_id");
+String clientName = req.getParameter("client_name");
+String clientTel  = req.getParameter("client_tel");
+String workerId   = req.getParameter("worker_id");
+
+P0402_ClientDTO dto = new P0402_ClientDTO();
+dto.setClient_id(clientId);
+dto.setClient_name(clientName);
+dto.setClient_tel(clientTel);
+dto.setWorker_id(workerId);
+
+return clientService.update(dto);
+}
+
+    
+    
+    
+    
+    
+    
+//    @RequestMapping("/client/update")
+//    @ResponseBody
+//    public P0402_ClientDTO update(P0402_ClientDTO dto) {
+//    	return clientService.update(dto);
+// 
+//    }    
     
     
     

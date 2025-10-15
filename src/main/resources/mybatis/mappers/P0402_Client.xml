@@ -77,7 +77,7 @@
 
 
 
-<update id="updateClientOne" parameterType="proj.spring.mes.dto.P0402_ClientDTO">
+<update id="updateClient" parameterType="proj.spring.mes.dto.P0402_ClientDTO">
 	UPDATE V3_client SET client_name = #{client_name} , client_tel = #{client_tel}, worker_id = #{worker_id}
  	WHERE CLIENT_ID = #{client_id}
 </update>
