@@ -111,10 +111,17 @@
     <input type="hidden" name="page" value="${page}">
     <input type="hidden" name="size" value="${pagePerRows}">
     <div class = "bottom-btn">
-    	<div class = "bottom-btn-box">
-            <input type = "button" class = "btm-btn new" value="신규">
-            <input type = "submit" class = "btm-btn del" value="삭제">
-        </div>
+    	<c:if test="${sessionScope.role != 'STAFF'}">
+		    <!-- 버튼 영역 전체 -->
+	    	<div class = "bottom-btn-box">
+	            <input type = "button" class = "btm-btn new" value="신규">
+	            <input type = "submit" class = "btm-btn del" value="삭제">
+	        </div>
+		</c:if>
+		<c:if test="${sessionScope.role == 'STAFF'}">
+		    <!-- STAFF는 조회만 가능 -->
+		    <!-- 버튼 없음 -->
+		</c:if>
     </div>
     </form>
     <div class = "page">

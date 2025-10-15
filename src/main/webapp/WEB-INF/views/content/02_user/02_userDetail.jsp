@@ -66,8 +66,13 @@
 	            </table>
         	</div>
 	        <div class = "slide-btnbox">
-                <a href="modify?worker_id=${dto.worker_id}" class="slide-btn modify-btn">수정</a>
-				<a href="workerlist" class="slide-btn close-btn">취소</a>
+	        	<c:if test="${sessionScope.role != 'STAFF'}">
+                	<a href="modify?worker_id=${dto.worker_id}" class="slide-btn modify-btn">수정</a>
+					<a href="workerlist" class="slide-btn close-btn">취소</a>
+            	</c:if>
+            	<c:if test="${sessionScope.role == 'STAFF'}">
+					<a href="workerlist" class="slide-btn close-btn">취소</a>
+            	</c:if>
             </div>
        	</div>
     </div>

@@ -79,7 +79,8 @@ public class LoginController {
         HttpSession newSession = request.getSession(true);
         newSession.setAttribute("loginUser", user);
         newSession.setMaxInactiveInterval(30*60);
-	    
+        newSession.setAttribute("role", user.getWorker_code());		// 권한별 접근
+        
         // 초기비밀번호인지 확인 (생년월일 6자리와 현재 해시가 같은지)
         String birth6 = null;
         
