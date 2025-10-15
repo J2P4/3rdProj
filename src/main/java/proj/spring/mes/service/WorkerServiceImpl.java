@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import proj.spring.mes.dao.mapper.WorkerMapperDAO;
 import proj.spring.mes.dto.DeptDTO;
+import proj.spring.mes.dto.PwDTO;
 import proj.spring.mes.dto.WorkerDTO;
 
 @Service
@@ -62,38 +63,38 @@ public class WorkerServiceImpl implements WorkerService{
             throw new IllegalArgumentException("세션이 만료되었습니다. 다시 로그인해주세요.");
         if (dto == null) throw new IllegalArgumentException("요청이 올바르지 않습니다.");
 
-        final String currentPw = nvl(dto.getCurrent_pw());
-        final String newPw     = nvl(dto.getNew_pw());
-        final String confirmPw = nvl(dto.getConfirm_pw());
-
-        // 1) 현재 비밀번호 해시 조회
-        String currentHash = workerMapperDao.selectWorkerPw(worker_id);
-        if (currentHash == null) throw new IllegalArgumentException("사용자를 찾을 수 없습니다.");
-
-        // 2) 현재 비밀번호 일치
-        if (!encoder.matches(currentPw, currentHash))
-            throw new IllegalArgumentException("현재 비밀번호가 올바르지 않습니다.");
-
-        // 3) 간단 정책 (쉬운방법 선호: 8~20, 영문+숫자, 공백금지)
-        if (newPw.length() < 8 || newPw.length() > 20)
-            throw new IllegalArgumentException("비밀번호는 8~20자여야 합니다.");
-        if (!newPw.matches(".*[A-Za-z].*") || !newPw.matches(".*\\d.*"))
-            throw new IllegalArgumentException("비밀번호는 영문과 숫자를 모두 포함해야 합니다.");
-        if (newPw.contains(" "))
-            throw new IllegalArgumentException("비밀번호에는 공백을 사용할 수 없습니다.");
-
-        // 4) 새 비밀번호 확인 일치
-        if (!newPw.equals(confirmPw))
-            throw new IllegalArgumentException("새 비밀번호와 확인이 일치하지 않습니다.");
-
-        // 5) 기존 비밀번호와 동일 금지
-        if (encoder.matches(newPw, currentHash))
-            throw new IllegalArgumentException("이전 비밀번호와 동일한 비밀번호는 사용할 수 없습니다.");
-
-        // 6) 해시 후 업데이트
-        String newHash = encoder.encode(newPw);
-        int updated = workerMapperDao.updatePassword(worker_id, newHash);
-        if (updated != 1) throw new IllegalStateException("비밀번호 변경 중 오류가 발생했습니다.");
+//        final String currentPw = nvl(dto.getCurrent_pw());
+//        final String newPw     = nvl(dto.getNew_pw());
+//        final String confirmPw = nvl(dto.getConfirm_pw());
+//
+//        // 1) 현재 비밀번호 해시 조회
+//        String currentHash = workerMapperDao.selectWorkerPw(worker_id);
+//        if (currentHash == null) throw new IllegalArgumentException("사용자를 찾을 수 없습니다.");
+//
+//        // 2) 현재 비밀번호 일치
+//        if (!encoder.matches(currentPw, currentHash))
+//            throw new IllegalArgumentException("현재 비밀번호가 올바르지 않습니다.");
+//
+//        // 3) 간단 정책 (쉬운방법 선호: 8~20, 영문+숫자, 공백금지)
+//        if (newPw.length() < 8 || newPw.length() > 20)
+//            throw new IllegalArgumentException("비밀번호는 8~20자여야 합니다.");
+//        if (!newPw.matches(".*[A-Za-z].*") || !newPw.matches(".*\\d.*"))
+//            throw new IllegalArgumentException("비밀번호는 영문과 숫자를 모두 포함해야 합니다.");
+//        if (newPw.contains(" "))
+//            throw new IllegalArgumentException("비밀번호에는 공백을 사용할 수 없습니다.");
+//
+//        // 4) 새 비밀번호 확인 일치
+//        if (!newPw.equals(confirmPw))
+//            throw new IllegalArgumentException("새 비밀번호와 확인이 일치하지 않습니다.");
+//
+//        // 5) 기존 비밀번호와 동일 금지
+//        if (encoder.matches(newPw, currentHash))
+//            throw new IllegalArgumentException("이전 비밀번호와 동일한 비밀번호는 사용할 수 없습니다.");
+//
+//        // 6) 해시 후 업데이트
+//        String newHash = encoder.encode(newPw);
+//        int updated = workerMapperDao.updatePassword(worker_id, newHash);
+//        if (updated != 1) throw new IllegalStateException("비밀번호 변경 중 오류가 발생했습니다.");
     }
 
     
@@ -130,15 +131,15 @@ public class WorkerServiceImpl implements WorkerService{
     }
     
     // 화면에서 현재 비번 확인만 필요할 때
-    public boolean verifyCurrentPw(String worker_id, String rawCurrentPw) {
-    	String currentHash = workerMapperDao.selectWorkerPw(worker_id);
-    	return currentHash != null && encoder.matches(nvl(rawCurrentPw), currentHash);
-    }
-    
-    // null 방지
-    public class StringUtil {
-        public static String nvl(String s) {
-            return s == null ? "" : s.trim();
-        }
-    }
+//    public boolean verifyCurrentPw(String worker_id, String rawCurrentPw) {
+//    	String currentHash = workerMapperDao.selectWorkerPw(worker_id);
+//    	return currentHash != null && encoder.matches(nvl(rawCurrentPw), currentHash);
+//    }
+//    
+//    // null 방지
+//    public class StringUtil {
+//        public static String nvl(String s) {
+//            return s == null ? "" : s.trim();
+//        }
+//    }
 }
