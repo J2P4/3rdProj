@@ -30,27 +30,36 @@ public class AuthInterceptor implements HandlerInterceptor {
         // 2) 권한 체크
         String role = (String) session.getAttribute("role"); // "ADMIN" / "HEAD" / "STAFF"
         String method = req.getMethod();                     // GET/POST/PUT/DELETE...
-        String uri = req.getRequestURI();                    // 예: /mes/workerlist/modify
         String ctx = req.getContextPath();                   // 예: /mes
+        String path   = req.getRequestURI().substring(ctx.length());
 
-        boolean staffAllowedPost = uri.startsWith(ctx + "/session/extend"); // 연장 POST 허용
-        
+        // 역할 접근제한
         if ("STAFF".equals(role)) {
-            // STAFF는 조회만 허용 (GET 외 차단)
-            if (!"GET".equalsIgnoreCase(method) && !staffAllowedPost) {
+            
+        	if ("GET".equalsIgnoreCase(method) && path.equals("/workerlist")) {
+                return denyWithAlert(res, "권한이 없습니다."); 
+            }
 
-                // --- 차단 방식 : alert 후 뒤로가기 ---
-                res.setContentType("text/html; charset=UTF-8");
-                res.getWriter().write("<script>alert('권한이 없습니다.'); history.back();</script>");
-                res.getWriter().flush();
-                
-                return false;
+            // STAFF는 조회만 허용 (POST/PUT/DELETE 차단), 단 예외 POST는 허용
+        	// 세션연장, 비밀번호 변경은 허용
+            boolean staffAllowedPost = path.startsWith("/session/extend")|| path.startsWith("/change_page"); 
+            if (!"GET".equalsIgnoreCase(method) && !staffAllowedPost) {
+                return denyWithAlert(res, "권한이 없습니다.");
             }
         }
-        
-        return true; // 통과
+
+            return true; // 통과
     }
     
+    private boolean denyWithAlert(HttpServletResponse res, String msg) throws Exception {
+        res.resetBuffer(); // 혹시 기존 출력 버퍼가 있으면 초기화
+        res.setContentType("text/html; charset=UTF-8");
+        res.getWriter().write("<script>alert('" + msg + "'); history.back();</script>");
+        res.getWriter().flush();
+        return false;
+    }
+    
+        
     @Override
     public void postHandle(HttpServletRequest req, HttpServletResponse res, Object handler,
                            ModelAndView modelAndView) throws Exception {

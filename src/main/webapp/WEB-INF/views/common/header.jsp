@@ -26,15 +26,14 @@
     </script>
   <div class="flex items-center space-x-4 sm:space-x-8">
     <c:if test="${not empty sessionScope.loginUser}">
-      <div id="sess-box"
-           style="padding:5px 12px; background-color: rgb(24, 33, 49);
-                  border: none; border-radius:8px;
-                  font-size:14px; font-weight: bold; color: white;">
+      <div id="sess-box">
         남은 시간: <span id="sess-remaining" >--:--</span>
-        <button id="sess-extend" type="button" style="margin-left:8px; border-radius:8px; padding: 5px 8px; color: rgb(250, 250, 0);">연장</button>
+        <button id="sess-extend" type="button" >연장</button>
       </div>
     </c:if>
-	
+	<div>
+	[${sessionScope.loginUser.worker_name}] 님
+	</div>
     <div class="logout text-sm sm:text-base cursor-pointer hover:underline">
         <c:if test="${not empty sessionScope.loginUser}">
 		    <a href="${pageContext.request.contextPath}/logout">로그아웃</a>
@@ -46,20 +45,29 @@
         <img src="https://i.postimg.cc/zfVqTbvr/user.png" class="w-8 sm:w-9 rounded-full bg-white" alt="마이페이지 아이콘">
       </button>
 
-      <div id="userMenu"
-           class="absolute right-0 mt-2 w-40 bg-white text-gray-800 rounded-lg shadow-lg border hidden z-50 drop">
-        <div class="row">
-          <a href="${pageContext.request.contextPath}/workerlist">계정관리</a><br>
-        </div>
-        <!-- 이슈 처리 -->
-        <div class="row">
-        	<a href="${pageContext.request.contextPath}/pw_change">비밀번호 변경</a><br>
-        </div>
-      </div>
+    <c:if test="${sessionScope.role != 'STAFF'}">
+    	<div id="userMenu"
+        	class="absolute right-0 mt-2 w-40 bg-white text-gray-800 rounded-lg shadow-lg border hidden z-50 drop">
+			<div class="row">
+		    	<a href="${pageContext.request.contextPath}/workerlist">계정관리</a><br>
+		    </div>
+		    <div class="row">
+		       	<a href="${pageContext.request.contextPath}/pw_change">비밀번호 변경</a><br>
+		    </div>
+      	</div>
+    </c:if>
+    <c:if test="${sessionScope.role == 'STAFF'}">
+    	<div id="userMenu"
+        	class="absolute right-0 mt-2 w-40 bg-white text-gray-800 rounded-lg shadow-lg border hidden z-50 drop2">
+		    <div class="row">
+		       	<a href="${pageContext.request.contextPath}/pw_change">비밀번호 변경</a><br>
+		    </div>
+		</div>
+    </c:if>
     </div>
   </div>
 </div>
-<%-- <script src="${pageContext.request.contextPath}/resources/js/session.js"></script> --%>
+<script src="${pageContext.request.contextPath}/resources/js/session.js"></script>
 <script>
   (function () {
     const myIconBtn = document.getElementById('myIconBtn');

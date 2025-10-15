@@ -40,7 +40,7 @@ public class LoginController {
 	    // 강제 변경 모드일 때만 제한 걸기
 	    if ("force".equals(mode)) {
 	        if (!Boolean.TRUE.equals(must)) {
-	            return "redirect:/workerlist"; // 강제 변경 아님 → 차단
+	            return "redirect:/stocklist"; // 강제 변경 아님 → 차단
 	        }
 	    }
 
@@ -101,7 +101,7 @@ public class LoginController {
         	newSession.setAttribute("mustChangePw", false); 
         }
         
-	    return "redirect:/workerlist";
+	    return "redirect:/stocklist";
 	}
 	
 	@RequestMapping("/change_page")
@@ -109,11 +109,11 @@ public class LoginController {
 
 	    if (!newPw.equals(pw_confirm)) {
 	        model.addAttribute("msg", "새 비밀번호가 일치하지 않습니다.");
-	        return "/pw_change";
+	        return "redirect:/pw_change";
 	    }
 	    if (newPw.length() < 8) {
 	        model.addAttribute("msg", "새 비밀번호는 8자 이상이어야 합니다.");
-	        return "/pw_change";
+	        return "redirect:/pw_change";
 	    }
 
 	    WorkerDTO user = workerService.get(worker_id);
@@ -122,7 +122,7 @@ public class LoginController {
 	    // 현재 비번 검증
 	    if (!workerService.match(currentPw, user.getWorker_pw())) {
 	        model.addAttribute("msg", "현재 비밀번호가 올바르지 않습니다.");
-	        return "/pw_change";
+	        return "redirect:/pw_change";
 	    }
 
 	    // 초기비번(생년월일 6자리) 재사용 금지(선택)
@@ -130,7 +130,7 @@ public class LoginController {
 	        String birth6 = new java.text.SimpleDateFormat("yyMMdd").format(user.getWorker_birth());
 	        if (newPw.equals(birth6)) {
 	            model.addAttribute("msg","초기 비밀번호와 다른 값으로 설정해주세요.");
-	            return "/pw_change";
+	            return "redirect:/pw_change";
 	        }
 	    }
 

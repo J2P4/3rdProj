@@ -75,10 +75,33 @@
     	font-size:20px; 
     	padding:8px; 
     	}
+    .drop2 { 
+    	text-align:center; 
+    	font-weight:bold; 
+    	height:70px; 
+    	font-size:20px; 
+    	padding:8px; 
+    	}
     	
     .row { margin:10px; }
 
     .hidden { display: none; }
+    
+    #sess-box {
+    	padding:5px 12px; 
+    	background-color: rgb(24, 33, 49);
+        border-radius:8px;
+        font-size:14px; 
+        font-weight: bold; 
+        color: white;
+    }
+    #sess-extend{
+    	border: 1px solid #ffffff;
+    	margin-left:8px; 
+    	border-radius:5px; 
+    	padding: 2px 10px; 
+    	color: rgb(250, 250, 0);
+    }
   </style>
 </head>
 

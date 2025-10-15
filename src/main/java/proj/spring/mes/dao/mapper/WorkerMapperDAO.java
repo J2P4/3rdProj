@@ -18,10 +18,15 @@ public interface WorkerMapperDAO {
     int insertWorker(WorkerDTO dto);                // 등록
     int updateWorker(WorkerDTO dto);                // 수정
     int deleteWorkers(@Param("worker_ids") List<String> worker_ids);
-	int updatePassword(@Param("worker_id") String worker_id, @Param("hashed") String hashed);
 	
 	// 신규(페이징) 및 필터
     List<WorkerDTO> selectWorkerListPage(@Param("limit") int limit, @Param("offset") int offset, @Param("filter") WorkerDTO searchFilter);
 	// 신규(총계)
     long selectWorkerCount(@Param("filter") WorkerDTO searchFilter);
+
+    // 비밀번호 변경
+    String selectWorkerPw(@Param("worker_id") String worker_id);
+
+    // 비밀번호 해시로 교체 
+    int updatePassword(@Param("worker_id") String worker_id, @Param("new_pw") String new_pw);
 }

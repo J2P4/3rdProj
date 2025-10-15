@@ -110,7 +110,6 @@
 		update V3_worker
 		set	worker_name = #{worker_name},
 			worker_birth = #{worker_birth},
-			worker_pw = #{worker_pw},
 			worker_email = #{worker_email},
 			worker_code = #{worker_code},
 			worker_join = #{worker_join},
@@ -147,9 +146,16 @@
 	  )
 	</insert>
 
+	<!-- 현재 비밀번호 조회 -->
+    <select id="selectWorkerPw" resultType="string">
+        SELECT worker_pw
+        FROM V3_worker
+        WHERE worker_id = #{worker_id}
+    </select>
+
 	<update id="updatePassword">
 	  UPDATE V3_worker
-	     SET worker_pw = #{hashed}
+	     SET worker_pw = #{new_pw}
 	   WHERE worker_id = #{worker_id}
 	</update>
 

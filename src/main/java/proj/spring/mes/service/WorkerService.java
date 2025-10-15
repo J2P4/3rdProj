@@ -3,6 +3,7 @@ package proj.spring.mes.service;
 import java.util.List;
 
 import proj.spring.mes.dto.DeptDTO;
+import proj.spring.mes.dto.PwDTO;
 import proj.spring.mes.dto.WorkerDTO;
 
 public interface WorkerService {
@@ -22,4 +23,6 @@ public interface WorkerService {
 
     //총 레코드 수
     long count(WorkerDTO searchFilter);
+    
+    void changePassword(String worker_id, PwDTO dto);
 }
