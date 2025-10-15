@@ -17,7 +17,8 @@ public interface P0404_BomMapperDAO {
 	// 품목 고르기용 2개 넣어놔야 함
 	
 	int updateBOM(P0404_BOMDTO dto);
-	int deleteBOM(String bom_id);
+//	int deleteBOM(String bom_id);
+	int deleteBOMs(List<String> bomIds);
 	int insertBOM(P0404_BOMDTO dto);
 	
 }

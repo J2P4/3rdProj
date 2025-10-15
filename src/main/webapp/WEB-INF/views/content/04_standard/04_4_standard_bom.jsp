@@ -24,35 +24,39 @@
 </head>
 <body>
     <div class = "title"><h1>BOM 관리</h1></div>
-    <form class = "filter" method="get" action="">
+   	<c:url var="/bomlist" value="/bomlist"/> <%-- 모든 내부 링크의 기준 URL(중복 /mes/mes 방지) 이거 떄믄에 한시간.... --%>
+	<c:set var="selfPath" value="/bomlist"/> <%-- c:url value에 사용할 경로 문자열 --%>
+    <form class = "filter" method="get" action="${pageContext.request.contextPath}/bomlist">
         <div class = "filter-item-box">
             <div class = "filter-item">
                 <div class = "filitem-name">· BOM ID</div>
                 <div class = "filitem-input">
-                    <input type = "text" name = "bom_id" placeholder="BOM id를 입력해주세요">
+                    <c:set var="filter.bom_id" value="${param.bom_id}" />
+                    <input type = "text" name = "bom_id" placeholder="BOM id를 입력해주세요" value = "${filter.bom_id}">
                 </div>
             </div>
             <div class = "filter-item">
                 <div class = "filitem-name">· 분류</div>
                 <div class = "filitem-input">
                     <select name = "item_div" size = "1">
-                        <c:set var="selectedDiv" value="${param.item_div}" />
-                        <option value = "" ${empty selectedDiv ? 'selected' : ''}>재고 구분 선택</option>
-                        <option value = "도서" ${selectedDiv eq '도서' ? 'selected' : ''}>도서</option>
-                        <option value = "포장지" ${selectedDiv eq '포장지' ? 'selected' : ''}>포장지</option>
-                        <option value = "완제품" ${selectedDiv eq '완제품' ? 'selected' : ''}>완제품</option>
+                        <option value = "" ${empty filter.item_div ? 'selected' : ''}>재고 구분 선택</option>
+                        <option value = "도서" ${filter.item_div eq '도서' ? 'selected' : ''}>도서</option>
+                        <option value = "포장지" ${filter.item_div eq '포장지' ? 'selected' : ''}>포장지</option>
+                        <option value = "완제품" ${filter.item_div eq '완제품' ? 'selected' : ''}>완제품</option>
                     </select>                    
                 </div>
             </div>
             <div class = "filter-item">
                 <div class = "filitem-name">· 품목 ID</div>
                 <div class = "filitem-input">
-                    <input type = "text" name = "item_id" placeholder="품목 id를 입력해주세요">   
+                    <input type = "text" name = "item_id" placeholder="품목 id를 입력해주세요" value = "${filter.item_id}">   
                 </div>
             </div>
             <div class = "filter-item"></div>
         </div>
         <div class = "filter-btn">
+            <input type="hidden" name="page" value="1"/> <%-- 조회 시 항상 1페이지부터 --%>
+            <input type="hidden" name="size" value="${pagePerRows != null ? pagePerRows : 10}"/> <%-- 현재 Rows 유지 --%>
             <input type = "submit" class = "fil-btn" value="조회">
         </div>
     </form>
@@ -76,8 +80,8 @@
 				</c:if>
 				<c:if test="${not empty list}">
 					<c:forEach var="P0404_BOMDTO" items="${list}">
-		                <tr>
-		                    <td><input type="checkbox" class="rowChk"></td>
+		                <tr data-id="${P0404_BOMDTO.bom_id}">
+		                    <td><input type="checkbox" class="rowChk" name = "delete_bom_id" value="${P0404_BOMDTO.bom_id}"></td>
 		                    <td>${P0404_BOMDTO.bom_id}</td>
 		                    <td>${P0404_BOMDTO.item_id}</td>
 		                    <td>${P0404_BOMDTO.item_div}</td>
@@ -88,8 +92,85 @@
             </tbody>
         </table>
     </div>
+    <!-- 현재 페이지 유지 -->
+    <input type="hidden" name="page" value="${page}">
+    <input type="hidden" name="size" value="${pagePerRows}">
+    <div class = "page">
+        <c:if test="${empty page}"><c:set var="page" value="1"/></c:if> <%-- 현재 페이지 기본 1 --%>
+        <c:if test="${empty pagePerRows}"><c:set var="pagePerRows" value="10"/></c:if> <%-- Rows 기본 10 --%>
+        <c:if test="${empty totalPages}"><c:set var="totalPages" value="1"/></c:if> <%-- 총페이지 기본 1 --%>
+        <c:if test="${empty startPage}"><c:set var="startPage" value="1"/></c:if> <%-- 블록 시작 기본 1 --%>
+        <c:if test="${empty endPage}"><c:set var="endPage" value="${totalPages}"/></c:if> <%-- 블록 끝 기본 총페이지 --%>
+	
+        <form id="sizeForm" method="get" action="${pageContext.request.contextPath}/bomlist" style="display:inline-block; margin-right:8px;">
+            <input type="hidden" name="page" value="1"/> <%-- Rows 바꾸면 1페이지로 --%>
+            <input type="hidden" name="bom_id" value="${fn:escapeXml(param.bom_id)}"/> <%-- 기존 필터 유지 --%>
+            <input type="hidden" name="item_div" value="${fn:escapeXml(param.item_div)}"/>
+            <input type="hidden" name="item_id" value="${fn:escapeXml(param.item_id)}"/>
+
+            <label>Rows:
+                <select name="size" onchange="document.querySelector('#sizeForm').submit()">
+                    <option value="1" ${pagePerRows==1 ? 'selected' : ''}>1</option> <%-- 1행 보기(블록 전환 테스트에 유용) --%>
+                    <option value="10" ${pagePerRows==10 ? 'selected' : ''}>10</option>
+                    <option value="20" ${pagePerRows==20 ? 'selected' : ''}>20</option>
+                    <option value="50" ${pagePerRows==50 ? 'selected' : ''}>50</option>
+                    <option value="100" ${pagePerRows==100 ? 'selected' : ''}>100</option>
+                </select>
+            </label>
+        </form>
+
+        <c:choose>
+            <c:when test="${hasPrevBlock}"> <%-- 이전 블록이 있으면 링크 활성 --%>
+                <c:url var="prevBlockUrl" value="${selfPath}"> <%-- /list 에 파라미터 조합 --%>
+                    <c:param name="page" value="${prevBlockStart}"/> <%-- 이전 블록 첫 페이지로 이동 --%>
+                    <c:param name="size" value="${pagePerRows}"/> <%-- Rows 유지 --%>
+                    <c:param name="bom_id" value="${param.bom_id}"/> <%-- 필터 유지 --%>
+                    <c:param name="item_div" value="${param.item_div}"/>
+                    <c:param name="item_id" value="${param.item_id}"/>
+                </c:url>
+                <a class="page-link" href="${prevBlockUrl}">이전</a> <%-- 클릭 시 이전 블록 시작으로 --%>
+            </c:when>
+            <c:otherwise>
+                <span class="page-link disabled">이전</span> <%-- 이전 블록이 없으면 비활성 --%>
+            </c:otherwise>
+        </c:choose>
+	
+        <c:forEach var="p" begin="${startPage}" end="${endPage}">
+            <c:url var="pUrl" value="${selfPath}"> <%-- 각 페이지 숫자 링크 --%>
+                <c:param name="page" value="${p}"/>
+                <c:param name="size" value="${pagePerRows}"/>
+                <c:param name="bom_id" value="${param.bom_id}"/>
+                <c:param name="item_div" value="${param.item_div}"/>
+                <c:param name="item_id" value="${param.item_id}"/>
+            </c:url>
+            <c:choose>
+                <c:when test="${p == page}">
+                    <span class="page-link current"><strong>${p}</strong></span> <%-- 현재 페이지는 강조(링크 X) --%>
+                </c:when>
+                <c:otherwise>
+                    <a class="page-link" href="${pUrl}">${p}</a> <%-- 다른 페이지는 링크 --%>
+                </c:otherwise>
+            </c:choose>
+        </c:forEach>
+	
+        <c:choose>
+            <c:when test="${hasNextBlock}">
+                <c:url var="nextBlockUrl" value="${selfPath}">
+                    <c:param name="page" value="${nextBlockStart}"/> <%-- 다음 블록 시작 페이지 --%>
+                    <c:param name="size" value="${pagePerRows}"/>
+                    <c:param name="bom_id" value="${param.bom_id}"/>
+                    <c:param name="item_div" value="${param.item_div}"/>
+                    <c:param name="item_id" value="${param.item_id}"/>
+                </c:url>
+                <a class="page-link" href="${nextBlockUrl}">다음</a> <%-- 클릭 시 11, 21, … --%>
+            </c:when>
+            <c:otherwise>
+                <span class="page-link disabled">다음</span> <%-- 다음 블록 없으면 비활성 --%>
+            </c:otherwise>
+        </c:choose>
+    </div>    
+    <!-- 하단 버튼 영역-->
     <div class = "bottom-btn">
-        <div class = "page">페이징 위치 확인용</div>
         <div class = "bottom-btn-box">
             <input type = "button" class = "btm-btn new" value="신규">
             <input type = "button" class = "btm-btn del" value="삭제">

@@ -29,9 +29,14 @@ public class P0404_BOMServiceImpl implements P0404_BOMService {
 		return bomMapperDAO.updateBOM(dto);
 	}
 	
+//	@Override
+//	public int removeBOM(String bom_id) {
+//		return bomMapperDAO.deleteBOM(bom_id);
+//	}
+	
 	@Override
-	public int removeBOM(String bom_id) {
-		return bomMapperDAO.deleteBOM(bom_id);
+	public int removeBOMs(List<String> bomIds) {
+		return bomMapperDAO.deleteBOMs(bomIds);
 	}
 	
 	@Override

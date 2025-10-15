@@ -15,6 +15,8 @@ document.addEventListener('DOMContentLoaded', () => {
         slideInput.classList.add('open');
     });
     // 취소 버튼 누를 때 닫히도록
+    // 지금 이 부분 이슈인데... querySelectorAll로 해서 할 게 아니라, 정확히 상세의 취소라고 설정하기.
+    // 등록 & 수정이 한 페이지에 묶여있으므로, stock.js의 mode 영역에서 수정해서 해결을 보든 해야 함.
     document.querySelectorAll('.close-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             btn.closest('.slide').classList.remove('open');

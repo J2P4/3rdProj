@@ -5,7 +5,7 @@
 <mapper namespace="proj.spring.mes.dao.mapper.P0401_StockMapperDAO">
 	<!-- SQL문 작성 영역 -->
 	
-	<!-- 전체 조회 : 여기는 ㅇㅋ -->
+	<!-- 전체 조회 : 페이징 없는 기준 -->
 	<select id = "selectStock" resultType = "P0401_StockDTO" parameterType="P0401_StockDTO">
 		select
 			s.stock_id, s.stock_amount, s.stock_wrap, s.item_id,
@@ -28,7 +28,62 @@
 		</where>
 		order by s.stock_id	
 	</select>
-
+	<!-- 전체 조회 : 페이지 넣는 기준 -->
+	<!-- <![CDATA[  ]]> : 대괄호 내의 내용은 그대로 문자열로 출력 -->
+	<select id="selectStockPage" resultType="P0401_StockDTO">
+	    <bind name="startRow" value="offset + 1"/>
+	    <bind name="endRow"   value="offset + limit"/>
+		SELECT *
+		FROM (
+		    SELECT t.*, ROWNUM rn
+		    FROM
+			(select
+				s.stock_id, s.stock_amount, s.stock_wrap, s.item_id,
+				i.item_div, i.item_name
+			from v3_stock s left outer join v3_item i
+			on s.item_id = i.item_id
+			
+			<where>
+				<if test="filter.stock_id != null and filter.stock_id != ''">
+					and lower(s.stock_id) like lower('%' || #{filter.stock_id} || '%')
+				</if>
+				
+				<if test="filter.item_div != null and filter.item_div != ''">
+					and i.item_div = #{filter.item_div}
+				</if>
+				
+				<if test="filter.stock_wrap != null and filter.stock_wrap != ''">
+					and s.stock_wrap = #{filter.stock_wrap}
+				</if>
+			</where>
+			order by s.stock_id) t
+	        <![CDATA[
+	        WHERE ROWNUM <= #{endRow}
+	        ]]>
+	        )
+		    <![CDATA[
+		    WHERE rn >= #{startRow}
+		    ]]>		
+	</select>
+	
+	  <!-- 총 레코드 수 -->
+	  <select id="selectStockCount" parameterType="map" resultType="long">
+	    SELECT COUNT(*)
+	    from v3_stock s left outer join v3_item i
+		on s.item_id = i.item_id
+		<where>
+			<if test="filter.stock_id != null and filter.stock_id != ''">
+				and lower(s.stock_id) like lower('%' || #{filter.stock_id} || '%')
+			</if>
+			
+			<if test="filter.item_div != null and filter.item_div != ''">
+				and i.item_div = #{filter.item_div}
+			</if>
+			<if test="filter.stock_wrap != null and filter.stock_wrap != ''">
+				and s.stock_wrap = #{filter.stock_wrap}
+			</if>
+		</where>
+	  </select>
 	
 	<!-- 단일 조회 : 아마 ㅇㅋ -->
 	<select id = "selectOneStock" resultType = "P0401_StockDTO">

@@ -100,9 +100,17 @@
 	</update>
 	
 	<!-- 삭제 -->
-	<delete id = "deleteBOM" parameterType = "P0404_BOMDTO">
+<!-- 	<delete id = "deleteBOM" parameterType = "P0404_BOMDTO"> -->
+<!-- 		delete from v3_bom -->
+<!-- 		where bom_id = #{bom_id} -->
+<!-- 	</delete> -->
+	
+	<delete id = "deleteBOMs" parameterType = "java.util.List">
 		delete from v3_bom
-		where bom_id = #{bom_id}
+		where bom_id in
+		<foreach item="id" collection="list" open="(" separator="," close=")">
+			#{id}
+		</foreach>
 	</delete>
 	
 	<!-- 삽입 : 여기를 to_char(sysdate)가 아니라 입력받은 재료 id값 일부가 들어가도록 조정해야 함-->
