@@ -14,11 +14,12 @@
 border : 1px solid black;
 wide: 50px;
 height: 50px;
-backgroundcolor : white;
 }
 .specific{
 border : 1px solid black;
-backgroundcolor : white;
+
+
+
 }
 .detail-table {
     width: 100%;
@@ -45,6 +46,40 @@ backgroundcolor : white;
     text-align: center;
     font-size: 14px;
     padding: 4px;
+}
+.process-box {
+    display: flex;
+    gap: 16px;              /* 두 박스 사이 간격 */
+    justify-content: center; /* 가운데 정렬 (선택) */
+    margin-top: 20px;
+}
+
+.process-box .image
+{
+    flex: 0 0 400px;         /* 가로 너비 고정 (200px) */
+    height: 400px;           /* 세로도 같게 = 정사각형 */
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    background-color: #f9f9f9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-size: 30px;
+    font-weight: bold;
+}
+.process-box .specific {
+    flex: 0 0 500px;         /* 가로 너비 고정 (200px) */
+    height: 400px;           /* 세로도 같게 = 정사각형 */
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    background-color: #f9f9f9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-size: 30px;
+    font-weight: bold;
 }
 </style>
 <head>
@@ -176,12 +211,11 @@ backgroundcolor : white;
     </table>
 </div>
 
-	<div class = "image">
-	공정 이미지
+	<div class="process-box">
+	<div class="image">공정 이미지</div>
+	<div class="specific">공정 상세 설명</div>
 	</div>
-	<div class = "specific">
-	공정 상세 설명
-	</div>
+	
 
   <div class = "slide-btnbox">
                 <input type = "button" class = "slide-btn" id="detailEditBtn" value = "수정">
