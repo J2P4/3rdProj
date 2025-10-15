@@ -8,8 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import proj.spring.mes.dto.ItemDTO;
-import proj.spring.mes.dto.P0402_ClientDTO;
+import proj.spring.mes.dto.P0402_ClientDTO; // 거래처 DTO
 import proj.spring.mes.service.P0402_ClientService;
 
 import java.util.ArrayList;
@@ -18,7 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
+// HttpServletRequest를 제거하고 @ModelAttribute를 사용하도록 변경하여 코드를 간결하게 유지합니다.
 
 @Controller
 public class P0402_ClientCtrl {
@@ -26,15 +25,15 @@ public class P0402_ClientCtrl {
     private static final Logger logger = LoggerFactory.getLogger(P0402_ClientCtrl.class);
 
     @Autowired
-    P0402_ClientService clientService;
+    P0402_ClientService clientService; // Service 계층 주입
 
     /** 리스트 화면 */
     @RequestMapping(value={"/clientlist", "/client/list"}, method=RequestMethod.GET)
     public String clientlist(
-            @RequestParam(value = "client_id",   required = false) String client_id,
+            @RequestParam(value = "client_id", required = false) String client_id,
             @RequestParam(value = "clientName", required = false) String clientName,
-            @RequestParam(value = "clientTel",  required = false) String clientTel,
-            @RequestParam(value = "workerId",   required = false) String workerId,
+            @RequestParam(value = "clientTel", required = false) String clientTel,
+            @RequestParam(value = "workerId", required = false) String workerId,
             @RequestParam(value = "page", defaultValue = "1") int page,
             @RequestParam(value = "size", defaultValue = "10") int size,
             Model model
@@ -78,10 +77,10 @@ public class P0402_ClientCtrl {
         model.addAttribute("nextBlockStart", nextBlockStart);
 
         Map<String, Object> paramMap = new HashMap<String, Object>();
-        paramMap.put("client_id",   client_id   == null ? "" : client_id);
+        paramMap.put("client_id", client_id == null ? "" : client_id);
         paramMap.put("clientName", clientName == null ? "" : clientName);
-        paramMap.put("clientTel",  clientTel  == null ? "" : clientTel);
-        paramMap.put("workerId",   workerId   == null ? "" : workerId);
+        paramMap.put("clientTel", clientTel == null ? "" : clientTel);
+        paramMap.put("workerId", workerId == null ? "" : workerId);
         model.addAttribute("param", paramMap);
 
         logger.info("Loaded client list: page={}, size={}, totalRows={}", new Object[]{page, size, totalRows});
@@ -92,10 +91,10 @@ public class P0402_ClientCtrl {
     @RequestMapping(value="/api/clients", method=RequestMethod.GET, produces="application/json;charset=UTF-8")
     @ResponseBody
     public List<P0402_ClientDTO> apiClientList(
-            @RequestParam(value = "client_id",   required = false) String client_id,
+            @RequestParam(value = "client_id", required = false) String client_id,
             @RequestParam(value = "clientName", required = false) String clientName,
-            @RequestParam(value = "clientTel",  required = false) String clientTel,
-            @RequestParam(value = "workerId",   required = false) String workerId,
+            @RequestParam(value = "clientTel", required = false) String clientTel,
+            @RequestParam(value = "workerId", required = false) String workerId,
             @RequestParam(value = "page", defaultValue = "1") int page,
             @RequestParam(value = "size", defaultValue = "10") int size
     ) {
@@ -118,10 +117,10 @@ public class P0402_ClientCtrl {
             @ModelAttribute P0402_ClientDTO dto,
             @RequestParam(value = "page", defaultValue = "1") int page,
             @RequestParam(value = "size", defaultValue = "10") int size,
-            @RequestParam(value = "client_id",   required = false) String client_id,
+            @RequestParam(value = "client_id", required = false) String client_id,
             @RequestParam(value = "clientName", required = false) String clientName,
-            @RequestParam(value = "clientTel",  required = false) String clientTel,
-            @RequestParam(value = "workerId",   required = false) String workerId,
+            @RequestParam(value = "clientTel", required = false) String clientTel,
+            @RequestParam(value = "workerId", required = false) String workerId,
             RedirectAttributes ra
     ) {
         if (dto == null) throw new IllegalArgumentException("dto must not be null");
@@ -143,10 +142,10 @@ public class P0402_ClientCtrl {
             @RequestParam("ids") String idsCsv,
             @RequestParam("page") int page,
             @RequestParam("size") int size,
-            @RequestParam(value = "client_id",   required = false) String client_id,
+            @RequestParam(value = "client_id", required = false) String client_id,
             @RequestParam(value = "clientName", required = false) String clientName,
-            @RequestParam(value = "clientTel",  required = false) String clientTel,
-            @RequestParam(value = "workerId",   required = false) String workerId,
+            @RequestParam(value = "clientTel", required = false) String clientTel,
+            @RequestParam(value = "workerId", required = false) String workerId,
             RedirectAttributes ra
     ) {
         List<Long> ids = new ArrayList<Long>();
@@ -177,6 +176,7 @@ public class P0402_ClientCtrl {
         return "redirect:/clientlist";
     }
     
+    /** 상세 조회 (detail) */
     @RequestMapping("/client/detail")
     @ResponseBody
     public P0402_ClientDTO detail(@RequestParam("client_id") String client_id) {
@@ -186,54 +186,42 @@ public class P0402_ClientCtrl {
     }
     
     
-    
-    
+    /** 미사용 또는 테스트용 엔드포인트 */
     @RequestMapping("/client/save")
     @ResponseBody
     public P0402_ClientDTO edit(@RequestParam("client_id") String client_id) {
-    	P0402_ClientDTO dto = clientService.get(client_id);
+        P0402_ClientDTO dto = clientService.get(client_id);
         System.out.println(dto);
         return dto;
     }
     
 
-    
-    
+    /**
+     * 클라이언트에서 DTO 값을 받아 Service를 호출하고, 업데이트된 DTO를 직접 반환합니다.
+     * 이 방식은 기존의 DTO 반환 패턴을 따르므로, 기존 코드와 충돌이 적습니다.
+     */
     @RequestMapping(value="/client/update", method=RequestMethod.POST, 
-            consumes="application/x-www-form-urlencoded", produces="application/json")
-@ResponseBody
-public P0402_ClientDTO update(HttpServletRequest req) {
-String clientId   = req.getParameter("client_id");
-String clientName = req.getParameter("client_name");
-String clientTel  = req.getParameter("client_tel");
-String workerId   = req.getParameter("worker_id");
-
-P0402_ClientDTO dto = new P0402_ClientDTO();
-dto.setClient_id(clientId);
-dto.setClient_name(clientName);
-dto.setClient_tel(clientTel);
-dto.setWorker_id(workerId);
-
-return clientService.update(dto);
-}
-
-    
-    
-    
-    
-    
-    
-//    @RequestMapping("/client/update")
-//    @ResponseBody
-//    public P0402_ClientDTO update(P0402_ClientDTO dto) {
-//    	return clientService.update(dto);
-// 
-//    }    
-    
-    
-    
-    
-    
-    
-    
+             produces="application/json")
+    @ResponseBody
+    public P0402_ClientDTO update(@ModelAttribute P0402_ClientDTO dto) {
+        
+        try {
+            // Service 호출. 성공 시 업데이트된 DTO를 반환하고, 실패 시 null을 반환합니다.
+            P0402_ClientDTO updatedDto = clientService.update(dto);
+            
+            if (updatedDto != null) {
+                logger.info("Updated client: {}", updatedDto.getClient_id());
+                return updatedDto; // 성공 시 DTO 반환 (JSON)
+            } else {
+                logger.warn("Update failed: Client ID not found: {}", dto.getClient_id());
+                return null; // 실패 시 null 반환 (응답 본문이 비어있거나 'null' JSON이 됨)
+            }
+        } catch (IllegalArgumentException e) {
+            logger.error("Update request error (Bad Request): {}", e.getMessage());
+            return null; 
+        } catch (Exception e) {
+            logger.error("Internal server error during update", e);
+            return null;
+        }
+    }
 }
