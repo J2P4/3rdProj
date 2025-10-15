@@ -18,8 +18,10 @@
 <link rel="stylesheet" href="${cssUrl}" type="text/css">
 <script src="${jsUrl}"></script>
 <script>const contextPath='${pageContext.request.contextPath}';</script>
-<!-- 필요 시 별도 JS를 붙이면 defer로 -->
-<!-- <script src="${pageContext.request.contextPath}/resources/js/04_3_client.js" defer></script> -->
+<c:url var="clientJs" value="/resources/js/04_2_client.js"/>
+<script src="${clientJs}" defer></script>
+
+
 <title>거래처 리스트</title>
 </head>
 <body>
@@ -34,7 +36,7 @@
             <div class="filter-item">
                 <span class="filitem-name">· 거래처 ID</span>
                 <div class="filitem-input">
-                    <input type="text" name="clientNo" value="${fn:escapeXml(param.clientNo)}">
+                    <input type="text" name="client_id" value="${fn:escapeXml(param.client_id)}">
                 </div>
             </div>
 
@@ -105,7 +107,7 @@
 
         <form id="sizeForm" method="get" action="${clientlistUrl}" style="display:inline-block; margin-right:8px;">
             <input type="hidden" name="page" value="1"/>
-            <input type="hidden" name="clientNo" value="${fn:escapeXml(param.clientNo)}"/>
+            <input type="hidden" name="client_id" value="${fn:escapeXml(param.client_id)}"/>
             <input type="hidden" name="clientName" value="${fn:escapeXml(param.clientName)}"/>
 
             <label>Rows:
@@ -124,7 +126,7 @@
                 <c:url var="prevBlockUrl" value="${selfPath}">
                     <c:param name="page" value="${prevBlockStart}"/>
                     <c:param name="size" value="${pagePerRows}"/>
-                    <c:param name="clientNo" value="${param.clientNo}"/>
+                    <c:param name="client_id" value="${param.client_id}"/>
                     <c:param name="clientName" value="${param.clientName}"/>
                 </c:url>
                 <a class="page-link" href="${prevBlockUrl}">이전</a>
@@ -138,7 +140,7 @@
             <c:url var="pUrl" value="${selfPath}">
                 <c:param name="page" value="${p}"/>
                 <c:param name="size" value="${pagePerRows}"/>
-                <c:param name="clientNo" value="${param.clientNo}"/>
+                <c:param name="client_id" value="${param.client_id}"/>
                 <c:param name="clientName" value="${param.clientName}"/>
             </c:url>
             <c:choose>
@@ -156,7 +158,7 @@
                 <c:url var="nextBlockUrl" value="${selfPath}">
                     <c:param name="page" value="${nextBlockStart}"/>
                     <c:param name="size" value="${pagePerRows}"/>
-                    <c:param name="clientNo" value="${param.clientNo}"/>
+                    <c:param name="client_id" value="${param.client_id}"/>
                     <c:param name="clientName" value="${param.clientName}"/>
                 </c:url>
                 <a class="page-link" href="${nextBlockUrl}">다음</a>
@@ -178,7 +180,7 @@
     <input type="hidden" name="ids" id="deleteIds">
     <input type="hidden" name="page" value="${page}">
     <input type="hidden" name="size" value="${pagePerRows}">
-    <input type="hidden" name="clientNo" value="${fn:escapeXml(param.clientNo)}"/>
+    <input type="hidden" name="client_id" value="${fn:escapeXml(param.client_id)}"/>
     <input type="hidden" name="clientName" value="${fn:escapeXml(param.clientName)}"/>
 </form>
 
@@ -222,13 +224,14 @@
         <form id="client-insert-form" method="post" action="${pageContext.request.contextPath}/client/insert">
             <input type="hidden" name="page" value="${page}">
             <input type="hidden" name="size" value="${pagePerRows}">
-            <input type="hidden" name="clientNo" value="${fn:escapeXml(param.clientNo)}">
+            <input type="hidden" name="client_id" value="${fn:escapeXml(param.client_id)}">
             <input type="hidden" name="clientName" value="${fn:escapeXml(param.clientName)}">
         </form>
 
         <div class="slide-btnbox">
-            <button type="submit" class="slide-btn" form="client-insert-form">등록</button>
-            <input type="button" class="close-btn slide-btn" value="취소">
+<!--             <button type="submit" class="slide-btn" form="client-insert-form">등록</button> -->
+            <input type = "button" class = "slide-btn" value = "등록">
+            <input type = "button" class="close-btn slide-btn" value="취소">
         </div>
 
     </div>

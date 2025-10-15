@@ -14,10 +14,10 @@ public interface ItemMapperDAO {
     int updateItem(ItemDTO dto);
     int deleteItem(@Param("itemId") String itemId);
     int deleteItems(@Param("list") List<String> itemIds);
-    // 신규(페이징)
+    // 페이징
     List<ItemDTO> selectItemListPage(@Param("limit") int limit, @Param("offset") int offset);
 
-    // 신규(총계)
+    // 총계
     long selectItemCount();
     
     

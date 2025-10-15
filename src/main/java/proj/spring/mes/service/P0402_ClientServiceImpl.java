@@ -16,22 +16,22 @@ public class P0402_ClientServiceImpl implements P0402_ClientService {
 
  public P0402_ClientServiceImpl(P0402_ClientMapperDAO clientDAO) { this.clientDAO = clientDAO; }
 
- public List<P0402_ClientDTO> findClients(String clientNo, String clientName, String clientTel,
+ public List<P0402_ClientDTO> findClients(String client_id, String clientName, String clientTel,
                                           String workerId, int offset, int size) {
      if (offset < 0) offset = 0;
      if (size < 1) size = 1;
      int startRow = offset;           // 0부터 시작
      int endRow   = offset + size;    // 포함 상한
      return clientDAO.findClients(
-             blankToNull(clientNo), blankToNull(clientName),
+             blankToNull(client_id), blankToNull(clientName),
              blankToNull(clientTel), blankToNull(workerId),
              startRow, endRow
      );
  }
 
- public int countClients(String clientNo, String clientName, String clientTel, String workerId) {
+ public int countClients(String client_id, String clientName, String clientTel, String workerId) {
      return clientDAO.countClients(
-             blankToNull(clientNo), blankToNull(clientName),
+             blankToNull(client_id), blankToNull(clientName),
              blankToNull(clientTel), blankToNull(workerId)
      );
  }
@@ -52,5 +52,19 @@ public class P0402_ClientServiceImpl implements P0402_ClientService {
      if (s == null) return null;
      String t = s.trim();
      return t.length() == 0 ? null : t;
+ }
+ 
+
+ 
+ @Override
+ public P0402_ClientDTO get(String client_Id) {
+     return clientDAO.selectClientOne(client_Id);
+ }
+ 
+ 
+ @Override
+ public P0402_ClientDTO update(P0402_ClientDTO dto) {
+     log.debug("dto={}",  dto);
+     return dto;
  }
 }

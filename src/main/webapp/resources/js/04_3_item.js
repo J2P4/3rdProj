@@ -4,7 +4,6 @@ document.addEventListener('DOMContentLoaded', () => {                           
   const tableBody = document.querySelector('.table tbody');                         // 목록 테이블 바디
   const detail = document.querySelector('#slide-detail');                           // 상세 슬라이드 엘리먼트
   if (!detail) { /* 상세 영역이 없으면 아래 로직 일부는 스킵됨 */ }                  // 상세 영역이 없으면 종료
-
   const titleEl = detail?.querySelector('.silde-title h2');                         // 상세/수정 제목
   const nf = new Intl.NumberFormat();                                               // 숫자 포맷터(천단위 콤마)
   const ctx = (typeof contextPath === 'string') ? contextPath : '';                 // JSP 주입 contextPath

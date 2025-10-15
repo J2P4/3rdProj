@@ -5,14 +5,14 @@ import java.util.List;
 
 public interface P0402_ClientService {
 
-    List<P0402_ClientDTO> findClients(String clientNo,
+    List<P0402_ClientDTO> findClients(String client_id,
                                       String clientName,
                                       String clientTel,
                                       String workerId,
                                       int offset,
                                       int size);
 
-    int countClients(String clientNo,
+    int countClients(String client_id,
                      String clientName,
                      String clientTel,
                      String workerId);
@@ -20,4 +20,8 @@ public interface P0402_ClientService {
     void insertClient(P0402_ClientDTO dto);
 
     void deleteByIds(List<Long> ids);
+    P0402_ClientDTO  get(String client_id);
+    
+    //수정
+    P0402_ClientDTO update(P0402_ClientDTO dto);
 }

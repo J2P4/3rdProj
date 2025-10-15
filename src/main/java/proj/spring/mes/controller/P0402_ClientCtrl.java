@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import proj.spring.mes.dto.ItemDTO;
 import proj.spring.mes.dto.P0402_ClientDTO;
 import proj.spring.mes.service.P0402_ClientService;
 
@@ -28,7 +29,7 @@ public class P0402_ClientCtrl {
     /** 리스트 화면 */
     @RequestMapping(value={"/clientlist", "/client/list"}, method=RequestMethod.GET)
     public String clientlist(
-            @RequestParam(value = "clientNo",   required = false) String clientNo,
+            @RequestParam(value = "client_id",   required = false) String client_id,
             @RequestParam(value = "clientName", required = false) String clientName,
             @RequestParam(value = "clientTel",  required = false) String clientTel,
             @RequestParam(value = "workerId",   required = false) String workerId,
@@ -41,11 +42,11 @@ public class P0402_ClientCtrl {
         int offset = (page - 1) * size;
 
         List<P0402_ClientDTO> list = clientService.findClients(
-                clientNo, clientName, clientTel, workerId, offset, size
+                client_id, clientName, clientTel, workerId, offset, size
         );
 
         int totalRows = clientService.countClients(
-                clientNo, clientName, clientTel, workerId
+                client_id, clientName, clientTel, workerId
         );
         if (totalRows < 0) totalRows = 0;
         int totalPages = (int) Math.ceil((double) totalRows / (double) size);
@@ -75,7 +76,7 @@ public class P0402_ClientCtrl {
         model.addAttribute("nextBlockStart", nextBlockStart);
 
         Map<String, Object> paramMap = new HashMap<String, Object>();
-        paramMap.put("clientNo",   clientNo   == null ? "" : clientNo);
+        paramMap.put("client_id",   client_id   == null ? "" : client_id);
         paramMap.put("clientName", clientName == null ? "" : clientName);
         paramMap.put("clientTel",  clientTel  == null ? "" : clientTel);
         paramMap.put("workerId",   workerId   == null ? "" : workerId);
@@ -89,7 +90,7 @@ public class P0402_ClientCtrl {
     @RequestMapping(value="/api/clients", method=RequestMethod.GET, produces="application/json;charset=UTF-8")
     @ResponseBody
     public List<P0402_ClientDTO> apiClientList(
-            @RequestParam(value = "clientNo",   required = false) String clientNo,
+            @RequestParam(value = "client_id",   required = false) String client_id,
             @RequestParam(value = "clientName", required = false) String clientName,
             @RequestParam(value = "clientTel",  required = false) String clientTel,
             @RequestParam(value = "workerId",   required = false) String workerId,
@@ -101,7 +102,7 @@ public class P0402_ClientCtrl {
         int offset = (page - 1) * size;
 
         List<P0402_ClientDTO> list = clientService.findClients(
-                clientNo, clientName, clientTel, workerId, offset, size
+                client_id, clientName, clientTel, workerId, offset, size
         );
         int count = (list == null) ? 0 : list.size();
         logger.info("Loaded client list (api): {}", new Object[]{count});
@@ -115,7 +116,7 @@ public class P0402_ClientCtrl {
             @ModelAttribute P0402_ClientDTO dto,
             @RequestParam(value = "page", defaultValue = "1") int page,
             @RequestParam(value = "size", defaultValue = "10") int size,
-            @RequestParam(value = "clientNo",   required = false) String clientNo,
+            @RequestParam(value = "client_id",   required = false) String client_id,
             @RequestParam(value = "clientName", required = false) String clientName,
             @RequestParam(value = "clientTel",  required = false) String clientTel,
             @RequestParam(value = "workerId",   required = false) String workerId,
@@ -127,7 +128,7 @@ public class P0402_ClientCtrl {
 
         ra.addAttribute("page", page);
         ra.addAttribute("size", size);
-        ra.addAttribute("clientNo", clientNo);
+        ra.addAttribute("client_id", client_id);
         ra.addAttribute("clientName", clientName);
         ra.addAttribute("clientTel", clientTel);
         ra.addAttribute("workerId", workerId);
@@ -140,7 +141,7 @@ public class P0402_ClientCtrl {
             @RequestParam("ids") String idsCsv,
             @RequestParam("page") int page,
             @RequestParam("size") int size,
-            @RequestParam(value = "clientNo",   required = false) String clientNo,
+            @RequestParam(value = "client_id",   required = false) String client_id,
             @RequestParam(value = "clientName", required = false) String clientName,
             @RequestParam(value = "clientTel",  required = false) String clientTel,
             @RequestParam(value = "workerId",   required = false) String workerId,
@@ -167,10 +168,44 @@ public class P0402_ClientCtrl {
 
         ra.addAttribute("page", page);
         ra.addAttribute("size", size);
-        ra.addAttribute("clientNo", clientNo);
+        ra.addAttribute("client_id", client_id);
         ra.addAttribute("clientName", clientName);
         ra.addAttribute("clientTel", clientTel);
         ra.addAttribute("workerId", workerId);
         return "redirect:/clientlist";
     }
+    
+    @RequestMapping("/client/detail")
+    @ResponseBody
+    public P0402_ClientDTO detail(@RequestParam("client_id") String client_id) {
+        P0402_ClientDTO dto = clientService.get(client_id);
+        System.out.println(dto);
+        return dto;
+    }
+    
+    
+    
+    
+    @RequestMapping("/client/save")
+    @ResponseBody
+    public P0402_ClientDTO edit(@RequestParam("client_id") String client_id) {
+    	P0402_ClientDTO dto = clientService.get(client_id);
+        System.out.println(dto);
+        return dto;
+    }
+    
+    
+    @RequestMapping("/client/update")
+    @ResponseBody
+    public P0402_ClientDTO update(P0402_ClientDTO dto) {
+    	return clientService.update(dto);
+ 
+    }    
+    
+    
+    
+    
+    
+    
+    
 }

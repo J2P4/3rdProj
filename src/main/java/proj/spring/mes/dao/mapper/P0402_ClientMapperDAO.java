@@ -6,14 +6,14 @@ import java.util.List;
 
 public interface P0402_ClientMapperDAO {
 
-    List<P0402_ClientDTO> findClients(@Param("clientNo") String clientNo,
+    List<P0402_ClientDTO> findClients(@Param("client_id") String client_id,
                                       @Param("clientName") String clientName,
                                       @Param("clientTel") String clientTel,
                                       @Param("workerId") String workerId,
                                       @Param("startRow") int startRow,
                                       @Param("endRow") int endRow);
 
-    int countClients(@Param("clientNo") String clientNo,
+    int countClients(@Param("client_id") String client_id,
                      @Param("clientName") String clientName,
                      @Param("clientTel") String clientTel,
                      @Param("workerId") String workerId);
@@ -21,4 +21,8 @@ public interface P0402_ClientMapperDAO {
     int insertClient(P0402_ClientDTO dto);
 
     int deleteByIds(@Param("ids") java.util.List<Long> ids);
+    
+    P0402_ClientDTO selectClientOne(@Param("client_id") String client_id);
+    P0402_ClientDTO updateClientOne(P0402_ClientDTO dto);
+
 }
