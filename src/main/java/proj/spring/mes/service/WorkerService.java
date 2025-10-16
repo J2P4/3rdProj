@@ -15,7 +15,7 @@ public interface WorkerService {
     int add(WorkerDTO dto);
     int edit(WorkerDTO dto);
     int deleteWorkers(List<String> ids);
-    int updatePassword(String worker_id, String rawPw); // 해시 저장용
+    int updatePassword(String workerId, String rawPw); // 해시 저장용
 	boolean match(String rawPw, String hashed);
 	
 	//페이징 목록
@@ -25,7 +25,4 @@ public interface WorkerService {
     long count(WorkerDTO searchFilter);
     
     void changePassword(String worker_id, PwDTO dto);
-    
-    boolean isPwMustChange(String worker_id); 
-    int updateClearPw(String worker_id, String newPw);
 }

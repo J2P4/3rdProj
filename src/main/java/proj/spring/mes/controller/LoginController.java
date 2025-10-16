@@ -10,6 +10,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import proj.spring.mes.dto.WorkerDTO;
 import proj.spring.mes.service.WorkerService;
@@ -79,22 +80,16 @@ public class LoginController {
         newSession.setAttribute("loginUser", user);
         newSession.setMaxInactiveInterval(30*60);
         newSession.setAttribute("role", user.getWorker_code());		// 권한별 접근
-        newSession.setAttribute("worker_id", user.getWorker_id());
         
-     // 1) 우선순위: DB 플래그(PW_MUST_CHANGE) 확인 → 1이면 강제 변경
-        boolean mustChangeFlag = false;
-        try {
-            mustChangeFlag = workerService.isPwMustChange(worker_id);
-        } catch (Exception ignore) {}
-
-        // 2) 백업 체크(레거시 초기비번: 생년월일 6자리와 현재 해시가 일치하는가)
-        boolean legacyInitial = false;
+        // 초기비밀번호인지 확인 (생년월일 6자리와 현재 해시가 같은지)
+        String birth6 = null;
+        
         if (user.getWorker_birth() != null) {
-            String birth6 = new java.text.SimpleDateFormat("yyMMdd").format(user.getWorker_birth());
-            legacyInitial = workerService.match(birth6, hashed);
+            java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyMMdd");
+            birth6 = sdf.format(user.getWorker_birth());
         }
-
-        boolean mustChange = mustChangeFlag || legacyInitial;
+        
+        boolean mustChange = (birth6 != null) && workerService.match(birth6, hashed);
         
         // 초기비밀번호라면 변경페이지로 이동
         if (mustChange) {
@@ -140,13 +135,11 @@ public class LoginController {
 	    }
 
 	    // 저장 (서비스에서 암호화)
-	    workerService.updateClearPw(worker_id, newPw);
+	    workerService.updatePassword(worker_id, newPw);
 
 	    // 강제 변경 플래그 해제
 	    session.removeAttribute("mustChangePw");
-	    
-	    model.addAttribute("message", "비밀번호가 변경되었습니다.");
-	    
+
 	    return "redirect:/loginPage";
 	}
 	

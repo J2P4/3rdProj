@@ -153,27 +153,12 @@
         WHERE worker_id = #{worker_id}
     </select>
 
-	<update id="updatePassword" parameterType="map">
-	    UPDATE V3_worker
-	       SET worker_pw = #{new_pw},
-	           PW_MUST_CHANGE = 1,
-	           PW_UPDATED_AT = SYSDATE
-	     WHERE worker_id = #{worker_id}
-	</update>
-
-
-	<select id="isPwMustChange" parameterType="string" resultType="int">
-	  SELECT NVL(PW_MUST_CHANGE, 0)
-	    FROM V3_worker
+	<update id="updatePassword">
+	  UPDATE V3_worker
+	     SET worker_pw = #{new_pw}
 	   WHERE worker_id = #{worker_id}
-	</select>
-	<update id="updateClearPw" parameterType="map">
-	    UPDATE V3_worker
-	       SET worker_pw = #{new_pw},
-	           PW_MUST_CHANGE = 0,
-	           PW_UPDATED_AT = SYSDATE
-	     WHERE worker_id = #{worker_id}
 	</update>
+
 </mapper>
 
 
