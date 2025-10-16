@@ -92,10 +92,10 @@
 
     <header class="header-bg text-white p-4 shadow-lg flex justify-between items-center z-50 relative">
         <div class="flex items-center space-x-2">
-        <a  href = "/proj_mes/mainpage">
+        <a href = "/proj_mes/mainpage">
             <img src="https://i.postimg.cc/qMsq73hD/icon.png" class="w-10" alt="회사 로고">
         </a>
-        <a  href = "/proj_mes/mainpage">
+        <a href = "/proj_mes/mainpage">
             <h3 class="text-xl font-bold">J2P4</h3>
         </a>
         </div>
@@ -188,6 +188,17 @@
         </main>
     </div>
 
+    <script>
+                <div class = "slide-btnbox">
+    <c:if test="${sessionScope.role != 'STAFF'}">
+                    <a href="modify?worker_id=${dto.worker_id}" class="slide-btn modify-btn">수정</a>
+                <a href="workerlist" class="slide-btn close-btn">취소</a>
+        </c:if>
+        <c:if test="${sessionScope.role == 'STAFF'}">
+                <a href="workerlist" class="slide-btn close-btn">취소</a>
+        </c:if>
+ </div>
+    </script>
     <script>
         /* 사이드바 하위 목록에 따라 늘어나게*/
         document.addEventListener('DOMContentLoaded', () => {
