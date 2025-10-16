@@ -241,6 +241,23 @@
 			  <version>5.8.10</version>
 		  </dependency>
 		  
+		  <!-- JavaMail (Java 6 호환 마지막 세대) -->
+   		  <dependency>
+		  	<groupId>com.sun.mail</groupId>
+		  	<artifactId>javax.mail</artifactId>
+		  	<version>1.5.6</version>
+		  </dependency>
+		  <!-- Java 6에서 필요 (javax.activation) -->
+		  <dependency>
+		  	<groupId>javax.activation</groupId>
+		  	<artifactId>activation</artifactId>
+		  	<version>1.1.1</version>
+		  </dependency>
+		  <dependency>
+		    <groupId>org.springframework</groupId>
+		    <artifactId>spring-context-support</artifactId>
+		    <version>${org.springframework-version}</version>
+		  </dependency>
 	</dependencies>
     <build>
         <plugins>

@@ -22,7 +22,10 @@
 	        </div>
 	        <div class="title-box">
 		        <div class = "slide-worker">사번 : ${dto.worker_id }</div>
-		        <input type="button" class="pw-reset" data-worker-id="${dto.worker_id}" value="비밀번호 초기화">
+		        <form action="<c:url value='/temp'/>" method="post" >
+				    <input type="hidden" name="worker_id" value="${dto.worker_id}">
+				    <input type="submit" value="비밀번호 초기화" class="pw-reset">
+				</form>
 	        </div>
 	        <div class = "slide-tb">
 	            <table>
@@ -76,12 +79,6 @@
             </div>
        	</div>
     </div>
-    <script>
-    	document.querySelector('.pw-reset').addEventListener('click', function() {
-    	    const worker_id = this.dataset.workerId;
-    	    window.open('/mes/temp?worker_id=' + encodeURIComponent(worker_id),
-    	              'pwTempWin', 'width=420,height=260');
-    	});
-	</script>
+    
 </body>
 </html>

@@ -39,7 +39,7 @@ public class PwResetServiceImpl implements PwResetService {
     private static final boolean NEED_UPPER = true;
     private static final boolean NEED_LOWER = true;
     private static final boolean NEED_DIGIT = true;
-    private static final boolean NEED_SPECIAL = true;
+//    private static final boolean NEED_SPECIAL = true;
 
     /**
      * 임시 비밀번호를 생성하여 DB에 저장하고, "평문 임시비번"을 반환한다.
@@ -58,7 +58,8 @@ public class PwResetServiceImpl implements PwResetService {
 
         // 2) 임시 비밀번호 생성
         String tempPw = tempPassword(
-                TEMP_LEN, NEED_UPPER, NEED_LOWER, NEED_DIGIT, NEED_SPECIAL
+                TEMP_LEN, NEED_UPPER, NEED_LOWER, NEED_DIGIT
+//                , NEED_SPECIAL
         );
 
         // 3) 해시
@@ -92,17 +93,18 @@ public class PwResetServiceImpl implements PwResetService {
     private String tempPassword(int length,
                                         boolean mustUpper,
                                         boolean mustLower,
-                                        boolean mustDigit,
-                                        boolean mustSpecial) {
+                                        boolean mustDigit
+//                                      , boolean mustSpecial
+    ) {
 
         final String UPPER = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         final String LOWER = "abcdefghijklmnopqrstuvwxyz";
         final String DIGIT = "0123456789";
-        final String SPECIAL = "!@#$%^&*-_;:,.?";
+//        final String SPECIAL = "!@#$%^&*-_;:,.?";
         final String BASE = (mustUpper ? UPPER : "")
                           + (mustLower ? LOWER : "")
-                          + (mustDigit ? DIGIT : "")
-                          + (mustSpecial ? SPECIAL : "");
+                          + (mustDigit ? DIGIT : "");
+//                          + (mustSpecial ? SPECIAL : "");
 
         SecureRandom rnd = new SecureRandom();
 
@@ -111,7 +113,7 @@ public class PwResetServiceImpl implements PwResetService {
         if (mustUpper)   sb.append(UPPER.charAt(rnd.nextInt(UPPER.length())));
         if (mustLower)   sb.append(LOWER.charAt(rnd.nextInt(LOWER.length())));
         if (mustDigit)   sb.append(DIGIT.charAt(rnd.nextInt(DIGIT.length())));
-        if (mustSpecial) sb.append(SPECIAL.charAt(rnd.nextInt(SPECIAL.length())));
+//        if (mustSpecial) sb.append(SPECIAL.charAt(rnd.nextInt(SPECIAL.length())));
 
         // 2) 나머지 채우기
         while (sb.length() < length) {
