@@ -66,7 +66,7 @@
             <div class="modal-title">J2P4 MES</div>
             <div class="modal-content">
                 <div class="field"><span>아이디 :</span> ${worker_id }</div>
-                <div class="field"><span>초기 비밀번호 :</span> 생년월일 6자리 (ex: 970123)</div>
+                <div class="field"><span>초기 비밀번호 :</span> j2p4mes</div>
                 <div class="field"><span>이메일 :</span> ${worker_email }</div>
                 <div class="confirm">
                     <div>등록되었습니다.</div>

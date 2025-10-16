@@ -12,11 +12,11 @@
 	        c.cp_amount,
 	        c.cp_start,
 	        c.cp_end,
-	        c.item_code,
+	        c.item_id,
 	        i.item_name
 	    from V3_cp c
 	    LEFT JOIN V3_item i
-	        on c.item_code = i.item_code
+	        on c.item_id = i.item_id
 	    order by c.cp_id
 	</select>
 	
@@ -35,11 +35,11 @@
 			        c.cp_amount,
 			        c.cp_start,
 			        c.cp_end,
-			        c.item_code,
+			        c.item_id,
 			        i.item_name
 			    from V3_cp c
 			    LEFT JOIN V3_item i
-			      on c.item_code = i.item_code
+			      on c.item_id = i.item_id
 			    order by c.cp_id ASC
 			  ) t
 			  WHERE ROWNUM <= #{endRow}
@@ -72,7 +72,7 @@
 	
 	<select id="selectOneItem" resultType="ItemDTO">
 		select * from V3_item
-		where item_code = #{_parameter}
+		where item_id = #{_parameter}
 	</select>
 
 
@@ -82,7 +82,7 @@
 		set	cp_amount = #{cp_amount},
 			cp_start = #{cp_start},
 			cp_end = #{cp_end},
-			item_code = #{item_code}
+			item_id = #{item_id}
 		where cp_id = #{cp_id}
 	</update>
 
@@ -106,10 +106,10 @@
 	  </selectKey>
 	
 	  INSERT INTO V3_cp (
-	      cp_id, cp_amount, cp_start, cp_end, item_code
+	      cp_id, cp_amount, cp_start, cp_end, item_id
 	  )
 	  VALUES (
-	      #{cp_id}, #{cp_amount}, #{cp_start}, #{cp_end}, #{item_code}
+	      #{cp_id}, #{cp_amount}, #{cp_start}, #{cp_end}, #{item_id}
 	  )
 	</insert>
 

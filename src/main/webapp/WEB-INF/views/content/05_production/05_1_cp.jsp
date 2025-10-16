@@ -27,8 +27,8 @@
     <!-- 페이지 제목 -->
     <div class = "title"><h1>재고 관리</h1></div>
     <!-- 페이징용 추가 코드 1-->
-   	<c:url var="/stocklist" value="/stocklist"/> <%-- 모든 내부 링크의 기준 URL(중복 /mes/mes 방지) 이거 떄믄에 한시간.... --%>
-	<c:set var="selfPath" value="/stocklist"/> <%-- c:url value에 사용할 경로 문자열 --%>
+   	<c:url var="/cp" value="/cp"/> <%-- 모든 내부 링크의 기준 URL(중복 /mes/mes 방지) 이거 떄믄에 한시간.... --%>
+	<c:set var="selfPath" value="/cp"/> <%-- c:url value에 사용할 경로 문자열 --%>
     <!-- 검색 필터(filter)
         - filter-item-box : select란 모음
             + filter-item: 개별 select란
@@ -36,7 +36,7 @@
                 * filitem-input : 실제 select 영역
         - filter-btn : 조회 버튼 영억
     -->
-    <form class = "filter" method="get" action="${pageContext.request.contextPath}/stocklist">
+    <form class = "filter" method="get" action="${pageContext.request.contextPath}/cp">
         <div class = "filter-item-box">
             <div class = "filter-item">
                 <div class = "filitem-name">· 재고 ID</div>
@@ -126,7 +126,7 @@
         <c:if test="${empty startPage}"><c:set var="startPage" value="1"/></c:if> <%-- 블록 시작 기본 1 --%>
         <c:if test="${empty endPage}"><c:set var="endPage" value="${totalPages}"/></c:if> <%-- 블록 끝 기본 총페이지 --%>
 	
-        <form id="sizeForm" method="get" action="${pageContext.request.contextPath}/stocklist" style="display:inline-block; margin-right:8px;">
+        <form id="sizeForm" method="get" action="${pageContext.request.contextPath}/cp" style="display:inline-block; margin-right:8px;">
             <input type="hidden" name="page" value="1"/> <%-- Rows 바꾸면 1페이지로 --%>
             <input type="hidden" name="stock_id" value="${fn:escapeXml(param.stock_id)}"/> <%-- 기존 필터 유지 --%>
             <input type="hidden" name="item_div" value="${fn:escapeXml(param.item_div)}"/>

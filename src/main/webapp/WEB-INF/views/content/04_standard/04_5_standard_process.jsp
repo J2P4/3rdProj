@@ -259,9 +259,9 @@
 
             <div class="process-box">
                 <!-- 공정 이미지 영역 -->
+                    공정 이미지
                 <div class="image-section">
-                    <div class="image" id="imagePreview">공정 이미지</div>
-                       <img id="preview">
+                       <img class="image" id="preview">
     <br>
     <!-- accept="image/*" 파일 중 기본적으로 이미지만 필터링  -->
     <input type="file" id="img" accept="image/*">

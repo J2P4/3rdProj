@@ -10,6 +10,6 @@ public class P0501_CPDTO {
 	private int cp_amount;		// 목표수량
 	private Date cp_start;		// 시작일
 	private Date cp_end;		// 종료일
-	private String item_code;	// 품목ID
+	private String item_id;		// 품목ID
 	private String item_name;	// 품목명
 }
