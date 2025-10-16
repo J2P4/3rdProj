@@ -74,8 +74,17 @@ document.addEventListener('DOMContentLoaded', () => {                           
     if (tr) { setCellText(tr,0,''); setCellText(tr,1,''); setCellText(tr,2,''); setCellText(tr,3,''); setCellText(tr,4,''); } // 초기화
     setHTML(slide.querySelector('#d-clientId'), safe(data.client_id || data.vendor_id || ''));             // 거래처 ID(표시 전용)
     // setHTML(slide.querySelector('#d-clientName'), safe(data.client_name || data.vendor_name || ''));    // 거래처 이름(표시 전용)
-    setHTML(slide.querySelector('#d-itemDiv'), safe(data.item_div));                                       // 구분
+    setHTML(slide.querySelector('#d-itemDiv'), safe(data.item_div));
+    
+    
+    
+    
+    /////////////////////// 가격 구분자 ///////////////////////////////////////
     setHTML(slide.querySelector('#d-itemPrice'), (data.item_price != null) ? nf.format(data.item_price) : ''); // 단가
+    //////////////////////////////////////////////////////////////////////////////////////////
+    
+    
+    
     setHTML(slide.querySelector('#d-itemUnit'), safe(data.item_unit));                                     // 단위
 
     // ----- 거래처 ID 목록 로드 후 표시 -----
@@ -206,7 +215,26 @@ document.addEventListener('DOMContentLoaded', () => {                           
     if (tds[1]) tds[1].textContent = dto.item_id ?? itemId;
     if (tds[2]) tds[2].textContent = dto.item_name ?? '';
     if (tds[3]) tds[3].textContent = dto.item_div ?? '';
+    
+    
+    
+    
+    
+    
+    
+    ////////////////////////////////숫자 구분자/////////////////////////
     if (tds[4]) tds[4].textContent = (dto.item_price != null) ? Number(dto.item_price).toLocaleString() : '';
+    //////////////////////////////////////////////////////////////////////////
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     if (tds[5]) tds[5].textContent = dto.item_unit ?? '';
   }
 
