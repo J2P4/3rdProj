@@ -178,7 +178,7 @@
             <div class="filter-item">
                 <div class="filitem-name">· 공정명</div>
                 <div class="filitem-input">
-                    <input type="text" name="process_name" placeholder=" 공정명을 입력해주세요">
+                    <input type="text" name="stock_id" placeholder=" 공정명을 입력해주세요">
                 </div>
             </div>
             <div class="filter-item"></div>
@@ -261,8 +261,10 @@
                 <!-- 공정 이미지 영역 -->
                 <div class="image-section">
                     <div class="image" id="imagePreview">공정 이미지</div>
-                    <label for="imageUpload" class="upload-btn">파일 업로드</label>
-                    <input type="file" id="imageUpload" accept="image/*" />
+                       <img id="preview">
+    <br>
+    <!-- accept="image/*" 파일 중 기본적으로 이미지만 필터링  -->
+    <input type="file" id="img" accept="image/*">
                 </div>
 
                 <!-- 공정 상세 설명 -->
@@ -280,43 +282,25 @@
 
     <!-- 이미지 미리보기 스크립트 -->
  <script>
- <!-- 이미지 미리보기 박스 -->
- <div class="image" id="imagePreview">공정 이미지</div>
- <label for="imageUpload" class="upload-btn">파일 업로드</label>
- <input type="file" id="imageUpload" accept="image/*" />
+ 
+ // 업로드할 파일이 바뀌면
+ document.querySelector('#img').addEventListener('change', function(event){
+     // 이미지 처리 객체
+     const reader = new FileReader()
 
- <script>
- document.addEventListener("DOMContentLoaded", () => {
-     const input = document.getElementById("imageUpload");
-     const preview = document.getElementById("imagePreview");
+     // 업로드할 이미지를 읽어오기
+     const file = event.target.files[0]
+     reader.readAsDataURL( file )
 
-     input.addEventListener("change", (event) => {
-         const file = event.target.files[0];
-         if (!file) {
-             preview.style.backgroundImage = "";
-             preview.textContent = "공정 이미지";
-             preview.style.color = "#000";
-             return;
-         }
-         if (!file.type.startsWith("image/")) {
-             alert("이미지 파일만 업로드 가능합니다.");
-             input.value = ""; // 선택 초기화
-             preview.style.backgroundImage = "";
-             preview.textContent = "공정 이미지";
-             preview.style.color = "#000";
-             return;
-         }
-         const reader = new FileReader();
-         reader.onload = (e) => {
-             preview.style.backgroundImage = `url(${e.target.result})`;
-             preview.textContent = "";
-             preview.style.color = "transparent";
-         };
-         reader.readAsDataURL(file);
-     });
- });
- </script>
+     // 다 읽어 오면 처리
+     reader.onload = function(e){
+         // img 태그에 읽어온 이미지 넣기
+         document.querySelector('#preview').setAttribute('src', e.target.result)
+     }
 
+ })
+ 
+ 
 </script>
  
 </body>
