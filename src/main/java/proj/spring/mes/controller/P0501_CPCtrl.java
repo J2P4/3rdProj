@@ -11,15 +11,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import proj.spring.mes.dto.ItemDTO;
-import proj.spring.mes.dto.P0503_CPDTO;
-import proj.spring.mes.service.P0503_CPService;
+import proj.spring.mes.dto.P0501_CPDTO;
+import proj.spring.mes.service.P0501_CPService;
 
-public class P0503_CPCtrl {
+public class P0501_CPCtrl {
 
 private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
 	
 	@Autowired
-	P0503_CPService CPService;
+	P0501_CPService CPService;
 	
 	
 	/** 목록 */
@@ -45,7 +45,7 @@ private static final Logger logger = LoggerFactory.getLogger(LoginController.cla
         if (page > totalPages) page = totalPages;        // 요청 페이지가 마지막 페이지 초과하면 마지막 페이지로 보정
 
         // ===================== 4) 목록 조회 =====================
-        List<P0503_CPDTO> list = CPService.list(page, pagePerRows);
+        List<P0501_CPDTO> list = CPService.list(page, pagePerRows);
         //실제 OFFSET 계산((page-1)*pagePerRows)은 Service/Mapper에서 처리하도록 위임
         model.addAttribute("list", list); // 현재 페이지에 해당하는 데이터 목록
 
@@ -86,7 +86,7 @@ private static final Logger logger = LoggerFactory.getLogger(LoginController.cla
 	@RequestMapping("/detail")
     public String detail(Model model, String cp_id) {
 		
-		P0503_CPDTO dto = CPService.get(cp_id);
+		P0501_CPDTO dto = CPService.get(cp_id);
         List<ItemDTO> itemList = CPService.itemList();
         
         model.addAttribute("dto", dto);
@@ -101,7 +101,7 @@ private static final Logger logger = LoggerFactory.getLogger(LoginController.cla
 
     /** 등록 */
 	@RequestMapping("/insert")
-	public String insert(Model model, P0503_CPDTO dto) {
+	public String insert(Model model, P0501_CPDTO dto) {
        
         
 		CPService.add(dto);
@@ -120,8 +120,8 @@ private static final Logger logger = LoggerFactory.getLogger(LoginController.cla
 
 	/** 수정 후 상세 */
 	@RequestMapping("/modify")
-	public String modify(Model model, P0503_CPDTO dto) {
-		P0503_CPDTO CPdto = CPService.get(dto.getCp_id());
+	public String modify(Model model, P0501_CPDTO dto) {
+		P0501_CPDTO CPdto = CPService.get(dto.getCp_id());
 		List<ItemDTO> itemList = CPService.itemList();
 		model.addAttribute("dto", CPdto);
 		model.addAttribute("itemList", itemList);
@@ -130,7 +130,7 @@ private static final Logger logger = LoggerFactory.getLogger(LoginController.cla
 	}
     /** 수정 후 상세 */
 	@RequestMapping("/modifyDetail")
-    public String modifyDetail(Model model, P0503_CPDTO dto) {
+    public String modifyDetail(Model model, P0501_CPDTO dto) {
         
 		CPService.edit(dto);
 	    List<ItemDTO> itemList = CPService.itemList();

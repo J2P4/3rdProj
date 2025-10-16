@@ -1,5 +1,5 @@
 package proj.spring.mes.controller;
 
-public class P0501_ProPlanCtrl {
+public class P0503_CPListCtrl {
 
 }
