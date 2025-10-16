@@ -67,10 +67,19 @@
 		where inspection_result_id = #{inspection_result_id}
 	</update>
 	
-	<!-- 삭제 -->
-	<delete id = "deleteInIns" parameterType = "P0601_InInsDTO">
+ 		<!-- 삭제 --> 
+<!-- 	<delete id = "deleteInIns" parameterType = "P0601_InInsDTO"> -->
+<!-- 		delete from v3_inspection_result -->
+<!-- 		where inspection_result_id = #{inspection_result_id} -->
+<!-- 	</delete> -->
+	
+	<!-- 삭제(다중) : 다중 삭제는 parameterType을 DTO로 하면 안 됨 -->
+	<delete id = "deleteInIns" parameterType = "java.util.List">
 		delete from v3_inspection_result
-		where inspection_result_id = #{inspection_result_id}
+		where inspection_result_id in
+		<foreach item="id" collection="list" open="(" separator="," close=")">
+			#{id}
+		</foreach>
 	</delete>
 	
 	<!-- 삽입 : 완 -->

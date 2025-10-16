@@ -29,9 +29,14 @@ public class P0603_ErrorServiceImpl implements P0603_ErrorService {
 		return errorMapperDAO.updateError(dto);
 	}
 	
+//	@Override
+//	public int removeError(String defect_id) {
+//		return errorMapperDAO.deleteError(defect_id);
+//	}
+	
 	@Override
-	public int removeError(String defect_id) {
-		return errorMapperDAO.deleteError(defect_id);
+	public int removeErrors(List<String> defectIds) {
+		return errorMapperDAO.deleteErrors(defectIds);
 	}
 	
 	@Override

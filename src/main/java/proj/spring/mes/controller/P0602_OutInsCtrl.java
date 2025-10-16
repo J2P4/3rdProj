@@ -2,18 +2,25 @@ package proj.spring.mes.controller;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
-import proj.spring.mes.dto.P0601_InInsDTO;
 import proj.spring.mes.dto.P0602_OutInsDTO;
 import proj.spring.mes.dto.WorkerDTO;
 import proj.spring.mes.service.P0602_OutInsService;
 
 @Controller
 public class P0602_OutInsCtrl {
+	
+	private static final Logger logger = LoggerFactory.getLogger(P0602_OutInsCtrl.class);
+	
 	@Autowired
 	P0602_OutInsService service;
 	
@@ -51,9 +58,29 @@ public class P0602_OutInsCtrl {
 //	@RequestMapping("/outInsinsert")
 //	@RequestMapping("/outInsupdate")
 	
-	@RequestMapping("/outInsdelete")
-	public String delete(String inspection_result_id) {
-		service.removeOutIns(inspection_result_id);
-		return "redirect:outInslist";
-	}
+//	@RequestMapping("/outInsdelete")
+//	public String delete(String inspection_result_id) {
+//		service.removeOutIns(inspection_result_id);
+//		return "redirect:outInslist";
+//	}
+ 	
+ 	@PostMapping("/outInsdelete")
+ 	@ResponseBody
+ 	public String deleteOutIns(@RequestBody List<String> outInsIds) {
+ 		logger.info("선택된 출고 검사 ID 삭제 요청:" + outInsIds);
+ 		
+ 		if(outInsIds == null || outInsIds.isEmpty()) {
+ 			return "fail: No IDs provided";
+ 		}
+ 		
+ 		int deletedCount = service.removeOutIns(outInsIds);
+ 		
+ 		if(deletedCount == outInsIds.size()) {
+ 			return "success";
+ 		}
+ 		else {
+ 			logger.error("출고 검사 삭제 실패. 요청 ID 수: {}, 실제 삭제 수: {}", outInsIds.size(), deletedCount);
+ 			return "fail";
+ 		}
+ 	}
 }

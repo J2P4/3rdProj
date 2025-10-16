@@ -30,9 +30,14 @@ public class P0601_InInsServiceImpl implements P0601_InInsService {
 		return inInsMapperDAO.updateInIns(dto);
 	}
 	
+//	@Override
+//	public int removeInIns(String inspection_result_id) {
+//		return inInsMapperDAO.deleteInIns(inspection_result_id);
+//	}
+	
 	@Override
-	public int removeInIns(String inspection_result_id) {
-		return inInsMapperDAO.deleteInIns(inspection_result_id);
+	public int removeInIns(List<String> inInsIds) {
+		return inInsMapperDAO.deleteInIns(inInsIds);
 	}
 	
 	@Override

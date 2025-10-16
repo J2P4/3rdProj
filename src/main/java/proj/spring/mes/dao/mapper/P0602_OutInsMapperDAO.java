@@ -15,7 +15,8 @@ public interface P0602_OutInsMapperDAO {
 	List<P0602_OutInsDTO> selectOutIns(P0602_OutInsDTO searchCondition);
 	P0602_OutInsDTO selectOneOutIns(String inspection_result_id);
 	int updateOutIns(P0602_OutInsDTO dto);
-	int deleteOutIns(String inspection_result_id);
+//	int deleteOutIns(String inspection_result_id);
+	int deleteOutIns(List<String> outInsIds);
 	int insertOutIns(P0602_OutInsDTO dto);
 
 	//  작업자 조회용

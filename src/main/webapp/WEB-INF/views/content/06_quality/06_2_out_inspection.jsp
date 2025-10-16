@@ -14,7 +14,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>출고 검사 < 품질 관리 < J2P4</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/common.css" type="text/css">
+    <script>
+        const contextPath = '${pageContext.request.contextPath}';
+        // 품목 목록을 JSON 형식으로 js 변수에 저장하려고 작성
+        const allItemsJson = `${itemListJson}`; 
+    </script>    
     <script src="${pageContext.request.contextPath}/resources/js/common.js" defer></script>
+    <script src="${pageContext.request.contextPath}/resources/js/06_2_outins.js" defer></script>
 </head>
 <body>
     <div class = "title"><h1>출고 검사</h1></div>
@@ -65,8 +71,8 @@
 				</c:if>
 				<c:if test="${not empty list}">
 					<c:forEach var="P0602_OutInsDTO" items="${list}">
-		                <tr>
-		                    <td class = "chkbox"><input type="checkbox" class="rowChk"></td>
+		                <tr data-id="${P0602_OutInsDTO.inspection_result_id}">
+		                    <td class = "chkbox"><input type="checkbox" class="rowChk" name = "delete_outIns_id" value="${P0602_OutInsDTO.inspection_result_id}"></td>
 		                    <td class = "id">${P0602_OutInsDTO.inspection_result_id}</td>
 		                    <td class = "date">${P0602_OutInsDTO.inspection_result_date}</td>
 		                    <td>${P0602_OutInsDTO.inspection_result_good}</td>
