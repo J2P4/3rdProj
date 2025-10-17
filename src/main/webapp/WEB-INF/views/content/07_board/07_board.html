@@ -5,97 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>J2P4 MES System - 게시판</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="07_board.css">
     <script src="https://cdn.tailwindcss.com"></script>
-    
     <script src="https://cdn.jsdelivr.net/npm/tinymce@5/tinymce.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/tinymce@5/langs/ko.js"></script>
-    
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
-    <link rel="stylesheet" href="07_board.css">
 
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f3f4f6;
-        }
-
-        /* 차트 캔버스의 최대 높이 설정 */
-        canvas {
-            max-height: 200px;
-        }
-        
-        /* Tailwind 안써볼라 했다....*/
-        :root {
-            --header-bg: rgb(24, 33, 49);
-            --nav-bg: rgb(17, 24, 39);
-        }
-
-        /* 호버 및 활성화 스타일 */
-        .mainList li {
-            position: relative;
-            transition-property: background-color, border-left-color;
-            transition-duration: 200ms;
-        }
-        .mainList li:hover {
-            background-color: rgb(24, 33, 49);
-        }
-        
-        /* 활성화된 부모 메뉴 스타일 */
-        .active-parent {
-            background-color: rgb(24, 33, 49);
-            border-left: 4px solid #3b82f6;
-            padding-left: 12px;
-        }
-
-        /* 활성화된 메뉴 아이템 스타일 */
-        .active-link {
-            background-color: rgb(24, 33, 49);
-            border-left: 4px solid #3b82f6;
-            padding-left: 12px;
-        }
-
-        .header-bg {
-            background-color: var(--header-bg);
-        }
-
-        .nav-bg {
-            background-color: var(--nav-bg);
-        }
-
-        /* 서브 메뉴 애니메이션 효과 */
-        .subList {
-            max-height: 0;
-            opacity: 0;
-            overflow: hidden;
-            transition: max-height 0.4s ease-in-out, opacity 0.4s ease-in-out;
-        }
-    
-        /* 변경: 높이는 JS에서 동적으로 설정, 여기서는 투명도만 처리 */
-        .subList.visible {
-            opacity: 1;
-        }
-        
-        .drop {
-            text-align:center; 
-            font-weight: bold; 
-            height: 100px; 
-            font-size: 20px;
-            padding: 8px;
-        }
-        .row {
-            margin: 10px;
-        }
-    </style>
 </head>
 <body class="bg-gray-100 text-gray-800 flex flex-col min-h-screen">
 
     <header class="header-bg text-white p-4 shadow-lg flex justify-between items-center z-50 relative">
         <div class="flex items-center space-x-2">
-        <a  href = "/proj_mes/mainpage">
+        <a href = "/proj_mes/mainpage">
             <img src="https://i.postimg.cc/qMsq73hD/icon.png" class="w-10" alt="회사 로고">
         </a>
-        <a  href = "/proj_mes/mainpage">
+        <a href = "/proj_mes/mainpage">
             <h3 class="text-xl font-bold">J2P4</h3>
         </a>
         </div>
@@ -127,18 +51,20 @@
         </div>
     </header>
 
-
     <div class="flex flex-1">
         <aside class="nav-bg text-white p-4 w-56 shadow-inner flex-shrink-0">
             <ul class="mainList space-y-2 text-base">
+                <!-- relative : 요소의 position 속성을 relative로 설정 -->
                 <li data-page="main" class="relative p-3 rounded-md cursor-pointer transition-colors duration-200">메인</li>
                 
                 <li data-page="order" class="relative p-3 rounded-md cursor-pointer transition-colors duration-200">발주 관리</li>
                 
-                <li data-page="standard-parent" class="parent-menu relative p-3 rounded-md cursor-pointer transition-colors duration-200">
+                <li data-page="standard-parent" class="parent-menu relative p-3 rounded-md cursor-pointer transition-colors duration-200"> <!-- duration : 트랜지션 지속시간 200ms -->
                     <div class="flex items-center justify-between">
                         <span>기준 관리</span>
+                        <!-- svg : 화살표 전체 아이콘 | 속도 : duration | viewBox : svg의 좌표 공간(0~20) 설정 | path : 실제 화살표의 모양 경로 -->
                         <svg class="w-4 h-4 transition-transform duration-200" fill="currentColor" viewBox="0 0 20 20">
+                            <!-- evenodd : 짝수 홀수 규칙 적용 , 한 점에서 경로를 가로지르는 횟수가 홀수면 채우고, 짝수면 비워둠 , 겹치는 부분을 비워주는 규칙-->
                             <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
                         </svg>
                     </div>
@@ -188,6 +114,17 @@
         </main>
     </div>
 
+    <script>
+                <div class = "slide-btnbox">
+    <c:if test="${sessionScope.role != 'STAFF'}">
+                    <a href="modify?worker_id=${dto.worker_id}" class="slide-btn modify-btn">수정</a>
+                <a href="workerlist" class="slide-btn close-btn">취소</a>
+        </c:if>
+        <c:if test="${sessionScope.role == 'STAFF'}">
+                <a href="workerlist" class="slide-btn close-btn">취소</a>
+        </c:if>
+ </div>
+    </script>
     <script>
         /* 사이드바 하위 목록에 따라 늘어나게*/
         document.addEventListener('DOMContentLoaded', () => {
@@ -348,7 +285,7 @@
     <script>
         /* === 우측 상단 사용자 드롭다운 === */
         const myIconBtn = document.getElementById('myIconBtn');
-        const userMenu  = document.getElementById('userMenu');
+        const userMenu = document.getElementById('userMenu');
 
         function closeUserMenu() {
             userMenu.classList.add('hidden');

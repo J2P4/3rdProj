@@ -1,5 +1,3 @@
-// 07_board.js
-
 // 게시판 데이터 (샘플)
 const boardData = [
     { type: '자유', title: '2024년 1분기 생산 목표 달성 축하 이벤트', content: '축하 이벤트 상세 내용입니다.', authorId: 'N24101413' },
