@@ -70,33 +70,38 @@
                         <th>목표수량</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <c:choose>
-                        <c:when test="${not empty orders}">
-                            <c:forEach var="o" items="${orders}">
-                                <tr>
-                                    <td class="col-check"><input type="checkbox" name="rowChk" value="${o.order_id}"></td>
-                                    <td>${o.order_id}</td>
-                                    <td>
-                                        <a href="${pageContext.request.contextPath}/po/detail?id=${o.order_id}" style="color:inherit; text-decoration:none;">${o.item_id}</a>
-                                    </td>
-                                    <td class="col-qty"><${o.order_amount}</td>
-                                    <td>${o.client_id}</td>
-                                    <td>${o.worker_id}</td>
-                                    <td><fmt:formatDate value="${o.order_date}" pattern="yyyy-MM-dd"/></td>
-                                </tr>
-                            </c:forEach>
-                        </c:when>
-                        <c:otherwise>
-                            <c:forEach var="i" begin="1" end="10">
-                                <tr>
-                                    <td class="col-check"><input type="checkbox" name="rowChk"></td>
-                                    <td></td><td></td><td class="col-qty"></td><td></td><td></td><td></td>
-                                </tr>
-                            </c:forEach>
-                        </c:otherwise>
-                    </c:choose>
-                </tbody>
+           <tbody>
+    <c:choose>
+        <c:when test="${not empty orders}">
+            <c:forEach var="o" items="${orders}">
+                <tr>
+                    <td class="col-check"><input type="checkbox" name="rowChk" value="${o.order_id}"></td>
+                    <td>${o.order_id}</td>
+                    <td>
+                        <a href="${pageContext.request.contextPath}/po/detail?id=${o.order_id}" style="color:inherit; text-decoration:none;">
+                            ${o.item_id}
+                        </a>
+                    </td>
+                    <td>
+                        <fmt:formatDate value="${o.order_date}" pattern="yyyy-MM-dd"/>
+                    </td>
+                    <td class="col-qty">${o.order_amount}</td> <!-- ✅ 목표수량 -->
+                </tr>
+            </c:forEach>
+        </c:when>
+        <c:otherwise>
+            <c:forEach var="i" begin="1" end="10">
+                <tr>
+                    <td class="col-check"><input type="checkbox" name="rowChk"></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="col-qty"></td>
+                </tr>
+            </c:forEach>
+        </c:otherwise>
+    </c:choose>
+</tbody>
             </table>
        
     </div>
@@ -111,7 +116,7 @@
 		
     </div>
     
-    <!-- 등록 슬라이드 -->
+      <!-- 등록 슬라이드 -->
     <div class="slide" id="slide-input">
         <div class="slide-contents">
             <div class="silde-title"><h2>생산계획 등록</h2></div>
