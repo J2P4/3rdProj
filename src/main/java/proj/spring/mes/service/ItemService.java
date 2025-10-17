@@ -1,6 +1,7 @@
 package proj.spring.mes.service;
 
 import java.util.List;
+import java.util.Map; // 👈 추가
 import proj.spring.mes.dto.ItemDTO;
 
 public interface ItemService {
@@ -21,4 +22,8 @@ public interface ItemService {
 
     // 총 레코드 수
     long count();
+    
+    List<Map<String, Object>> clientlist();
+    
+    List<Map<String, Object>> selectClientsByItemId(String itemId);
 }

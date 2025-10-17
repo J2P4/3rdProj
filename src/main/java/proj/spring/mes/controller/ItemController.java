@@ -5,7 +5,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.ui.Model;
 
-import java.io.UnsupportedEncodingException;
+import java.util.List; 
+import java.util.Map;  
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -13,7 +14,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import proj.spring.mes.dto.ItemDTO;
-import proj.spring.mes.dto.P0401_StockDTO;
 import proj.spring.mes.service.ItemService;             
 @Controller                                              
 public class ItemController {
@@ -82,7 +82,15 @@ public class ItemController {
     
     
     
-
+    
+    // 💡 추가: 거래처 목록 JSON API 엔드포인트
+    @RequestMapping("/client/list") 
+    @ResponseBody // 필수: 이 어노테이션이 JSON 응답을 담당합니다.
+    public List<Map<String, Object>> clientlist() { 
+        return itemService.clientlist(); 
+    }
+    
+    
     
 
 @RequestMapping(value = "/item/delete", method = org.springframework.web.bind.annotation.RequestMethod.POST)
@@ -136,8 +144,8 @@ public ItemDTO detail(@RequestParam("item_id") String item_id) {
     System.out.println(dto);
     return dto;
 }
-    
-    
+
+
 
 @RequestMapping("/item/save")
 @ResponseBody
@@ -148,11 +156,12 @@ public ItemDTO edit(@RequestParam("item_id") String item_id) {
 }
     
     
+    
 
 @RequestMapping(value="/item/save", method=RequestMethod.POST)
 @ResponseBody
 public ItemDTO save(
-    @RequestParam(value="item_id",   required=false) String item_id, // 신규면 null 허용
+    @RequestParam(value="item_id",   required=false) String item_id, 
     @RequestParam("item_name") String item_name,
     @RequestParam("item_div")  String item_div,
     @RequestParam("item_price") int item_price,
@@ -173,10 +182,6 @@ public ItemDTO save(
     }
     return dto;
 }
-
-
-
-
 
 
 

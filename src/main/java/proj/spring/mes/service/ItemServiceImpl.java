@@ -1,7 +1,9 @@
 package proj.spring.mes.service;
 
 import java.util.List;
+import java.util.Map; 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 // 필요하면 @Transactional 추가 가능
 // import org.springframework.transaction.annotation.Transactional;
@@ -45,11 +47,13 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    @Transactional
     public int add(ItemDTO dto) {
         return itemMapper.insertItem(dto);
     }
 
     @Override
+    @Transactional
     public int edit(ItemDTO dto) {
         return itemMapper.updateItem(dto);
     }
@@ -90,10 +94,18 @@ public class ItemServiceImpl implements ItemService {
     }
     
     
+    // 거래처 목록 조회 구현
+    @Override
+    public List<Map<String, Object>> clientlist() {
+        return itemMapper.clientlist(); // DAO 호출
+    }
     
     
     
-    
+    @Override
+    public List<Map<String, Object>> selectClientsByItemId(String itemId) {
+        return itemMapper.selectClientsByItemId(itemId);
+    }
     
     
     

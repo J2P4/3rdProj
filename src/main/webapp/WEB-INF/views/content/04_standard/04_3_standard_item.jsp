@@ -257,10 +257,17 @@
             </table>
         </div>
 
-        <div class="slide-btnbox">
-            <input type="submit" class="slide-btn" value="등록">
-            <input type="button" class="close-btn slide-btn" value="취소">
-        </div>
+		<form id="item-register-form"> 
+		
+		    <div class="slide-tb">
+		        </div>
+		
+		    <div class="slide-btnbox">
+		        <input type="submit" class="slide-btn" value="등록">
+		        <input type="button" class="close-btn slide-btn" value="취소">
+		    </div>
+		
+		    </form>
 
     </div>
 </div>

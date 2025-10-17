@@ -7,7 +7,6 @@ import org.apache.ibatis.annotations.Param;
 import proj.spring.mes.dto.ItemDTO;
 
 public interface ItemMapperDAO {
-    // 기존
     List<ItemDTO> selectItemList();
     ItemDTO selectItemOne(@Param("itemId") String itemId);
     int insertItem(ItemDTO dto);
@@ -22,4 +21,6 @@ public interface ItemMapperDAO {
     
     
     List<Map<String, Object>> clientlist();
+    List<Map<String, Object>> selectClientsByItemId(@Param("itemId") String itemId);
+
 }
