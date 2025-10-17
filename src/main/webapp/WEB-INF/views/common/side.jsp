@@ -80,6 +80,15 @@
                 });
             }
 
+            function openSubInstant(subList) {
+            	  const prevTransition = subList.style.transition;
+            	  subList.style.transition = 'none';
+            	  subList.classList.add('visible');
+            	  subList.style.maxHeight = subList.scrollHeight + 'px';
+            	  subList.offsetHeight; // reflow (적용 보장)
+            	  subList.style.transition = prevTransition;
+            }
+            
             // 초기 상태: '메인' 항목 활성화
 //             const mainMenuItem = document.querySelector('.mainList > li:first-child');
 //             if (mainMenuItem) {
@@ -183,8 +192,9 @@
     		                const subList = parentMenu.querySelector('.subList');
     		                const arrow = parentMenu.querySelector('svg');
     		                parentMenu.classList.add('active-parent');
-    		                subList.classList.add('visible');
-    		                subList.style.maxHeight = subList.scrollHeight + 'px';
+//     		                subList.classList.add('visible');
+//     		                subList.style.maxHeight = subList.scrollHeight + 'px';
+    		                openSubInstant(subList);
     		                if (arrow) arrow.style.transform = 'rotate(90deg)';
     		            }
     		        }
