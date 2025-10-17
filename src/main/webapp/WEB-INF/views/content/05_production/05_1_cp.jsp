@@ -16,7 +16,30 @@
     <script src="${pageContext.request.contextPath}/resources/js/common.js"></script>
 
 <title>생산 계획</title>
+<style>
+/* 슬라이드 내 테이블 전체 가운데 정렬 */
+.slide-tb {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+}
 
+/* 테이블 셀 가운데 정렬 및 균일한 너비 */
+.slide-tb table {
+    border-collapse: collapse;
+    width: 80%; /* 필요 시 조정 가능 */
+    text-align: center;
+}
+
+.slide-tb th,
+.slide-tb td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    width: 33%;  /* 3열이므로 각각 1/3씩 */
+}
+
+
+</style>
 
 </head>
 <body>
@@ -133,7 +156,7 @@
                         <tr><th>생산 계획일</th><th>목표 품목 ID</th><th>목표 수량</th></tr>
                     </thead>
                     <tbody>
-                        <tr><td>1</td><td>1</td><td>1</td></tr>
+                        <tr><td>2025-10-17</td><td>H00000000</td><td>50</td></tr>
                     </tbody>
                 </table>
             </div>
