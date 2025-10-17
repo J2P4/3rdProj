@@ -3,8 +3,8 @@
 
             <ul class="mainList space-y-2 text-base">
                 <!-- 메인 메뉴 추가 -->
-                <li class="relative p-3 rounded-md cursor-pointer transition-colors duration-200">메인</li>
-                <li class="relative p-3 rounded-md cursor-pointer transition-colors duration-200">발주 관리</li>
+                <li class="relative p-3 rounded-md cursor-pointer transition-colors duration-200" data-link="${pageContext.request.contextPath}/main">메인</li>
+                <li class="relative p-3 rounded-md cursor-pointer transition-colors duration-200" data-link="${pageContext.request.contextPath}/orderlist" >발주 관리</li>
                 
                 <!-- 기준 관리 메뉴와 하위 메뉴 -->
                 <li class="parent-menu relative p-3 rounded-md cursor-pointer transition-colors duration-200">
@@ -15,12 +15,12 @@
                         </svg>
                     </div>
                     <ul class="subList space-y-1 mt-2 pl-5">
-                        <li class="py-2 px-3 rounded-md cursor-pointer transition-colors duration-200">재고 관리</li>
+                        <li class="py-2 px-3 rounded-md cursor-pointer transition-colors duration-200" data-link="${pageContext.request.contextPath}/stocklist" >재고 관리</li>
 
-                        <li class="py-2 px-3 rounded-md cursor-pointer transition-colors duration-200">거래처 관리</li>
-                        <li class="py-2 px-3 rounded-md cursor-pointer transition-colors duration-200">품목 관리</li>
-                        <li class="py-2 px-3 rounded-md cursor-pointer transition-colors duration-200">BOM 관리</li>
-                        <li class="py-2 px-3 rounded-md cursor-pointer transition-colors duration-200">공정 관리</li>
+                        <li class="py-2 px-3 rounded-md cursor-pointer transition-colors duration-200" data-link="${pageContext.request.contextPath}/clientlist">거래처 관리</li>
+                        <li class="py-2 px-3 rounded-md cursor-pointer transition-colors duration-200" data-link="${pageContext.request.contextPath}/itemlist">품목 관리</li>
+                        <li class="py-2 px-3 rounded-md cursor-pointer transition-colors duration-200" data-link="${pageContext.request.contextPath}/bomlist">BOM 관리</li>
+                        <li class="py-2 px-3 rounded-md cursor-pointer transition-colors duration-200" data-link="${pageContext.request.contextPath}/processlist">공정 관리</li>
                     </ul>
                 </li>
 
@@ -33,9 +33,9 @@
                         </svg>
                     </div>
                     <ul class="subList space-y-1 mt-2 pl-4">
-                        <li class="py-2 px-3 rounded-md cursor-pointer transition-colors duration-200">생산 계획</li>
-                        <li class="py-2 px-3 rounded-md cursor-pointer transition-colors duration-200">작업 지시서</li>
-                        <li class="py-2 px-3 rounded-md cursor-pointer transition-colors duration-200">생산 실적</li>
+                        <li class="py-2 px-3 rounded-md cursor-pointer transition-colors duration-200" data-link="${pageContext.request.contextPath}/cp">생산 계획</li>
+                        <li class="py-2 px-3 rounded-md cursor-pointer transition-colors duration-200" data-link="${pageContext.request.contextPath}/workorder">작업 지시서</li>
+                        <li class="py-2 px-3 rounded-md cursor-pointer transition-colors duration-200" data-link="${pageContext.request.contextPath}/cplist">생산 실적</li>
                     </ul>
                 </li>
 
@@ -48,9 +48,9 @@
                         </svg>
                     </div>
                     <ul class="subList space-y-1 mt-2 pl-4">
-                        <li class="py-2 px-3 rounded-md cursor-pointer transition-colors duration-200">입고 검사</li>
-                        <li class="py-2 px-3 rounded-md cursor-pointer transition-colors duration-200">공정 검사</li>
-                        <li class="py-2 px-3 rounded-md cursor-pointer transition-colors duration-200">불량 보고서</li>
+                        <li class="py-2 px-3 rounded-md cursor-pointer transition-colors duration-200" data-link="${pageContext.request.contextPath}/inInslist">입고 검사</li>
+                        <li class="py-2 px-3 rounded-md cursor-pointer transition-colors duration-200" data-link="${pageContext.request.contextPath}/outInslist">공정 검사</li>
+                        <li class="py-2 px-3 rounded-md cursor-pointer transition-colors duration-200" data-link="${pageContext.request.contextPath}/errorlist">불량 보고서</li>
                     </ul>
                 </li>
 
@@ -81,11 +81,11 @@
             }
 
             // 초기 상태: '메인' 항목 활성화
-            const mainMenuItem = document.querySelector('.mainList > li:first-child');
-            if (mainMenuItem) {
-                mainMenuItem.classList.add('active-link');
-                mainMenuItem.classList.remove('transition-colors', 'duration-200');
-            }
+//             const mainMenuItem = document.querySelector('.mainList > li:first-child');
+//             if (mainMenuItem) {
+//                 mainMenuItem.classList.add('active-link');
+//                 mainMenuItem.classList.remove('transition-colors', 'duration-200');
+//             }
 
             // 일반 메뉴 항목 클릭
             menuItems.forEach(item => {
@@ -143,5 +143,68 @@
                     el.style.maxHeight = el.scrollHeight + 'px';
                 });
             });
+            
+            /* 사이드바 별 페이지 이동 */
+            /* 클릭 시 페이지 이동 (data-link 기준) */
+    		allItems.forEach(item => {
+    		    const link = item.getAttribute('data-link');
+    		    if (link) {
+    		        item.addEventListener('click', (e) => {
+    		            e.stopPropagation(); // 부모 메뉴 토글 방지
+    		            window.location.href = link;
+    		        });
+    		    }
+    		});
+            
+    		// URL 기준으로 활성화
+    		const contextPath = '<%= request.getContextPath() %>'; 
+    		const currentPath = location.pathname; // 예: '/mes/stocklist'
+
+    		const normalize = (p) => (p || '').replace(/\/+$/, ''); // 끝 슬래시 제거
+
+    		function setActiveByURL() {
+    		    let matched = false;
+
+    		    allItems.forEach(li => {
+    		        const link = li.getAttribute('data-link');
+    		        if (!link) return;
+
+    		        const nLink = normalize(link);
+    		        const nCurr = normalize(currentPath);
+
+    		        if (nLink === nCurr || nCurr.endsWith(nLink)) {
+    		            matched = true;
+    		            li.classList.add('active-link');
+    		            li.classList.remove('transition-colors', 'duration-200');
+
+    		            // 하위 메뉴면 부모 펼침
+    		            const parentMenu = li.closest('.parent-menu');
+    		            if (parentMenu) {
+    		                const subList = parentMenu.querySelector('.subList');
+    		                const arrow = parentMenu.querySelector('svg');
+    		                parentMenu.classList.add('active-parent');
+    		                subList.classList.add('visible');
+    		                subList.style.maxHeight = subList.scrollHeight + 'px';
+    		                if (arrow) arrow.style.transform = 'rotate(90deg)';
+    		            }
+    		        }
+    		    });
+
+    		    // 매칭 실패 시 기본값: 첫 번째 상단 메뉴 활성화
+    		    if (!matched) {
+    		        const firstTop = document.querySelector('.mainList > li:not(.parent-menu)[data-link]');
+    		        if (firstTop) {
+    		            firstTop.classList.add('active-link');
+    		            firstTop.classList.remove('transition-colors', 'duration-200');
+    		        }
+    		    }
+    		}
+
+    		// 페이지 로드시 실행
+    		setActiveByURL();
+
         });
+        
+        
+
     </script>
