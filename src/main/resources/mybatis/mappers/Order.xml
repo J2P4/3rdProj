@@ -3,29 +3,46 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<!-- ★ namespace는 '인터페이스의 FQN' 과 정확히 일치시켜 -->
+
 <mapper namespace="proj.spring.mes.dao.mapper.OrderMapperDAO">
 
   <!-- 목록 -->
-  <select id="selectOrderList" resultType="proj.spring.mes.dto.OrderDTO">
-    SELECT
-      order_id,
-      oreder_stat,      -- 스키마 철자 그대로라면 유지
-      order_date,
-      item_id,
-      order_qty
-    FROM V3_order
-    ORDER BY order_date DESC
+    <select id="selectOrderList" resultType="proj.spring.mes.dto.OrderDTO">
+	    select o.order_id,
+	    		i.item_name,
+	    		o.order_amount,
+	    		o.order_date,
+	    		from V3_order o,
+	    		v3_item i 
+	    		where i.item_id = o.item_id
+	    		
+			    FROM V3_order
+			    ORDER BY order_date DESC
+        
+                   
+<!--        order_payment_date, -->
+<!-- 		order_receive_date, -->
+<!-- 		worker_id, -->
+<!-- 		client_id,  -->
+<!--        order_payment_duedate, -->
+<!--        order_receive_duedate -->
+        
+
   </select>
 
   <!-- 단건 -->
   <select id="selectOrderOne" parameterType="string" resultType="proj.spring.mes.dto.OrderDTO">
     SELECT
-      order_id,
-      oreder_stat,
-      order_date,
-      item_id,
-      order_qty
+        order_id,
+        order_payment_date,
+        order_date,           
+		order_amount,
+		order_receive_date,
+		worker_id,
+		client_id, 
+        item_name,
+        order_payment_duedate,
+        order_receive_duedate
     FROM V3_order
     WHERE order_id = #{order_id}
   </select>

@@ -1,6 +1,7 @@
 package proj.spring.mes.dao.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -28,5 +29,9 @@ public interface WorkerMapperDAO {
     String selectWorkerPw(@Param("worker_id") String worker_id);
 
     // 비밀번호 해시로 교체 
-    int updatePassword(@Param("worker_id") String worker_id, @Param("new_pw") String new_pw);
+    int updatePassword(Map<String, Object> param);
+    
+    Integer isPwMustChange(String worker_id);
+    
+    int updateClearPw(Map<String, Object> param);
 }

@@ -23,9 +23,9 @@
     	<typeAlias type= "proj.spring.mes.dto.P0404_BOMDTO" alias="P0404_BOMDTO" />
     	<typeAlias type= "proj.spring.mes.dto.P0405_ProcessDTO" alias="P0405_ProcessDTO" />
     	
-    	<typeAlias type= "proj.spring.mes.dto.P0501_ProPlanDTO" alias="P0501_ProPlanDTO" />
+    	<typeAlias type= "proj.spring.mes.dto.P0501_CPDTO" alias="P0501_CPDTO" />
     	<typeAlias type= "proj.spring.mes.dto.P0502_WorkOrderDTO" alias="P0502_WorkOrderDTO" />
-    	<typeAlias type= "proj.spring.mes.dto.P0503_CPDTO" alias="P0503_CPDTO" />
+    	<typeAlias type= "proj.spring.mes.dto.P0503_CPListDTO" alias="P0503_CPListDTO" />
     	
     	<typeAlias type= "proj.spring.mes.dto.P0601_InInsDTO" alias="P0601_InInsDTO" />
     	<typeAlias type= "proj.spring.mes.dto.P0602_OutInsDTO" alias="P0602_OutInsDTO" />

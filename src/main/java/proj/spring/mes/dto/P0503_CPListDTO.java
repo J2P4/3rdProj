@@ -1,5 +1,5 @@
 package proj.spring.mes.dto;
 
-public class P0501_ProPlanDTO {
+public class P0503_CPListDTO {
 
 }

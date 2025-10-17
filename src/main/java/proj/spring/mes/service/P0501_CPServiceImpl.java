@@ -5,19 +5,19 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import proj.spring.mes.dao.mapper.P0503_CPMapperDAO;
+import proj.spring.mes.dao.mapper.P0501_CPMapperDAO;
 import proj.spring.mes.dto.ItemDTO;
-import proj.spring.mes.dto.P0503_CPDTO;
+import proj.spring.mes.dto.P0501_CPDTO;
 
 @Service
-public class P0503_CPServiceImpl implements P0503_CPService{
+public class P0501_CPServiceImpl implements P0501_CPService{
 
 	@Autowired
-	P0503_CPMapperDAO cpMapperDao;   // MapperDAO 인터페이스를 받아오기
+	P0501_CPMapperDAO cpMapperDao;   // MapperDAO 인터페이스를 받아오기
 
 
 	@Override
-    public List<P0503_CPDTO> list() {
+    public List<P0501_CPDTO> list() {
        return cpMapperDao.selectCP();
     }
 
@@ -27,17 +27,17 @@ public class P0503_CPServiceImpl implements P0503_CPService{
 	}
 
     @Override
-    public P0503_CPDTO get(String cp_id) {
+    public P0501_CPDTO get(String cp_id) {
         return cpMapperDao.selectOneCP(cp_id);
     }
 
     @Override
-    public int add(P0503_CPDTO dto) {
+    public int add(P0501_CPDTO dto) {
         return cpMapperDao.insertCP(dto);
     }
 
     @Override
-    public int edit(P0503_CPDTO dto) {
+    public int edit(P0501_CPDTO dto) {
         return cpMapperDao.updateCP(dto);
     }
 
@@ -50,7 +50,7 @@ public class P0503_CPServiceImpl implements P0503_CPService{
     
     // 신규: 페이징 전용 목록
     @Override
-    public List<P0503_CPDTO> list(int page, int pagePerRows) {
+    public List<P0501_CPDTO> list(int page, int pagePerRows) {
         int size = Math.max(1, Math.min(pagePerRows, 100));
         int p = Math.max(1, page);
         int offset = (p - 1) * size;

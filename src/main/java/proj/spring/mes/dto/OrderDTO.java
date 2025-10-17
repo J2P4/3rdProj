@@ -19,7 +19,6 @@ public class OrderDTO {
 	private Date order_payment_duedate; //결제 예정일
 	private Date order_receive_duedate;  //수주 예정일
 	
-	
-	//아직 예상 수주일과 결제일을 DB에 추가하지 않았음 
+
 }
 

@@ -31,8 +31,8 @@ public class P0602_OutInsServiceImpl implements P0602_OutInsService {
 	}
 	
 	@Override
-	public int removeOutIns(String inspection_result_id) {
-		return outInsMapperDAO.deleteOutIns(inspection_result_id);
+	public int removeOutIns(List<String> outInsIds) {
+		return outInsMapperDAO.deleteOutIns(outInsIds);
 	}
 	
 	@Override

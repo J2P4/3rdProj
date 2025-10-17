@@ -10,17 +10,75 @@
 <!DOCTYPE html>
 <html lang="en">
 <style>
-.image{
-border : 1px solid black;
-wide: 50px;
-height: 50px;
+/* 공정 이미지 영역 */
+.image-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 0 0 400px;
+    height: 400px;
+    position: relative;
 }
-.specific{
-border : 1px solid black;
 
+/* 이미지 미리보기 박스 */
+.image {
+    width: 100%;
+    height: 350px;
+    border: 1px solid #ccc;
+    background-color: #f9f9f9;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 
-
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
+    font-weight: bold;
+    box-sizing: border-box;
 }
+
+
+/* 이미지 태그가 있으면 꽉 채우기 */
+.image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;   /* 이미지 비율 유지하며 꽉 채움 */
+    display: block;
+}
+
+/* 업로드 버튼 */
+.upload-btn {
+    margin-top: 8px;
+    background-color: #007bff;
+    color: white;
+    padding: 6px 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+/* input 숨김 */
+#imageUpload {
+    display: none;
+}
+
+/* 공정 상세 설명 */
+.specific {
+    flex: 0 0 500px;
+    height: 400px;
+    border: 1px solid #ccc;
+    background-color: #f9f9f9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+    box-sizing: border-box;
+}
+
+/* 테이블 관련 */
 .detail-table {
     width: 100%;
     table-layout: fixed;
@@ -37,7 +95,7 @@ border : 1px solid black;
     box-sizing: border-box;
 }
 
-/* ✅ 입력창 테두리 제거 및 스타일링 */
+/* 입력창 테두리 제거 및 스타일링 */
 .detail-table input[type="text"] {
     border: none;
     outline: none;
@@ -47,17 +105,18 @@ border : 1px solid black;
     font-size: 14px;
     padding: 4px;
 }
+
+/* 공정 박스 */
 .process-box {
     display: flex;
     gap: 16px;              /* 두 박스 사이 간격 */
-    justify-content: center; /* 가운데 정렬 (선택) */
+    justify-content: center; /* 가운데 정렬 */
     margin-top: 20px;
 }
 
-.process-box .image
-{
-    flex: 0 0 400px;         /* 가로 너비 고정 (200px) */
-    height: 400px;           /* 세로도 같게 = 정사각형 */
+.process-box .image {
+    flex: 0 0 400px;         /* 가로 너비 고정 */
+    height: 400px;           /* 세로도 같게 */
     border: 1px solid #ccc;
     box-sizing: border-box;
     background-color: #f9f9f9;
@@ -68,9 +127,10 @@ border : 1px solid black;
     font-size: 30px;
     font-weight: bold;
 }
+
 .process-box .specific {
-    flex: 0 0 500px;         /* 가로 너비 고정 (200px) */
-    height: 400px;           /* 세로도 같게 = 정사각형 */
+    flex: 0 0 500px;         /* 가로 너비 고정 */
+    height: 400px;           /* 세로도 같게 */
     border: 1px solid #ccc;
     box-sizing: border-box;
     background-color: #f9f9f9;
@@ -99,138 +159,149 @@ border : 1px solid black;
 <body>
     <!-- 페이지 제목 -->
     <div class = "title"><h1>공정 관리</h1></div>
-    <!-- 검색 필터(filter)
-        - filter-item-box : select란 모음
-            + filter-item: 개별 select란
-                * filitem-name : select란 명
-                * filitem-input : 실제 select 영역
-        - filter-btn : 조회 버튼 영억
-    -->
-    <form class = "filter" method="get" action="${pageContext.request.contextPath}/stocklist">
-        <div class = "filter-item-box">
-            <div class = "filter-item">
-                <div class = "filitem-name">· 공정ID</div>
-                <div class = "filitem-input">
-                    <input type="text" name="stock_id" placeholder=" ID를 입력해주세요">
+
+    <!-- 검색 필터 -->
+    <form class="filter" method="get" action="${pageContext.request.contextPath}/stocklist">
+        <div class="filter-item-box">
+            <div class="filter-item">
+                <div class="filitem-name">· 공정ID</div>
+                <div class="filitem-input">
+                    <input type="text" name="process_id" placeholder=" ID를 입력해주세요">
                 </div>
             </div>
-            <div class = "filter-item">
-                <div class = "filitem-name">· 부서</div>
-                <div class = "filitem-input">
-                    <input type="text" name="stock_id" placeholder=" 부서를 입력해주세요">
-                
+            <div class="filter-item">
+                <div class="filitem-name">· 부서</div>
+                <div class="filitem-input">
+                    <input type="text" name="deparment" placeholder=" 부서를 입력해주세요">
                 </div>
             </div>
-            <div class = "filter-item">
-                <div class = "filitem-name">· 공정명</div>
-               	<div class = "filitem-input">
+            <div class="filter-item">
+                <div class="filitem-name">· 공정명</div>
+                <div class="filitem-input">
                     <input type="text" name="stock_id" placeholder=" 공정명을 입력해주세요">
-                
                 </div>
-                
-                </div>
-            <div class = "filter-item"></div>
+            </div>
+            <div class="filter-item"></div>
         </div>
-        <div class = "filter-btn">
-            <input type = "submit" class = "fil-btn" value="조회">
+        <div class="filter-btn">
+            <input type="submit" class="fil-btn" value="조회">
         </div>
     </form>
-    <!-- 테이블 영역(table)
-        - table(클래스 X) : 실제 테이블 영역
-            + thead : 제목 영역. 너비 조정 위해서 일부 속성에 클래스 넣음.
-            + tbody : 데이터 영역
-    -->
-    <div class = "table">
+
+    <!-- 테이블 영역 -->
+    <div class="table">
         <table>
             <thead>
                 <tr>
-                    <th class = "chkbox"><input type="checkbox" id="chkAll"></th>
-                    <th class = "id">공정 순서</th>
+                    <th class="chkbox"><input type="checkbox" id="chkAll"></th>
+                    <th class="id">공정 순서</th>
                     <th>공정 ID</th>
-                    <th class = "type">공정명</th>
+                    <th class="type">공정명</th>
                 </tr>
             </thead>
-            <!-- 데이터 행 tr에 data-id 속성 잊지 말기! (상세 슬라이드에 필수) -->
             <tbody>
-               	<c:if test="${empty list}">
-                	<tr>
+                <c:if test="${empty list}">
+                    <tr>
                         <td><input type="checkbox" class="rowChk" disabled></td>
-                		<td colspan="3"> 조회 내역이 없습니다.</td>
-                	</tr>
-               	</c:if>
-               	<c:if test="${not empty list}">
-               		<c:forEach var="P0401_StockDTO" items="${list}">
-	               		<tr data-id="${P0401_StockDTO.stock_id}">
-		                    <td><input type="checkbox" class="rowChk" name="delete_stock_id" value="${P0401_StockDTO.stock_id}"></td>
-		                    <td>${P0401_StockDTO.stock_id}</td>
-		                    <td>${P0401_StockDTO.stock_amount}</td>
-		                    <td>${P0401_StockDTO.item_div}</td>
-	                    </tr>
+                        <td colspan="3"> 조회 내역이 없습니다.</td>
+                    </tr>
+                </c:if>
+                <c:if test="${not empty list}">
+                    <c:forEach var="P0401_StockDTO" items="${list}">
+                        <tr data-id="${P0401_StockDTO.stock_id}">
+                            <td><input type="checkbox" class="rowChk" name="delete_stock_id" value="${P0401_StockDTO.stock_id}"></td>
+                            <td>${P0401_StockDTO.stock_id}</td>
+                            <td>${P0401_StockDTO.stock_amount}</td>
+                            <td>${P0401_StockDTO.item_div}</td>
+                        </tr>
                     </c:forEach>
-                 </c:if>
+                </c:if>
             </tbody>
         </table>
     </div>
-    <!-- 테이블 하단 버튼 영역(bottom-btn)
-        - page : 페이징 들어가는 영역
-        - bottom-btn-boc : 등록, 삭제 등 버튼 영역
-            + btm-btn : 공통 양식 지정
-            + new, del : 개별 양식 지정
-    -->
-    <form class = "bottom-btn">
-        <div class = "page"></div>
-        <div class = "bottom-btn-box">
-            <input type = "button" class = "btm-btn new" value="입력">
-            <input type = "button" class = "btm-btn del" value="등록">
+
+    <!-- 하단 버튼 영역 -->
+    <form class="bottom-btn">
+        <div class="page"></div>
+        <div class="bottom-btn-box">
+            <input type="button" class="btm-btn new" value="입력">
+            <input type="button" class="btm-btn del" value="등록">
         </div>
     </form>
+
     <!-- 입력용 슬라이드 -->
-    <div class = "slide" id = "slide-input">
-        <form class = "slide-contents" id="stockInsertForm">
-            <div class = "silde-title"><h2 id="slide-title">공정 상세</h2></div>
-            <div class = "slide-id" id="stock-id-show" style = "display: none">
+    <div class="slide" id="slide-input">
+        <form class="slide-contents" id="stockInsertForm">
+            <div class="silde-title"><h2 id="slide-title">공정 상세</h2></div>
+            <div class="slide-id" id="stock-id-show" style="display: none">
                 재고 ID: <span id="stock-id-val"></span>
                 <input type="hidden" id="input_stock_id" name="stock_id" value="">
             </div>
-          <div class="slide-tb">
-    <table class="detail-table">
-        <thead>
-            <tr>
-                <th>공정 순서</th>
-                <th>공정명</th>
-                <th>담당부서</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                    <td><input type="text" name="process_order" /></td>
-        			<td><input type="text" name="process_name" /></td>
-        			<td><input type="text" name="department" /></td>
-            </tr>
-        </tbody>
-    </table>
-</div>
 
-	<div class="process-box">
-	<div class="image">공정 이미지</div>
-	<div class="specific">공정 상세 설명</div>
-	</div>
-	
-
-  <div class = "slide-btnbox">
-                <input type = "button" class = "slide-btn" id="detailEditBtn" value = "수정">
-                <input type = "button" class = "close-btn slide-btn" value = "취소">
+            <div class="slide-tb">
+                <table class="detail-table">
+                    <thead>
+                        <tr>
+                            <th>공정 순서</th>
+                            <th>공정명</th>
+                            <th>담당부서</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><input type="text" name="process_order" /></td>
+                            <td><input type="text" name="process_name" /></td>
+                            <td><input type="text" name="department" /></td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
-      
+
+            <div class="process-box">
+                <!-- 공정 이미지 영역 -->
+                    공정 이미지
+                <div class="image-section">
+                       <img class="image" id="preview">
+    <br>
+    <!-- accept="image/*" 파일 중 기본적으로 이미지만 필터링  -->
+    <input type="file" id="img" accept="image/*">
+                </div>
+
+                <!-- 공정 상세 설명 -->
+                <div class="specific">
+                    공정 상세 설명
+                </div>
+            </div>
+
+            <div class="slide-btnbox">
+                <input type="button" class="slide-btn" id="detailEditBtn" value="수정">
+                <input type="button" class="close-btn slide-btn" value="취소">
+            </div>
         </form>
     </div>
-    <!-- 상세용 슬라이드 : ajax로 채울 거라 el 태그 사용 필요 X -->
-    
-                <!-- 상세 데이터 표시용 id 주는 영역 1 -->
-          
-            
-  				<!-- 상세 데이터 표시용 id 주는 영역 1 -->
 
-    
+    <!-- 이미지 미리보기 스크립트 -->
+ <script>
+ 
+ // 업로드할 파일이 바뀌면
+ document.querySelector('#img').addEventListener('change', function(event){
+     // 이미지 처리 객체
+     const reader = new FileReader()
+
+     // 업로드할 이미지를 읽어오기
+     const file = event.target.files[0]
+     reader.readAsDataURL( file )
+
+     // 다 읽어 오면 처리
+     reader.onload = function(e){
+         // img 태그에 읽어온 이미지 넣기
+         document.querySelector('#preview').setAttribute('src', e.target.result)
+     }
+
+ })
+ 
+ 
+</script>
+ 
 </body>
 </html>

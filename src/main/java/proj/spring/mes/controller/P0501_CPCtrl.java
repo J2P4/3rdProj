@@ -5,25 +5,27 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import proj.spring.mes.dto.ItemDTO;
-import proj.spring.mes.dto.P0503_CPDTO;
-import proj.spring.mes.service.P0503_CPService;
+import proj.spring.mes.dto.P0501_CPDTO;
+import proj.spring.mes.service.P0501_CPService;
 
-public class P0503_CPCtrl {
+@Controller
+public class P0501_CPCtrl {
 
-private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
+private static final Logger logger = LoggerFactory.getLogger(P0501_CPCtrl.class);
 	
 	@Autowired
-	P0503_CPService CPService;
+	P0501_CPService CPService;
 	
 	
 	/** 목록 */
-	@RequestMapping("/CPlist")
+	@RequestMapping("/cp")
     public String list(
     		Model model,
     		@RequestParam(value = "size", required = false, defaultValue = "10") int pagePerRows, // 페이지당 행 수 파라미터 (기본 10)
@@ -45,7 +47,7 @@ private static final Logger logger = LoggerFactory.getLogger(LoginController.cla
         if (page > totalPages) page = totalPages;        // 요청 페이지가 마지막 페이지 초과하면 마지막 페이지로 보정
 
         // ===================== 4) 목록 조회 =====================
-        List<P0503_CPDTO> list = CPService.list(page, pagePerRows);
+        List<P0501_CPDTO> list = CPService.list(page, pagePerRows);
         //실제 OFFSET 계산((page-1)*pagePerRows)은 Service/Mapper에서 처리하도록 위임
         model.addAttribute("list", list); // 현재 페이지에 해당하는 데이터 목록
 
@@ -79,14 +81,14 @@ private static final Logger logger = LoggerFactory.getLogger(LoginController.cla
         System.out.println("목록페이지");
         
         
-        return "02_user/02_user.tiles"; 
+        return "05_production/05_1_cp.tiles"; 
     }
 
     /** 상세 */
-	@RequestMapping("/detail")
+	@RequestMapping("/cpdetail")
     public String detail(Model model, String cp_id) {
 		
-		P0503_CPDTO dto = CPService.get(cp_id);
+		P0501_CPDTO dto = CPService.get(cp_id);
         List<ItemDTO> itemList = CPService.itemList();
         
         model.addAttribute("dto", dto);
@@ -96,12 +98,12 @@ private static final Logger logger = LoggerFactory.getLogger(LoginController.cla
         
         System.out.println("상세페이지");
         System.out.println("cp_id: "+cp_id);
-        return "02_user/02_userDetail.tiles";
+        return "05_production/05_1_cp.tiles";
     }
 
     /** 등록 */
-	@RequestMapping("/insert")
-	public String insert(Model model, P0503_CPDTO dto) {
+	@RequestMapping("/cpinsert")
+	public String insert(Model model, P0501_CPDTO dto) {
        
         
 		CPService.add(dto);
@@ -115,22 +117,22 @@ private static final Logger logger = LoggerFactory.getLogger(LoginController.cla
 //        model.addAttribute("mode", "add"); // 등록 모드
         
         // 결과 페이지로 이동 
-        return "02_user/02_userResult.tiles";
+        return "05_production/05_1_cp.tiles";
 	}
 
 	/** 수정 후 상세 */
-	@RequestMapping("/modify")
-	public String modify(Model model, P0503_CPDTO dto) {
-		P0503_CPDTO CPdto = CPService.get(dto.getCp_id());
+	@RequestMapping("/cpmodify")
+	public String modify(Model model, P0501_CPDTO dto) {
+		P0501_CPDTO CPdto = CPService.get(dto.getCp_id());
 		List<ItemDTO> itemList = CPService.itemList();
 		model.addAttribute("dto", CPdto);
 		model.addAttribute("itemList", itemList);
 		
-		return "02_user/02_userModify.tiles";
+		return "05_production/05_1_cp.tiles";
 	}
     /** 수정 후 상세 */
-	@RequestMapping("/modifyDetail")
-    public String modifyDetail(Model model, P0503_CPDTO dto) {
+	@RequestMapping("/cpmodifyDetail")
+    public String modifyDetail(Model model, P0501_CPDTO dto) {
         
 		CPService.edit(dto);
 	    List<ItemDTO> itemList = CPService.itemList();
@@ -138,11 +140,11 @@ private static final Logger logger = LoggerFactory.getLogger(LoginController.cla
 	    model.addAttribute("dto", dto);
         model.addAttribute("itemList", itemList);
         
-        return "redirect:/detail?cp_id=" + dto.getCp_id();
+        return "redirect:/cpdetail?cp_id=" + dto.getCp_id();
     }
 
     /** 삭제 */
-	@RequestMapping("/delete")
+	@RequestMapping("/cpdelete")
     public String delete(@RequestParam(value = "many_CPs", required = false) List<String> many_CPs,
     	    @RequestParam(defaultValue = "1") int page,
     	    @RequestParam(defaultValue = "10") int size,
@@ -152,14 +154,14 @@ private static final Logger logger = LoggerFactory.getLogger(LoginController.cla
     	    	re.addFlashAttribute("msg", "선택된 항목이 없습니다.");
     	    	re.addAttribute("page", page);
     	    	re.addAttribute("size", size);
-    	        return "redirect:/list";
+    	        return "redirect:/cp";
     	    }
     	    int deleted = CPService.deleteCPs(many_CPs);
     	    re.addFlashAttribute("msg", deleted + "건 삭제했습니다.");
     	    // ★ 삭제 후에도 보고 있던 페이지로 돌아가기
     	    re.addAttribute("page", page);
     	    re.addAttribute("size", size);
-    	    return "redirect:/list";
+    	    return "redirect:/cp";
     }
 	
 }

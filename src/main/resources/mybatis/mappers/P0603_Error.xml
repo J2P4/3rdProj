@@ -56,9 +56,16 @@
 	</update>
 	
 	<!-- 삭제 -->
-	<delete id = "deleteError" parameterType = "P0603_ErrorDTO">
+<!-- 	<delete id = "deleteError" parameterType = "P0603_ErrorDTO"> -->
+<!-- 		delete from v3_defect -->
+<!-- 		where defect_reason_id = #{defect_reason_id} -->
+<!-- 	</delete> -->
+	<delete id = "deleteErrors" parameterType = "java.util.List">
 		delete from v3_defect
-		where defect_reason_id = #{defect_reason_id}
+		where defect_reason_id in
+		<foreach item="id" collection="list" open="(" separator="," close=")">
+			#{id}
+		</foreach>
 	</delete>
 	
 	<!-- 삽입 -->

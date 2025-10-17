@@ -13,7 +13,8 @@ public interface P0603_ErrorMapperDAO {
 	List<P0603_ErrorDTO> selectError(P0603_ErrorDTO searchCondition);
 	P0603_ErrorDTO selectOneError(String defect_reason_id);
 	int updateError(P0603_ErrorDTO dto);
-	int deleteError(String defect_id);
+//	int deleteError(String defect_id);
+	int deleteErrors(List<String> defectIds);
 	int insertError(P0603_ErrorDTO dto);
 
 	

@@ -2,6 +2,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // 약간의 걱정. common.js랑 충돌이... 안 나겠죠. 믿습니다.
 // 일단 지금은 잘 되니 괜찮은 걸로.
+// 그리고 적어두기 : 이것저것 추가하느라 어느새 코드 중복 문제가 장난이 아닙니다
+//                 나중에 정리하든 포기하든 합니다. 가져가실 때 파이팅.
 
 // ============================
 // 삭제 기능
@@ -131,7 +133,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // 슬라이드 닫기 이벤트. 약간의 문제... 슬라이드 내부 영역(테이블 아닌 부분) 클릭해도 닫힌다... -> 해결 완
+    // 상세 슬라이드 닫기 이벤트. 약간의 문제... 슬라이드 내부 영역(테이블 아닌 부분) 클릭해도 닫힌다... -> 해결 완
+    // 여기!!! 등록 모드냐 수정 모드냐에 따라 조정
+    // 여기는 현재 상세 닫기. 수정, 등록 닫기 설정한 부분 찾자. -> 다 해결
     const closeDetail = detail.querySelector('.close-btn');
     if (closeDetail) {
         closeDetail.addEventListener('click', () => {
@@ -174,6 +178,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let nowSlide = 'new'; 
     let nowEditId = null;
 
+    let originalDetailData = null;
+
     const detailEditBtn = document.querySelector('#detailEditBtn');
     const inSlideTitle = document.querySelector('#slide-title');
     const stockIdShow = document.querySelector('#stock-id-show');
@@ -193,10 +199,11 @@ document.addEventListener('DOMContentLoaded', () => {
         upItemIdOpt(allItems); 
         inputItemId.value = '';
 
-        // 상세 -> 수정 전환 시 애니메이션 효과 없애서 바로 전환된 것처럼 보이게 하는 꼼수
-        const noAnime = (mode === 'edit');
+        // 상세 -> 수정 전환 시 애니메이션 효과 없애서 바로 전환된 것처럼
+        const editNoAnime = (mode === 'edit');
 
-        if (noAnime) {
+        if (editNoAnime) {
+            // 이 부분 
             // 상세 -> 수정 전환 시 즉시 닫히는 것처럼 보이게 애니메이션 효과 없애기.
             detail.style.transition = 'none';
             detail.classList.remove('open');
@@ -210,7 +217,6 @@ document.addEventListener('DOMContentLoaded', () => {
             // 입력, 수정 영역을 즉시 열기 위한 준비
             slideInput.style.transition = 'none';
         }
-
         
         // mode에 따라 등록, 수정 구분
         if (mode === 'edit' && stockId) {
@@ -244,12 +250,12 @@ document.addEventListener('DOMContentLoaded', () => {
         // 설정한 후 슬라이드 열기
         slideInput.classList.add('open');
         // 수정 모드였다면 즉시 애니메이션 복구
-        if (noAnime) {
-            // 변경 강제 적용
-            void slideInput.offsetWidth; 
-            // 다음에는 애니메이션 작동되도록 설정
-            slideInput.style.transition = 'right 1s ease'; 
-        }
+        // if (noAnime) {
+        //     // 변경 강제 적용
+        //     void slideInput.offsetWidth; 
+        //     // 다음에는 애니메이션 작동되도록 설정
+        //     slideInput.style.transition = 'right 1s ease'; 
+        // }
     }
 
 // ==========================
@@ -264,6 +270,9 @@ async function loadData(stockId) {
 
         // data를 json으로 반환
         const data = await response.json();
+
+        // 수정 -> 상세 전환 시 생기는 지연 최대한 방지
+        originalDetailData = data;
         
         // form에 데이터 채우기
         // 품목 ID (Select): 품목 ID 선택
@@ -442,10 +451,46 @@ async function loadData(stockId) {
         });
     }
 
+// ==========================
+// 등록/수정 슬라이드 닫기 이벤트: 취소 시 동작 (수정 모드일 때 상세로 복귀)
+// 하... 이거 분명 기존에 비슷한 코드 스스로 쓴 적 있는 기억이 있는 걸 보면 코드 중복인데
+// 급해서 우선 넣었습니다. 나중에 진짜 코드 정리한다.
+// ==========================
+
+const closeInputBtn = slideInput.querySelector('.close-btn');
+
+if (closeInputBtn) {
+
+    closeInputBtn.addEventListener('click', async () => {
+        // 수정 슬라이드 닫기
+        slideInput.classList.remove('open');
+
+        // 현재 모드가 '수정'이었고, 닫기 버튼을 눌렀다면 상세 슬라이드로 복귀
+        if (nowSlide === 'edit' && nowEditId && originalDetailData) {
+            
+            // 상세 슬라이드로 전환 시 애니메이션 없이 즉시 전환되도록 처리
+            slideInput.style.transition = 'none';
+            detail.style.transition = 'none';
+            void slideInput.offsetWidth;
+            slideInput.style.transition = 'right 1s ease';
+
+            fillDetail(detail, originalDetailData);
+
+            // 상세 슬라이드 열기
+            detail.classList.add('open');
+            void detail.offsetWidth;
+
+            detail.style.transition = 'right 1s ease';
+        }
+        // '등록' 모드였거나 '수정' 모드인데 상세가 없으면 그냥 닫기 (이상이 없음)
+    });
+}
+
 
 // ============================
 // 등록 / 수정 슬라이드 - 데이터 저장
 // 여기 코드 변경 없이 수정 관련 js만 추가하고 싶지만, 어쩔 수 없으면 수정하기.
+// 이쪽 부분 수정하기!!! 상세로 이동되도록!!!
 // ============================
 //
 // 사용 시 수정 필요 영역 : 
@@ -465,6 +510,9 @@ async function loadData(stockId) {
         const item_name = document.querySelector('#input_item_name').value;
         const stock_amount = document.querySelector('#input_stock_amount').value;
         const stock_wrap = document.querySelector('#input_stock_wrap').value;
+
+        // 로딩 문제 추가 코드들
+        const stock_id = document.querySelector('#input_stock_id').value;
 
         // 값이 잘 들어갔는지 확인.
         // value가 비어있다면 alert 창이 뜨도록.
@@ -506,7 +554,8 @@ async function loadData(stockId) {
             url = `${contextPath}/stockupdate`;
             // 수정 시에는 stock_id도 전송해야 함
             stockData.stock_id = nowEditId; 
-        } else {
+        }
+        else {
             url = `${contextPath}/stockinsert`;
         }
 
@@ -524,8 +573,24 @@ async function loadData(stockId) {
 
             if (response.ok && result === 'success') {
                 alert(`재고 ${actionText}이 성공적으로 완료되었습니다.`);
-                slideInput.classList.remove('open');
-                window.location.href = `${contextPath}/stocklist`; 
+                
+                if(actionText == '수정') {
+                    stockId = nowEditId;
+
+                    // 여기!!! 애니메이션 효과 없애기. 기존 noAnime 가져옴.
+
+                    slideInput.style.transition = 'none';
+                    slideInput.classList.remove('open');
+                    void slideInput.offsetWidth;
+                    slideInput.style.transition = 'right 1s ease';
+
+                    detail.style.transition = 'none';
+                    void detail.offsetWidth;
+                    detail.style.transition = 'right 1s ease';
+                    }
+                else {
+                    window.location.href = `${contextPath}/stocklist`;
+                }
             }
             else {
                 alert(`재고 ${actionText}에 실패했습니다. (서버 응답: ` + result + ')');

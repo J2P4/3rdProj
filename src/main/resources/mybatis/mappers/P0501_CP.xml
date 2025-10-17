@@ -2,27 +2,27 @@
 <!DOCTYPE mapper
 	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="proj.spring.mes.dao.mapper.P0503_CPMapperDAO">
+<mapper namespace="proj.spring.mes.dao.mapper.P0501_CPMapperDAO">
 	<!-- SQL문 작성 영역 -->
 	
 	<!-- 전체 조회 -->
-	<select id="selectCP" resultType="P0503_CPDTO">
+	<select id="selectCP" resultType="P0501_CPDTO">
 		select 
 	        c.cp_id,
 	        c.cp_amount,
 	        c.cp_start,
 	        c.cp_end,
-	        c.item_code,
+	        c.item_id,
 	        i.item_name
 	    from V3_cp c
 	    LEFT JOIN V3_item i
-	        on c.item_code = i.item_code
+	        on c.item_id = i.item_id
 	    order by c.cp_id
 	</select>
 	
 	<!-- 페이징 목록 (Oracle ROWNUM 방식, limit/offset 그대로 받음) -->
 	<!-- Mapper 인터페이스: selectItemListPage(@Param("limit") int limit, @Param("offset") int offset) -->
-	<select id="selectCPListPage" resultType="P0503_CPDTO">
+	<select id="selectCPListPage" resultType="P0501_CPDTO">
 	    <bind name="startRow" value="offset + 1"/>
 	    <bind name="endRow"   value="offset + limit"/>
 	    <![CDATA[
@@ -35,11 +35,11 @@
 			        c.cp_amount,
 			        c.cp_start,
 			        c.cp_end,
-			        c.item_code,
+			        c.item_id,
 			        i.item_name
 			    from V3_cp c
 			    LEFT JOIN V3_item i
-			      on c.item_code = i.item_code
+			      on c.item_id = i.item_id
 			    order by c.cp_id ASC
 			  ) t
 			  WHERE ROWNUM <= #{endRow}
@@ -61,7 +61,7 @@
 	-->
 	
 	<!-- 하나만 조회 -->
-	<select id="selectOneCP" resultType="P0503_CPDTO">
+	<select id="selectOneCP" resultType="P0501_CPDTO">
 		select * from V3_cp
 		where cp_id = #{_parameter}
 	</select>
@@ -72,23 +72,23 @@
 	
 	<select id="selectOneItem" resultType="ItemDTO">
 		select * from V3_item
-		where item_code = #{_parameter}
+		where item_id = #{_parameter}
 	</select>
 
 
 	<!-- update -->
-	<update id="updateCP" parameterType="P0503_CPDTO">
+	<update id="updateCP" parameterType="P0501_CPDTO">
 		update V3_cp
 		set	cp_amount = #{cp_amount},
 			cp_start = #{cp_start},
 			cp_end = #{cp_end},
-			item_code = #{item_code}
+			item_id = #{item_id}
 		where cp_id = #{cp_id}
 	</update>
 
 	<!-- delete -->
 	<!-- resultType이 정해져 있어 따로 안써도 됨 -->
-	<delete id="deleteCPs" parameterType="P0503_CPDTO">
+	<delete id="deleteCPs" parameterType="P0501_CPDTO">
 		delete from V3_cp
 		where cp_id in
 		<foreach collection="cp_ids" item="id" open="(" separator="," close=")">
@@ -97,7 +97,7 @@
 	</delete>
 	
 	<!-- insert -->
-	<insert id="insertCP" parameterType="P0503_CPDTO">
+	<insert id="insertCP" parameterType="P0501_CPDTO">
   
 	  <!-- 먼저 cp_id 생성 -->
 	  <selectKey keyProperty="cp_id" resultType="string" order="BEFORE">
@@ -106,10 +106,10 @@
 	  </selectKey>
 	
 	  INSERT INTO V3_cp (
-	      cp_id, cp_amount, cp_start, cp_end, item_code
+	      cp_id, cp_amount, cp_start, cp_end, item_id
 	  )
 	  VALUES (
-	      #{cp_id}, #{cp_amount}, #{cp_start}, #{cp_end}, #{item_code}
+	      #{cp_id}, #{cp_amount}, #{cp_start}, #{cp_end}, #{item_id}
 	  )
 	</insert>
 

@@ -10,7 +10,8 @@ public interface P0601_InInsService {
 	public List<P0601_InInsDTO> inInsList(P0601_InInsDTO searchCondition);
 	public P0601_InInsDTO getOneInIns(String inspection_result_id);
 	public int editInIns(P0601_InInsDTO dto);
-	public int removeInIns(String inspection_result_id);
+//	public int removeInIns(String inspection_result_id);
+	public int removeInIns(List<String> inInsIds);
 	public int addInIns(P0601_InInsDTO dto);
 	public List<WorkerDTO> workerNameList();
 	
