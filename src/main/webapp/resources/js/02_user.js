@@ -1,5 +1,5 @@
 // ================================================
-// 페이지 초기화 + 슬라이드, 삭제, 체크박스 제어
+// 페이지 초기화, 삭제
 
 document.addEventListener('DOMContentLoaded', function () {
   const ctx = typeof contextPath === 'string' ? contextPath : '';
@@ -21,6 +21,45 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 });
 
+// 두 폼(등록/수정) 모두를 커버하기 위해 name 기반으로 조회
+  const birthInputs = document.querySelectorAll('input[name="worker_birth"]');
+  const joinInputs  = document.querySelectorAll('input[name="worker_join"]');
+
+  // yyyy-MM-dd 포맷
+  const fmt = (d) => new Date(d.getTime() - d.getTimezoneOffset()*60000).toISOString().slice(0,10);
+  const today = fmt(new Date());
+
+  // 1) 입사일: 오늘 이후 선택 불가
+  joinInputs.forEach(j => {
+    j.setAttribute('max', today);          // 달력에서 오늘 이후 disabled
+    j.addEventListener('change', () => {
+      // 2) 생년월일: 입사일보다 늦게 선택 불가 (= max를 입사일로)
+      const joinVal = j.value;
+      birthInputs.forEach(b => {
+        // b의 max는 "입사일"과 "오늘" 중 더 이른 날짜로 설정 (보수적으로)
+        const newMax = joinVal && joinVal < today ? joinVal : today;
+        b.setAttribute('max', newMax || today);
+
+        // 이미 입력된 생년월일이 규칙 위반이면 잘라내기
+        if (b.value && newMax && b.value > newMax) b.value = newMax;
+
+        // (선택) 엄격하게 '입사일 이전'만 허용하려면 아래 주석 해제
+        // if (joinVal) {
+        //   const d = new Date(joinVal); d.setDate(d.getDate() - 1);
+        //   b.setAttribute('max', fmt(d));
+        // }
+      });
+    });
+  });
+
+  // 초기 로드 시에도 한 번 동기화 (이미 값이 있는 경우)
+  const currentJoin = (joinInputs[0] && joinInputs[0].value) || '';
+  birthInputs.forEach(b => {
+    const maxByJoin = currentJoin && currentJoin < today ? currentJoin : today;
+    b.setAttribute('max', maxByJoin || today);
+    // 너무 과거를 막고 싶으면 최소년도도 지정
+    // b.setAttribute('min', '1900-01-01');
+  });
 
 // ================================================
 // 등록 슬라이드 AJAX 등록 처리 + 모달 표시
@@ -104,7 +143,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const ctx = (typeof window.contextPath === 'string') ? window.contextPath : '';
   const detailSlide = document.getElementById('slide-detail');
 
-  // ✅ 상세 열기 함수
+  // 상세 열기 함수
   function openDetail(data) {
     if (!detailSlide) return;
 
@@ -123,7 +162,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
-  // ✅ td 클릭 시 상세 열기
+  // td 클릭 시 상세 열기
   document.addEventListener('click', async (e) => {
     // 체크박스, 버튼 클릭은 제외
     if (e.target.closest('input[type="checkbox"], button, a')) return;
@@ -148,7 +187,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
-  // ✅ 상세 슬라이드 닫기 (취소 버튼)
+  // 상세 슬라이드 닫기 (취소 버튼)
   const cancelDetailBtn = document.querySelector('#slide-detail .close-btn');
   if (cancelDetailBtn) {
     cancelDetailBtn.addEventListener('click', (e) => {
