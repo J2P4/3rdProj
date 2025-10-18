@@ -41,8 +41,43 @@ public class P0603_ErrorCtrl {
 		return "06_quality/06_3_error_report.tiles";
 	}
 	
-//	@RequestMapping("/errorinsert")
-//	@RequestMapping("/errorupdate")
+	@RequestMapping("/errorinsert")
+	@ResponseBody
+	public String insertError(P0603_ErrorDTO dto) {
+		logger.info("불량 보고서 등록 요청 DTO: {}", dto);
+		
+		try {
+	        int result = service.addError(dto);
+	        if(result > 0) {
+	            return "success";
+	        } else {
+	            return "fail";
+	        }			
+		}
+		catch (Exception e) {
+	        logger.error("불량 보고서 등록 실패", e);
+	        return "fail";
+	    }
+	}
+	@RequestMapping("/errorupdate")
+	@ResponseBody
+	public String updateError(P0603_ErrorDTO dto) {
+	    logger.info("불량 보고서 수정 요청 DTO: {}", dto);
+
+	    try {
+	        int result = service.editError(dto);
+	        if(result > 0) {
+	            return "success";
+	        }
+	        else {
+	            return "fail"; 
+	        }
+	    }
+	    catch (Exception e) {
+	        logger.error("입고 검사 수정 실패", e);
+	        return "fail";
+	    }		
+	}
 	
 //	@RequestMapping("/errordelete")
 //	public String delete(String inspection_result_id) {

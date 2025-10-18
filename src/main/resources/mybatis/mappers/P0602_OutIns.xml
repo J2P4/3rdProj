@@ -33,6 +33,65 @@
 		order by inspection_result_id
 	</select>
 
+	<!-- 전체 조회 : 페이지 넣는 기준 -->
+	<select id="selectOutInsPage" resultType="P0602_OutInsDTO">
+	    <bind name="startRow" value="offset + 1"/>
+	    <bind name="endRow"   value="offset + limit"/>
+		SELECT *
+		FROM (
+			SELECT t.*, ROWNUM rn
+			FROM (
+				select
+					i.inspection_result_id, i.inspection_result_date, i.inspection_result_good,
+					i.inspection_result_bad, i.worker_id, i.stock_id,
+					w.worker_name, it.item_name
+				from v3_inspection_result i
+					left outer join v3_worker w on i.worker_id = w.worker_id
+					left outer join v3_stock s on i.stock_id = s.stock_id
+					left outer join v3_item it on s.item_id = it.item_id
+				<where>
+					inspection_type = 1
+					<if test="filter.inspection_result_id != null and filter.inspection_result_id != ''">
+						and lower(i.inspection_result_id) like lower('%' || #{filter.inspection_result_id} || '%')
+					</if>
+					<if test="filter.fromDate != null and filter.fromDate != '' and filter.toDate != null and filter.toDate != ''">
+						and i.inspection_result_date BETWEEN #{filter.fromDate} AND #{filter.toDate}
+					</if>
+					<if test="filter.item_name != null and filter.item_name != ''">
+						and lower(it.item_name) like lower('%' || #{filter.item_name} || '%')
+					</if>
+				</where>
+			order by inspection_result_id
+			) t
+			<![CDATA[
+			WHERE ROWNUM <= #{endRow}
+			]]>
+		)
+		<![CDATA[
+		WHERE rn >= #{startRow}
+		]]>
+	</select>
+	
+	  <!-- 총 레코드 수 -->
+	  <select id="selectOutInsCount" parameterType="map" resultType="long">
+		SELECT COUNT(*)
+		from v3_inspection_result i
+		left outer join v3_worker w on i.worker_id = w.worker_id
+		left outer join v3_stock s on i.stock_id = s.stock_id
+		left outer join v3_item it on s.item_id = it.item_id
+		<where>
+			inspection_type = 1
+			<if test="filter.inspection_result_id != null and filter.inspection_result_id != ''">
+			and lower(i.inspection_result_id) like lower('%' || #{filter.inspection_result_id} || '%')
+			</if>
+			<if test="filter.fromDate != null and filter.fromDate != '' and filter.toDate != null and filter.toDate != ''">
+			and i.inspection_result_date BETWEEN #{filter.fromDate} AND #{filter.toDate}
+			</if>
+			<if test="filter.item_name != null and filter.item_name != ''">
+			and lower(it.item_name) like lower('%' || #{filter.item_name} || '%')
+			</if>
+		</where>
+	</select>
 	
 	<!-- 단일 조회 -->
 	<select id = "selectOneOutIns" resultType = "P0602_OutInsDTO">

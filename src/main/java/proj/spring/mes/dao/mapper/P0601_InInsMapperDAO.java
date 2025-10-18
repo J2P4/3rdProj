@@ -3,7 +3,9 @@ package proj.spring.mes.dao.mapper;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
+import proj.spring.mes.dto.P0401_StockDTO;
 import proj.spring.mes.dto.P0601_InInsDTO;
 import proj.spring.mes.dto.WorkerDTO;
 
@@ -20,4 +22,8 @@ public interface P0601_InInsMapperDAO {
 	//  작업자 조회용
 	List<WorkerDTO> selectWorkerName();
 	
+	// 페이징 및 필터
+	List<P0601_InInsDTO> selectInInsPage(@Param("limit") int limit, @Param("offset") int offset, @Param("filter") P0601_InInsDTO searchFilter);
+	// 총계
+	long selectInInsCount(@Param("filter") P0601_InInsDTO searchFilter);
 }

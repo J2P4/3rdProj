@@ -7,7 +7,7 @@
 	
 	<!-- 삽입 등에 worker_id 입력용으로 worker_name 조회하는 게 필요하려나... 알아보기 쉽게 -->
 	
-	<!-- 전체 조회 -->
+	<!-- 전체 조회 : 페이징 없는 기준-->
 	<select id = "selectInIns" resultType = "P0601_InInsDTO"  parameterType="P0601_InInsDTO">
 		select
 		    i.inspection_result_id, i.inspection_result_date, i.inspection_result_good,
@@ -34,7 +34,66 @@
 		</where> 
 		order by inspection_result_id
 	</select>
-
+	
+	<!-- 전체 조회 : 페이지 넣는 기준 -->
+	<select id="selectInInsPage" resultType="P0601_InInsDTO">
+	    <bind name="startRow" value="offset + 1"/>
+	    <bind name="endRow"   value="offset + limit"/>
+		SELECT *
+		FROM (
+			SELECT t.*, ROWNUM rn
+			FROM (
+				select
+					i.inspection_result_id, i.inspection_result_date, i.inspection_result_good,
+					i.inspection_result_bad, i.worker_id, i.stock_id,
+					w.worker_name, it.item_name
+				from v3_inspection_result i
+					left outer join v3_worker w on i.worker_id = w.worker_id
+					left outer join v3_stock s on i.stock_id = s.stock_id
+					left outer join v3_item it on s.item_id = it.item_id
+				<where>
+					inspection_type = 0
+					<if test="filter.inspection_result_id != null and filter.inspection_result_id != ''">
+						and lower(i.inspection_result_id) like lower('%' || #{filter.inspection_result_id} || '%')
+					</if>
+					<if test="filter.fromDate != null and filter.fromDate != '' and filter.toDate != null and filter.toDate != ''">
+						and i.inspection_result_date BETWEEN #{filter.fromDate} AND #{filter.toDate}
+					</if>
+					<if test="filter.item_name != null and filter.item_name != ''">
+						and lower(it.item_name) like lower('%' || #{filter.item_name} || '%')
+					</if>
+				</where>
+			order by inspection_result_id
+			) t
+			<![CDATA[
+			WHERE ROWNUM <= #{endRow}
+			]]>
+		)
+		<![CDATA[
+		WHERE rn >= #{startRow}
+		]]>
+	</select>
+	
+	  <!-- 총 레코드 수 -->
+	  <select id="selectInInsCount" parameterType="map" resultType="long">
+		SELECT COUNT(*)
+		from v3_inspection_result i
+		left outer join v3_worker w on i.worker_id = w.worker_id
+		left outer join v3_stock s on i.stock_id = s.stock_id
+		left outer join v3_item it on s.item_id = it.item_id
+		<where>
+			inspection_type = 0
+			<if test="filter.inspection_result_id != null and filter.inspection_result_id != ''">
+			and lower(i.inspection_result_id) like lower('%' || #{filter.inspection_result_id} || '%')
+			</if>
+			<if test="filter.fromDate != null and filter.fromDate != '' and filter.toDate != null and filter.toDate != ''">
+			and i.inspection_result_date BETWEEN #{filter.fromDate} AND #{filter.toDate}
+			</if>
+			<if test="filter.item_name != null and filter.item_name != ''">
+			and lower(it.item_name) like lower('%' || #{filter.item_name} || '%')
+			</if>
+		</where>
+	</select>
 	
 	<!-- 단일 조회 -->
 	<select id = "selectOneInIns" resultType = "P0601_InInsDTO">

@@ -50,4 +50,23 @@ public class P0601_InInsServiceImpl implements P0601_InInsService {
 		return inInsMapperDAO.selectWorkerName();
 	}
 	
+	// 페이징
+	@Override
+	public List<P0601_InInsDTO> list(int page, int pagePerRows, P0601_InInsDTO searchFilter) {
+        int size = Math.max(1, Math.min(pagePerRows, 100));
+        int p = Math.max(1, page);
+        int offset = (p - 1) * size;
+        
+        System.out.println(size);
+        System.out.println(p);
+        System.out.println(offset);
+        
+        return inInsMapperDAO.selectInInsPage(size, offset, searchFilter);		
+	}
+	
+	@Override
+	public long count(P0601_InInsDTO searchFilter) {
+		return inInsMapperDAO.selectInInsCount(searchFilter);
+	}
+	
 }
