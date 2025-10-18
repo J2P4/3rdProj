@@ -4,29 +4,42 @@
 
 <mapper namespace="proj.spring.mes.dao.mapper.ItemMapperDAO">
 
+    <!-- 총 건수 -->
     <select id="count" resultType="long">
         SELECT COUNT(*) FROM V3_ITEM
     </select>
 
-    <select id="list" resultType="proj.spring.mes.dto.ItemDTO">
+    <!-- 기본 목록(페이지네이션: ROWNUM) -->
+    <select id="list" parameterType="map" resultType="map">
         SELECT * FROM (
-            SELECT A.*, ROWNUM RN FROM (
-                SELECT * FROM V3_ITEM ORDER BY ITEM_ID DESC
+            SELECT A.ITEM_ID   AS item_id,
+                   A.ITEM_NAME AS item_name,
+                   A.ITEM_DIV  AS item_div,
+                   A.ITEM_PRICE AS item_price,
+                   A.ITEM_UNIT AS item_unit,
+                   ROWNUM RN
+            FROM (
+                SELECT ITEM_ID, ITEM_NAME, ITEM_DIV, ITEM_PRICE, ITEM_UNIT
+                FROM V3_ITEM
+                ORDER BY ITEM_ID DESC
             ) A
             WHERE ROWNUM &lt;= #{end}
         )
         WHERE RN &gt;= #{start}
     </select>
 
+    <!-- 단건 조회 -->
     <select id="selectItemOne" parameterType="string" resultType="proj.spring.mes.dto.ItemDTO">
         SELECT * FROM V3_ITEM WHERE ITEM_ID = #{itemId}
     </select>
 
+    <!-- 등록 -->
     <insert id="insertItem" parameterType="proj.spring.mes.dto.ItemDTO">
         INSERT INTO V3_ITEM (ITEM_ID, ITEM_NAME, ITEM_DIV, ITEM_PRICE, ITEM_UNIT)
         VALUES (#{item_id}, #{item_name}, #{item_div}, #{item_price}, #{item_unit})
     </insert>
 
+    <!-- 수정 -->
     <update id="updateItem" parameterType="proj.spring.mes.dto.ItemDTO">
         UPDATE V3_ITEM
            SET ITEM_NAME  = #{item_name},
@@ -36,13 +49,16 @@
          WHERE ITEM_ID = #{item_id}
     </update>
 
-    <delete id="deleteItems" parameterType="list">
-        DELETE FROM V3_ITEM WHERE ITEM_ID IN
+    <!-- 삭제 (ids 컬렉션 전달) -->
+    <delete id="deleteItems" parameterType="map">
+        DELETE FROM V3_ITEM
+         WHERE ITEM_ID IN
         <foreach collection="ids" item="id" open="(" separator="," close=")">
             #{id}
         </foreach>
     </delete>
 
+    <!-- 품목ID 생성용 -->
     <select id="nextItemIdByDiv" parameterType="string" resultType="string">
         SELECT
           (CASE
@@ -56,6 +72,7 @@
         FROM DUAL
     </select>
 
+    <!-- 품목-거래처 매핑 등록 (중복 방지) -->
     <insert id="insertClientItem">
         INSERT INTO V3_CLIENT_ITEMS (ITEM_ID, CLIENT_ID)
         SELECT #{itemId}, #{clientId} FROM DUAL
@@ -66,6 +83,7 @@
         )
     </insert>
 
+    <!-- 특정 품목의 거래처 목록 -->
     <select id="selectClientsByItemId" resultType="map">
         SELECT c.client_id, c.client_name
           FROM V3_CLIENT_ITEMS ci
@@ -73,5 +91,55 @@
          WHERE ci.item_id = #{itemId}
          ORDER BY c.client_id
     </select>
+
+
+
+    <!-- 검색 총건수 -->
+<select id="countBySearch" parameterType="map" resultType="long">
+  SELECT COUNT(*)
+    FROM V3_ITEM
+   <where>
+     <if test="itemNoEsc != null and itemNoEsc != ''">
+       AND UPPER(ITEM_ID)   LIKE '%' || UPPER(#{itemNoEsc})   || '%' ESCAPE '\'
+     </if>
+     <if test="itemNameEsc != null and itemNameEsc != ''">
+       AND UPPER(ITEM_NAME) LIKE '%' || UPPER(#{itemNameEsc}) || '%' ESCAPE '\'
+     </if>
+     <if test="itemDivEsc != null and itemDivEsc != ''">
+       AND UPPER(ITEM_DIV)  LIKE '%' || UPPER(#{itemDivEsc})  || '%' ESCAPE '\'
+     </if>
+     <if test="itemMin != null"> AND ITEM_PRICE &gt;= #{itemMin} </if>
+     <if test="itemMax != null"> AND ITEM_PRICE &lt;= #{itemMax} </if>
+   </where>
+</select>
+
+    <!-- 검색 목록(페이지네이션 포함) -->
+<select id="searchList" parameterType="map" resultType="map">
+  SELECT * FROM (
+    SELECT A.ITEM_ID AS item_id, A.ITEM_NAME AS item_name, A.ITEM_DIV AS item_div,
+           A.ITEM_PRICE AS item_price, A.ITEM_UNIT AS item_unit, ROWNUM RN
+      FROM (
+        SELECT ITEM_ID, ITEM_NAME, ITEM_DIV, ITEM_PRICE, ITEM_UNIT
+          FROM V3_ITEM
+         <where>
+           <if test="itemNoEsc != null and itemNoEsc != ''">
+             AND UPPER(ITEM_ID)   LIKE '%' || UPPER(#{itemNoEsc})   || '%' ESCAPE '\'
+           </if>
+           <if test="itemNameEsc != null and itemNameEsc != ''">
+             AND UPPER(ITEM_NAME) LIKE '%' || UPPER(#{itemNameEsc}) || '%' ESCAPE '\'
+           </if>
+           <if test="itemDivEsc != null and itemDivEsc != ''">
+             AND UPPER(ITEM_DIV)  LIKE '%' || UPPER(#{itemDivEsc})  || '%' ESCAPE '\'
+           </if>
+           <if test="itemMin != null"> AND ITEM_PRICE &gt;= #{itemMin} </if>
+           <if test="itemMax != null"> AND ITEM_PRICE &lt;= #{itemMax} </if>
+         </where>
+         ORDER BY ITEM_ID DESC
+      ) A
+     WHERE ROWNUM &lt;= #{end}
+  )
+ WHERE RN &gt;= #{start}
+</select>
+
 
 </mapper>
