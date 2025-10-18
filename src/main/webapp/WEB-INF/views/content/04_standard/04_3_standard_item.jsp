@@ -234,7 +234,7 @@
                             <!-- 기존 입력 유지 주석 -->
                             <!-- <input type="text" name="vendorId" id="vendorId"> -->
                             <!-- 스크롤 가능한 listbox(select size)로 변경 -->
-                            <select name="vendorId" id="vendorId" size="8" required>
+                            <select name="vendorId" id="vendorId" size="1" required>
                                 <!-- JS가 옵션 주입 -->
                             </select>
                          
