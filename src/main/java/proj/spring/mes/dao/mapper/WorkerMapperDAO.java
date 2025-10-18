@@ -20,6 +20,8 @@ public interface WorkerMapperDAO {
     int updateWorker(WorkerDTO dto);                // 수정
     int deleteWorkers(@Param("worker_ids") List<String> worker_ids);
 	
+    DeptDTO selectDeptName(String department_id);
+    
 	// 신규(페이징) 및 필터
     List<WorkerDTO> selectWorkerListPage(@Param("limit") int limit, @Param("offset") int offset, @Param("filter") WorkerDTO searchFilter);
 	// 신규(총계)

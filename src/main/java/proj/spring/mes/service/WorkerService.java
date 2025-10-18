@@ -15,6 +15,9 @@ public interface WorkerService {
     int add(WorkerDTO dto);
     int edit(WorkerDTO dto);
     int deleteWorkers(List<String> ids);
+    
+    DeptDTO getDeptName(String department_id);	// 부서명 조회
+    
     int updatePassword(String worker_id, String rawPw); // 해시 저장용
 	boolean match(String rawPw, String hashed);
 	

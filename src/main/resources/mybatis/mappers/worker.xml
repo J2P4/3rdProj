@@ -91,8 +91,20 @@
 	
 	<!-- 하나만 조회 -->
 	<select id="selectOneWorker" resultType="workerDTO">
-		select * from V3_worker
-		where worker_id = #{_parameter}
+		SELECT
+		    w.worker_id,
+		    w.worker_name,
+		    w.worker_birth,
+		    w.worker_pw,
+		    w.worker_email,
+		    w.worker_code,
+		    w.worker_join,
+		    w.department_id,
+		    d.department_name  
+		  FROM V3_worker w
+		  LEFT JOIN V3_department d
+		    ON w.department_id = d.department_id
+		  WHERE w.worker_id = #{_parameter}
 	</select>
 	
 	<select id="selectDept" resultType="deptDTO">

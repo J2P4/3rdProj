@@ -57,6 +57,11 @@ public class WorkerServiceImpl implements WorkerService{
         return workerMapperDao.deleteWorkers(worker_ids);
     }
 
+    @Override
+    public DeptDTO getDeptName(String department_id) {
+        return workerMapperDao.selectDeptName(department_id);
+    }
+    
     
     @Override
     public void changePassword(String worker_id, PwDTO dto) {

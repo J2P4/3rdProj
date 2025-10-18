@@ -11,6 +11,8 @@
     <title>계정 관리 < J2P4</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/common.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/user.css">
+    <script>window.contextPath='${pageContext.request.contextPath}';</script>
+    
     <script src="${pageContext.request.contextPath}/resources/js/common.js" defer></script>
     <script src="${pageContext.request.contextPath}/resources/js/02_user.js"></script>
 </head>
@@ -73,7 +75,7 @@
             <input type="submit" class="fil-btn" value="조회">
         </div>
     </form>
-   	<form id="deleteForm" method="post" action="delete">
+   	<form id="deleteForm" method="post" action="workerDelete">
     <div class = "table">
 		<table border=1>
             <thead>
@@ -94,10 +96,12 @@
 				</c:if>
 				<c:if test="${not empty list }">
 					<c:forEach var="workerDTO" items="${list }">			 
-		                <tr>
+		                <tr data-id="${workerDTO.worker_id}">
 		                    <td><input type="checkbox" class="rowChk" name="many_workers" value="${workerDTO.worker_id }"></td>
 		                    <td>${workerDTO.worker_id }</td>
-		                    <td><a href="detail?worker_id=${workerDTO.worker_id }">${workerDTO.worker_name }</a></td>
+		                    <td class="worker-row" data-id="${workerDTO.worker_id}">
+							    ${workerDTO.worker_name}
+							</td>
 		                    <td>${workerDTO.department_name }</td>
 		                    <td>${workerDTO.worker_join }</td>
 		                    <td>${workerDTO.worker_code }</td>
@@ -198,7 +202,7 @@
 	            </c:otherwise>
 	        </c:choose>
         </div>
-    <form id="workerForm" method="post" action="insert">
+    <form id="workerInsertForm" method="post" action="workerinsert">
     <div class = "slide" id = "slide-input">
     	<div class = "slide-contents">
 	        <div class = "silde-title"><h2>사원 등록</h2></div>
@@ -263,7 +267,7 @@
 	            </table>
         	</div>
 	        <div class = "slide-btnbox">
-                <input type = "submit" class = "slide-btn" value = "등록">
+                <input type="button" id="btn-insert" class="slide-btn" value="등록">
                 <input type = "button" class = "close-btn slide-btn" value = "취소">
             </div>
        	</div>
@@ -271,54 +275,96 @@
     </form>
     
 	<!--  상세 슬라이드 -->
-    <div class = "slide" id = "slide-detail">
-	    <form id="workerForm" method="post" action="/update">
-        <div class = "slide-contents">
-	        <div class = "silde-title"><h2>사원 상세</h2></div>
-	        <div class = "slide-id">사번 : ${worker_id }</div>
-	        <div class = "slide-tb">
-	            <table>
-	                <thead>
-		                <tr>
-		                    <th>이름</th>
-		                    <th>생년월일</th>
-		                    <th>이메일</th>
-	                    </tr>
-	                </thead>
-	                <tbody>
-		                <tr>
-		                    <td>${worker.worker_name }</td>
-		                    <td>${worker.worker_birth }</td>
-		                    <td>${worker.worker_email }</td>
-		                </tr>
-	            </table>
-	        </div>
-	        <div class = "slide-tb">
-	            <table>
-	                <thead>
-		                <tr>
-		                    <th>입사일</th>
-		                    <th>부서</th>
-		                    <th>권한</th>
-	                    </tr>
-	                </thead>
-	                <tbody>
-		                <tr>
-		                    <td>${worker.worker_join }</td>
-		                    <td>${worker.department_id }</td>
-		                    <td>${worker.worker_code }</td>
-		                </tr>
-	                </tbody>
-	            </table>
-        	</div>
-       	</div>
-        <div class = "slide-btnbox">
-            <input id="btnSave"   class="slide-btn" type="submit" value="등록" style="display: none">
-		    <input id="btnEdit"   class="slide-btn" type="button" value="수정">
-		    <input id="btnCancel" class="close-btn slide-btn" type="button" value="취소">
+	<div class="slide" id="slide-detail">
+	  <!-- 단일 form: 중첩 금지 -->
+	  <form id="workerForm" method="post" action="workerUpdate">
+	    <div class="slide-contents">
+	      <div class="silde-title"><h2>사원 상세</h2></div>
+	
+	      <div class="title-box">
+	        <!-- JS가 채움: .slide-worker 클래스명으로 통일 -->
+	        <div class="slide-worker slide-id">사번 : </div>
+	
+	        <!-- 비밀번호 초기화: 같은 폼에서 별도 전송 (중첩 form 제거) -->
+	        <input type="hidden" name="worker_id" id="detail-worker-id" value="">
+	        <button type="submit"
+	                class="pw-reset"
+	                formaction="<c:url value='/temp'/>"
+	                formmethod="post">
+	          비밀번호 초기화
+	        </button>
+	      </div>
+	
+	      <div class="slide-tb">
+	        <table>
+	          <thead>
+	            <tr>
+	              <th>이름</th>
+	              <th>생년월일</th>
+	              <th>이메일</th>
+	            </tr>
+	          </thead>
+	          <tbody>
+	            <tr>
+	              <!-- JS가 채움: 순서만 유지 (0,1,2) -->
+	              <td></td>
+	              <td></td>
+	              <td></td>
+	            </tr>
+	          </tbody> 
+	        </table>
+	      </div>
+	
+	      <div class="slide-tb">
+	        <table>
+	          <thead>
+	            <tr>
+	              <th>입사일</th>
+	              <th>부서</th>
+	              <th>권한</th>
+	            </tr>
+	          </thead>
+	          <tbody>
+	            <tr>
+	              <!-- JS가 채움: 순서 유지 (3,4,5) -->
+	              <td></td>
+	              <td></td>
+	              <td></td>
+	            </tr>
+	          </tbody>
+	        </table>
+	      </div>
+	
+	      <div class="slide-btnbox">
+	        <c:if test="${sessionScope.role != 'STAFF'}">
+	          <input type="button" class="slide-btn modify-btn" id="btn-modify" value="수정">
+	          <input type="button" class="slide-btn save-btn hide" id="btn-save" value="저장">
+	          <input type="button" class="close-btn slide-btn" value="취소">
+	        </c:if>
+	        <c:if test="${sessionScope.role == 'STAFF'}">
+	          <input type="button" class="close-btn slide-btn" value="취소">
+	        </c:if>
+	      </div>
+	
+	    </div>
+	  </form>
+	</div>
+    <!-- 등록 확인 모달 -->
+    <div class="modal-bg hide">
+        <div class = "add-modal">
+            <div class="modal-title">J2P4 MES</div>
+            <div class="modal-content">
+                <div class="field"><span>아이디 :</span> ${worker_id }</div>
+                <div class="field"><span>초기 비밀번호 :</span> j2p4mes</div>
+                <div class="field"><span>이메일 :</span> ${worker_email }</div>
+                <div class="confirm">
+                    <div>등록되었습니다.</div>
+                </div>
+            </div>
+            <div class = "modal-btnbox">
+                <input type = "button" class = "close-btn m-btn slide-btn" value = "확인">
+            </div>
         </div>
-    </form>
     </div>
-    
 </body>
 </html>
