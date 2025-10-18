@@ -2,13 +2,14 @@ package proj.spring.mes.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import proj.spring.mes.dto.P0402_ClientDTO; // 거래처 DTO
+import proj.spring.mes.dto.P0402_ClientDTO;
 import proj.spring.mes.service.P0402_ClientService;
 
 import java.util.ArrayList;
@@ -17,18 +18,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-// HttpServletRequest를 제거하고 @ModelAttribute를 사용하도록 변경하여 코드를 간결하게 유지합니다.
-
 @Controller
 public class P0402_ClientCtrl {
 
     private static final Logger logger = LoggerFactory.getLogger(P0402_ClientCtrl.class);
 
     @Autowired
-    P0402_ClientService clientService; // Service 계층 주입
+    private P0402_ClientService clientService;
 
-    /** 리스트 화면 */
-    @RequestMapping(value={"/clientlist", "/client/list"}, method=RequestMethod.GET)
+    /** 리스트 화면 (JSP) */
+    @RequestMapping(value = {"/clientlist", "/client/list"}, method = RequestMethod.GET)
     public String clientlist(
             @RequestParam(value = "client_id", required = false) String client_id,
             @RequestParam(value = "clientName", required = false) String clientName,
@@ -46,10 +45,9 @@ public class P0402_ClientCtrl {
                 client_id, clientName, clientTel, workerId, offset, size
         );
 
-        int totalRows = clientService.countClients(
-                client_id, clientName, clientTel, workerId
-        );
+        int totalRows = clientService.countClients(client_id, clientName, clientTel, workerId);
         if (totalRows < 0) totalRows = 0;
+
         int totalPages = (int) Math.ceil((double) totalRows / (double) size);
         if (totalPages <= 0) totalPages = 1;
 
@@ -58,6 +56,7 @@ public class P0402_ClientCtrl {
         int startPage = (currentBlock - 1) * blockSize + 1;
         int endPage = startPage + blockSize - 1;
         if (endPage > totalPages) endPage = totalPages;
+
         boolean hasPrevBlock = startPage > 1;
         boolean hasNextBlock = endPage < totalPages;
         int prevBlockStart = startPage - blockSize;
@@ -87,8 +86,8 @@ public class P0402_ClientCtrl {
         return "04_standard/04_2_standard_client.tiles";
     }
 
-    /** JSON 엔드포인트 */
-    @RequestMapping(value="/api/clients", method=RequestMethod.GET, produces="application/json;charset=UTF-8")
+    /** JSON 엔드포인트 (프런트에서 거래처 드롭다운 채우기용) */
+    @RequestMapping(value = "/api/clients", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
     @ResponseBody
     public List<P0402_ClientDTO> apiClientList(
             @RequestParam(value = "client_id", required = false) String client_id,
@@ -96,7 +95,7 @@ public class P0402_ClientCtrl {
             @RequestParam(value = "clientTel", required = false) String clientTel,
             @RequestParam(value = "workerId", required = false) String workerId,
             @RequestParam(value = "page", defaultValue = "1") int page,
-            @RequestParam(value = "size", defaultValue = "10") int size
+            @RequestParam(value = "size", defaultValue = "1000") int size
     ) {
         if (page < 1) page = 1;
         if (size < 1) size = 1;
@@ -112,7 +111,7 @@ public class P0402_ClientCtrl {
     }
 
     /** 등록 */
-    @RequestMapping(value="/client/insert", method=RequestMethod.POST)
+    @RequestMapping(value = "/client/insert", method = RequestMethod.POST)
     public String insertClient(
             @ModelAttribute P0402_ClientDTO dto,
             @RequestParam(value = "page", defaultValue = "1") int page,
@@ -137,7 +136,7 @@ public class P0402_ClientCtrl {
     }
 
     /** 삭제 */
-    @RequestMapping(value="/client/delete", method=RequestMethod.POST)
+    @RequestMapping(value = "/client/delete", method = RequestMethod.POST)
     public String deleteClients(
             @RequestParam("ids") String idsCsv,
             @RequestParam("page") int page,
@@ -156,7 +155,9 @@ public class P0402_ClientCtrl {
                 if (s != null) {
                     String t = s.trim();
                     if (t.length() > 0) {
-                        try { ids.add(Long.valueOf(t)); } catch (NumberFormatException ignore) {}
+                        try {
+                            ids.add(Long.valueOf(t));
+                        } catch (NumberFormatException ignore) {}
                     }
                 }
             }
@@ -175,8 +176,8 @@ public class P0402_ClientCtrl {
         ra.addAttribute("workerId", workerId);
         return "redirect:/clientlist";
     }
-    
-    /** 상세 조회 (detail) */
+
+    /** 상세 조회 */
     @RequestMapping("/client/detail")
     @ResponseBody
     public P0402_ClientDTO detail(@RequestParam("client_id") String client_id) {
@@ -184,9 +185,8 @@ public class P0402_ClientCtrl {
         System.out.println(dto);
         return dto;
     }
-    
-    
-    /** 미사용 또는 테스트용 엔드포인트 */
+
+    /** 테스트용 (미사용 가능) */
     @RequestMapping("/client/save")
     @ResponseBody
     public P0402_ClientDTO edit(@RequestParam("client_id") String client_id) {
@@ -194,31 +194,23 @@ public class P0402_ClientCtrl {
         System.out.println(dto);
         return dto;
     }
-    
 
-    /**
-     * 클라이언트에서 DTO 값을 받아 Service를 호출하고, 업데이트된 DTO를 직접 반환합니다.
-     * 이 방식은 기존의 DTO 반환 패턴을 따르므로, 기존 코드와 충돌이 적습니다.
-     */
-    @RequestMapping(value="/client/update", method=RequestMethod.POST, 
-             produces="application/json")
+    /** 업데이트(JSON 응답) */
+    @RequestMapping(value = "/client/update", method = RequestMethod.POST, produces = "application/json")
     @ResponseBody
     public P0402_ClientDTO update(@ModelAttribute P0402_ClientDTO dto) {
-        
         try {
-            // Service 호출. 성공 시 업데이트된 DTO를 반환하고, 실패 시 null을 반환합니다.
             P0402_ClientDTO updatedDto = clientService.update(dto);
-            
             if (updatedDto != null) {
                 logger.info("Updated client: {}", updatedDto.getClient_id());
-                return updatedDto; // 성공 시 DTO 반환 (JSON)
+                return updatedDto;
             } else {
                 logger.warn("Update failed: Client ID not found: {}", dto.getClient_id());
-                return null; // 실패 시 null 반환 (응답 본문이 비어있거나 'null' JSON이 됨)
+                return null;
             }
         } catch (IllegalArgumentException e) {
             logger.error("Update request error (Bad Request): {}", e.getMessage());
-            return null; 
+            return null;
         } catch (Exception e) {
             logger.error("Internal server error during update", e);
             return null;

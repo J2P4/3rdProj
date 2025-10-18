@@ -1,141 +1,77 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper
-  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="proj.spring.mes.dao.mapper.ItemMapperDAO">
 
-  <select id="selectItemList" resultType="proj.spring.mes.dto.ItemDTO">
-    <![CDATA[
-    SELECT
-      item_id,
-      item_price,
-      item_div,
-      item_name,
-      item_unit
-    FROM V3_item
-    ORDER BY item_name ASC
-    ]]>
-  </select>
+    <select id="count" resultType="long">
+        SELECT COUNT(*) FROM V3_ITEM
+    </select>
 
-  <select id="selectItemListPage" resultType="proj.spring.mes.dto.ItemDTO">
-    <bind name="startRow" value="offset + 1"/>
-    <bind name="endRow"   value="offset + limit"/>
-    <![CDATA[
-    SELECT *
-    FROM (
-      SELECT t.*, ROWNUM rn
-      FROM (
+    <select id="list" resultType="proj.spring.mes.dto.ItemDTO">
+        SELECT * FROM (
+            SELECT A.*, ROWNUM RN FROM (
+                SELECT * FROM V3_ITEM ORDER BY ITEM_ID DESC
+            ) A
+            WHERE ROWNUM &lt;= #{end}
+        )
+        WHERE RN &gt;= #{start}
+    </select>
+
+    <select id="selectItemOne" parameterType="string" resultType="proj.spring.mes.dto.ItemDTO">
+        SELECT * FROM V3_ITEM WHERE ITEM_ID = #{itemId}
+    </select>
+
+    <insert id="insertItem" parameterType="proj.spring.mes.dto.ItemDTO">
+        INSERT INTO V3_ITEM (ITEM_ID, ITEM_NAME, ITEM_DIV, ITEM_PRICE, ITEM_UNIT)
+        VALUES (#{item_id}, #{item_name}, #{item_div}, #{item_price}, #{item_unit})
+    </insert>
+
+    <update id="updateItem" parameterType="proj.spring.mes.dto.ItemDTO">
+        UPDATE V3_ITEM
+           SET ITEM_NAME  = #{item_name},
+               ITEM_DIV   = #{item_div},
+               ITEM_PRICE = #{item_price},
+               ITEM_UNIT  = #{item_unit}
+         WHERE ITEM_ID = #{item_id}
+    </update>
+
+    <delete id="deleteItems" parameterType="list">
+        DELETE FROM V3_ITEM WHERE ITEM_ID IN
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="nextItemIdByDiv" parameterType="string" resultType="string">
         SELECT
-          item_id,
-          item_price,
-          item_div,
-          item_name,
-          item_unit
-        FROM V3_item
-        ORDER BY item_name ASC
-      ) t
-      WHERE ROWNUM <= #{endRow}
-    )
-    WHERE rn >= #{startRow}
-    ]]>
-  </select>
+          (CASE
+             WHEN #{itemDiv} = '도서'   THEN 'Q'
+             WHEN #{itemDiv} = '포장지' THEN 'W'
+             WHEN #{itemDiv} = '완제품' THEN 'E'
+             ELSE 'X'
+           END)
+          || TO_CHAR(SYSDATE, 'YYMMDD')
+          || LPAD(V3_ITEM_SEQ.NEXTVAL, 4, '0')
+        FROM DUAL
+    </select>
 
-  <select id="selectItemCount" resultType="long">
-    <![CDATA[
-    SELECT COUNT(*) FROM V3_item
-    ]]>
-  </select>
+    <insert id="insertClientItem">
+        INSERT INTO V3_CLIENT_ITEMS (ITEM_ID, CLIENT_ID)
+        SELECT #{itemId}, #{clientId} FROM DUAL
+        WHERE NOT EXISTS (
+            SELECT 1 FROM V3_CLIENT_ITEMS
+             WHERE ITEM_ID = #{itemId}
+               AND CLIENT_ID = #{clientId}
+        )
+    </insert>
 
-  <select id="selectItemOne" parameterType="string" resultType="proj.spring.mes.dto.ItemDTO">
-    <![CDATA[
-	SELECT
-	  COALESCE(c.client_id, ci.client_id) AS client_id,  -- 조인 안 된 쪽도 아이디 보이게
-	  c.client_name,
-	  COALESCE(i.item_id, ci.item_id)     AS item_id,
-	  i.item_name,
-	  i.item_div,
-	  i.item_price,
-	  i.item_unit
-	FROM v3_client c
-	FULL OUTER JOIN v3_client_items ci
-	  ON ci.client_id = c.client_id
-	FULL OUTER JOIN v3_item i
-	  ON i.item_id = ci.item_id 
-
-    WHERE i.item_id = #{itemId}
-    ]]>
-  </select>
-  
-  <delete id="deleteItems" parameterType="java.util.List">
-  <![CDATA[
-  DELETE FROM V3_item
-  WHERE item_id IN
-  ]]>
-  <foreach item="id" collection="list" open="(" separator="," close=")">
-    #{id}
-  </foreach>
-</delete>
-  
-  
-  
-  
-  <select id="selectClientsByItemId" parameterType="string" resultType="map">
-  SELECT
-    c.client_id,
-    c.client_name
-  FROM v3_client_items ci
-  JOIN v3_client c
-    ON c.client_id = ci.client_id
-  WHERE ci.item_id = #{itemId}
-  ORDER BY c.client_id
-</select>
-  
-  
-  
-  
-
-<insert id="insertItem" parameterType="proj.spring.mes.dto.ItemDTO">
-    <selectKey keyProperty="item_id" resultType="string" order="BEFORE">
-      SELECT 'I' || LPAD(V3_ITEM_SEQ.NEXTVAL, 4, '0') FROM DUAL
-      </selectKey>
-    
-    INSERT INTO V3_item (
-      item_id, item_price, item_div, item_name, item_unit
-    ) VALUES (
-      #{item_id}, #{item_price}, #{item_div}, #{item_name}, #{item_unit}
-    )
-  </insert>
-
-  <update id="updateItem" parameterType="proj.spring.mes.dto.ItemDTO">
-    <![CDATA[
-    UPDATE V3_item
-    SET
-      item_price = #{item_price},
-      item_div   = #{item_div},
-      item_name  = #{item_name},
-      item_unit  = #{item_unit}
-   WHERE item_id = #{item_id}
-    ]]>
-  </update>
-
-  <delete id="deleteItem" parameterType="string">
-    <![CDATA[
-    DELETE FROM V3_item
-    WHERE item_id = #{itemId}
-    ]]>
-  </delete>
-  
-  
-  <select id="clientlist" resultType="map">
-  SELECT
-    client_id,
-    client_name
-  FROM V3_client
-  ORDER BY client_id
-</select>
-  
-  
-  
+    <select id="selectClientsByItemId" resultType="map">
+        SELECT c.client_id, c.client_name
+          FROM V3_CLIENT_ITEMS ci
+          JOIN V3_CLIENT c ON c.client_id = ci.client_id
+         WHERE ci.item_id = #{itemId}
+         ORDER BY c.client_id
+    </select>
 
 </mapper>

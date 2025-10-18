@@ -1,29 +1,15 @@
 package proj.spring.mes.service;
 
 import java.util.List;
-import java.util.Map; // 👈 추가
+import java.util.Map;
 import proj.spring.mes.dto.ItemDTO;
 
 public interface ItemService {
-    // 목록
-    List<ItemDTO> list();
-
-    // 페이징 목록 (컨트롤러에서 쓰는 시그니처 추가)
-    List<ItemDTO> list(int page, int pagePerRows);
-
-    // 단건
-    ItemDTO get(String itemId);
-
-    // CUD
-    int add(ItemDTO dto);
-    int edit(ItemDTO dto);
-    int remove(String itemId);
-    int removeAll(List<String> itemIds);
-
-    // 총 레코드 수
     long count();
-    
-    List<Map<String, Object>> clientlist();
-    
-    List<Map<String, Object>> selectClientsByItemId(String itemId);
+    List list(int page, int pagePerRows);
+    ItemDTO get(String itemId);
+    ItemDTO create(ItemDTO dto, String clientId);
+    int editWithClient(ItemDTO dto, String clientId);
+    int removeAll(List ids);
+    List selectClientsByItemId(String itemId);
 }

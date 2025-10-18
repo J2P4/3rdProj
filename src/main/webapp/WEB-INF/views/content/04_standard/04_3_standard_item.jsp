@@ -234,7 +234,7 @@
                             <!-- 기존 입력 유지 주석 -->
                             <!-- <input type="text" name="vendorId" id="vendorId"> -->
                             <!-- 스크롤 가능한 listbox(select size)로 변경 -->
-                            <select name="vendorId" id="vendorId" size="1" required>
+                            <select name="client_id" id="vendorId" size="1" required>
                                 <!-- JS가 옵션 주입 -->
                             </select>
                          
@@ -243,7 +243,7 @@
                         <td>
                         
 <!--                         <input type="text" name="itemDiv" id="itemDiv"> -->
-                        	<select name = "itemDiv">
+                        	<select  name = "itemDiv">
                         		<option value="도서">도서</option>
                         		<option value="포장지">포장지</option>
                         		<option value="완제품">완제품</option>
@@ -251,7 +251,19 @@
                         
                         </td>
                         <td><input type="number" name="unitPrice" id="unitPrice" min="0"></td>
-                        <td><input type="text" name="unit" id="unit"></td>
+                        <td>
+                        	<select id = "unit" name = "itemunit">
+                        		<option value = "권">권</option>
+                        		<option value = "묶음">묶음</option>
+                        		<option value = "롤">롤</option>
+                
+                        	
+                        	</select>
+                        	
+                        	
+                        	
+                        	
+                        	</td>
                     </tr>
                 </tbody>
             </table>
