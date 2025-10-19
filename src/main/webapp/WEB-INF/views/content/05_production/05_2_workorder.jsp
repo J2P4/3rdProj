@@ -91,18 +91,18 @@
                	<c:if test="${empty list}">
                 	<tr>
                         <td><input type="checkbox" class="rowChk" disabled></td>
-                		<td colspan="5"> 조회 내역이 없습니다.</td>
+                		<td colspan="4"> 조회 내역이 없습니다.</td>
                 	</tr>
                	</c:if>
                	<c:if test="${not empty list}">
                		<c:forEach var="P0401_StockDTO" items="${list}">
 	               		<tr data-id="${P0401_StockDTO.stock_id}">
-		                    <td><input type="checkbox" class="rowChk" name="delete_stock_id" value="${P0401_StockDTO.stock_id}"></td>
-		                    <td>${P0401_StockDTO.stock_id}</td>
-		                    <td>${P0401_StockDTO.stock_amount}</td>
-		                    <td>${P0401_StockDTO.item_div}</td>
-		                    <td>${P0401_StockDTO.stock_wrap}</td>
-	                    </tr>
+    <td><input type="checkbox" class="rowChk" name="delete_stock_id" value="${P0401_StockDTO.stock_id}"></td>
+    <td>${P0401_StockDTO.stock_id}</td>
+    <td>${P0401_StockDTO.stock_date}</td>               <%-- 작업 지시일 --%>
+    <td>${P0401_StockDTO.order_quantity}</td>           <%-- 지시 수량 --%>
+    <td>${P0401_StockDTO.production_quantity}</td>      <%-- 생산 수량 --%>
+</tr>
                     </c:forEach>
                  </c:if>
             </tbody>
@@ -201,7 +201,7 @@
     <!-- 입력용 슬라이드 -->
     <div class = "slide" id = "slide-input">
         <form class = "slide-contents" id="stockInsertForm">
-            <div class = "silde-title"><h2 id="slide-title">작업지식서 등록</h2></div>
+            <div class = "silde-title"><h2 id="slide-title">작업지시서 등록</h2></div>
             <div class = "slide-id" id="stock-id-show" style = "display: none">
                 재고 ID: <span id="stock-id-val"></span>
                 <input type="hidden" id="input_stock_id" name="stock_id" value="">
