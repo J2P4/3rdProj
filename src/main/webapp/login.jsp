@@ -134,6 +134,79 @@
             padding-left:2px
         }
     }
+    
+    /* ===== Password Modal (namespaced) ===== */
+.pw-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  display: none;           /* 기본 숨김 */
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,.45);
+  z-index: 9999;
+}
+
+.pw-modal-backdrop.is-open { display: flex; }
+
+.pw-modal-dialog {
+  width: 420px;
+  max-width: 92vw;
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px 24px 18px;
+  box-shadow: 0 12px 30px rgba(0,0,0,.20);
+  font-family: inherit;    /* 페이지 폰트 상속 */
+  color: inherit;          /* 페이지 텍스트 색상 상속 */
+}
+
+.pw-modal__title {
+  margin: 0 0 8px;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.pw-modal__desc {
+  margin: 0 0 16px;
+  font-size: 14px;
+  color: #555;
+  line-height: 1.5;
+}
+
+.pw-modal__actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+
+/* 버튼도 네임스페이스 */
+.pw-btn {
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  background: #f3f4f6;
+  color: #111;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+  transition: transform .15s ease, opacity .15s ease;
+}
+.pw-btn:hover { transform: translateY(-1px); }
+.pw-btn:active { transform: translateY(0); opacity: .9; }
+
+.pw-btn--primary {
+  border: none;
+  background: #2563eb;   /* 파랑 */
+  color: #fff;
+}
+
+/* 모바일 대응 */
+@media (max-width: 480px) {
+  .pw-modal-dialog { padding: 20px; }
+  .pw-modal__title { font-size: 18px; }
+  .pw-btn { font-size: 13px; }
+}
+    
   </style>
 </head>
 <body>
@@ -161,15 +234,62 @@
     </div>
   </div>
 </form>
-  <!-- 실패 시 ?error=1 로 되돌아오면 알림 -->
-  <script>
-    (function () {
-      const p = new URLSearchParams(location.search);
-      if (p.get('error') === '1') {
-        alert('아이디 또는 비밀번호가 올바르지 않습니다.');
-        history.replaceState(null, '', location.pathname);
+<c:if test="${not empty msg}">
+  <div class="alert success">${msg}</div>
+</c:if>
+<c:if test="${not empty error}">
+  <div class="alert error">${error}</div>
+</c:if>
+<!-- Password modal (namespaced) -->
+<div id="pwModal" class="pw-modal-backdrop" aria-hidden="true">
+  <div class="pw-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="pwModalTitle">
+    <h3 id="pwModalTitle" class="pw-modal__title">비밀번호 변경 안내</h3>
+    <p class="pw-modal__desc">
+      비밀번호 유효기간이 만료되었거나 보안상 변경이 필요합니다.<br>
+      지금 변경하시겠습니까?
+    </p>
+    <div class="pw-modal__actions">
+      <button type="button" id="pwChangeLater" class="pw-btn">90일 후 변경</button>
+      <button type="button" id="pwChangeNow"   class="pw-btn pw-btn--primary">지금 변경</button>
+    </div>
+  </div>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const show = '${sessionScope.showPwModal}' === 'true';
+  const modal = document.getElementById('pwModal');
+  const btnNow = document.getElementById('pwChangeNow');
+  const btnLater = document.getElementById('pwChangeLater');
+  const base = '${pageContext.request.contextPath}';
+
+  if (show && modal) {
+    modal.classList.add('is-open');
+    modal.setAttribute('aria-hidden', 'false');
+  }
+
+  if (btnNow) {
+    btnNow.addEventListener('click', () => {
+      location.href = `${base}/pw_change?mode=force`;
+    });
+  }
+
+  if (btnLater) {
+    btnLater.addEventListener('click', () => {
+      location.href = `${base}/extend_pw`; // GET 방식(간단). POST면 CSRF 토큰 포함 필요
+    });
+  }
+
+  // 바깥 클릭 시 닫기 (선택)
+  if (modal) {
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        modal.classList.remove('is-open');
+        modal.setAttribute('aria-hidden', 'true');
       }
-    })();
-  </script>
+    });
+  }
+});
+</script>
+
 </body>
 </html>

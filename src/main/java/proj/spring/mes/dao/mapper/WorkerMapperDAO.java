@@ -1,5 +1,6 @@
 package proj.spring.mes.dao.mapper;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 
@@ -33,7 +34,21 @@ public interface WorkerMapperDAO {
     // 비밀번호 해시로 교체 
     int updatePassword(Map<String, Object> param);
     
-    Integer isPwMustChange(String worker_id);
+    Integer isPwMustChange(@Param("worker_id") String worker_id);
     
     int updateClearPw(Map<String, Object> param);
+    
+    // 최근 N개 비번 해시 조회
+    List<String> selectRecentPwHashes(@Param("worker_id") String worker_id, @Param("limit") int limit);
+    // 이력 삽입
+    int insertPwHistory(@Param("worker_id") String worker_id, @Param("pw_hash") String pw_hash);
+
+    int updateClearPwWithExpiry(@Param("worker_id") String worker_id, @Param("new_pw") String new_pw, @Param("expires_at") java.util.Date expires_at);
+	int updateTempPw(@Param("worker_id") String worker_id, @Param("new_pw") String new_pw, @Param("expires_at") java.util.Date expires_at);
+	Map<String, Object> selectPwState(@Param("worker_id") String worker_id);
+	
+	// 유효기간 만료
+	void updatePwExpiry(String worker_id, Timestamp timestamp);
+
+    
 }

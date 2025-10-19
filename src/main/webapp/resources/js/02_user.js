@@ -73,16 +73,6 @@ function onEnterEditMode() {
     applyDateGuards(detail);        // <- 동적 DOM에 재적용!
 }
 
-
-    // 초기 로드 시에도 한 번 동기화 (이미 값이 있는 경우)
-    const currentJoin = (joinInputs[0] && joinInputs[0].value) || '';
-    birthInputs.forEach(b => {
-        const maxByJoin = currentJoin && currentJoin < today ? currentJoin : today;
-        b.setAttribute('max', maxByJoin || today);
-        // 너무 과거를 막고 싶으면 최소년도도 지정
-        // b.setAttribute('min', '1900-01-01');
-    });
-
 // ================================================
 // 등록 슬라이드 AJAX 등록 처리 + 모달 표시
 

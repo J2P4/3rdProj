@@ -6,11 +6,12 @@ import javax.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import proj.spring.mes.dto.PwDTO;
 import proj.spring.mes.dto.WorkerDTO;
 import proj.spring.mes.service.WorkerService;
 
@@ -19,9 +20,7 @@ public class LoginController {
 
 	private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
 	
-	private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(10);
-	
-	@Autowired
+ 	@Autowired
 	WorkerService workerService;
 	
 	@RequestMapping("/loginPage")
@@ -48,13 +47,13 @@ public class LoginController {
 	}
 	
 	@RequestMapping("/login")
-	public String login(Model model, String worker_id, String worker_pw, HttpServletRequest request) {
+	public String login(String worker_id, String worker_pw, HttpServletRequest request, RedirectAttributes ra) {
 
 	    WorkerDTO user = workerService.get(worker_id);
 	    
 	    // 아이디가 null인 경우
 	    if (user == null) {
-	        model.addAttribute("loginError","아이디가 존재하지 않습니다.");
+	    	ra.addFlashAttribute("error", "존재하지 않는 아이디입니다.");
 	        return "redirect:/loginPage";
 	    }
 
@@ -65,7 +64,7 @@ public class LoginController {
 	    boolean ok = workerService.match(worker_pw, hashed);
 
 	    if (!ok) {
-	        model.addAttribute("loginError","비밀번호가 올바르지 않습니다.");
+	    	ra.addFlashAttribute("error","비밀번호가 올바르지 않습니다.");
 	        return "redirect:/loginPage";
 	    }
 
@@ -81,76 +80,66 @@ public class LoginController {
         newSession.setAttribute("role", user.getWorker_code());		// 권한별 접근
         newSession.setAttribute("worker_id", user.getWorker_id());
         
-     // 1) 우선순위: DB 플래그(PW_MUST_CHANGE) 확인 → 1이면 강제 변경
-        boolean mustChangeFlag = false;
-        try {
-            mustChangeFlag = workerService.isPwMustChange(worker_id);
-        } catch (Exception ignore) {}
-
-        // 2) 백업 체크(레거시 초기비번: 생년월일 6자리와 현재 해시가 일치하는가)
-        boolean legacyInitial = false;
-        if (user.getWorker_birth() != null) {
-            String birth6 = new java.text.SimpleDateFormat("yyMMdd").format(user.getWorker_birth());
-            legacyInitial = workerService.match(birth6, hashed);
-        }
-
-        boolean mustChange = mustChangeFlag || legacyInitial;
-        
-        // 초기비밀번호라면 변경페이지로 이동
+        // 로그인 성공 직후
+        boolean mustChange = workerService.mustChangeNow(worker_id, hashed);
         if (mustChange) {
-            // 강제 변경 모드 URL에 mode=force
-        	newSession.setAttribute("mustChangePw", true);
-            return "redirect:/pw_change?mode=force"; 
+            newSession.setAttribute("mustChangePw", true);   // 강제변경 플래그(유지)
+            newSession.setAttribute("showPwModal", true);    // 모달 띄우기 플래그
         } else {
-            // 일반 로그인 성공 시 
-        	newSession.setAttribute("mustChangePw", false); 
+            newSession.setAttribute("mustChangePw", false);
+            newSession.removeAttribute("showPwModal");
         }
         
 	    return "redirect:/stocklist";
 	}
 	
 	@RequestMapping("/change_page")
-	public String forceChange(Model model, String worker_id, String currentPw, String newPw, String pw_confirm, HttpSession session) {
+	public String forceChange(Model model, String worker_id, String current_pw, String new_pw, String confirm_pw, HttpSession session, RedirectAttributes ra) {
 
-	    if (!newPw.equals(pw_confirm)) {
-	        model.addAttribute("msg", "새 비밀번호가 일치하지 않습니다.");
+		if (new_pw == null || confirm_pw == null || !new_pw.equals(confirm_pw)) {
+			ra.addFlashAttribute("error", "새 비밀번호가 일치하지 않습니다.");
 	        return "redirect:/pw_change";
 	    }
-	    if (newPw.length() < 8) {
-	        model.addAttribute("msg", "새 비밀번호는 8자 이상이어야 합니다.");
-	        return "redirect:/pw_change";
-	    }
+		try {
+            // 서비스 한 곳에서: 현재PW 확인 + 정책검사 + 해시 + 저장
+            PwDTO dto = new PwDTO();
+            dto.setCurrent_pw(current_pw);
+            dto.setNew_pw(new_pw);
+            dto.setConfirm_pw(confirm_pw);
 
-	    WorkerDTO user = workerService.get(worker_id);
-	    if (user == null) return "redirect:/login";
+            workerService.changePassword(worker_id, dto);
 
-	    // 현재 비번 검증
-	    if (!workerService.match(currentPw, user.getWorker_pw())) {
-	        model.addAttribute("msg", "현재 비밀번호가 올바르지 않습니다.");
-	        return "redirect:/pw_change";
-	    }
+            // 강제 변경 모드 해제
+            session.setAttribute("mustChangePw", false);
 
-	    // 초기비번(생년월일 6자리) 재사용 금지(선택)
-	    if (user.getWorker_birth() != null) {
-	        String birth6 = new java.text.SimpleDateFormat("yyMMdd").format(user.getWorker_birth());
-	        if (newPw.equals(birth6)) {
-	            model.addAttribute("msg","초기 비밀번호와 다른 값으로 설정해주세요.");
-	            return "redirect:/pw_change";
-	        }
-	    }
-
-	    // 저장 (서비스에서 암호화)
-	    workerService.updateClearPw(worker_id, newPw);
-
-	    // 강제 변경 플래그 해제
-	    session.removeAttribute("mustChangePw");
-	    
-	    model.addAttribute("message", "비밀번호가 변경되었습니다.");
-	    
-	    return "redirect:/loginPage";
+            ra.addFlashAttribute("msg", "비밀번호가 변경되었습니다. 다시 로그인해주세요.");
+            return "redirect:/loginPage";
+        } catch (IllegalArgumentException ex) {
+            // 정책 위반/현재PW 불일치/기타 서비스 메시지
+            ra.addFlashAttribute("error", ex.getMessage());
+            return "redirect:/pw_change";
+        } catch (Exception ex) { // 예상 못한 예외는 일반 메시지로
+            ra.addFlashAttribute("error", "처리 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.");
+            return "redirect:/pw_change";
 	}
 	
-	/** 로그아웃 */
+	// 만료일 도달 후 나중에 변경선택시
+	@RequestMapping("/extend_pw")
+	public String extendPw(HttpSession session, RedirectAttributes ra) {
+	    String worker_id = (String) session.getAttribute("worker_id");
+	    if (worker_id == null) return "redirect:/loginPage";
+
+	    workerService.extendPwExpiry(worker_id, 90); // 원하는 일수
+	    // 모달 한 번만 띄우도록 플래그 제거
+	    session.removeAttribute("showPwModal");
+	    session.setAttribute("mustChangePw", false);
+
+	    ra.addFlashAttribute("msg", "비밀번호 변경을 90일 후로 연장했습니다.");
+	    return "redirect:/stocklist";
+	}
+
+	
+	// 로그아웃
 	@RequestMapping("/logout")
 	public String logout(HttpSession session) {
 	    if (session != null) session.invalidate(); 
