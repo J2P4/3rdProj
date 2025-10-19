@@ -3,74 +3,87 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-
 <mapper namespace="proj.spring.mes.dao.mapper.OrderMapperDAO">
 
-  <!-- 목록 -->
-    <select id="selectOrderList" resultType="proj.spring.mes.dto.OrderDTO">
-	    select o.order_id,
-	    		i.item_name,
-	    		o.order_amount,
-	    		o.order_date,
-	    		from V3_order o,
-	    		v3_item i 
-	    		where i.item_id = o.item_id
-	    		
-			    FROM V3_order
-			    ORDER BY order_date DESC
-        
-                   
-<!--        order_payment_date, -->
-<!-- 		order_receive_date, -->
-<!-- 		worker_id, -->
-<!-- 		client_id,  -->
-<!--        order_payment_duedate, -->
-<!--        order_receive_duedate -->
-        
-
+  <select id="selectOrderList" resultType="proj.spring.mes.dto.OrderDTO">
+	select o.order_id, o.order_amount, o.order_date, c.worker_id,ci.item_id, i.item_name,ci.client_id
+    from v3_order o, v3_client c , v3_client_items ci , V3_item i
+    where o.client_id = c.client_id and c.client_id = ci.client_id and i.item_id = ci.item_id
   </select>
 
-  <!-- 단건 -->
+
   <select id="selectOrderOne" parameterType="string" resultType="proj.spring.mes.dto.OrderDTO">
-    SELECT
-        order_id,
-        order_payment_date,
-        order_date,           
-		order_amount,
-		order_receive_date,
-		worker_id,
-		client_id, 
-        item_name,
-        order_payment_duedate,
-        order_receive_duedate
-    FROM V3_order
-    WHERE order_id = #{order_id}
+	SELECT DISTINCT
+	    o.order_id,
+	    o.order_num,
+	    o.order_payment_date,
+	    o.order_payment_duedate,
+	    o.order_receive_date,
+	    o.order_receive_duedate,
+	    o.order_amount,
+	    o.order_date,
+	    c.worker_id,
+	    o.item_id,
+	    w.department_id,
+	    w.worker_code
+	    
+	FROM v3_order o
+	JOIN v3_client c         ON o.client_id = c.client_id
+	JOIN v3_worker w         ON c.worker_id = w.worker_id
+	JOIN v3_client_items ci  ON o.client_id = ci.client_id  
   </select>
 
-  <!-- 등록 -->
+  <!-- =======================
+       등록
+       ======================= -->
+  <!-- DTO에 order_num 없음 → 제외 -->
   <insert id="insertOrder" parameterType="proj.spring.mes.dto.OrderDTO">
-    INSERT INTO V3_order (
-      order_id, oreder_stat, order_date, item_id, order_qty
+    INSERT INTO v3_order (
+      order_id,
+      order_payment_date,  
+      order_payment_duedate,
+      order_date,
+      order_amount,
+      order_receive_date,   
+      order_receive_duedate,
+      worker_id,
+      client_id,
+      item_id
     ) VALUES (
-      #{order_id}, #{oreder_stat}, #{order_date}, #{item_id}, #{order_qty}
+      #{order_id},
+      #{order_payment_day},
+      #{order_payment_duedate},
+      #{order_date},
+      #{order_amount},
+      #{order_receivement_date},
+      #{order_receive_duedate},
+      #{worker_id},
+      #{client_id},
+      #{item_id}
     )
   </insert>
 
-  <!-- 수정 -->
+  <!-- =======================
+       수정
+       ======================= -->
   <update id="updateOrder" parameterType="proj.spring.mes.dto.OrderDTO">
-    UPDATE V3_order
-    SET
-      oreder_stat = #{oreder_stat},
-      order_date  = #{order_date},
-      item_id     = #{item_id},
-      order_qty   = #{order_qty}
-    WHERE order_id = #{order_id}
+    UPDATE v3_order
+       SET order_payment_date      = #{order_payment_day},
+           order_payment_duedate   = #{order_payment_duedate},
+           order_receive_date      = #{order_receivement_date},
+           order_receive_duedate   = #{order_receive_duedate},
+           order_amount            = #{order_amount},
+           order_date              = #{order_date},
+           worker_id               = #{worker_id},
+           client_id               = #{client_id},
+           item_id                 = #{item_id}
+     WHERE order_id = #{order_id}
   </update>
 
-  <!-- 삭제 -->
+  <!-- =======================
+       삭제
+       ======================= -->
   <delete id="deleteOrder" parameterType="string">
-    DELETE FROM V3_order
-    WHERE order_id = #{order_id}
+    DELETE FROM v3_order WHERE order_id = #{order_id}
   </delete>
-
 </mapper>

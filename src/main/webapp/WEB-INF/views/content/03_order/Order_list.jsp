@@ -90,7 +90,8 @@
                                     <td>
                                         <a href="${pageContext.request.contextPath}/po/detail?id=${o.order_id}" style="color:inherit; text-decoration:none;">${o.item_id}</a>
                                     </td>
-                                    <td class="col-qty"><${o.order_amount}</td>
+                                    <%-- 원본(오타): <td class="col-qty"><${o.order_amount}</td> --%>
+                                    <td class="col-qty">${o.order_amount}</td>
                                     <td>${o.client_id}</td>
                                     <td>${o.worker_id}</td>
                                     <td><fmt:formatDate value="${o.order_date}" pattern="yyyy-MM-dd"/></td>
@@ -120,9 +121,6 @@
 		</div>
 		
     </div>
-    
-    
-    
     
     
         <!-- 상세용 슬라이드-->
@@ -172,24 +170,13 @@
                 </table>
             </div>
                
-            </div>
+            
             <div class = "slide-btnbox">
                 <input type = "button" class = "slide-btn" value = "수정">
                 <input type = "button" class = "close-btn slide-btn" value = "취소">
             </div>
         </div>
     </div>
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
 
     <!-- 등록 슬라이드 -->
     <div class="slide" id="slide-input">
@@ -202,9 +189,6 @@
             		<div>결제(예정일) <input type="date" name="orderdate" id="orderdate"></div>
             		<div>수주(예정일) <input type="date" name="orderdate" id="orderdate"></div>
             	</div>
-            		  
-            
-            
             </div>
 
             <div class="slide-tb">
@@ -275,7 +259,6 @@
 //   const to   = document.getElementById('toDate');
 
 
-  
 
 </script>
 </body>
