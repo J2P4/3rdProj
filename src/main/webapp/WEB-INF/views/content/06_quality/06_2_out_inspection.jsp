@@ -217,7 +217,7 @@
             <div class = "silde-title"><h2>출고 검사 상세</h2></div>
             <div class = "slide-id">출고 검사 ID: </div>
             <div class = "slide-tb">
-                <table>
+                <table id = "inspectionInfo">
                     <thead>
                         <th>검사일</th>
                         <th>양품 수</th>
@@ -225,29 +225,31 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td data-type = "date">1</td>
-                            <td>1</td>
-                            <td>1</td>
+                            <td data-type = "date"></td>
+                            <td></td>
+                            <td></td>
                         </tr>
                     </tbody>
                 </table>
             </div>
             <div class = "slide-tb">
-                <table>
+                <table id = "charge">
                     <thead>
-                        <th>검사 대상</th>
+                        <th>검사 품목 ID</th>
+                        <th>검사 품목명</th>
                         <th>담당 사원</th>
                     </thead>
                     <tbody>
                         <tr>
-                            <td data-type = "select">2</td>
-                            <td data-type = "select">2</td>
+                            <td data-type = "select"></td>
+                            <td data-type = "select"></td>
+                            <td data-type = "select"></td>
                         </tr>
                     </tbody>
                 </table>
             </div>
             <div class = "slide-btnbox">
-                <input type = "button" class = "slide-btn" value = "수정">
+                <input type = "button" class = "slide-btn" id="detailEditBtn" value = "수정">
                 <input type = "button" class = "close-btn slide-btn" value = "취소">
             </div>
         </div>

@@ -97,10 +97,11 @@ public class P0601_InInsCtrl {
 //	}
 	
  	@RequestMapping("/inInsdetail")
-	public String detail(Model model, String inspection_result_id) {
+ 	@ResponseBody
+	public P0601_InInsDTO detail(@RequestParam("inspection_result_id") String inspection_result_id) {
 		P0601_InInsDTO dto = service.getOneInIns(inspection_result_id);
-		model.addAttribute("InIns", dto);
-		return "06_quality/06_1_in_inspection.tiles";
+	    System.out.println(dto);
+	    return dto;
 	}
 	
  	// 등록

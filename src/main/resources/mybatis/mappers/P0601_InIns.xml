@@ -99,10 +99,18 @@
 	<select id = "selectOneInIns" resultType = "P0601_InInsDTO">
 		select
 			i.inspection_result_id, i.inspection_result_date, i.inspection_result_good,
-			i.inspection_result_bad, w.worker_name, i.stock_id
+			i.inspection_result_bad,
+			i.worker_id,
+			i.stock_id,
+			w.worker_name,
+			it.item_name
 		from v3_inspection_result i
 			left outer join v3_worker w
 				on i.worker_id = w.worker_id
+			left outer join v3_stock s
+				on i.stock_id = s.stock_id
+			left outer join v3_item it
+				on s.item_id = it.item_id
 		where i.inspection_result_id = #{inspection_result_id}
 	</select>
 	

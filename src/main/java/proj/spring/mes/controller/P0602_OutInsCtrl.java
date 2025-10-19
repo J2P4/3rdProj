@@ -85,10 +85,11 @@ public class P0602_OutInsCtrl {
 	}
 	
  	@RequestMapping("/outInsdetail")
-	public String detail(Model model, String inspection_result_id) {
+ 	@ResponseBody
+	public P0602_OutInsDTO detail(@RequestParam("inspection_result_id") String inspection_result_id) {
 		P0602_OutInsDTO dto = service.getOneOutIns(inspection_result_id);
-		model.addAttribute("OutIns", dto);
-		return "06_quality/06_2_out_inspection.tiles";
+	    System.out.println(dto);
+	    return dto;
 	}
 	
 	@RequestMapping("/outInsinsert")
