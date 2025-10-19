@@ -2,7 +2,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> 
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %> 
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %> 
-<% // 오늘 날짜를 문자열로 만들어 EL에서 쓸 수 있게 request에 넣음
+<%
+    // 오늘 날짜를 문자열로 만들어 EL에서 쓸 수 있게 request에 넣음
     String todayStr = new java.text.SimpleDateFormat("yyyy-MM-dd").format(new java.util.Date());
     request.setAttribute("todayStr", todayStr);
 %>
@@ -21,14 +22,13 @@
 <c:url var="clientJs" value="/resources/js/04_2_client.js"/>
 <script src="${clientJs}" defer></script>
 
-
 <title>거래처 리스트</title>
 </head>
 <body>
 <h1>거래처 리스트</h1>
 
-<c:url var="clientlistUrl" value="/clientlist"/> <%-- 모든 내부 링크의 기준 URL(중복 /mes/mes 방지) --%>
-<c:set var="selfPath" value="/clientlist"/> <%-- c:url value에 사용할 경로 문자열 --%>
+<c:url var="clientlistUrl" value="/clientlist"/>
+<c:set var="selfPath" value="/clientlist"/>
 
 <form class="panel" method="get" action="${clientlistUrl}">
     <div class="filter">
@@ -43,12 +43,9 @@
             <div class="filter-item">
                 <span class="filitem-name">· 거래처 이름</span>
                 <div class="filitem-input">
-                    <!-- 이름 name/value 불일치 수정 -->
                     <input type="text" name="clientName" value="${fn:escapeXml(param.clientName)}">
                 </div>
             </div>
-
-            <%-- 추가 필터 항목이 있으면 여기 확장 --%>
         </div>
 
         <div class="filter-btn">
@@ -170,7 +167,7 @@
 
     </div> 
     <div class="bottom-btn-box">
-        <input type="button" class="btm-btn new" value="신규">
+        <input type="button" class="btm-btn new" value="신규" id="btnNew">
         <input type="button" id="btnDelete" class="btm-btn del" value="삭제">
     </div>
 </div>
@@ -184,60 +181,75 @@
     <input type="hidden" name="clientName" value="${fn:escapeXml(param.clientName)}"/>
 </form>
 
-<!-- 입력 슬라이드: DTO 필드와 1:1 -->
+<!-- 입력 슬라이드 -->
 <div class="slide" id="slide-input">
-    <div class="slide-contents">
-        <div class="silde-title"><h2>거래처 등록</h2></div>
+  <div class="slide-contents">
+    <div class="silde-title"><h2>거래처 등록</h2></div>
 
-        <div class="slide-id">거래처 ID :
-            <input type="text" name="client_id" id="client_id" form="client-insert-form" required>
-        </div>
-        <div class="slide-id">거래처 이름 :
-            <input type="text" name="client_name" id="client_name" form="client-insert-form" required>
-        </div>
-        <div class="slide-id">거래처 전화번호 :
-            <input type="text" name="client_tel" id="client_tel" form="client-insert-form" placeholder="010-0000-0000">
-        </div>
-        <div class="slide-id">담당사원 ID :
-            <input type="text" name="worker_id" id="worker_id" form="client-insert-form">
-        </div>
-
-        <div class="slide-tb">
-            <table>
-                <thead>
-                    <tr><th>거래처 ID</th>
-                    <th>거래처 이름</th>
-                    <th>전화번호</th>
-                    <th>담당사원</th></tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><span id="preview_client_id"></span></td>
-                        <td><span id="preview_client_name"></span></td>
-                        <td><span id="preview_client_tel"></span></td>
-                        <td><span id="preview_worker_id"></span></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <form id="client-insert-form" method="post" action="${pageContext.request.contextPath}/client/insert">
-            <input type="hidden" name="page" value="${page}">
-            <input type="hidden" name="size" value="${pagePerRows}">
-            <input type="hidden" name="client_id" value="${fn:escapeXml(param.client_id)}">
-            <input type="hidden" name="clientName" value="${fn:escapeXml(param.clientName)}">
-        </form>
-
-        <div class="slide-btnbox">
-<!--             <button type="submit" class="slide-btn" form="client-insert-form">등록</button> -->
-            <input type = "button" class = "slide-btn" value = "등록">
-            <input type = "button" class="close-btn slide-btn" value="취소">
-        </div>
-
+    <div class="slide-id">거래처 ID :
+      <!-- DB 트리거가 자동생성하므로 입력 필드 없음 -->
     </div>
+    <div class="slide-id">거래처 이름 :
+      <input type="text" name="client_name" id="client_name" form="client-insert-form" required maxlength="100">
+    </div>
+
+    <div class="slide-id">거래처 전화번호 :
+      <select name="countryCode" id="countryCode" size="1" form="client-insert-form">
+        <option value="+82">대한민국 (+82)</option>
+        <option value="+81">일본 (+81)</option>
+        <option value="+86">중국 (+86)</option>
+        <option value="+84">베트남 (+84)</option>
+        <option value="+60">말레이시아 (+60)</option>
+        <option value="+1">미국 / 캐나다 (+1)</option>
+        <option value="+56">칠레 (+56)</option>
+        <option value="+57">콜롬비아 (+57)</option>
+        <option value="+51">페루 (+51)</option>
+        <option value="+44">영국 (+44)</option>
+        <option value="+33">프랑스 (+33)</option>
+        <option value="+49">독일 (+49)</option>
+        <option value="+39">이탈리아 (+39)</option>
+        <option value="+34">스페인 (+34)</option>
+        <option value="+31">네덜란드 (+31)</option>
+        <option value="+41">스위스 (+41)</option>
+        <option value="+46">스웨덴 (+46)</option>
+        <option value="+47">노르웨이 (+47)</option>
+        <option value="+45">덴마크 (+45)</option>
+        <option value="+48">폴란드 (+48)</option>
+        <option value="+36">헝가리 (+36)</option>
+        <option value="+420">체코 (+420)</option>
+        <option value="+30">그리스 (+30)</option>
+        <option value="+61">호주 (+61)</option>
+        <option value="+64">뉴질랜드 (+64)</option>
+      </select>
+      <span> - </span>
+      <input type="text" name="client_tel1" id="client_tel1" form="client-insert-form" placeholder="00000" maxlength="5" inputmode="numeric" pattern="[0-9]*">
+      <span> - </span>
+      <input type="text" name="client_tel2" id="client_tel2" form="client-insert-form" placeholder="00000" maxlength="5" inputmode="numeric" pattern="[0-9]*">
+    </div>
+
+    <div class="slide-id">담당사원 ID :
+      <input type="text" name="worker_id" id="worker_id" form="client-insert-form" maxlength="50">
+    </div>
+
+    <!-- 전송 폼 -->
+    <form id="client-insert-form" method="post" action="${pageContext.request.contextPath}/client/insert">
+      <input type="hidden" name="page" value="${page}">
+      <input type="hidden" name="size" value="${pagePerRows}">
+      <input type="hidden" name="client_id" value="${fn:escapeXml(param.client_id)}">
+      <input type="hidden" name="clientName" value="${fn:escapeXml(param.clientName)}">
+      <!-- 최종 전화번호(조합값) -->
+      <input type="hidden" name="client_tel" id="client_tel_final">
+    </form>
+
+    <div class="slide-btnbox">
+      <input type="button" class="slide-btn" value="등록" id="btnSubmitClient">
+      <input type="button" class="close-btn slide-btn" value="취소" id="btnCancel">
+    </div>
+
+  </div>
 </div>
 
-
+<!-- 상세 슬라이드 -->
 <div class="slide" id="slide-detail">
   <div class="slide-contents">
     <div class="silde-title"><h2>거래처 상세</h2></div>
@@ -273,7 +285,53 @@
   </div>
 </div>
 
+<!-- 페이지 전용 스크립트 -->
+<script>
+(function () {
+  const byId = (id) => document.getElementById(id);
 
+  // 신규 버튼: 입력 슬라이드 열기(필요 시 CSS/JS에 맞게 토글)
+  const btnNew = byId('btnNew');
+  if (btnNew) btnNew.addEventListener('click', () => {
+    document.getElementById('slide-input')?.classList.add('open');
+  });
+
+  // 취소 버튼: 입력 슬라이드 닫기
+  const btnCancel = byId('btnCancel');
+  if (btnCancel) btnCancel.addEventListener('click', () => {
+    document.getElementById('slide-input')?.classList.remove('open');
+  });
+
+  // 등록 버튼: 값 조합 -> hidden 주입 -> submit
+  const btnSubmit = byId('btnSubmitClient');
+  const form = byId('client-insert-form');
+
+  if (btnSubmit && form) {
+    btnSubmit.addEventListener('click', function () {
+      const name = byId('client_name')?.value?.trim();
+      const cc   = byId('countryCode')?.value?.trim();
+      const t1   = byId('client_tel1')?.value?.trim();
+      const t2   = byId('client_tel2')?.value?.trim();
+      const worker = byId('worker_id')?.value?.trim();
+
+      // 필수값 검증
+      if (!name) { alert('거래처 이름을 입력하세요.'); byId('client_name').focus(); return; }
+
+      const numOnly = /^[0-9]+$/;
+      if (!t1 || !numOnly.test(t1)) { alert('전화번호(중간)는 숫자만 입력하세요.'); byId('client_tel1').focus(); return; }
+      if (!t2 || !numOnly.test(t2)) { alert('전화번호(끝자리)는 숫자만 입력하세요.'); byId('client_tel2').focus(); return; }
+
+      // 최종 전화번호 조합 -> hidden 주입
+      const finalTel = `${cc}-${t1}-${t2}`;
+      byId('client_tel_final').value = finalTel;
+
+      // 전송
+      btnSubmit.disabled = true;
+      form.submit();
+    });
+  }
+})();
+</script>
 
 </body>
 </html>
