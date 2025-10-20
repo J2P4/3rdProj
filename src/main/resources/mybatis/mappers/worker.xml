@@ -158,6 +158,12 @@
 	  )
 	</insert>
 
+	<!-- 이메일중복확인 -->
+	<select id="countByEmail" parameterType="string" resultType="int">
+    	SELECT COUNT(*) FROM V3_worker WHERE worker_email = #{worker_email}
+	</select>
+	
+
 	<!-- 현재 비밀번호 조회 -->
     <select id="selectWorkerPw" resultType="string">
         SELECT worker_pw

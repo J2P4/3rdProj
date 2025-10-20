@@ -72,6 +72,11 @@ public class WorkerServiceImpl implements WorkerService{
         return workerMapperDao.selectDeptName(department_id);
     }
     
+    @Override
+    public boolean emailExists(String worker_email) {
+        return workerMapperDao.countByEmail(worker_email) > 0;
+    }
+
     
     @Override
     public void changePassword(String worker_id, PwDTO dto) {
@@ -112,7 +117,7 @@ public class WorkerServiceImpl implements WorkerService{
             if (recentHashes != null) {
                 for (String h : recentHashes) {
                     if (h != null && encoder.matches(newPw, h)) {
-                        throw new IllegalArgumentException("최근 " + HISTORY_N + "개 내에 사용한 비밀번호는 다시 사용할 수 없습니다.");
+                        throw new IllegalArgumentException("최근 사용한" + HISTORY_N + "개의 비밀번호는 다시 사용할 수 없습니다.");
                     }
                 }
             }

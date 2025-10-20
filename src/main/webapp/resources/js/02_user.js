@@ -48,6 +48,11 @@ function applyDateGuards(root) {
             });
         }, { once:false });
     });
+    births.forEach(b => {
+        b.setAttribute('max', today);
+        // 이미 값이 미래면 잘라냄
+        if (b.value && b.value > today) b.value = today;
+    });
 
 }
 
@@ -103,6 +108,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // ---------------- 등록 버튼 ----------------
+		
     if (btn) {
         btn.addEventListener('click', async () => {
         const fd = new FormData(form);
@@ -120,6 +126,8 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!fd.get('worker_join')) return alert('입사일을 입력하세요.');
         if (!fd.get('department_id')) return alert('부서를 선택하세요.');
         if (!fd.get('worker_code') || fd.get('worker_code') === '1') return alert('권한을 선택하세요.');
+
+		
 
         try {
             const res = await fetch(`${ctx}/workerinsert`, {
@@ -475,5 +483,8 @@ window.addEventListener('worker:updated', (e) => {
     if (!e || !e.detail) return;
     updateListRowInTable(e.detail);
 });
+
+
+
 
 

@@ -37,6 +37,36 @@ input, select {
     border: 2px solid var(--border);
 }
 
+/* 테이블 헤더 토글 css*/
+.table th {
+  cursor: pointer;
+  position: relative;
+  user-select: none;
+  padding-right: 20px;
+}
+.table th::after {
+  content: "↕";  /* 초기 상태: 양방향 화살표 */
+  position: absolute;
+  right: 6px;
+  font-size: 0.8em;
+  color: #999;
+}
+.table th.asc::after  {
+  content: "▲";
+  color: #000;
+}
+.table th.desc::after {
+  content: "▼";
+  color: #000;
+}
+.table th.chkbox {
+  padding: 10px;        /* 화살표 자리 제거 */
+  text-align: center;      /* 수평 가운데 */
+}
+
+.table th.chkbox::after {
+  content: none !important;
+}
 
 
 /* 제목 영역 */

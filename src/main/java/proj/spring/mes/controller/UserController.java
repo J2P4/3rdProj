@@ -111,6 +111,7 @@ public class UserController {
             if (isBlank(dto.getWorker_name())) return fail(res, "이름은 필수입니다.");
             if (dto.getWorker_birth() == null) return fail(res, "생년월일은 필수입니다.");
             if (dto.getWorker_join() == null) return fail(res, "입사일은 필수입니다.");
+            if (dto.getWorker_email() == null) return fail(res, "이메일은 필수입니다.");
             if (isBlank(dto.getDepartment_id())) return fail(res, "부서를 선택하세요.");
             if (isBlank(dto.getWorker_code()) || "1".equals(dto.getWorker_code()))
                 return fail(res, "권한을 선택하세요.");
@@ -121,7 +122,11 @@ public class UserController {
                     && domain_email != null && !domain_email.isEmpty()) {
                 dto.setWorker_email(person_email + "@" + domain_email);
             }
-
+            // 이메일 중복 확인
+            if (workerService.emailExists(dto.getWorker_email())) {
+                return fail(res, "이미 등록된 이메일입니다.");
+            }
+            
             // --- 3) 초기 비밀번호 = j2p4mes ---
             dto.setWorker_pw("j2p4mes");
 

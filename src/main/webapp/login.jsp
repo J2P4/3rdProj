@@ -10,142 +10,137 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>J2P4 로그인</title>
   <style>
-    :root { 
-    	--border:#9aa0a6;
-    	--text:#222;
-    	--muted:#666;
-    	--button:#111827;
-    	--button-text:#fff;
-    	--field-border:#999;
-    	--card-bg:#fff;
-    	--page-bg:#fff; --radius:10px; 
-        --box-shadow: 0 4px 16px rgba(0, 0, 0, 0.162),
-              0 0 2px rgba(0, 0, 0, 0.06);
-   	}
-    
-    *{
-        box-sizing:border-box
-    } 
-    html,
-    body{
-        height:100%
-    }
-    
-    body{
-    	margin:0;
-    	color:var(--text);
-    	background:var(--page-bg);
-    	display:grid;place-items:
-    	start center;
-    }
-    
-    .wrap{
-    	margin-top:10%;
-    	width:700px;
-    	max-width:92vw;
-    	text-align:center;
-    }
-    
-    h1.title{
-    	margin:0 0 28px;
-    	font-size:60px;
-    	font-weight:700;
-    	letter-spacing:-0.02em;
-    }
-    .title > span {
-        color:#111827
-    }
-    
-    .card{
-        margin:0 auto;
-    	width:450px;
-    	max-width:92vw;
-    	background:var(--card-bg);
-    	/* border:1.5px solid var(--border); */
-    	border-radius:var(--radius);
-    	padding:28px 28px 24px;
-    	text-align:left;
-        box-shadow: var(--box-shadow);
-    }
-    
-    
-    .form-row{
-    	display:grid;
-    	grid-template-columns:100px 1fr;
-    	align-items:center;
-    	gap:14px;
-    	margin-bottom:
-    	16px;height:70px;
-    }
-    
-    label{
-    	font-size:16px;
-    	color:var(--muted);
-    	padding-left:8px;
-    }
-    
-    input[type="text"],input[type="password"]{
-    	height:40px;
-    	border:1.5px solid var(--field-border);
-    	border-radius:8px;
-    	padding:0 12px;
-    	font-size:16px;
-    	outline:none;
-    	
-    }
-    
-    input:focus{
-        border-color:#6b6b6b;
-    }
-    .actions{
-        margin-top:18px
-    }
-    #userid,
-    #userpw{
-        height:50px;
-    }
-    .btn{
-        height:60px;
-        border:none;
-        border-radius:8px;
-        background:var(--button);
-        color:var(--button-text);
-        font-size:24px;
-        font-weight:700;
-        cursor:pointer;
-        width:100%;
-        margin-top:1%;
-    }
-    .btn:active{
-        transform:translateY(1px)
-    }
-    .pw_reset {
-        text-align: center;
-        margin-top: 3%;
-        font-weight: bold;
-        color: #6b6b6b;
-    }
-    @media (max-width:768px){
-        .form-row{
-            grid-template-columns:1fr;
-            gap:8px
-        }
-        label{
-            padding-left:2px
-        }
-    }
-    
-    /* ===== Password Modal (namespaced) ===== */
+	:root { 
+		--border:#9aa0a6;
+		--text:#222;
+		--muted:#666;
+		--button:#111827;
+		--button-text:#fff;
+		--field-border:#999;
+		--card-bg:#fff;
+		--page-bg:#fff;
+		--radius:10px; 
+		--box-shadow: 0 4px 16px rgba(0, 0, 0, 0.162),
+			  0 0 2px rgba(0, 0, 0, 0.06);
+	}
+	
+	*{ box-sizing:border-box } 
+	html,body{ height:100% }
+	
+	body{
+		color:var(--text);
+		background:var(--page-bg);
+		display:flex;
+		flex-direction: column;
+		justify-content:center;
+		align-items:center;
+	}
+	
+	.wrap{
+		width:700px;
+		max-width:92vw;
+		text-align:center;
+		display:flex;
+		flex-direction:column;
+		align-items:center;
+	}
+	
+	h1.title{
+		margin:0 0 28px;
+		font-size:60px;
+		font-weight:700;
+		letter-spacing:-0.02em;
+	}
+	.title > span { color:#111827 }
+	
+	.card{
+		margin:0 auto;
+		width:450px;
+		max-width:92vw;
+		background:var(--card-bg);
+		border-radius:var(--radius);
+		padding:28px 28px 24px;
+		text-align:left;
+		box-shadow:var(--box-shadow);
+		display:flex;
+		flex-direction:column;
+		align-items:stretch;
+	}
+	
+	.form-row{
+		display:flex;
+		align-items:center;
+		gap:14px;
+		margin-bottom:16px;
+		height:70px;
+	}
+	.form-row label{
+		width:100px;
+		font-size:16px;
+		color:var(--muted);
+		padding-left:8px;
+	}
+	.form-row input[type="text"],
+	.form-row input[type="password"]{
+		flex:1;
+		height:40px;
+		border:1.5px solid var(--field-border);
+		border-radius:8px;
+		padding:0 12px;
+		font-size:16px;
+		outline:none;
+	}
+	input:focus{ border-color:#6b6b6b; }
+	
+	.actions{ margin-top:18px }
+	
+	#userid, #userpw{ height:50px; }
+	
+	.btn{
+		height:60px;
+		border:none;
+		border-radius:8px;
+		background:var(--button);
+		color:var(--button-text);
+		font-size:24px;
+		font-weight:700;
+		cursor:pointer;
+		width:100%;
+		margin-top:1%;
+	}
+	.btn:active{ transform:translateY(1px) }
+	
+	.pw_reset{
+		text-align:center;
+		margin-top:3%;
+		font-weight:bold;
+		color:#6b6b6b;
+	}
+	
+	@media (max-width:768px){
+		.form-row{
+			flex-direction:column;
+			align-items:flex-start;
+			gap:8px;
+		}
+		.form-row label{ padding-left:2px }
+	}
+	.alert.success,
+	.alert.error {
+		color : red;
+		font-weight: bold;
+		text-align: center;
+	}
+/* ===== Modal ===== */
 .pw-modal-backdrop {
   position: fixed;
   inset: 0;
-  display: none;           /* 기본 숨김 */
+  display: none;
   align-items: center;
   justify-content: center;
   background: rgba(0,0,0,.45);
   z-index: 9999;
 }
-
 .pw-modal-backdrop.is-open { display: flex; }
 
 .pw-modal-dialog {
@@ -155,8 +150,8 @@
   border-radius: 12px;
   padding: 24px 24px 18px;
   box-shadow: 0 12px 30px rgba(0,0,0,.20);
-  font-family: inherit;    /* 페이지 폰트 상속 */
-  color: inherit;          /* 페이지 텍스트 색상 상속 */
+  font-family: inherit;
+  color: inherit;
 }
 
 .pw-modal__title {
@@ -179,7 +174,7 @@
   margin-top: 8px;
 }
 
-/* 버튼도 네임스페이스 */
+/* 버튼 */
 .pw-btn {
   padding: 10px 16px;
   border-radius: 8px;
@@ -196,24 +191,23 @@
 
 .pw-btn--primary {
   border: none;
-  background: #2563eb;   /* 파랑 */
+  background: #2563eb;
   color: #fff;
 }
 
-/* 모바일 대응 */
 @media (max-width: 480px) {
   .pw-modal-dialog { padding: 20px; }
   .pw-modal__title { font-size: 18px; }
   .pw-btn { font-size: 13px; }
 }
-    
-  </style>
+</style>
+
 </head>
 <body>
 <form method="post" action="login">
   <div class="wrap">
     <h1 class="title">J2P4 <span>MES</span></h1>
-
+	
     <div class="card">
         <div class="form-row">
           <label for="userid">아이디</label>
@@ -225,6 +219,13 @@
           <input id="userpw" name="worker_pw" type="password" value="admin1234">
         </div>
 
+		<c:if test="${not empty msg}">
+			  <div class="alert success">${msg}</div>
+			</c:if>
+			<c:if test="${not empty error}">
+			  <div class="alert error">${error}</div>
+		</c:if>	
+
         <div class="actions">
           <button type="submit" class="btn">로 그 인</button>
         </div>
@@ -234,12 +235,7 @@
     </div>
   </div>
 </form>
-<c:if test="${not empty msg}">
-  <div class="alert success">${msg}</div>
-</c:if>
-<c:if test="${not empty error}">
-  <div class="alert error">${error}</div>
-</c:if>
+
 <!-- Password modal (namespaced) -->
 <div id="pwModal" class="pw-modal-backdrop" aria-hidden="true">
   <div class="pw-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="pwModalTitle">
@@ -275,7 +271,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (btnLater) {
     btnLater.addEventListener('click', () => {
-      location.href = `${base}/extend_pw`; // GET 방식(간단). POST면 CSRF 토큰 포함 필요
+      location.href = `${base}/extend_pw`; // GET 방식(간단). 
     });
   }
 

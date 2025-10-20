@@ -64,8 +64,7 @@
 						  <option value="ADMIN" ${filter.worker_code == 'ADMIN' ? 'selected' : ''}>ADMIN</option>
 						  <option value="HEAD" ${filter.worker_code == 'HEAD' ? 'selected' : ''}>HEAD</option>
 						  <option value="STAFF" ${filter.worker_code == 'STAFF' ? 'selected' : ''}>STAFF</option>
-						</select>
-                    </select>
+					 </select>
                 </div>
             </div>
         </div>
@@ -81,11 +80,11 @@
             <thead>
             	<tr>
 	                <th class = "chkbox"><input type="checkbox"  id="chkAll"></th>
-	                <th>사원번호</th>
-	                <th>이름</th>
-	                <th>부서</th>
-	                <th>입사일</th>
-	                <th>권한</th>
+	                <th data-type="text">사원번호</th>
+	                <th data-type="text">이름</th>
+	                <th data-type="text">부서</th>
+	                <th data-type="date">입사일</th>
+	                <th data-type="text">권한</th>
                 </tr>
             </thead>
             <tbody>
@@ -366,5 +365,6 @@
             </div>
         </div>
     </div>
+
 </body>
 </html>

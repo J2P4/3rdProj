@@ -10,132 +10,125 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>J2P4 비밀번호 변경</title>
   <style>
-    :root { 
-    	--border:#9aa0a6;
-    	--text:#222;
-    	--muted:#666;
-    	--button:#111827;
-    	--button-text:#fff;
-    	--field-border:#999;
-    	--card-bg:#fff;
-    	--page-bg:#fff; --radius:10px; 
-        --box-shadow: 0 4px 16px rgba(0, 0, 0, 0.162),
-              0 0 2px rgba(0, 0, 0, 0.06);
-   	}
-    
-    *{
-        box-sizing:border-box
-    } 
-    html,
-    body{
-        height:100%
-    }
-    
-    body{
-    	margin:0;
-    	color:var(--text);
-    	background:var(--page-bg);
-    	display:grid;place-items:
-    	start center;
-    }
-    
-    .wrap{
-    	margin-top:10%;
-    	width:700px;
-    	max-width:92vw;
-    	text-align:center;
-    }
-    
-    h1.title{
-    	margin:0 0 28px;
-    	font-size:60px;
-    	font-weight:700;
-    	letter-spacing:-0.02em;
-    }
-    .title > span {
-        color:#111827
-    }
-    
-    .card{
-        margin:0 auto;
-    	width:450px;
-    	max-width:92vw;
-    	background:var(--card-bg);
-    	/* border:1.5px solid var(--border); */
-    	border-radius:var(--radius);
-    	padding:28px 28px 24px;
-    	text-align:left;
-        box-shadow: var(--box-shadow);
-    }
-    
-    
-    .form-row{
-    	display:grid;
-    	grid-template-columns:100px 1fr;
-    	align-items:center;
-    	gap:14px;
-    	margin-bottom:
-    	16px;height:70px;
-    }
-    
-    label{
-    	font-size:16px;
-    	color:var(--muted);
-    }
-    
-    input[type="text"],input[type="password"]{
-    	height:40px;
-    	border:1.5px solid var(--field-border);
-    	border-radius:8px;
-    	padding:0 12px;
-    	font-size:16px;
-    	outline:none;
-    	
-    }
-    
-    input:focus{
-        border-color:#6b6b6b;
-    }
-    .actions{
-        margin-top:18px
-    }
-    #userid,
-    #userpw{
-        height:50px;
-    }
-    .btn{
-        height:60px;
-        border:none;
-        border-radius:8px;
-        background:var(--button);
-        color:var(--button-text);
-        font-size:24px;
-        font-weight:700;
-        cursor:pointer;
-        width:100%;
-        margin-top:1%;
-    }
-    .btn:active{
-        transform:translateY(1px)
-    }
-    .pw_reset {
-        text-align: center;
-        margin-top: 3%;
-        font-weight: bold;
-        color: #6b6b6b;
-    }
-    .confirm-text {
-    	text-align: center;
-    }
-    @media (max-width:768px){
-        .form-row{
-            grid-template-columns:1fr;
-            gap:8px
-        }
-        label{
-            padding-left:2px
-        }
-    }
+    	:root { 
+		--border:#9aa0a6;
+		--text:#222;
+		--muted:#666;
+		--button:#111827;
+		--button-text:#fff;
+		--field-border:#999;
+		--card-bg:#fff;
+		--page-bg:#fff;
+		--radius:10px; 
+		--box-shadow: 0 4px 16px rgba(0, 0, 0, 0.162),
+			  0 0 2px rgba(0, 0, 0, 0.06);
+	}
+	
+	*{ box-sizing:border-box } 
+	html,body{ height:100% }
+	
+	body{
+		margin:0;
+		color:var(--text);
+		background:var(--page-bg);
+		display:flex;
+		flex-direction: column;
+		justify-content:center;
+		align-items:center;
+	}
+	
+	.wrap{
+		width:700px;
+		max-width:92vw;
+		text-align:center;
+		display:flex;
+		flex-direction:column;
+		align-items:center;
+	}
+	
+	h1.title{
+		margin:0 0 28px;
+		font-size:60px;
+		font-weight:700;
+		letter-spacing:-0.02em;
+	}
+	.title > span { color:#111827 }
+	
+	.card{
+		margin:0 auto;
+		width:450px;
+		max-width:92vw;
+		background:var(--card-bg);
+		border-radius:var(--radius);
+		padding:28px 28px 24px;
+		text-align:left;
+		box-shadow:var(--box-shadow);
+		display:flex;
+		flex-direction:column;
+		align-items:stretch;
+	}
+	
+	.form-row{
+		display:flex;
+		align-items:center;
+		gap:14px;
+		margin-bottom:16px;
+		height:70px;
+	}
+	.form-row label{
+		width:100px;
+		font-size:16px;
+		color:var(--muted);
+		padding-left:8px;
+	}
+	.form-row input[type="text"],
+	.form-row input[type="password"]{
+		flex:1;
+		height:40px;
+		border:1.5px solid var(--field-border);
+		border-radius:8px;
+		padding:0 12px;
+		font-size:16px;
+		outline:none;
+	}
+	input:focus{ border-color:#6b6b6b; }
+	
+	.actions{ margin-top:18px }
+	
+	#userid, #userpw{ height:50px; }
+	
+	.btn{
+		height:60px;
+		border:none;
+		border-radius:8px;
+		background:var(--button);
+		color:var(--button-text);
+		font-size:24px;
+		font-weight:700;
+		cursor:pointer;
+		width:100%;
+		margin-top:1%;
+	}
+	.btn:active{ transform:translateY(1px) }
+	
+	.pw_reset{
+		text-align:center;
+		margin-top:3%;
+		font-weight:bold;
+		color:#6b6b6b;
+	}
+	.error {
+		color : red;
+		font-weight: bold;
+	}
+	@media (max-width:768px){
+		.form-row{
+			flex-direction:column;
+			align-items:flex-start;
+			gap:8px;
+		}
+		.form-row label{ padding-left:2px }
+	}
   </style>
 </head>
 <body>
@@ -183,7 +176,13 @@
 <c:if test="${not empty error}">
   <div class="alert error">${error}</div>
 </c:if>
-
+<c:if test="${not empty alert}">
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      alert('${fn:escapeXml(alert)}');  // 한 번만 뜸
+    });
+  </script>
+</c:if>
 <!-- 실시간 검사 스크립트 -->
 <script>
 document.addEventListener('DOMContentLoaded', () => {
@@ -240,7 +239,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 4) 조합 미흡 시
     if (missing.length > 0) {
-      status.textContent = `${missing.join('·')}를 포함해야 합니다.`;
+      status.textContent = `\${missing.join('·')}를 포함해야 합니다.`;
       status.style.color = '#e67e22';
       submitBtn.disabled = true;
       return;
@@ -255,8 +254,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // 6) 확인 불일치
-    if (!confirmOK) {
-      status.textContent = '비밀번호 확인이 일치하지 않습니다.';
+    if (confirmVal.length > 0 && confirmVal !== val) {
+      status.textContent = '새 비밀번호와 일치하지 않습니다.';
       status.style.color = '#e67e22';
       submitBtn.disabled = true;
       return;

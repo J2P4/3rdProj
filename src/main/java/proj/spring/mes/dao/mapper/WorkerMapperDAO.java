@@ -23,6 +23,9 @@ public interface WorkerMapperDAO {
 	
     DeptDTO selectDeptName(String department_id);
     
+    // 이메일 중복확인
+    int countByEmail(String worker_email);
+    
 	// 신규(페이징) 및 필터
     List<WorkerDTO> selectWorkerListPage(@Param("limit") int limit, @Param("offset") int offset, @Param("filter") WorkerDTO searchFilter);
 	// 신규(총계)

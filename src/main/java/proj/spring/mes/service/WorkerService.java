@@ -39,6 +39,9 @@ public interface WorkerService {
 
     // 만료일 도달 후 나중에 변경 선택시
     void extendPwExpiry(String worker_id, int days);
+    
+    // 이메일 중복
+	boolean emailExists(String worker_email);
 
 }
 

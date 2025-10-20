@@ -84,13 +84,24 @@ public class LoginController {
         boolean mustChange = workerService.mustChangeNow(worker_id, hashed);
         if (mustChange) {
             newSession.setAttribute("mustChangePw", true);   // 강제변경 플래그(유지)
-            newSession.setAttribute("showPwModal", true);    // 모달 띄우기 플래그
+            newSession.removeAttribute("showPwModal");    // 모달 띄우기 플래그
+            // 초기비밀번호 여부만 메시지 용도로 별도 체크
+            
+            boolean isInitial = workerService.match("j2p4mes", hashed);
+            
+            if (isInitial) {
+                ra.addFlashAttribute("alert", "초기 비밀번호로 로그인하셨습니다. 반드시 비밀번호를 변경해 주세요.");
+            } else {
+                ra.addFlashAttribute("alert", "비밀번호 유효기간이 만료되었거나 보안을 위해 변경이 필요합니다.");
+            }
+            return "redirect:/pw_change?mode=force";
+            
         } else {
             newSession.setAttribute("mustChangePw", false);
             newSession.removeAttribute("showPwModal");
+            return "redirect:/stocklist";
         }
         
-	    return "redirect:/stocklist";
 	}
 	
 	@RequestMapping("/change_page")
@@ -121,6 +132,7 @@ public class LoginController {
         } catch (Exception ex) { // 예상 못한 예외는 일반 메시지로
             ra.addFlashAttribute("error", "처리 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.");
             return "redirect:/pw_change";
+        }
 	}
 	
 	// 만료일 도달 후 나중에 변경선택시
