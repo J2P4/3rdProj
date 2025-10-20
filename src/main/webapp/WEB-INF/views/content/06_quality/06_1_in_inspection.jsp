@@ -17,37 +17,41 @@
     <script>
         const contextPath = '${pageContext.request.contextPath}';
         // 품목 목록을 JSON 형식으로 js 변수에 저장하려고 작성
-        const allItemsJson = `${itemListJson}`; 
+        const stockListJson = `${stockListJson}`; 
     </script>    
     <script src="${pageContext.request.contextPath}/resources/js/common.js" defer></script>
     <script src="${pageContext.request.contextPath}/resources/js/06_1_inins.js" defer></script>
 </head>
 <body>
     <div class = "title"><h1>입고 검사</h1></div>
-    <form class = "filter" method="get" action="">
+   	<c:url var="/inInslist" value="/inInslist"/> <%-- 모든 내부 링크의 기준 URL(중복 /mes/mes 방지) 이거 떄믄에 한시간.... --%>
+	<c:set var="selfPath" value="/inInslist"/> <%-- c:url value에 사용할 경로 문자열 --%>
+    <form class = "filter" method="get" action="${pageContext.request.contextPath}/inInslist">
         <div class = "filter-item-box">
             <div class = "filter-item">
                 <div class = "filitem-name">· 결과 ID</div>
                 <div class = "filitem-input">
-                    <input type = "text" name = "inspection_result_id" placeholder = "검사 결과 id를 입력해주세요">
+                    <input type = "text" name = "inspection_result_id" placeholder = "검사 결과 id를 입력해주세요" value="${filter.inspection_result_id}">
                 </div>
             </div>
             <div class = "filter-item">
                 <div class = "filitem-name">· 검사일</div>
                 <div class = "filitem-input">
-                    <input type = "date" name="fromDate" id="fromDate">
+                    <input type = "date" name="fromDate" id="fromDate" value="${param.fromDate}">
                     <span class="tilde">~</span>
-                    <input type = "date" name="toDate" id="toDate">
+                    <input type = "date" name="toDate" id="toDate" value="${param.toDate}">
                 </div>
             </div>
             <div class = "filter-item">
                 <div class = "filitem-name">· 품명</div>
                 <div class = "filitem-input">
-                    <input type = "text" name = "item_name" placeholder = "품명을 입력해주세요">
+                    <input type = "text" name = "item_name" placeholder = "품명을 입력해주세요" value="${filter.item_name}">
                 </div>
             </div>
         </div>
         <div class = "filter-btn">
+            <input type="hidden" name="page" value="1"/> <%-- 조회 시 항상 1페이지부터 --%>
+            <input type="hidden" name="size" value="${pagePerRows != null ? pagePerRows : 10}"/> <%-- 현재 Rows 유지 --%>
             <input type = "submit" class = "fil-btn" value="조회">
         </div>
     </form>
@@ -72,7 +76,7 @@
 				<c:if test="${not empty list}">
 					<c:forEach var="P0601_InInsDTO" items="${list}">
 		                <tr data-id="${P0601_InInsDTO.inspection_result_id}">
-		                    <td class = "chkbox"><input type="checkbox" name="delete_outIns_id" value="${P0602_OutInsDTO.inspection_result_id}" class="rowChk"></td>
+		                    <td class = "chkbox"><input type="checkbox" name="delete_InIns_id" value="${P0601_InInsDTO.inspection_result_id}" class="rowChk"></td>
 		                    <td class = "id">${P0601_InInsDTO.inspection_result_id}</td>
 		                    <td class = "date">${P0601_InInsDTO.inspection_result_date}</td>
 		                    <td class = "gb">${P0601_InInsDTO.inspection_result_good}</td>
@@ -83,6 +87,84 @@
             </tbody>
         </table>
     </div>
+    <!-- 현재 페이지 유지 -->
+    <input type="hidden" name="page" value="${page}">
+    <input type="hidden" name="size" value="${pagePerRows}">
+    <div class = "page">
+        <c:if test="${empty page}"><c:set var="page" value="1"/></c:if> <%-- 현재 페이지 기본 1 --%>
+        <c:if test="${empty pagePerRows}"><c:set var="pagePerRows" value="10"/></c:if> <%-- Rows 기본 10 --%>
+        <c:if test="${empty totalPages}"><c:set var="totalPages" value="1"/></c:if> <%-- 총페이지 기본 1 --%>
+        <c:if test="${empty startPage}"><c:set var="startPage" value="1"/></c:if> <%-- 블록 시작 기본 1 --%>
+        <c:if test="${empty endPage}"><c:set var="endPage" value="${totalPages}"/></c:if> <%-- 블록 끝 기본 총페이지 --%>
+	
+        <form id="sizeForm" method="get" action="${pageContext.request.contextPath}/inInslist" style="display:inline-block; margin-right:8px;">
+            <input type="hidden" name="page" value="1"/> <%-- Rows 바꾸면 1페이지로 --%>
+            <input type="hidden" name="inspection_result_id" value="${fn:escapeXml(param.inspection_result_id)}"/> 
+            <input type="hidden" name="item_name" value="${fn:escapeXml(param.item_name)}"/> 
+            <input type="hidden" name="fromDate" value="${fn:escapeXml(param.fromDate)}"/> 
+            <input type="hidden" name="toDate" value="${fn:escapeXml(param.toDate)}"/>
+
+            <label>Rows:
+                <select name="size" onchange="document.querySelector('#sizeForm').submit()">
+                    <option value="1" ${pagePerRows==1 ? 'selected' : ''}>1</option> <%-- 1행 보기(블록 전환 테스트에 유용) --%>
+                    <option value="10" ${pagePerRows==10 ? 'selected' : ''}>10</option>
+                    <option value="20" ${pagePerRows==20 ? 'selected' : ''}>20</option>
+                    <option value="50" ${pagePerRows==50 ? 'selected' : ''}>50</option>
+                    <option value="100" ${pagePerRows==100 ? 'selected' : ''}>100</option>
+                </select>
+            </label>
+        </form>
+
+        <c:choose>
+            <c:when test="${hasPrevBlock}"> <%-- 이전 블록이 있으면 링크 활성 --%>
+                <c:url var="prevBlockUrl" value="${selfPath}"> <%-- /list 에 파라미터 조합 --%>
+                    <c:param name="page" value="${prevBlockStart}"/> <%-- 이전 블록 첫 페이지로 이동 --%>
+                    <c:param name="size" value="${pagePerRows}"/> <%-- Rows 유지 --%>
+                    <c:param name="inspection_result_id" value="${param.inspection_result_id}"/> <%-- 필터 유지 --%>
+                    <c:param name="fromDate" value="${param.fromDate}"/>   <c:param name="toDate" value="${param.toDate}"/>
+                    <c:param name="item_name" value="${param.item_name}"/>
+                </c:url>
+                <a class="page-link" href="${prevBlockUrl}">이전</a> <%-- 클릭 시 이전 블록 시작으로 --%>
+            </c:when>
+            <c:otherwise>
+                <span class="page-link disabled">이전</span> <%-- 이전 블록이 없으면 비활성 --%>
+            </c:otherwise>
+        </c:choose>
+	
+        <c:forEach var="p" begin="${startPage}" end="${endPage}">
+            <c:url var="pUrl" value="${selfPath}"> <%-- 각 페이지 숫자 링크 --%>
+                <c:param name="page" value="${p}"/>
+                <c:param name="size" value="${pagePerRows}"/>
+                <c:param name="inspection_result_id" value="${param.inspection_result_id}"/>
+                <c:param name="fromDate" value="${param.fromDate}"/>   <c:param name="toDate" value="${param.toDate}"/>
+                <c:param name="item_name" value="${param.item_name}"/>
+            </c:url>
+            <c:choose>
+                <c:when test="${p == page}">
+                    <span class="page-link current"><strong>${p}</strong></span> <%-- 현재 페이지는 강조(링크 X) --%>
+                </c:when>
+                <c:otherwise>
+                    <a class="page-link" href="${pUrl}">${p}</a> <%-- 다른 페이지는 링크 --%>
+                </c:otherwise>
+            </c:choose>
+        </c:forEach>
+	
+        <c:choose>
+            <c:when test="${hasNextBlock}">
+                <c:url var="nextBlockUrl" value="${selfPath}">
+                    <c:param name="page" value="${nextBlockStart}"/> <%-- 다음 블록 시작 페이지 --%>
+                    <c:param name="size" value="${pagePerRows}"/>
+                    <c:param name="inspection_result_id" value="${param.inspection_result_id}"/>
+                    <c:param name="fromDate" value="${param.fromDate}"/>   <c:param name="toDate" value="${param.toDate}"/>
+                    <c:param name="item_name" value="${param.item_name}"/>
+                </c:url>
+                <a class="page-link" href="${nextBlockUrl}">다음</a> <%-- 클릭 시 11, 21, … --%>
+            </c:when>
+            <c:otherwise>
+                <span class="page-link disabled">다음</span> <%-- 다음 블록 없으면 비활성 --%>
+            </c:otherwise>
+        </c:choose>
+    </div>
     <div class = "bottom-btn">
         <div class = "page"></div>
         <div class = "bottom-btn-box">
@@ -91,9 +173,12 @@
         </div>
     </div>
     <div class = "slide" id = "slide-input">
-        <div class = "slide-contents">
-            <div class = "silde-title"><h2>입고 검사 등록</h2></div>
-            <div class = "slide-id">입고 검사 ID: </div>
+        <form class = "slide-contents" id="inInsInsertForm">
+            <div class = "silde-title"><h2 id="slide-title">입고 검사 등록</h2></div>
+            <div class = "slide-id" id="inIns-id-show" style = "display: none">
+                입고 검사 ID: <span id="inIns-id-val"></span>
+                <input type="hidden" id="input_inIns_id" name="inspection_result_id" value="">
+            </div>
             <div class = "slide-tb">
                 <table>
                     <thead>
@@ -104,13 +189,13 @@
                     <tbody>
                         <tr>
                             <td>
-                                <input type = "date">
+                                <input type = "date" id="input_inIns_date">
                             </td>
                             <td>
-                                <input type = "number">
+                                <input type = "number" id="input_inIns_good" placeholder="양품 수를 입력해주세요">
                             </td>
                             <td>
-                                <input type = "number">
+                                <input type = "number" id="input_inIns_bad" placeholder="불량 수를 입력해주세요">
                             </td>
                         </tr>
                     </tbody>
@@ -119,19 +204,40 @@
             <div class = "slide-tb">
                 <table>
                     <thead>
-                        <th>검사 대상</th>
+                        <th>검사 품목 분류</th>
+                        <th>검사 품목명</th>
                         <th>담당 사원</th>
                     </thead>
                     <tbody>
                         <tr>
                             <td>
-                                <select name = "변수명" size = "1">
-                                    <option>검사 대상</option>
+                                <select name = "item_div" size = "1" id = "input_item_div">
+                                    <option value="" selected>품목 분류 선택</option>
+                                    <option value="도서">도서</option>
+                                    <option value="포장지">포장지</option>
                                 </select>
                             </td>
                             <td>
-                                <select name = "변수명" size = "1">
-                                    <option>담당 사원</option>
+                                <select name = "stock_id" size = "1" id = "input_stock_id" readonly>
+                                    <option value="" selected>검사 품목 선택</option>
+                                    <!-- <c:forEach var="stock" items="${stockList}">
+                                        <option
+                                            value="stock.stock_id"
+                                            data-id="${stock.stock_id}"
+                                            data-name="${stock.item_name}">
+                                            ${stock.stock_id} - ${stock.item_name}
+                                        </option>
+                                    </c:forEach> -->
+                                </select>
+                            </td>
+                            <td>
+                                <select name = "worker_id" size = "1" id = "input_worker_name">
+                                    <option value="" selected>담당자 선택</option>
+                                    <c:forEach var="worker" items="${wnlist}">
+                                        <option value="${worker.worker_id}" data-name = "${worker.worker_name}">
+                                            ${worker.worker_id} - ${worker.worker_name}
+                                        </option>
+                                    </c:forEach>
                                 </select>
                             </td>
                         </tr>
@@ -139,17 +245,17 @@
                 </table>
             </div>
             <div class = "slide-btnbox">
-                <input type = "button" class = "slide-btn" value = "등록">
+                <input type = "button" class = "submit-btn slide-btn" value = "등록">
                 <input type = "button" class = "close-btn slide-btn" value = "취소">
             </div>
-        </div>
+        </form>
     </div>
     <div class = "slide" id = "slide-detail">
         <div class = "slide-contents">
             <div class = "silde-title"><h2>입고 검사 상세</h2></div>
             <div class = "slide-id">입고 검사 ID: </div>
             <div class = "slide-tb">
-                <table>
+                <table id = "inspectionInfo">
                     <thead>
                         <th>검사일</th>
                         <th>양품 수</th>
@@ -157,29 +263,31 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td data-type = "date">1</td>
-                            <td>1</td>
-                            <td>1</td>
+                            <td data-type = "date"></td>
+                            <td></td>
+                            <td></td>
                         </tr>
                     </tbody>
                 </table>
             </div>
             <div class = "slide-tb">
-                <table>
+                <table id = "charge">
                     <thead>
-                        <th>검사 대상</th>
+                        <th>검사 품목 ID</th>
+                        <th>검사 품목명</th>
                         <th>담당 사원</th>
                     </thead>
                     <tbody>
                         <tr>
-                            <td data-type = "select">2</td>
-                            <td data-type = "select">2</td>
+                            <td data-type = "select"></td>
+                            <td data-type = "select"></td>
+                            <td data-type = "select"></td>
                         </tr>
                     </tbody>
                 </table>
             </div>
             <div class = "slide-btnbox">
-                <input type = "button" class = "slide-btn" value = "수정">
+                <input type = "button" class = "slide-btn" id="detailEditBtn" value = "수정">
                 <input type = "button" class = "close-btn slide-btn" value = "취소">
             </div>
         </div>

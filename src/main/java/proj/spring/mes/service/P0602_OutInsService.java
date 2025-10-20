@@ -15,4 +15,7 @@ public interface P0602_OutInsService {
 	public int addOutIns(P0602_OutInsDTO dto);
 	public List<WorkerDTO> workerNameList();
 	
+	// 페이징
+	List<P0602_OutInsDTO> list(int page, int pagePerRows, P0602_OutInsDTO searchFilter);
+	long count(P0602_OutInsDTO searchFilter);
 }

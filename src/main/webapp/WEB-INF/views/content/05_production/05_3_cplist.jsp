@@ -12,7 +12,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>재고 관리 < 기준 관리 < J2P4</title>
+    <title>생산 실적 < 생산관리 < J2P4</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/common.css" type="text/css">
     <!-- 상세, 품목 select 뜰 수 있도록 아래 script 영역 필수 추가!! -->
     <script>
@@ -25,7 +25,7 @@
 </head>
 <body>
     <!-- 페이지 제목 -->
-    <div class = "title"><h1>재고 관리</h1></div>
+    <div class = "title"><h1>생산 실적</h1></div>
     <!-- 페이징용 추가 코드 1-->
    	<c:url var="/stocklist" value="/stocklist"/> <%-- 모든 내부 링크의 기준 URL(중복 /mes/mes 방지) 이거 떄믄에 한시간.... --%>
 	<c:set var="selfPath" value="/stocklist"/> <%-- c:url value에 사용할 경로 문자열 --%>
@@ -39,36 +39,28 @@
     <form class = "filter" method="get" action="${pageContext.request.contextPath}/stocklist">
         <div class = "filter-item-box">
             <div class = "filter-item">
-                <div class = "filitem-name">· 재고 ID</div>
+                <div class = "filitem-name">· 생산 실적 ID</div>
                 <div class = "filitem-input">
                     <c:set var="filter.stock_id" value="${param.stock_id}" />
                     <input type="text" name="stock_id" placeholder=" ID를 입력해주세요" value="${filter.stock_id}">
                 </div>
             </div>
             <div class = "filter-item">
-                <div class = "filitem-name">· 구분</div>
-                <div class = "filitem-input">
-                    <select name = "item_div" size = "1">
-                        <!-- 삼항 연산자로 selected 상태인지 아닌지 지정 -->
-                        <option value = "" ${empty filter.item_div ? 'selected' : ''}>재고 구분 선택</option>
-                        <option value = "도서" ${filter.item_div eq '도서' ? 'selected' : ''}>도서</option>
-                        <option value = "포장지" ${filter.item_div eq '포장지' ? 'selected' : ''}>포장지</option>
-                        <option value = "완제품" ${filter.item_div eq '완제품' ? 'selected' : ''}>완제품</option>
-                    </select>                    
+                <div class = "filitem-name">· 생산계획 ID</div>
+                 <div class = "filitem-input">
+                    <c:set var="filter.stock_id" value="${param.stock_id}" />
+                    <input type="text" name="stock_id" placeholder=" ID를 입력해주세요" value="${filter.stock_id}">
                 </div>
+              
             </div>
             <div class = "filter-item">
-                <div class = "filitem-name">· 보관 위치</div>
+                <div class = "filitem-name">· 생산 계획일</div>
                 <div class = "filitem-input">
-                    <select name = "stock_wrap" size = "1">
-
-                        <option value = "" ${empty filter.stock_wrap ? 'selected' : ''}>보관 위치 선택</option>
-                        <option value = "WH1 :: 1번 창고" ${filter.stock_wrap eq 'WH1 :: 1번 창고' ? 'selected' : ''}>WH1 :: 1번 창고</option>
-                        <option value = "WH2 :: 2번 창고" ${filter.stock_wrap eq 'WH2 :: 2번 창고' ? 'selected' : ''}>WH2 :: 2번 창고</option>
-                        <option value = "WH3 :: 3번 창고" ${filter.stock_wrap eq 'WH3 :: 3번 창고' ? 'selected' : ''}>WH3 :: 3번 창고</option>
-                        <option value = "WH4 :: 4번 창고" ${filter.stock_wrap eq 'WH4 :: 4번 창고' ? 'selected' : ''}>WH4 :: 4번 창고</option>
-                    </select>
-                </div>
+	                	<input type="date" name="fromDate" id="fromDate" value="${empty param.fromDate ? '' : param.fromDate}">
+	                	<span class="tilde">~</span>
+	                	<input type="date" name="toDate" id="toDate" value="${empty param.toDate ? todayStr : param.toDate}">
+	                   
+	               	 </div>
             </div>
             <div class = "filter-item"></div>
         </div>
@@ -88,10 +80,11 @@
             <thead>
                 <tr>
                     <th class = "chkbox"><input type="checkbox" id="chkAll"></th>
-                    <th class = "id">재고 ID</th>
-                    <th>재고량</th>
-                    <th class = "type">구분</th>
-                    <th>보관 위치</th>
+                    <th class = "id">생산 실적 ID</th>
+                    <th>생산 계획 ID</th>
+                    <th class = "type">진행률</th>
+                    <th>달성률</th>
+                    <th>불량률</th>
                 </tr>
             </thead>
             <!-- 데이터 행 tr에 data-id 속성 잊지 말기! (상세 슬라이드에 필수) -->
@@ -105,12 +98,12 @@
                	<c:if test="${not empty list}">
                		<c:forEach var="P0401_StockDTO" items="${list}">
 	               		<tr data-id="${P0401_StockDTO.stock_id}">
-		                    <td><input type="checkbox" class="rowChk" name="delete_stock_id" value="${P0401_StockDTO.stock_id}"></td>
-		                    <td>${P0401_StockDTO.stock_id}</td>
-		                    <td>${P0401_StockDTO.stock_amount}</td>
-		                    <td>${P0401_StockDTO.item_div}</td>
-		                    <td>${P0401_StockDTO.stock_wrap}</td>
-	                    </tr>
+    <td><input type="checkbox" class="rowChk" name="delete_stock_id" value="${P0401_StockDTO.stock_id}"></td>
+    <td>${P0401_StockDTO.stock_id}</td>
+    <td>${P0401_StockDTO.stock_date}</td>               <%-- 작업 지시일 --%>
+    <td>${P0401_StockDTO.order_quantity}</td>           <%-- 지시 수량 --%>
+    <td>${P0401_StockDTO.production_quantity}</td>      <%-- 생산 수량 --%>
+</tr>
                     </c:forEach>
                  </c:if>
             </tbody>
@@ -202,14 +195,13 @@
     <form class = "bottom-btn">
         <div class = "page"></div>
         <div class = "bottom-btn-box">
-            <input type = "button" class = "btm-btn new" value="신규">
             <input type = "button" class = "btm-btn del" value="삭제">
         </div>
     </form>
     <!-- 입력용 슬라이드 -->
     <div class = "slide" id = "slide-input">
         <form class = "slide-contents" id="stockInsertForm">
-            <div class = "silde-title"><h2 id="slide-title">재고 등록</h2></div>
+            <div class = "silde-title"><h2 id="slide-title">작업지시서 등록</h2></div>
             <div class = "slide-id" id="stock-id-show" style = "display: none">
                 재고 ID: <span id="stock-id-val"></span>
                 <input type="hidden" id="input_stock_id" name="stock_id" value="">
@@ -218,36 +210,23 @@
                 <table>
                     <thead>
                         <!-- select 데이터 글씨가 너무 많으면 테이블이 깨져서 강제로 style 속성 지정 1 -->
-                        <th style = "width: 40%">품목 ID</th>
-                        <th>품목 분류</th>
-                        <th>품목 이름</th>
+                        <th style = "width: 40%">작업 지시일</th>
+                        <th>지시 수량</th>
+                        <th>생산 수량</th>
                     </thead>
                     <tbody>
                         <tr>
-                            <td>
-                                <!-- select에 DB의 품목 id 데이터 불러와서 채워넣기 -->
-                                <!-- select 데이터 글씨가 너무 많으면 테이블이 깨져서 강제로 style 속성 지정 2 -->
-                                <select id="input_item_id" name="item_id" size = "1" style = "width: 100%;">
-                                    <option value="" selected>품목 ID 선택</option>
-                                    <c:forEach var="item" items="${itemList}">
-                                        <option 
-                                            value="${item.item_id}"
-                                            data-div="${item.item_div}"
-                                            data-name="${item.item_name}">
-                                            ${item.item_id} - ${item.item_name}
-                                        </option>
-                                    </c:forEach>
+                           
+                             <td data-type = "select">
+                               <input type = "text" id="input_item_name" placeholder = "작업지시일" style = "width: 100%;"></td> 
                                 </select>
-                            </td>
+                                </td>
+       
                             <td data-type = "select">
-                                <select id="input_item_div" name="item_div" size="1" style = "width: 100%;">
-                                    <option value="" selected>품목 분류 선택</option>
-                                    <option value = "도서">도서</option>
-                                    <option value = "포장지">포장지</option>
-                                    <option value = "완제품">완제품</option>
+                               <input type = "text" id="input_item_name" placeholder = "지시수량" style = "width: 100%;"></td> 
                                 </select>
                             </td>
-                            <td><input type = "text" id="input_item_name" placeholder = "품목명을 입력해주세요" style = "width: 100%;"></td>
+                            <td><input type = "text" id="input_item_name" placeholder = "생산수량을 입력해주세요" style = "width: 100%;"></td>
                         </tr>
                     </tbody>
                 </table>
@@ -255,18 +234,20 @@
             <div class = "slide-tb">
                 <table>
                     <thead>
-                        <th class = "amount">재고 수량</th>
-                        <th>보관 위치</th>
+                        <th class = "amount">생산 계획 ID</th>
+                        <th>담당 사원</th>
                     </thead>
                     <tbody>
                         <tr>
-                            <td><input type = "number"  id="input_stock_amount" name="stock_amount" style = "width: 100%;"></td>
+                            <td><input type = "letter"  id="input_stock_amount" name="stock_amount" style = "width: 100%;"></td>
                             <td data-type = "select">
                                 <select id="input_stock_wrap" name="stock_wrap" style = "width: 100%;">
-                                    <option value = "WH1 :: 1번 창고">WH1 :: 1번 창고</option>
-                                    <option value = "WH2 :: 2번 창고">WH2 :: 2번 창고</option>
-                                    <option value = "WH3 :: 3번 창고">WH3 :: 3번 창고</option>
-                                    <option value = "WH4 :: 4번 창고">WH4 :: 4번 창고</option>
+                                    <option value = "WH1 :: 1번 창고">고현지</option>
+                                    <option value = "WH2 :: 2번 창고">김재은</option>
+                                    <option value = "WH3 :: 3번 창고">윤성연</option>
+                                    <option value = "WH4 :: 4번 창고">조민서</option>
+                                    <option value = "WH4 :: 5번 창고">최아라</option>
+                                    <option value = "WH4 :: 5번 창고">최연지</option>
                                 </select>
                             </td>
                         </tr>
@@ -305,8 +286,8 @@
                 <!-- 상세 데이터 표시용 id 주는 영역 1 -->
                 <table id="stockDetail">
                     <thead>
-                        <th>재고 수량</th>
-                        <th>보관 위치</th>
+                        <th>생산계획 ID</th>
+                        <th>담당 사원</th>
                     </thead>
                     <tbody>
                         <tr>
@@ -323,4 +304,4 @@
         </div>
     </div>
 </body>
-</html>
+</html> vcb

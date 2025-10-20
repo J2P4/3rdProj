@@ -1,139 +1,145 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper
-  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="proj.spring.mes.dao.mapper.ItemMapperDAO">
 
-  <!-- 전체 목록 (무페이징) -->
-  <select id="selectItemList" resultType="proj.spring.mes.dto.ItemDTO">
-    <![CDATA[
-    SELECT
-      item_id,
-      item_price,
-      item_div,
-      item_name,
-      item_unit
-    FROM V3_item
-    ORDER BY item_name ASC
-    ]]>
-  </select>
+    <!-- 총 건수 -->
+    <select id="count" resultType="long">
+        SELECT COUNT(*) FROM V3_ITEM
+    </select>
 
-  <!-- 페이징 목록 (Oracle ROWNUM 방식, limit/offset 그대로 받음) -->
-  <!-- Mapper 인터페이스: selectItemListPage(@Param("limit") int limit, @Param("offset") int offset) -->
-  <select id="selectItemListPage" resultType="proj.spring.mes.dto.ItemDTO">
-    <bind name="startRow" value="offset + 1"/>
-    <bind name="endRow"   value="offset + limit"/>
-    <![CDATA[
-    SELECT *
-    FROM (
-      SELECT t.*, ROWNUM rn
-      FROM (
+    <!-- 기본 목록(페이지네이션: ROWNUM) -->
+    <select id="list" parameterType="map" resultType="map">
+        SELECT * FROM (
+            SELECT A.ITEM_ID   AS item_id,
+                   A.ITEM_NAME AS item_name,
+                   A.ITEM_DIV  AS item_div,
+                   A.ITEM_PRICE AS item_price,
+                   A.ITEM_UNIT AS item_unit,
+                   ROWNUM RN
+            FROM (
+                SELECT ITEM_ID, ITEM_NAME, ITEM_DIV, ITEM_PRICE, ITEM_UNIT
+                FROM V3_ITEM
+                ORDER BY ITEM_ID DESC
+            ) A
+            WHERE ROWNUM &lt;= #{end}
+        )
+        WHERE RN &gt;= #{start}
+    </select>
+
+    <!-- 단건 조회 -->
+    <select id="selectItemOne" parameterType="string" resultType="proj.spring.mes.dto.ItemDTO">
+        SELECT * FROM V3_ITEM WHERE ITEM_ID = #{itemId}
+    </select>
+
+    <!-- 등록 -->
+    <insert id="insertItem" parameterType="proj.spring.mes.dto.ItemDTO">
+        INSERT INTO V3_ITEM (ITEM_ID, ITEM_NAME, ITEM_DIV, ITEM_PRICE, ITEM_UNIT)
+        VALUES (#{item_id}, #{item_name}, #{item_div}, #{item_price}, #{item_unit})
+    </insert>
+
+    <!-- 수정 -->
+    <update id="updateItem" parameterType="proj.spring.mes.dto.ItemDTO">
+        UPDATE V3_ITEM
+           SET ITEM_NAME  = #{item_name},
+               ITEM_DIV   = #{item_div},
+               ITEM_PRICE = #{item_price},
+               ITEM_UNIT  = #{item_unit}
+         WHERE ITEM_ID = #{item_id}
+    </update>
+
+    <!-- 삭제 (ids 컬렉션 전달) -->
+    <delete id="deleteItems" parameterType="map">
+        DELETE FROM V3_ITEM
+         WHERE ITEM_ID IN
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!-- 품목ID 생성용 -->
+    <select id="nextItemIdByDiv" parameterType="string" resultType="string">
         SELECT
-          item_id,
-          item_price,
-          item_div,
-          item_name,
-          item_unit
-        FROM V3_item
-        ORDER BY item_name ASC
-      ) t
-      WHERE ROWNUM <= #{endRow}
-    )
-    WHERE rn >= #{startRow}
-    ]]>
-  </select>
+          (CASE
+             WHEN #{itemDiv} = '도서'   THEN 'Q'
+             WHEN #{itemDiv} = '포장지' THEN 'W'
+             WHEN #{itemDiv} = '완제품' THEN 'E'
+             ELSE 'X'
+           END)
+          || TO_CHAR(SYSDATE, 'YYMMDD')
+          || LPAD(V3_ITEM_SEQ.NEXTVAL, 4, '0')
+        FROM DUAL
+    </select>
 
-  <!-- 총 레코드 수 -->
-  <select id="selectItemCount" resultType="long">
-    <![CDATA[
-    SELECT COUNT(*) FROM V3_item
-    ]]>
-  </select>
+    <!-- 품목-거래처 매핑 등록 (중복 방지) -->
+    <insert id="insertClientItem">
+        INSERT INTO V3_CLIENT_ITEMS (ITEM_ID, CLIENT_ID)
+        SELECT #{itemId}, #{clientId} FROM DUAL
+        WHERE NOT EXISTS (
+            SELECT 1 FROM V3_CLIENT_ITEMS
+             WHERE ITEM_ID = #{itemId}
+               AND CLIENT_ID = #{clientId}
+        )
+    </insert>
 
-  <!-- 단건: 단일 문자열 파라미터는  -->
-  <select id="selectItemOne" parameterType="string" resultType="proj.spring.mes.dto.ItemDTO">
-    <![CDATA[
-	SELECT
-	  COALESCE(c.client_id, ci.client_id) AS client_id,  -- 조인 안 된 쪽도 아이디 보이게
-	  c.client_name,
-	  COALESCE(i.item_id, ci.item_id)     AS item_id,
-	  i.item_name,
-	  i.item_div,
-	  i.item_price,
-	  i.item_unit
-	FROM v3_client c
-	FULL OUTER JOIN v3_client_items ci
-	  ON ci.client_id = c.client_id
-	FULL OUTER JOIN v3_item i
-	  ON i.item_id = ci.item_id 
+    <!-- 특정 품목의 거래처 목록 -->
+    <select id="selectClientsByItemId" resultType="map">
+        SELECT c.client_id, c.client_name
+          FROM V3_CLIENT_ITEMS ci
+          JOIN V3_CLIENT c ON c.client_id = ci.client_id
+         WHERE ci.item_id = #{itemId}
+         ORDER BY c.client_id
+    </select>
 
-    WHERE i.item_id = #{itemId}
-    ]]>
-  </select>
-  
-  <!-- 여러 개 ID 배치 삭제 -->
-<delete id="deleteItems" parameterType="java.util.List">
-  <![CDATA[
-  DELETE FROM V3_item
-  WHERE item_id IN
-  ]]>
-  <foreach item="id" collection="list" open="(" separator="," close=")">
-    #{id}
-  </foreach>
-</delete>
-  
-  
-  
-  
-  
-  
-  
-  
 
-  <!-- 등록 -->
-  <insert id="insertItem" parameterType="proj.spring.mes.dto.ItemDTO">
-    <![CDATA[
-    INSERT INTO V3_item (
-      item_id, item_price, item_div, item_name, item_unit
-    ) VALUES (
-      #{item_id}, #{item_price}, #{item_div}, #{item_name}, #{item_unit}
-    )
-    ]]>
-  </insert>
 
-  <!-- 수정 -->
-  <update id="updateItem" parameterType="proj.spring.mes.dto.ItemDTO">
-    <![CDATA[
-    UPDATE V3_item
-    SET
-      item_price = #{item_price},
-      item_div   = #{item_div},
-      item_name  = #{item_name},
-      item_unit  = #{item_unit}
-   WHERE item_id = #{item_id}
-    ]]>
-  </update>
-
-  <!-- 삭제: 단일 문자열 파라미터는 #{value} -->
-  <delete id="deleteItem" parameterType="string">
-    <![CDATA[
-    DELETE FROM V3_item
-    WHERE item_id = #{itemId}
-    ]]>
-  </delete>
-  
-  
-  
-<select id="clientlist" resultType="proj.spring.mes.dto.ItemDTO">
-  SELECT
-    client_id,
-    client_name
-  FROM V3_client
-  ORDER BY client_id
+    <!-- 검색 총건수 -->
+<select id="countBySearch" parameterType="map" resultType="long">
+  SELECT COUNT(*)
+    FROM V3_ITEM
+   <where>
+     <if test="itemNoEsc != null and itemNoEsc != ''">
+       AND UPPER(ITEM_ID)   LIKE '%' || UPPER(#{itemNoEsc})   || '%' ESCAPE '\'
+     </if>
+     <if test="itemNameEsc != null and itemNameEsc != ''">
+       AND UPPER(ITEM_NAME) LIKE '%' || UPPER(#{itemNameEsc}) || '%' ESCAPE '\'
+     </if>
+     <if test="itemDivEsc != null and itemDivEsc != ''">
+       AND UPPER(ITEM_DIV)  LIKE '%' || UPPER(#{itemDivEsc})  || '%' ESCAPE '\'
+     </if>
+     <if test="itemMin != null"> AND ITEM_PRICE &gt;= #{itemMin} </if>
+     <if test="itemMax != null"> AND ITEM_PRICE &lt;= #{itemMax} </if>
+   </where>
 </select>
-  
-  
-  
+
+    <!-- 검색 목록(페이지네이션 포함) -->
+<select id="searchList" parameterType="map" resultType="map">
+  SELECT * FROM (
+    SELECT A.ITEM_ID AS item_id, A.ITEM_NAME AS item_name, A.ITEM_DIV AS item_div,
+           A.ITEM_PRICE AS item_price, A.ITEM_UNIT AS item_unit, ROWNUM RN
+      FROM (
+        SELECT ITEM_ID, ITEM_NAME, ITEM_DIV, ITEM_PRICE, ITEM_UNIT
+          FROM V3_ITEM
+         <where>
+           <if test="itemNoEsc != null and itemNoEsc != ''">
+             AND UPPER(ITEM_ID)   LIKE '%' || UPPER(#{itemNoEsc})   || '%' ESCAPE '\'
+           </if>
+           <if test="itemNameEsc != null and itemNameEsc != ''">
+             AND UPPER(ITEM_NAME) LIKE '%' || UPPER(#{itemNameEsc}) || '%' ESCAPE '\'
+           </if>
+           <if test="itemDivEsc != null and itemDivEsc != ''">
+             AND UPPER(ITEM_DIV)  LIKE '%' || UPPER(#{itemDivEsc})  || '%' ESCAPE '\'
+           </if>
+           <if test="itemMin != null"> AND ITEM_PRICE &gt;= #{itemMin} </if>
+           <if test="itemMax != null"> AND ITEM_PRICE &lt;= #{itemMax} </if>
+         </where>
+         ORDER BY ITEM_ID DESC
+      ) A
+     WHERE ROWNUM &lt;= #{end}
+  )
+ WHERE RN &gt;= #{start}
+</select>
+
 
 </mapper>

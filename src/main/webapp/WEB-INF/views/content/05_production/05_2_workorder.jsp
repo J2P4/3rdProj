@@ -91,18 +91,18 @@
                	<c:if test="${empty list}">
                 	<tr>
                         <td><input type="checkbox" class="rowChk" disabled></td>
-                		<td colspan="5"> 조회 내역이 없습니다.</td>
+                		<td colspan="4"> 조회 내역이 없습니다.</td>
                 	</tr>
                	</c:if>
                	<c:if test="${not empty list}">
                		<c:forEach var="P0401_StockDTO" items="${list}">
 	               		<tr data-id="${P0401_StockDTO.stock_id}">
-		                    <td><input type="checkbox" class="rowChk" name="delete_stock_id" value="${P0401_StockDTO.stock_id}"></td>
-		                    <td>${P0401_StockDTO.stock_id}</td>
-		                    <td>${P0401_StockDTO.stock_amount}</td>
-		                    <td>${P0401_StockDTO.item_div}</td>
-		                    <td>${P0401_StockDTO.stock_wrap}</td>
-	                    </tr>
+    <td><input type="checkbox" class="rowChk" name="delete_stock_id" value="${P0401_StockDTO.stock_id}"></td>
+    <td>${P0401_StockDTO.stock_id}</td>
+    <td>${P0401_StockDTO.stock_date}</td>               <%-- 작업 지시일 --%>
+    <td>${P0401_StockDTO.order_quantity}</td>           <%-- 지시 수량 --%>
+    <td>${P0401_StockDTO.production_quantity}</td>      <%-- 생산 수량 --%>
+</tr>
                     </c:forEach>
                  </c:if>
             </tbody>
@@ -201,7 +201,7 @@
     <!-- 입력용 슬라이드 -->
     <div class = "slide" id = "slide-input">
         <form class = "slide-contents" id="stockInsertForm">
-            <div class = "silde-title"><h2 id="slide-title">작업지식서 등록</h2></div>
+            <div class = "silde-title"><h2 id="slide-title">작업지시서 등록</h2></div>
             <div class = "slide-id" id="stock-id-show" style = "display: none">
                 재고 ID: <span id="stock-id-val"></span>
                 <input type="hidden" id="input_stock_id" name="stock_id" value="">
@@ -216,30 +216,17 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td>
-                                <!-- select에 DB의 품목 id 데이터 불러와서 채워넣기 -->
-                                <!-- select 데이터 글씨가 너무 많으면 테이블이 깨져서 강제로 style 속성 지정 2 -->
-                                <select id="input_item_id" name="item_id" size = "1" style = "width: 100%;">
-                                    <option value="">품목 ID 선택</option>
-                                    <c:forEach var="item" items="${itemList}">
-                                        <option 
-                                            value="${item.item_id}"
-                                            data-div="${item.item_div}"
-                                            data-name="${item.item_name}">
-                                            ${item.item_id} - ${item.item_name}
-                                        </option>
-                                    </c:forEach>
+                           
+                             <td data-type = "select">
+                               <input type = "text" id="input_item_name" placeholder = "작업지시일" style = "width: 100%;"></td> 
                                 </select>
-                            </td>
+                                </td>
+       
                             <td data-type = "select">
-                                <select id="input_item_div" name="item_div" size="1" style = "width: 100%;">
-                                    <option value="" selected>품목 ID 선택</option>
-                                    <option value = "도서">도서</option>
-                                    <option value = "포장지">포장지</option>
-                                    <option value = "완제품">완제품</option>
+                               <input type = "text" id="input_item_name" placeholder = "지시수량" style = "width: 100%;"></td> 
                                 </select>
                             </td>
-                            <td><input type = "text" id="input_item_name" placeholder = "품목명을 입력해주세요" style = "width: 100%;"></td>
+                            <td><input type = "text" id="input_item_name" placeholder = "생산수량을 입력해주세요" style = "width: 100%;"></td>
                         </tr>
                     </tbody>
                 </table>
@@ -252,13 +239,15 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td><input type = "number"  id="input_stock_amount" name="stock_amount" style = "width: 100%;"></td>
+                            <td><input type = "letter"  id="input_stock_amount" name="stock_amount" style = "width: 100%;"></td>
                             <td data-type = "select">
                                 <select id="input_stock_wrap" name="stock_wrap" style = "width: 100%;">
-                                    <option value = "WH1 :: 1번 창고">WH1 :: 1번 창고</option>
-                                    <option value = "WH2 :: 2번 창고">WH2 :: 2번 창고</option>
-                                    <option value = "WH3 :: 3번 창고">WH3 :: 3번 창고</option>
-                                    <option value = "WH4 :: 4번 창고">WH4 :: 4번 창고</option>
+                                    <option value = "WH1 :: 1번 창고">고현지</option>
+                                    <option value = "WH2 :: 2번 창고">김재은</option>
+                                    <option value = "WH3 :: 3번 창고">윤성연</option>
+                                    <option value = "WH4 :: 4번 창고">조민서</option>
+                                    <option value = "WH4 :: 5번 창고">최아라</option>
+                                    <option value = "WH4 :: 5번 창고">최연지</option>
                                 </select>
                             </td>
                         </tr>

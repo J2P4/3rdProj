@@ -1,13 +1,15 @@
 package proj.spring.mes.service;
 
 import java.util.List;
-import org.springframework.stereotype.Service;
-import org.springframework.beans.factory.annotation.Autowired;
-// 필요하면 @Transactional 추가 가능
-// import org.springframework.transaction.annotation.Transactional;
+import java.util.Map;
+import java.util.HashMap;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import proj.spring.mes.dao.mapper.ItemMapperDAO;
 import proj.spring.mes.dto.ItemDTO;
-import proj.spring.mes.dao.mapper.ItemMapperDAO; 
 
 @Service
 public class ItemServiceImpl implements ItemService {
@@ -15,89 +17,74 @@ public class ItemServiceImpl implements ItemService {
     @Autowired
     private ItemMapperDAO itemMapper;
 
-    @Override
-    public List<ItemDTO> list() {
-        return itemMapper.selectItemList();
-    }
-
-    // 신규: 페이징 전용 목록
-    @Override
-    public List<ItemDTO> list(int page, int pagePerRows) {
-        int size = Math.max(1, Math.min(pagePerRows, 100));
-        int p = Math.max(1, page);
-        int offset = (p - 1) * size;
-
-        // Mapper는 LIMIT/OFFSET 받는 메서드가 필요함
-        return itemMapper.selectItemListPage(size, offset);
-    }
-
-    //  총 레코드 수
+    /** 총 건수 */
     @Override
     public long count() {
-        return itemMapper.selectItemCount();
-    }
-    
-    
-
-    @Override
-    public ItemDTO get(String ItemId) {
-        return itemMapper.selectItemOne(ItemId);
+        return itemMapper.count();
     }
 
+    /** 기본 목록(페이지네이션) */
     @Override
-    public int add(ItemDTO dto) {
-        return itemMapper.insertItem(dto);
+    public List<Map<String,Object>> list(int page, int pagePerRows) {
+        int start = (page - 1) * pagePerRows + 1;
+        int end   = page * pagePerRows;
+        // Mapper: list(start, end) -> resultType="map"
+        return itemMapper.list(start, end);
     }
 
+    /** LIKE 검색 총건수 */
     @Override
-    public int edit(ItemDTO dto) {
-        return itemMapper.updateItem(dto);
+    public long countBySearch(Map<String,Object> params) {
+        return itemMapper.countBySearch(params);
     }
 
+    /** LIKE 검색 목록(페이지네이션 포함) */
     @Override
-    public int remove(String ItemId) {
-        return itemMapper.deleteItem(ItemId);
+    public List<Map<String,Object>> searchList(Map<String,Object> params) {
+        return itemMapper.searchList(params);
     }
-    
-    
-    @Override
-    public int removeAll(List<String> itemIds) {
-        if (itemIds == null || itemIds.isEmpty()) return 0;
 
-        // 순서 보존 + 중복 제거
-        java.util.LinkedHashSet<String> set = new java.util.LinkedHashSet<String>();
-        for (int i = 0; i < itemIds.size(); i++) {
-            String s = itemIds.get(i);
-            if (s == null) continue;
-            s = s.trim();
-            if (s.length() > 0) {
-                set.add(s);
-            }
+    /** 단건 조회 */
+    @Override
+    public ItemDTO get(String itemId) {
+        return itemMapper.selectItemOne(itemId);
+    }
+
+    /** 등록 (거래처 매핑 포함) */
+    @Transactional
+    @Override
+    public ItemDTO create(ItemDTO in, String clientId) {
+        String newId = itemMapper.nextItemIdByDiv(in.getItem_div());
+        in.setItem_id(newId);
+        itemMapper.insertItem(in);
+
+        if (clientId != null && clientId.trim().length() > 0) {
+            itemMapper.insertClientItem(newId, clientId.trim());
         }
-        if (set.isEmpty()) return 0;
-
-        java.util.List<String> cleaned = new java.util.ArrayList<String>(set);
-
-        int total = 0;
-        final int LIMIT = 1000; 
-        for (int i = 0; i < cleaned.size(); i += LIMIT) {
-            int toIndex = i + LIMIT;
-            if (toIndex > cleaned.size()) toIndex = cleaned.size();
-            java.util.List<String> part = cleaned.subList(i, toIndex);
-            total += itemMapper.deleteItems(part);
-        }
-        return total;
+        return itemMapper.selectItemOne(newId);
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
+    /** 수정 (거래처 매핑 upsert) */
+    @Transactional
+    @Override
+    public int editWithClient(ItemDTO in, String clientId) {
+        int r = itemMapper.updateItem(in);
+        if (clientId != null && clientId.trim().length() > 0) {
+            itemMapper.insertClientItem(in.getItem_id(), clientId.trim());
+        }
+        return r;
+    }
+
+    /** 다건 삭제 */
+    @Override
+    public int removeAll(List<String> ids) {
+        // Mapper는 parameterType="map"으로 ids 컬렉션 받도록 정의되어 있어야 함
+        return itemMapper.deleteItems(ids);
+    }
+
+    /** 품목별 거래처 목록 */
+    @Override
+    public List<Map<String,Object>> selectClientsByItemId(String itemId) {
+        return itemMapper.selectClientsByItemId(itemId);
+    }
 }

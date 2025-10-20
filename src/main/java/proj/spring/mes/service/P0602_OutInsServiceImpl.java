@@ -45,4 +45,23 @@ public class P0602_OutInsServiceImpl implements P0602_OutInsService {
 		return outInsMapperDAO.selectWorkerName();
 	}
 	
+	// 페이징
+	@Override
+	public List<P0602_OutInsDTO> list(int page, int pagePerRows, P0602_OutInsDTO searchFilter) {
+        int size = Math.max(1, Math.min(pagePerRows, 100));
+        int p = Math.max(1, page);
+        int offset = (p - 1) * size;
+        
+        System.out.println(size);
+        System.out.println(p);
+        System.out.println(offset);
+        
+        return outInsMapperDAO.selectOutInsPage(size, offset, searchFilter);		
+	}
+	
+	@Override
+	public long count(P0602_OutInsDTO searchFilter) {
+		return outInsMapperDAO.selectOutInsCount(searchFilter);
+	}
+	
 }

@@ -91,8 +91,20 @@
 	
 	<!-- 하나만 조회 -->
 	<select id="selectOneWorker" resultType="workerDTO">
-		select * from V3_worker
-		where worker_id = #{_parameter}
+		SELECT
+		    w.worker_id,
+		    w.worker_name,
+		    w.worker_birth,
+		    w.worker_pw,
+		    w.worker_email,
+		    w.worker_code,
+		    w.worker_join,
+		    w.department_id,
+		    d.department_name  
+		  FROM V3_worker w
+		  LEFT JOIN V3_department d
+		    ON w.department_id = d.department_id
+		  WHERE w.worker_id = #{_parameter}
 	</select>
 	
 	<select id="selectDept" resultType="deptDTO">
@@ -146,6 +158,12 @@
 	  )
 	</insert>
 
+	<!-- 이메일중복확인 -->
+	<select id="countByEmail" parameterType="string" resultType="int">
+    	SELECT COUNT(*) FROM V3_worker WHERE worker_email = #{worker_email}
+	</select>
+	
+
 	<!-- 현재 비밀번호 조회 -->
     <select id="selectWorkerPw" resultType="string">
         SELECT worker_pw
@@ -174,6 +192,62 @@
 	           PW_UPDATED_AT = SYSDATE
 	     WHERE worker_id = #{worker_id}
 	</update>
+	
+	<!-- 최근 N개 비밀번호 해시 조회 (최신순에서 ROWNUM으로 N개) -->
+	<select id="selectRecentPwHashes" parameterType="map" resultType="string">
+	  <![CDATA[
+		  SELECT pw_hash
+		    FROM (
+		      SELECT pw_hash
+		        FROM V3_worker_pw_history
+		       WHERE worker_id = #{worker_id}
+		       ORDER BY created_at DESC
+		    )
+		   WHERE ROWNUM <= #{limit}
+	  ]]>
+	</select>
+	
+	<!-- 변경/초기화 직후 이력 적재 -->
+	<insert id="insertPwHistory" parameterType="map">
+	  INSERT INTO V3_worker_pw_history(worker_id, pw_hash, created_at)
+	  VALUES(#{worker_id}, #{pw_hash}, SYSDATE)
+	</insert>
+	
+	<!-- 정상 변경: must_change=0 + PW_UPDATED_AT + PW_EXPIRES_AT 동시 갱신 -->
+	<update id="updateClearPwWithExpiry" parameterType="map">
+	  UPDATE V3_worker
+	     SET worker_pw      = #{new_pw},
+	         PW_MUST_CHANGE = 0,
+	         PW_UPDATED_AT  = SYSDATE,
+	         PW_EXPIRES_AT  = #{expires_at}
+	   WHERE worker_id      = #{worker_id}
+	</update>
+	
+	<!-- 임시/초기화: must_change=1 + PW_UPDATED_AT + PW_EXPIRES_AT -->
+	<update id="updateTempPw" parameterType="map">
+	  UPDATE V3_worker
+	     SET worker_pw      = #{new_pw},
+	         PW_MUST_CHANGE = 1,
+	         PW_UPDATED_AT  = SYSDATE,
+	         PW_EXPIRES_AT  = #{expires_at}
+	   WHERE worker_id      = #{worker_id}
+	</update>
+	
+	<!-- 로그인 시 강제변경/만료 상태 조회 -->
+	<select id="selectPwState" parameterType="string" resultType="map">
+	  SELECT NVL(PW_MUST_CHANGE,0) AS must_change,
+	         PW_EXPIRES_AT         AS expires_at
+	    FROM V3_worker
+	   WHERE worker_id = #{worker_id}
+	</select>
+	
+	<!-- 유효기간 만료 -->
+	<update id="updatePwExpiry" parameterType="map">
+	  UPDATE V3_worker
+	     SET PW_EXPIRES_AT = #{expires_at}
+	   WHERE worker_id = #{worker_id}
+	</update>
+	
 </mapper>
 
 

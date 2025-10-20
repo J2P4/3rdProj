@@ -2,7 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> 
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %> 
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %> 
-<% // 오늘 날짜를 문자열로 만들어 EL에서 쓸 수 있게 request에 넣음
+<%
     String todayStr = new java.text.SimpleDateFormat("yyyy-MM-dd").format(new java.util.Date());
     request.setAttribute("todayStr", todayStr);
 %>
@@ -24,8 +24,8 @@
 <body>
 <h1>품목 리스트</h1>
 
-<c:url var="itemlistUrl" value="/itemlist"/> <%-- 모든 내부 링크의 기준 URL(중복 /mes/mes 방지) --%>
-<c:set var="selfPath" value="/itemlist"/> <%-- c:url value에 사용할 경로 문자열 --%>
+<c:url var="itemlistUrl" value="/itemlist"/>
+<c:set var="selfPath" value="/itemlist"/>
 
 <form class="panel" method="get" action="${itemlistUrl}">
     <div class="filter">
@@ -82,28 +82,35 @@
             </tr>
         </thead>
         <tbody>
-            <c:choose>
-                <c:when test="${not empty list}">
-                    <c:forEach var="row" items="${list}">
-                        <tr data-id="${row.item_id}">
-                            <td class="chkbox"><input type="checkbox" class="rowChk"></td>
-                            <td>${fn:escapeXml(row.item_id)}</td>
-                            <td>${fn:escapeXml(row.item_name)}</td>
-                            <td>${fn:escapeXml(row.item_div)}</td>
-                            <td><fmt:formatNumber value="${row.item_price}" pattern="#,##0"/></td>
-                            <td>${fn:escapeXml(row.item_unit)}</td>
-                        </tr>
-                    </c:forEach>
-                </c:when>
-                <c:otherwise>
-                    <c:forEach var="i" begin="1" end="10">
-                        <tr aria-hidden="true">
-                            <td class="chkbox"><input type="checkbox" name="rowChk" disabled aria-hidden="true"></td>
-                            <td>&nbsp;</td><td></td><td></td><td class="col-qty"></td><td></td>
-                        </tr>
-                    </c:forEach>
-                </c:otherwise>
-            </c:choose>
+          <c:choose>
+            <c:when test="${not empty list}">
+              <c:forEach var="row" items="${list}">
+                <%-- 대소문자 키 모두 커버 (div는 EL 예약어라 변수명 피함) --%>
+                <c:set var="id"          value="${not empty row.item_id    ? row.item_id    : row.ITEM_ID}"/>
+                <c:set var="name"        value="${not empty row.item_name  ? row.item_name  : row.ITEM_NAME}"/>
+                <c:set var="itemDivVal"  value="${not empty row.item_div   ? row.item_div   : row.ITEM_DIV}"/>
+                <c:set var="price"       value="${not empty row.item_price ? row.item_price : row.ITEM_PRICE}"/>
+                <c:set var="unit"        value="${not empty row.item_unit  ? row.item_unit  : row.ITEM_UNIT}"/>
+
+                <tr data-id="${fn:escapeXml(id)}">
+                  <td class="chkbox"><input type="checkbox" class="rowChk"></td>
+                  <td>${fn:escapeXml(id)}</td>
+                  <td>${fn:escapeXml(name)}</td>
+                  <td>${fn:escapeXml(itemDivVal)}</td>
+                  <td><fmt:formatNumber value="${price}" pattern="#,##0"/></td>
+                  <td>${fn:escapeXml(unit)}</td>
+                </tr>
+              </c:forEach>
+            </c:when>
+            <c:otherwise>
+              <c:forEach var="i" begin="1" end="10">
+                <tr aria-hidden="true">
+                  <td class="chkbox"><input type="checkbox" name="rowChk" disabled aria-hidden="true"></td>
+                  <td>&nbsp;</td><td></td><td></td><td class="col-qty"></td><td></td>
+                </tr>
+              </c:forEach>
+            </c:otherwise>
+          </c:choose>
         </tbody>
     </table>
 </div>
@@ -211,7 +218,6 @@
     <input type="hidden" name="item_max" value="${fn:escapeXml(param.item_max)}"/>
 </form>
 
-
 <div class="slide" id="slide-input">
     <div class="slide-contents">
         <div class="silde-title"><h2>품목 등록</h2></div>
@@ -231,36 +237,37 @@
                 <tbody>
                     <tr>
                         <td>
-                            <!-- 기존 입력 유지 주석 -->
-                            <!-- <input type="text" name="vendorId" id="vendorId"> -->
-                            <!-- 스크롤 가능한 listbox(select size)로 변경 -->
-                            <select name="vendorId" id="vendorId" size="8" required>
+                            <select name="client_id" id="vendorId" size="1" required>
                                 <!-- JS가 옵션 주입 -->
                             </select>
-                         
-                            
                         </td>
                         <td>
-                        
-<!--                         <input type="text" name="itemDiv" id="itemDiv"> -->
-                        	<select name = "itemDiv">
+                        	<select name="itemDiv">
                         		<option value="도서">도서</option>
                         		<option value="포장지">포장지</option>
                         		<option value="완제품">완제품</option>
                         	</select>
-                        
                         </td>
                         <td><input type="number" name="unitPrice" id="unitPrice" min="0"></td>
-                        <td><input type="text" name="unit" id="unit"></td>
+                        <td>
+                        	<select id="unit" name="itemunit">
+                        		<option value="권">권</option>
+                        		<option value="묶음">묶음</option>
+                        		<option value="롤">롤</option>
+                        	</select>
+                        </td>
                     </tr>
                 </tbody>
             </table>
         </div>
 
-        <div class="slide-btnbox">
-            <input type="submit" class="slide-btn" value="등록">
-            <input type="button" class="close-btn slide-btn" value="취소">
-        </div>
+		<form id="item-register-form"> 
+		    <div class="slide-tb"></div>
+		    <div class="slide-btnbox">
+		        <input type="submit" class="slide-btn" value="등록">
+		        <input type="button" class="close-btn slide-btn" value="취소">
+		    </div>
+		</form>
 
     </div>
 </div>
@@ -277,7 +284,6 @@
         <thead>
           <tr>
             <th>거래처 ID</th>
-<!--             <th>거래처 이름</th> -->
             <th>품목 구분</th>
             <th>단가</th>
             <th>단위</th>
@@ -286,7 +292,6 @@
         <tbody>
           <tr>
             <td id="d-clientId"></td>
-<!--             <td id="d-clientName"></td> -->
             <td id="d-itemDiv"></td>
             <td id="d-itemPrice"></td>
             <td id="d-itemUnit"></td>

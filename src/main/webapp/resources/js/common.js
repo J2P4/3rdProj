@@ -69,9 +69,11 @@ document.addEventListener('DOMContentLoaded', () => {
             // 전체 체크박스의 상태를 현재 체크된 개수와 전체 개수를 비교하여 설정
             chkAll.checked = checkedCount && (rowChecks.length > 0); // 데이터가 아예 없을 경우 (길이가 0)에는 체크 해제 상태 유지
         }
-    // });
+    });
 
-});
+
+
+
 
 
 
