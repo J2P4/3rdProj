@@ -17,6 +17,7 @@ public class P0602_OutInsDTO {
 	private String worker_name;
 	private String item_name;
 	private String item_id;
+	private String item_div;
 	
     private String fromDate;
     private String toDate;

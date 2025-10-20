@@ -2,6 +2,7 @@ package proj.spring.mes.service;
 
 import java.util.List;
 
+import proj.spring.mes.dto.P0601_InInsDTO;
 import proj.spring.mes.dto.P0602_OutInsDTO;
 import proj.spring.mes.dto.WorkerDTO;
 
@@ -13,7 +14,8 @@ public interface P0602_OutInsService {
 //	public int removeOutIns(String inspection_result_id);
 	public int removeOutIns(List<String> outInsIds);
 	public int addOutIns(P0602_OutInsDTO dto);
-	public List<WorkerDTO> workerNameList();
+	public List<P0602_OutInsDTO> workerNameList();
+	public List<P0602_OutInsDTO> stockList();
 	
 	// 페이징
 	List<P0602_OutInsDTO> list(int page, int pagePerRows, P0602_OutInsDTO searchFilter);

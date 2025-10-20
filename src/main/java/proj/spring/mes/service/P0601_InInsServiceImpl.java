@@ -46,12 +46,12 @@ public class P0601_InInsServiceImpl implements P0601_InInsService {
 	}
 	
 	@Override
-	public List<WorkerDTO> workerNameList() {
+	public List<P0601_InInsDTO> workerNameList() {
 		return inInsMapperDAO.selectWorkerName();
 	}
 	
 	@Override
-	public List<WorkerDTO> stockList() {
+	public List<P0601_InInsDTO> stockList() {
 		return inInsMapperDAO.selectStock();
 	}
 	

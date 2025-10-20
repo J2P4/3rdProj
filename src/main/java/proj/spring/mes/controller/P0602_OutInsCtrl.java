@@ -13,6 +13,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import proj.spring.mes.dto.P0601_InInsDTO;
 import proj.spring.mes.dto.P0602_OutInsDTO;
 import proj.spring.mes.dto.WorkerDTO;
@@ -51,7 +55,8 @@ public class P0602_OutInsCtrl {
         
         // ===================== 4) 목록(+작업자) 조회 =====================
 		List<P0602_OutInsDTO> list = service.list(page, pagePerRows, searchFilter);
-		List<WorkerDTO> wnlist = service.workerNameList();
+		List<P0602_OutInsDTO> wnlist = service.workerNameList();
+		List<P0602_OutInsDTO> stlist = service.stockList();
 		
         // ===================== 5) 블록 페이지네이션 계산(10개 단위) =====================
         final int blockSize = 10;                        // 페이지 번호를 묶어서 보여주기
@@ -78,8 +83,29 @@ public class P0602_OutInsCtrl {
         model.addAttribute("nextBlockStart", nextBlockStart); // 다음 블록이동 시 타깃 페이지(예: 1→11)
         model.addAttribute("filter", searchFilter); 			// 필터 사용
 
+        ObjectMapper objectMapper = new ObjectMapper();
+        
+        String stockListJson = null;
+        
+        try {
+			objectMapper.configure(JsonGenerator.Feature.ESCAPE_NON_ASCII, false);
+			
+			String rawJson = objectMapper.writeValueAsString(stlist);
+			
+			stockListJson = rawJson.replaceAll("[\n\r]", "");
+			stockListJson = stockListJson.replaceAll("'", "\\\\'");
+			stockListJson = stockListJson.replaceAll("\"", "\\\\\""); 
+			stockListJson = stockListJson.replaceAll("`", "\\\\`");        	
+        }
+		catch (JsonProcessingException e) {
+			e.printStackTrace();
+			stockListJson = "[]"; 
+		}
+        
         model.addAttribute("list", list);
-        model.addAttribute("wnlist", wnlist); 		
+        model.addAttribute("wnlist", wnlist);
+        model.addAttribute("stockList", stlist);
+        model.addAttribute("stockListJson", stockListJson);
 		
 		return "06_quality/06_2_out_inspection.tiles";
 	}

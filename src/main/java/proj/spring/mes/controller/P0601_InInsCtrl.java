@@ -54,8 +54,8 @@ public class P0601_InInsCtrl {
         
         // ===================== 4) 목록(+작업자, 재고) 조회 =====================
 		List<P0601_InInsDTO> list = service.list(page, pagePerRows, searchFilter);
-		List<WorkerDTO> wnlist = service.workerNameList();
-		List<WorkerDTO> stlist = service.stockList();
+		List<P0601_InInsDTO> wnlist = service.workerNameList();
+		List<P0601_InInsDTO> stlist = service.stockList();
 		
         // ===================== 5) 블록 페이지네이션 계산(10개 단위) =====================
         final int blockSize = 10;                        // 페이지 번호를 묶어서 보여주기

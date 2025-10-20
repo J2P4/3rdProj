@@ -17,7 +17,7 @@
     <script>
         const contextPath = '${pageContext.request.contextPath}';
         // 품목 목록을 JSON 형식으로 js 변수에 저장하려고 작성
-        const allItemsJson = `${itemListJson}`; 
+        const stockListJson = `${stockListJson}`; 
     </script>    
     <script src="${pageContext.request.contextPath}/resources/js/common.js" defer></script>
     <script src="${pageContext.request.contextPath}/resources/js/06_2_outins.js" defer></script>
@@ -79,8 +79,8 @@
 		                    <td class = "chkbox"><input type="checkbox" class="rowChk" name = "delete_outIns_id" value="${P0602_OutInsDTO.inspection_result_id}"></td>
 		                    <td class = "id">${P0602_OutInsDTO.inspection_result_id}</td>
 		                    <td class = "date">${P0602_OutInsDTO.inspection_result_date}</td>
-		                    <td>${P0602_OutInsDTO.inspection_result_good}</td>
-		                    <td>${P0602_OutInsDTO.inspection_result_bad}</td>
+		                    <td class = "gb">${P0602_OutInsDTO.inspection_result_good}</td>
+		                    <td class = "gb">${P0602_OutInsDTO.inspection_result_bad}</td>
 		                </tr>
 	                </c:forEach>
 	            </c:if>
@@ -173,9 +173,12 @@
         </div>
     </div>
     <div class = "slide" id = "slide-input">
-        <div class = "slide-contents">
-            <div class = "silde-title"><h2>출고 검사 등록</h2></div>
-            <div class = "slide-id">출고 검사 ID: </div>
+        <form class = "slide-contents" id="outInsInsertForm">
+            <div class = "silde-title"><h2 id="slide-title">출고 검사 등록</h2></div>
+            <div class = "slide-id" id="outIns-id-show" style = "display: none">
+                출고 검사 ID:  <span id="outIns-id-val"></span>
+                <input type="hidden" id="input_outIns_id" name="inspection_result_id" value="">
+            </div>
             <div class = "slide-tb">
                 <table>
                     <thead>
@@ -185,9 +188,9 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td>1</td>
-                            <td>1</td>
-                            <td>1</td>
+                            <td><input type = "date" id="input_outIns_date"></td>
+                            <td><input type = "number" id="input_outIns_good" placeholder="양품 수를 입력해주세요"></td>
+                            <td><input type = "number" id="input_outIns_bad" placeholder="불량 수를 입력해주세요"></td>
                         </tr>
                     </tbody>
                 </table>
@@ -195,22 +198,44 @@
             <div class = "slide-tb">
                 <table>
                     <thead>
-                        <th>검사 대상</th>
+                        <th>검사 품목 분류</th>
+                        <th>검사 품목명</th>
                         <th>담당 사원</th>
                     </thead>
                     <tbody>
                         <tr>
-                            <td>2</td>
-                            <td>2</td>
+                            <td>
+                                <select name = "item_div" size = "1" id = "input_item_div">
+                                    <option value="" selected>품목 분류 선택</option>
+                                        <c:forEach var="stock" items="${stockList}">
+                                            <option value="${stock.item_div}">${stock.item_div}</option>
+                                        </c:forEach>
+                                </select>
+                            </td>
+                            <td>
+                                <select name = "stock_id" size = "1" id = "input_stock_id" readonly>
+                                    <option value="" selected>검사 품목 선택</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select name = "worker_id" size = "1" id = "input_worker_name">
+                                    <option value="" selected>담당자 선택</option>
+                                    <c:forEach var="worker" items="${wnlist}">
+                                        <option value="${worker.worker_id}" data-name = "${worker.worker_name}">
+                                            ${worker.worker_id} - ${worker.worker_name}
+                                        </option>
+                                    </c:forEach>
+                                </select>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
             </div>
             <div class = "slide-btnbox">
-                <input type = "button" class = "slide-btn" value = "등록">
+                <input type = "button" class = "submit-btn slide-btn" value = "등록">
                 <input type = "button" class = "close-btn slide-btn" value = "취소">
             </div>
-        </div>
+        </form>
     </div>
     <div class = "slide" id = "slide-detail">
         <div class = "slide-contents">

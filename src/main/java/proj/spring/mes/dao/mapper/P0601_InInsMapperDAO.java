@@ -20,8 +20,8 @@ public interface P0601_InInsMapperDAO {
 	int insertInIns(P0601_InInsDTO dto);
 
 	//  작업자 & 재고 조회용
-	List<WorkerDTO> selectWorkerName();
-	List<WorkerDTO> selectStock();
+	List<P0601_InInsDTO> selectWorkerName();
+	List<P0601_InInsDTO> selectStock();
 	
 	// 페이징 및 필터
 	List<P0601_InInsDTO> selectInInsPage(@Param("limit") int limit, @Param("offset") int offset, @Param("filter") P0601_InInsDTO searchFilter);

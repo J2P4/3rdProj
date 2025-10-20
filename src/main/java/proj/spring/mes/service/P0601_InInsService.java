@@ -13,8 +13,8 @@ public interface P0601_InInsService {
 //	public int removeInIns(String inspection_result_id);
 	public int removeInIns(List<String> inInsIds);
 	public int addInIns(P0601_InInsDTO dto);
-	public List<WorkerDTO> workerNameList();
-	public List<WorkerDTO> stockList();
+	public List<P0601_InInsDTO> workerNameList();
+	public List<P0601_InInsDTO> stockList();
 	
 	// 페이징
 	List<P0601_InInsDTO> list(int page, int pagePerRows, P0601_InInsDTO searchFilter);

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import proj.spring.mes.dao.mapper.P0602_OutInsMapperDAO;
+import proj.spring.mes.dto.P0601_InInsDTO;
 import proj.spring.mes.dto.P0602_OutInsDTO;
 import proj.spring.mes.dto.WorkerDTO;
 
@@ -41,8 +42,13 @@ public class P0602_OutInsServiceImpl implements P0602_OutInsService {
 	}
 	
 	@Override
-	public List<WorkerDTO> workerNameList() {
+	public List<P0602_OutInsDTO> workerNameList() {
 		return outInsMapperDAO.selectWorkerName();
+	}
+	
+	@Override
+	public List<P0602_OutInsDTO> stockList() {
+		return outInsMapperDAO.selectStock();
 	}
 	
 	// 페이징

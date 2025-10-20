@@ -213,8 +213,9 @@
                             <td>
                                 <select name = "item_div" size = "1" id = "input_item_div">
                                     <option value="" selected>품목 분류 선택</option>
-                                    <option value="도서">도서</option>
-                                    <option value="포장지">포장지</option>
+                                        <c:forEach var="stock" items="${stockList}">
+                                            <option value="${stock.item_div}">${stock.item_div}</option>
+                                        </c:forEach>
                                 </select>
                             </td>
                             <td>
@@ -253,7 +254,10 @@
     <div class = "slide" id = "slide-detail">
         <div class = "slide-contents">
             <div class = "silde-title"><h2>입고 검사 상세</h2></div>
-            <div class = "slide-id">입고 검사 ID: </div>
+            <div class = "slide-id" id="inIns-id-show" style = "display: none">
+                입고 검사 ID: <span id="inIns-id-val"></span>
+                <input type="hidden" id="input_inIns_id" name="inspection_result_id" value="">
+            </div>
             <div class = "slide-tb">
                 <table id = "inspectionInfo">
                     <thead>

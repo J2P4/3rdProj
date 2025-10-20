@@ -120,6 +120,16 @@
 	    order by worker_id
 	</select>
 	
+	<!-- 조회 : 재고 입력 -->
+	<select id = "selectStock" resultType="P0602_OutInsDTO">
+		select
+			s.stock_id, i.item_name, i.item_div
+		from v3_stock s
+		left outer join v3_item i
+			on s.item_id = i.item_id
+		where i.item_div = '완제품'
+	</select>
+	
 	<!-- 수정 -->
 	<update id = "updateOutIns" parameterType = "P0602_OutInsDTO">
 		update v3_inspection_result
@@ -155,12 +165,12 @@
 		
 		insert into v3_inspection_result (
 			inspection_result_id, inspection_result_date, inspection_result_good,
-			inspection_result_bad, worker_id, stock_id
+			inspection_result_bad, worker_id, stock_id, inspection_type
 		)
 		values (
 			#{inspection_result_id}, #{inspection_result_date},
 			#{inspection_result_good}, #{inspection_result_bad},
-			#{worker_id}, #{stock_id}
+			#{worker_id}, #{stock_id}, 1
 		)
 	</insert>
 </mapper>

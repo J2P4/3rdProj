@@ -1,5 +1,15 @@
 document.addEventListener('DOMContentLoaded', () => {
 
+    // 변수 모음
+    const slideInput = document.querySelector('#slide-input');
+    const inputStockId = document.querySelector('#input_stock_id');
+    const inputOutInsDate = document.querySelector('#input_outIns_date');
+    const inputOutInsGood = document.querySelector('#input_outIns_good');
+    const inputOutInsBad = document.querySelector('#input_outIns_bad');
+    const inputWorkerName = document.querySelector('#input_worker_name');
+    const itemDiv = document.querySelector('#input_item_div');
+    const outInsId = document.querySelector('#input_outIns_id');
+    const inspectionResultIdValue = outInsId ? outInsId.value : null;
     
     // ============================
     // 삭제 기능
@@ -159,4 +169,318 @@ document.addEventListener('DOMContentLoaded', () => {
     
         return `${year}-${month}-${day}`;
     }
+
+    // ============================
+    // 등록/수정 슬라이드 열기. 모드 설정.
+    // ============================
+
+    let nowSlide = 'new'; 
+    let nowEditId = null;
+
+    let originalDetailData = null;
+
+    const detailEditBtn = document.querySelector('#detailEditBtn');
+    const inSlideTitle = document.querySelector('#slide-title');
+    const outInsIdShow = document.querySelector('#outIns-id-show');
+    const outInsIdVal = document.querySelector('#outIns-id-val');
+    const inputOutInsIdHidden = document.querySelector('#input_outIns_id');
+
+    // mode(nowSlide)에 따라 등록/수정 변경
+    function openSlideInput(mode, outInsID = null) {
+        // 현재 슬라이드 모드에 따라 변경하기 위해 사용
+        nowSlide = mode;
+        nowEditId = outInsID; 
+        
+        // 등록 상태처럼 입력란 value 정리
+        slideInput.querySelector('form').reset();
+        inputOutInsDate.value = '';
+        inputOutInsGood.value = '';
+        inputOutInsBad.value = '';
+        inputItemDiv.value = '';
+        inputStockId.value = '';
+        upStockIdOpt(allItems); 
+        inputWorkerName.value = '';
+
+        // 상세 -> 수정 전환 시 애니메이션 효과 없애서 바로 전환된 것처럼
+        const editNoAnime = (mode === 'edit');
+
+        if (editNoAnime) {
+            // 이 부분 
+            // 상세 -> 수정 전환 시 즉시 닫히는 것처럼 보이게 애니메이션 효과 없애기.
+            detail.style.transition = 'none';
+            detail.classList.remove('open');
+            void detail.offsetWidth;
+            detail.style.transition = 'right 1s ease';
+            slideInput.style.transition = 'none';
+        }
+        
+        // mode에 따라 등록, 수정 구분
+        if (mode === 'edit' && outInsID) {
+            // 수정 모드 : 슬라이드 제목 영역. 저장 버튼의 value를 수정으로 함.
+            inSlideTitle.textContent = '입고 검사 수정';
+            saveBtn.value = '수정';
+            // ID 표시. 기존(등록)에는 display: none 상태였음
+            outInsIdShow.style.display = 'flex';
+            outInsIdVal.textContent = outInsID;
+            // hidden에 id 저장
+            inputOutInsIdHidden.value = outInsID;
+            
+            // 수정 데이터 로드 및 폼 채우기
+            loadData(outInsID);
+
+        }
+        else {
+            // 등록 모드 : 슬라이드 제목 영역. 저장 버튼의 value를 등록으로 함.
+            inSlideTitle.textContent = '입고 검사 등록';
+            saveBtn.value = '등록';
+            // ID 숨김
+            outInsIdShow.style.display = 'none';
+            outInsIdVal.textContent = '';
+            inputOutInsIdHidden.value = '';
+            // 상세 슬라이드 닫기
+            if (detail.classList.contains('open')) {
+                detail.classList.remove('open');
+            }
+        }
+
+        // 설정한 후 슬라이드 열기
+        slideInput.classList.add('open');
+    }
+    
+    // ==========================
+    // 등록 <-> 수정 슬라이드 : 수정일 경우, 데이터를 채움
+    // ==========================
+    async function loadData(outInsId) {
+        try {
+            const response = await fetch(`${contextPath}/outInsdetail?inspection_result_id=${outInsId}`);
+            if (!response.ok) throw new Error('수정 데이터 로드 오류');
+
+            const data = await response.json();
+
+            originalDetailData = data;
+            
+            // form에 데이터 채우기
+            document.querySelector('#input_outIns_date').value = formatDate(data.inspection_result_date) || '';
+            document.querySelector('#input_outIns_good').value = data.inspection_result_good || '';
+            document.querySelector('#input_outIns_bad').value = data.inspection_result_bad || '';
+            const itemDivElement = document.querySelector('#input_item_div');
+            itemDivElement.value = data.item_div || '';
+
+            filterItems();
+
+            document.querySelector('#input_stock_id').value = data.stock_id || '';
+            document.querySelector('#input_worker_name').value = data.worker_id || '';
+
+            
+
+        }
+        catch (err) {
+            console.error('수정 데이터를 불러오는 중 오류 발생:', err);
+            alert('수정 데이터를 불러오는 데 실패했습니다.');
+            slideInput.classList.remove('open');
+        }
+    }    
+
+    // ==========================
+    // 등록 / 수정 슬라이드 닫기
+    // ==========================
+
+    const closeInputBtn = slideInput.querySelector('.close-btn');
+    if (closeInputBtn) {
+
+        closeInputBtn.addEventListener('click', async () => {
+            slideInput.classList.remove('open');
+
+            if (nowSlide === 'edit' && nowEditId && originalDetailData) {
+                slideInput.style.transition = 'none';
+                detail.style.transition = 'none';
+                void slideInput.offsetWidth;
+                slideInput.style.transition = 'right 1s ease';
+
+                fillDetail(detail, originalDetailData);
+
+                detail.classList.add('open');
+                void detail.offsetWidth;
+
+                detail.style.transition = 'right 1s ease';
+            }
+        });
+    }
+
+    // ==========================
+    // 등록 / 수정 슬라이드 - 품목 select용
+    // ==========================     
+    
+    const allItems = JSON.parse(stockListJson || '[]');
+    const inputItemDiv = document.querySelector('#input_item_div');
+
+    if(!allItems.length) {
+        console.warn('위 코드의 변수 정의 재확인');
+        return;
+    }
+
+    // 품목 id 갱신
+    function upStockIdOpt(stockToUp) {
+        while(inputStockId.options.length > 1) {
+            inputStockId.remove(1);
+        }
+
+        stockToUp.forEach(stock => {
+            const option = document.createElement('option');
+            option.value = stock.stock_id;
+            option.textContent = `${stock.stock_id} - ${stock.item_name}`;
+            option.dataset.id = stock.stock_id;
+            option.dataset.name = stock.item_name;
+            inputStockId.appendChild(option);
+        })
+    }
+
+    // 품목 분류에 따라 재고 목록(id) 필터링
+    function filterItems() {
+        const selectedDiv = inputItemDiv.value;
+        const resultId = document.querySelector('#input_stock_id').value.trim().toLowerCase();
+    
+        let filteredItems = allItems;
+
+        if (selectedDiv !== '') {
+            filteredItems = filteredItems.filter((item) => {
+                return item.item_div === selectedDiv;
+            })
+        }
+
+        upStockIdOpt(filteredItems);
+    }
+
+    inputItemDiv.addEventListener('change', filterItems);
+
+    document.querySelector('.btm-btn.new').addEventListener('click', () => {
+        openSlideInput('new');
+    });
+
+    if (detailEditBtn) {
+        detailEditBtn.addEventListener('click', () => {
+            const outInsIdDisplay = detail.querySelector('.slide-id').textContent;
+            const outInsId = outInsIdDisplay.split(': ')[1]; 
+            
+            if (outInsId) {
+                openSlideInput('edit', outInsId);
+            }
+            else {
+                alert('수정할 입고 검사 ID를 찾을 수 없습니다.');
+            }
+        });
+    }
+
+    // ==========================
+    // 등록 / 수정 슬라이드 - 데이터 저장
+    // ==========================    
+
+    const saveBtn = document.querySelector('.submit-btn');
+
+    saveBtn.addEventListener('click', async () => {
+
+        // 입력값 모음집
+        const outInsDate = document.querySelector('#input_outIns_date').value;
+        const outInsGood = document.querySelector('#input_outIns_good').value;
+        const outInsBad = document.querySelector('#input_outIns_bad').value;
+        const stockIds = document.querySelector('#input_stock_id').value;
+        const workerSelect = document.querySelector('#input_worker_name');
+        const selectedOption = workerSelect.options[workerSelect.selectedIndex];
+        const workerId = selectedOption.value;
+        const workerName = selectedOption.dataset.name;
+        const nowDivVal = itemDiv.value;
+
+
+
+        const outInsId = document.querySelector('#input_outIns_id');
+
+        // 값이 잘 들어갔는지 확인.
+        if (outInsDate === '') {
+            alert('검사일을 선택해 주세요.');
+            return;
+        }
+        if (outInsGood === '') {
+            alert('양품 수를 선택해 주세요.');
+            return;
+        }
+        if(parseInt(outInsGood) < 0) {
+            alert('수량은 0 이상의 값을 입력해 주세요.');
+            document.querySelector('#input_outIns_good').focus();
+            return;
+        }
+        if (outInsBad === '') {
+            alert('불량 수를 입력해 주세요.');
+            return;
+        }
+        if(stockIds === '') {
+            alert('품목을 선택해 주세요.');
+            return;
+        }
+        if (workerName === '') {
+            alert('담당자를 선택해 주세요.');
+            return;
+        }
+
+        // 객체 구성
+        const outInsData = {
+            inspection_result_id: inspectionResultIdValue,
+            inspection_result_date: outInsDate,
+            inspection_result_good: parseInt(outInsGood),
+            inspection_result_bad: parseInt(outInsBad),
+            item_div: nowDivVal,
+            stock_id: stockIds,
+            worker_id: workerId,
+            worker_name: workerName
+        };
+
+        if (nowSlide === 'edit') {
+            url = `${contextPath}/outInsupdate`;
+            outInsData.inspection_result_id = nowEditId; 
+        }
+        else {
+            url = `${contextPath}/outInsinsert`;
+        }
+
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+                },
+                body: new URLSearchParams(outInsData).toString() 
+            });
+
+            const result = await response.text();
+            const actionText = nowSlide === 'edit' ? '수정' : '등록';
+
+            if (response.ok && result === 'success') {
+                alert(`입고 검사 ${actionText}이 성공적으로 완료되었습니다.`);
+                
+                if(actionText == '수정') {
+                    // outInsId = nowEditId;
+
+                    slideInput.style.transition = 'none';
+                    slideInput.classList.remove('open');
+                    void slideInput.offsetWidth;
+                    slideInput.style.transition = 'right 1s ease';
+                    detail.style.transition = 'none';
+                    void detail.offsetWidth;
+                    detail.style.transition = 'right 1s ease';
+                    }
+                else {
+                    window.location.href = `${contextPath}/outInslist`;
+                }
+            }
+            else {
+                alert(`재고 ${actionText}에 실패했습니다. (서버 응답: ` + result + ')');
+            }
+
+        }
+        catch (error) {
+            console.error(`${nowSlide} 중 오류 발생:`, error);
+            alert(`${nowSlide} 중 통신 오류가 발생했습니다.`);
+        }
+
+
+    })
 });

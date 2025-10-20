@@ -263,12 +263,12 @@ document.addEventListener('DOMContentLoaded', () => {
             document.querySelector('#input_inIns_date').value = formatDate(data.inspection_result_date) || '';
             document.querySelector('#input_inIns_good').value = data.inspection_result_good || '';
             document.querySelector('#input_inIns_bad').value = data.inspection_result_bad || '';
-            document.querySelector('#input_item_div').value = data.item_div || '';
+            const itemDivElement = document.querySelector('#input_item_div');
+            itemDivElement.value = data.item_div || '';
 
             filterItems();
 
             document.querySelector('#input_stock_id').value = data.stock_id || '';
-
             document.querySelector('#input_worker_name').value = data.worker_id || '';
 
             

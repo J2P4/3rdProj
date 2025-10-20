@@ -20,8 +20,9 @@ public interface P0602_OutInsMapperDAO {
 	int deleteOutIns(List<String> outInsIds);
 	int insertOutIns(P0602_OutInsDTO dto);
 
-	//  작업자 조회용
-	List<WorkerDTO> selectWorkerName();
+//  작업자 & 재고 조회용
+	List<P0602_OutInsDTO> selectWorkerName();
+	List<P0602_OutInsDTO> selectStock();
 	
 	// 페이징 및 필터
 	List<P0602_OutInsDTO> selectOutInsPage(@Param("limit") int limit, @Param("offset") int offset, @Param("filter") P0602_OutInsDTO searchFilter);
