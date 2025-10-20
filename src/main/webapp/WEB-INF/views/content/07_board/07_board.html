@@ -57,7 +57,8 @@
                 
                 <li data-page="order" class="relative p-3 rounded-md cursor-pointer transition-colors duration-200">발주 관리</li>
                 
-                <li data-page="standard-parent" class="parent-menu relative p-3 rounded-md cursor-pointer transition-colors duration-200"> <div class="flex items-center justify-between">
+                <li data-page="standard-parent" class="parent-menu relative p-3 rounded-md cursor-pointer transition-colors duration-200">
+                    <div class="flex items-center justify-between">
                         <span>기준 관리</span>
                         <svg class="w-4 h-4 transition-transform duration-200" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
@@ -108,32 +109,15 @@
     </div>
 
     <script>
-        // 이 부분은 기존 코드에서 삭제되어야 하는 JSTL/JSP 코드이지만,
-        // 사용자 요청에 따라 유지하되 기능에 영향을 주지 않도록 <script> 태그 안에 둠.
-        /*
-        <div class = "slide-btnbox">
-            <c:if test="${sessionScope.role != 'STAFF'}">
-                <a href="modify?worker_id=${dto.worker_id}" class="slide-btn modify-btn">수정</a>
-                <a href="workerlist" class="slide-btn close-btn">취소</a>
-            </c:if>
-            <c:if test="${sessionScope.role == 'STAFF'}">
-                <a href="workerlist" class="slide-btn close-btn">취소</a>
-            </c:if>
-        </div>
-    </script>
-    <script>
-        // 모든 플레이스홀더 텍스트를 제거하고 빈 문자열을 반환하도록 수정
+        
         function renderPlaceholder(title) {
             return `
                 <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-200">
                     <h2 class="text-3xl font-bold text-gray-800 mb-4">${title}</h2>
                     </div>
             `;
-            // 빈 공간을 원하면 아래 코드를 사용해도 됩니다. (단, title 표시를 위해 위 코드를 유지)
-            // return '';
         }
 
-        /* 사이드바 하위 목록에 따라 늘어나게*/
         document.addEventListener('DOMContentLoaded', () => {
             const menuItems = document.querySelectorAll('.mainList > li:not(.parent-menu)');
             const parentMenus = document.querySelectorAll('.parent-menu');
@@ -143,8 +127,7 @@
             // 페이지별 내용을 렌더링하는 맵
             const pageRenderers = {
                 'main': () => renderPlaceholder('메인 대시보드'),
-                'board': () => loadBoardContent('list'), // 게시판은 loadBoardContent에서 내부적으로 mainContent.innerHTML을 설정
-                // 다른 메뉴들은 renderPlaceholder 호출
+                'board': () => loadBoardContent('list', 1), 
                 'order': () => renderPlaceholder('발주 관리'),
                 'standard-stock': () => renderPlaceholder('기준 관리 - 재고'),
                 'standard-partner': () => renderPlaceholder('기준 관리 - 거래처'),
@@ -202,18 +185,15 @@
                 const renderer = pageRenderers[pageId];
                 if (renderer) {
                     if (pageId === 'board') {
-                        // 'board'는 loadBoardContent('list')를 호출하고 
-                        // mainContent.innerHTML 설정은 07_board.js에서 처리합니다.
                         renderer();
                     } else {
-                        // 'board'가 아닌 다른 메뉴는 renderPlaceholder의 결과를 직접 mainContent에 삽입합니다.
                         mainContent.innerHTML = renderer();
                     }
                 }
             }
 
 
-            // 초기 상태: '메인' 항목 활성화
+            // ⭐초기 상태: '메인' 항목 활성화 ⭐
             const mainMenuItem = document.querySelector('[data-page="main"]');
             if (mainMenuItem) {
                 setActivePage('main');
