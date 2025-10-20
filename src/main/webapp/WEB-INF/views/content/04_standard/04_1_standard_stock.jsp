@@ -107,7 +107,7 @@
 	               		<tr data-id="${P0401_StockDTO.stock_id}">
 		                    <td><input type="checkbox" class="rowChk" name="delete_stock_id" value="${P0401_StockDTO.stock_id}"></td>
 		                    <td>${P0401_StockDTO.stock_id}</td>
-		                    <td>${P0401_StockDTO.stock_amount}</td>
+		                    <td><fmt:formatNumber value="${P0401_StockDTO.stock_amount}" pattern="#,###"></fmt:formatNumber></td>
 		                    <td>${P0401_StockDTO.item_div}</td>
 		                    <td>${P0401_StockDTO.stock_wrap}</td>
 	                    </tr>
@@ -310,6 +310,26 @@
                     </thead>
                     <tbody>
                         <tr>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class = "slide-tb detail-list" style="overflow-y: scroll; overflow-x: hidden;">
+                <h3>재고 변동 이력</h3>
+                <div style="font-size:0.8em; color: red;">재고 이력 테이블!! 수정하기</div>
+                <table id = "stock_info">
+                    <thead>
+                        <tr>
+                            <th>재고 변동일</th>
+                            <th>변동 수량</th>
+                            <th>총 수량</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td></td>
                             <td></td>
                             <td></td>
                         </tr>

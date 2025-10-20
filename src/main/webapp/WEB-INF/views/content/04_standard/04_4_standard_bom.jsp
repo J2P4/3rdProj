@@ -61,7 +61,7 @@
         </div>
     </form>
     <div class = "table">
-        <table>
+        <!-- <table>
             <thead>
                 <tr>
                     <th class = "chkbox"><input type="checkbox" id="chkAll"></th>
@@ -90,6 +90,15 @@
 		            </c:forEach>
                 </c:if>
             </tbody>
+        </table> -->
+        <table>
+            <thead>
+                <tr>
+                    <th class = "chkbox"><input type="checkbox" id="chkAll"></th>
+                    <th>목표 품목 ID</th>
+                    <th>목표 품목명</th>
+                </tr>
+            </thead>
         </table>
     </div>
     <!-- 현재 페이지 유지 -->
@@ -248,18 +257,16 @@
                     <thead>
                         <th>목표 품목 ID</th>
                         <th>품목명</th>
-                        <th>분류</th>
                     </thead>
                     <tbody>
                         <tr>
                             <td data-type = "select">1</td>
                             <td>1</td>
-                            <td data-type = "select">1</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
-            <div class = "slide-tb">
+            <div class = "slide-tb" style="overflow-x: hidden; overflow-y: scroll;">
                 <table>
                     <thead>
                         <th><input type=checkbox></th>
@@ -269,6 +276,13 @@
                         <th>소요량</th>
                     </thead>
                     <tbody>
+                        <tr>
+                            <td><input type="checkbox"></td>
+                            <td data-type = "select">2</td>
+                            <td>2</td>
+                            <td data-type = "select">2</td>
+                            <td>2</td>
+                        </tr>
                         <tr>
                             <td><input type="checkbox"></td>
                             <td data-type = "select">2</td>

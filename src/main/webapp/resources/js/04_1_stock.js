@@ -165,7 +165,9 @@ document.addEventListener('DOMContentLoaded', () => {
         // 두 번째 테이블 (재고 수량, 보관 위치). 테이블에 id 속성 넣어놔야 함.
         const stockRow = slide.querySelector('#stockDetail tbody tr');
         if (stockRow) {
-            stockRow.children[0].textContent = data.stock_amount || '';
+            saData = data.stock_amount;
+            stockRow.children[0].textContent = saData.toLocaleString('en-US') || '';
+            // stockRow.children[0].textContent = data.stock_amount || '';
             stockRow.children[1].textContent = data.stock_wrap || '';
         }
 

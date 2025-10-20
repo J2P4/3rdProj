@@ -61,7 +61,7 @@
         </div>
     </form>
     <div class = "table">
-        <table>
+        <!-- <table>
             <thead>
                 <tr>
                     <th class = "chkbox"><input type="checkbox" id="chkAll"></th>
@@ -88,6 +88,24 @@
 	                </c:forEach>
 	            </c:if>
             </tbody>
+        </table> -->
+        <table>
+            <thead>
+                <tr>
+                    <th class = "chkbox"><input type="checkbox" id="chkAll"></th>
+                    <th>검사 ID</th>
+                    <th>검사일</th>
+                    <th>검사 종류</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class = "chkbox"><input type="checkbox" class="rowChk" name="delete_defect_id" value="${P0603_ErrorDTO.defect_reason_id}"></td>
+                    <td>검사 ID</td>
+                    <td>검사일</td>
+                    <td>검사 종류</td>
+                </tr>
+            </tbody>
         </table>
     </div>
     <div class = "bottom-btn">
@@ -104,20 +122,6 @@
             <div class = "slide-tb">
                 <table>
                     <thead>
-                        <th>불량 사유명</th>
-                        <th>폐기 여부</th>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>1</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class = "slide-tb">
-                <table>
-                    <thead>
                         <th>검사 ID</th>
                         <th>검사일</th>
                         <th>검사 대상</th>
@@ -130,6 +134,26 @@
                         </tr>
                     </tbody>
                 </table>
+            </div>
+            <div class = "slide-tb">
+                <table>
+                    <thead>
+                        <th class = "chkbox"><input type="checkbox" id="chkAll"></th>
+                        <th>불량 사유명</th>
+                        <th>폐기 여부</th>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>1</td>
+                            <td>1</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class = "slide-tb-btnbox">
+                    <input type="button" class = "material" value="불량 사유 추가">
+                    <input type="button" class = "material" value="불량 사유 삭제">
+                </div>
             </div>
             <div class = "slide-btnbox">
                 <input type = "button" class = "slide-btn" value = "등록">
@@ -144,20 +168,6 @@
             <div class = "slide-tb">
                 <table>
                     <thead>
-                        <th>불량 사유명</th>
-                        <th>폐기 여부</th>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>${P0603_ErrorDTO.defect_reason}</td>
-                            <td data-type = "select">${P0603_ErrorDTO.defect_exhaust}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class = "slide-tb">
-                <table>
-                    <thead>
                         <th>검사 ID</th>
                         <th>검사일</th>
                         <th>검사 대상</th>
@@ -167,6 +177,20 @@
                             <td data-type = "select">${P0603_ErrorDTO.inspection_result_id}</td>
                             <td data-type = "date">${P0603_ErrorDTO.inspection_result_date}</td>
                             <td data-type = "select">${P0603_ErrorDTO.stock_id}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class = "slide-tb">
+                <table>
+                    <thead>
+                        <th>불량 사유명</th>
+                        <th>폐기 여부</th>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>${P0603_ErrorDTO.defect_reason}</td>
+                            <td data-type = "select">${P0603_ErrorDTO.defect_exhaust}</td>
                         </tr>
                     </tbody>
                 </table>
