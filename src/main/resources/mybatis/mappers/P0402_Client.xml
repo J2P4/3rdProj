@@ -64,7 +64,7 @@
     DELETE FROM V3_CLIENT
     WHERE CLIENT_ID IN
     <foreach collection="ids" item="id" open="(" separator="," close=")">
-      #{client_id}
+     #{id}
     </foreach>
   </delete>
   

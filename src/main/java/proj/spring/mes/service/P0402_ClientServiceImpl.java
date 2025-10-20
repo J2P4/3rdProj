@@ -58,7 +58,7 @@ public class P0402_ClientServiceImpl implements P0402_ClientService {
 
     // 4. 삭제 메서드 구현
     @Override
-    public void deleteByIds(java.util.List<Long> ids) {
+    public void deleteByIds(java.util.List<String> ids) {
         if (ids == null || ids.isEmpty()) return;
         int affected = clientDAO.deleteByIds(ids);
         log.debug("deleteByIds size={}, affected={}", new Object[]{ids.size(), affected});

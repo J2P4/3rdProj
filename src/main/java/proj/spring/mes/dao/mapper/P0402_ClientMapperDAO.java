@@ -25,7 +25,7 @@ public interface P0402_ClientMapperDAO {
     int insertClient(P0402_ClientDTO dto);
 
     // 4. 선택된 ID 목록을 받아 거래처 삭제 (DELETE)
-    int deleteByIds(@Param("ids") java.util.List<Long> ids);
+    int deleteByIds(@Param("ids") java.util.List<String> ids);
     
     // 5. 특정 거래처 ID로 하나의 상세 정보 조회
     P0402_ClientDTO selectClientOne(@Param("client_id") String client_id);

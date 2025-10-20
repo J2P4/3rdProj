@@ -6,9 +6,20 @@
 <mapper namespace="proj.spring.mes.dao.mapper.OrderMapperDAO">
 
   <select id="selectOrderList" resultType="proj.spring.mes.dto.OrderDTO">
-	select o.order_id, o.order_amount, o.order_date, c.worker_id,ci.item_id, i.item_name,ci.client_id
-    from v3_order o, v3_client c , v3_client_items ci , V3_item i
-    where o.client_id = c.client_id and c.client_id = ci.client_id and i.item_id = ci.item_id
+	select o.order_id,
+	 o.order_amount,
+	  o.order_date,
+	   c.worker_id,
+	   ci.item_id,
+	   ci.client_id
+    from v3_order o,
+     v3_client c ,
+      v3_client_items ci ,
+       V3_item i
+       
+    where o.client_id = 
+    c.client_id and c.client_id = ci.client_id 
+    and i.item_id = ci.item_id
   </select>
 
 

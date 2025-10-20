@@ -34,7 +34,7 @@
     <div class="filter">
         <div class="filter-item-box">
             <div class="filter-item">
-                <span class="filitem-name">· 거래처 ID</span>
+                <span class="filitem-name">· 사업자등록번호</span>
                 <div class="filitem-input">
                     <input type="text" name="client_id" value="${fn:escapeXml(param.client_id)}">
                 </div>
@@ -61,7 +61,7 @@
         <thead>
             <tr>
                 <th class="chkbox"><input type="checkbox" id="chkAll"></th>
-                <th>거래처 ID</th>
+                <th>사업자 등록번호</th>
                 <th>거래처 이름</th>
                 <th>거래처 전화번호</th>
                 <th>담당사원 ID</th>

@@ -19,7 +19,7 @@ public interface P0402_ClientService {
 
     void insertClient(P0402_ClientDTO dto);
 
-    void deleteByIds(List<Long> ids);
+    void deleteByIds(List<String> ids);
     P0402_ClientDTO  get(String client_id);
     
     //수정

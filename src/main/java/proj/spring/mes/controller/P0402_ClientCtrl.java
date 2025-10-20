@@ -147,7 +147,7 @@ public class P0402_ClientCtrl {
             @RequestParam(value = "workerId", required = false) String workerId,
             RedirectAttributes ra
     ) {
-        List<Long> ids = new ArrayList<Long>();
+        List<String> ids = new ArrayList<String>();
         if (idsCsv != null) {
             String[] parts = idsCsv.split(",");
             for (int i = 0; i < parts.length; i++) {
@@ -156,7 +156,7 @@ public class P0402_ClientCtrl {
                     String t = s.trim();
                     if (t.length() > 0) {
                         try {
-                            ids.add(Long.valueOf(t));
+                            ids.add(t);
                         } catch (NumberFormatException ignore) {}
                     }
                 }
