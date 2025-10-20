@@ -14,23 +14,27 @@
 
   <select id="selectOrderOne" parameterType="string" resultType="proj.spring.mes.dto.OrderDTO">
 	SELECT DISTINCT
-	    o.order_id,
-	    o.order_num,
-	    o.order_payment_date,
-	    o.order_payment_duedate,
-	    o.order_receive_date,
-	    o.order_receive_duedate,
-	    o.order_amount,
-	    o.order_date,
-	    c.worker_id,
-	    o.item_id,
-	    w.department_id,
-	    w.worker_code
+	    o.order_id,	<!-- 발주 id -->
+	    o.order_num, <!-- 발주 번호 -->
+	    o.order_payment_date,	<!-- 결제일 -->
+	    o.order_payment_duedate, <!-- 결제 예정일 -->
+	    o.order_receive_date,  <!-- 수주일 -->
+	    o.order_receive_duedate,  <!-- 수주 예정일 -->
+	    o.order_amount,  <!--  발주량 -->
+	    o.order_date,  <!-- 발주일 -->
+	    c.worker_id,  <!-- 작업자 id -->
+	    o.item_id  <!-- 품목 id -->
+<!-- 	    w.department_id, -->
+<!-- 	    w.worker_code	 -->
+	    
+
 	    
 	FROM v3_order o
 	JOIN v3_client c         ON o.client_id = c.client_id
-	JOIN v3_worker w         ON c.worker_id = w.worker_id
-	JOIN v3_client_items ci  ON o.client_id = ci.client_id  
+<!-- 	JOIN v3_worker w         ON c.worker_id = w.worker_id -->
+	JOIN v3_client_items ci  ON c.client_id = ci.client_id 
+
+	WHERE  o.order_id = #{order_id}
   </select>
 
   <!-- =======================

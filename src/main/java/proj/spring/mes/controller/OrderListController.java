@@ -22,10 +22,11 @@ public class OrderListController {
         return "03_order/Order_list.tiles";
     }
 
-    // 상세 JSON (JS에서 /po/detail?id= 로 호출 중이면 여기 매핑만 /po/detail로 잡아도 됨)
-    @GetMapping("/po/detail")
+ 
+    @GetMapping("/orderlist/detail")
     @ResponseBody
-    public OrderDTO detail(@RequestParam("id") String id) {
-        return orderService.get(id);
+    public List<OrderDTO> detail(@RequestParam("order_id") String id) {
+    	List<OrderDTO> orders = orderService.get(id);
+        return orders;
     }
 }

@@ -31,7 +31,6 @@ public class ItemController {
         @RequestParam(value = "size", required = false, defaultValue = "10") int pagePerRows,
         @RequestParam(value = "page", required = false, defaultValue = "1") int page,
 
-        // 🔍 검색 파라미터
         @RequestParam(value = "itemNo",   required = false) String itemNo,
         @RequestParam(value = "itemName", required = false) String itemName,
         @RequestParam(value = "item_div", required = false) String itemDiv,

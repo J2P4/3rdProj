@@ -18,7 +18,7 @@ public class OrderDTO {
 	private String item_id; //품목 id 
 	private Date order_payment_duedate; //결제 예정일
 	private Date order_receive_duedate;  //수주 예정일
-	
+	private String order_num;
 
 }
 

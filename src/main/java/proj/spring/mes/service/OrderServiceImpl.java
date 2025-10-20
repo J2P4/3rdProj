@@ -20,7 +20,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrderDTO get(String orderId) {
+    public List<OrderDTO> get(String orderId) {
         return orderMapper.selectOrderOne(orderId);
     }
 
