@@ -1,19 +1,20 @@
 // 게시판 데이터 (샘플)
+// NOTE: .reverse()로 최신 글이 배열 맨 앞으로 (index 0) 오도록 설정됨
 const boardData = [
-    { type: '자유', title: '2024년 1분기 생산 목표 달성 축하 이벤트', content: '축하 이벤트 상세 내용입니다.', authorId: 'N24101413' },
-    { type: '공유', title: '재고 관리 최적화: FIFO 원칙 적용 성공 사례 공유', content: 'FIFO 원칙을 적용한 재고 관리 성공 사례에 대한 상세 내용입니다.', authorId: 'N24101412' },
-    { type: '안내', title: '[필독] 11월 MES 시스템 정기 업데이트 및 서버 점검 일정 공지', content: '11월 MES 시스템 업데이트 및 점검에 대한 상세 안내입니다.', authorId: 'N24100103' },
-    { type: '긴급', title: '🚨 라인 5 품질 센서 오작동, 수동 검사 전환 완료!', content: '라인 5의 품질 센서 오작동으로 인한 긴급 수동 검사 전환 상황에 대한 보고입니다.', authorId: 'N24092598' },
-    { type: '자유', title: '생산성 향상에 도움이 된 도서 \'린 제조의 정석\' 후기', content: '도서 \'린 제조의 정석\'을 읽고 작성한 후기입니다.', authorId: 'N24100345' },
-    { type: '안내', title: '신규 입고 도서의 품목 등록 기준 및 규격 안내', content: '신규 입고 도서의 품목 등록 기준에 대한 상세 안내입니다.', authorId: 'N24101267' },
-    { type: '안내', title: '4분기 공정별 안전 교육 의무 이수 대상자 명단 공지', content: '4분기 공정별 안전 교육 의무 이수 대상자 명단 및 일정에 대한 공지입니다.', authorId: 'N24090120' },
-    { type: '자유', title: '공장 물류센터 자동화 로봇 이용 공모합니다!', content: '공장 물류센터 자동화 로봇 이용에 대한 아이디어 공모 안내입니다.', authorId: 'N24100574' },
-    { type: '공유', title: '품질 불량률 10% 감소 달성! 공정 개선 아이디어 제안', content: '품질 불량률 감소를 위한 공정 개선 아이디어 제안 상세 내용입니다.', authorId: 'N24091531' },
-    { type: '자유', title: '현장 작업 시 필요한 개인 보호 장비 개선 건의', content: '현장 작업 시 개인 보호 장비 개선에 대한 건의 사항입니다.', authorId: 'N24100856' },
-    { type: '자유', title: '이번 주 가장 힘들었던 공정은 무엇이었는지 자유롭게 이야기해 보세요.', content: '이번 주 힘들었던 공정에 대한 자유로운 의견 공유입니다.', authorId: 'N24100910' },
+    { type: '안내', title: '월간 시스템 점검 예정', content: '월간 시스템 점검 예정 안내입니다.', authorId: 'N24020202' },
     { type: '공유', title: '새로운 롤모델 교육 자료 공유', content: '새로운 롤모델 교육 자료 공유입니다.', authorId: 'N24010101' },
-    { type: '안내', title: '월간 시스템 점검 예정', content: '월간 시스템 점검 예정 안내입니다.', authorId: 'N24020202' }
-].reverse(); 
+    { type: '자유', title: '이번 주 가장 힘들었던 공정은 무엇이었는지 자유롭게 이야기해 보세요.', content: '이번 주 힘들었던 공정에 대한 자유로운 의견 공유입니다.', authorId: 'N24100910' },
+    { type: '자유', title: '현장 작업 시 필요한 개인 보호 장비 개선 건의', content: '현장 작업 시 개인 보호 장비 개선에 대한 건의 사항입니다.', authorId: 'N24100856' },
+    { type: '공유', title: '품질 불량률 10% 감소 달성! 공정 개선 아이디어 제안', content: '품질 불량률 감소를 위한 공정 개선 아이디어 제안 상세 내용입니다.', authorId: 'N24091531' },
+    { type: '자유', title: '공장 물류센터 자동화 로봇 이용 공모합니다!', content: '공장 물류센터 자동화 로봇 이용에 대한 아이디어 공모 안내입니다.', authorId: 'N24100574' },
+    { type: '안내', title: '4분기 공정별 안전 교육 의무 이수 대상자 명단 공지', content: '4분기 공정별 안전 교육 의무 이수 대상자 명단 및 일정에 대한 공지입니다.', authorId: 'N24090120' },
+    { type: '안내', title: '신규 입고 도서의 품목 등록 기준 및 규격 안내', content: '신규 입고 도서의 품목 등록 기준에 대한 상세 안내입니다.', authorId: 'N24101267' },
+    { type: '자유', title: '생산성 향상에 도움이 된 도서 \'린 제조의 정석\' 후기', content: '도서 \'린 제조의 정석\'을 읽고 작성한 후기입니다.', authorId: 'N24100345' },
+    { type: '긴급', title: '🚨 라인 5 품질 센서 오작동, 수동 검사 전환 완료!', content: '라인 5의 품질 센서 오작동으로 인한 긴급 수동 검사 전환 상황에 대한 보고입니다.', authorId: 'N24092598' },
+    { type: '안내', title: '[필독] 11월 MES 시스템 정기 업데이트 및 서버 점검 일정 공지', content: '11월 MES 시스템 업데이트 및 점검에 대한 상세 안내입니다.', authorId: 'N24100103' },
+    { type: '공유', title: '재고 관리 최적화: FIFO 원칙 적용 성공 사례 공유', content: 'FIFO 원칙을 적용한 재고 관리 성공 사례에 대한 상세 내용입니다.', authorId: 'N24101412' },
+    { type: '자유', title: '2024년 1분기 생산 목표 달성 축하 이벤트', content: '축하 이벤트 상세 내용입니다.', authorId: 'N24101413' }
+]; 
 
 // 메인 콘텐츠 영역 DOM
 const mainContent = document.querySelector('.main-content');
@@ -21,6 +22,8 @@ const mainContent = document.querySelector('.main-content');
 // ⭐현재 화면에 표시할 게시글 데이터 (검색 결과에 따라 변경됨)⭐
 let currentDisplayedData = [...boardData]; 
 let currentPage = 1; 
+let currentSearchCriteria = 'title'; // 마지막 검색 기준 저장
+let currentSearchKeyword = ''; // 마지막 검색 키워드 저장
 
 
 // 유형별 색상 매핑 (은은하고 프로페셔널한 톤 유지)
@@ -43,35 +46,62 @@ const postsPerPage = 10;
 
 
 // =================================================================
+// 새 작성자 ID 생성 (N24000000 + 순번)
+// =================================================================
+function generateNewAuthorId() {
+    // boardData는 최신 글이 배열 맨 앞에 있는 상태
+    if (boardData.length === 0) {
+        return 'N24000001';
+    }
+    
+    // 가장 최근 ID의 숫자 부분을 파싱하여 다음 번호 생성
+    const lastId = boardData[0].authorId;
+    let lastNumber = 0;
+    
+    // N24101413 -> 24101413
+    try {
+        lastNumber = parseInt(lastId.substring(1), 10); 
+    } catch(e) {
+        console.error("Author ID 파싱 오류:", e);
+    }
+
+    const newNumber = lastNumber + 1;
+    
+    // N + 8자리 숫자로 포맷팅 (N24000000 형태가 8자리 숫자이므로)
+    return 'N' + newNumber.toString().padStart(8, '0');
+}
+
+
+// =================================================================
 // 게시글 검색 및 필터링 함수
 // =================================================================
 function filterPosts() {
     const criteriaElement = document.getElementById('search-criteria');
     const searchInput = document.getElementById('searchInput');
 
-    // DOM이 로드되지 않았을 경우를 대비
     if (!criteriaElement || !searchInput) return;
 
-    const criteria = criteriaElement.value;
-    const keyword = searchInput.value.toLowerCase().trim();
+    // 현재 검색 기준 및 키워드 저장
+    currentSearchCriteria = criteriaElement.value;
+    currentSearchKeyword = searchInput.value.toLowerCase().trim();
 
-    if (!keyword) {
+    if (!currentSearchKeyword) {
         currentDisplayedData = [...boardData]; // 키워드가 없으면 전체 목록
         return;
     }
 
     currentDisplayedData = boardData.filter(post => {
         let value = '';
-        if (criteria === 'title') {
+        if (currentSearchCriteria === 'title') {
             value = post.title.toLowerCase();
-        } else if (criteria === 'authorId') {
+        } else if (currentSearchCriteria === 'authorId') {
             value = post.authorId.toLowerCase();
-        } else if (criteria === 'type') {
+        } else if (currentSearchCriteria === 'type') {
             value = post.type.toLowerCase();
         }
         
         // 검색 조건에 해당하는 값에 키워드가 포함되어 있는지 확인
-        return value.includes(keyword);
+        return value.includes(currentSearchKeyword);
     });
 }
 
@@ -94,8 +124,12 @@ function renderBoardListHTML(page = 1) {
     
     if (currentPosts.length > 0) {
         tableRows = currentPosts.map((post, index) => {
-            // 수정된 순번 계산 로직: 페이지 순서에 맞는 오름차순 순번 계산 (1, 2, 3... 11, 12, 13...)
-            const postNumber = startIndex + index + 1; 
+            // ⭐개선된 순번 계산 로직: 
+            // 현재 페이지의 시작 인덱스를 기준으로 전체 글 개수에서 역순으로 계산합니다.
+            // 이렇게 해야 최신 글(index 0)이 가장 큰 순번을 가지고, 페이지를 넘겨도 번호가 계속 줄어듭니다.
+            // (13, 12, 11, ... 3, 2, 1) 형태를 유지합니다.
+            const totalIndex = startIndex + index;
+            const postNumber = totalPosts - totalIndex; 
             
             // 필터링된 목록에서 원본 boardData의 인덱스를 찾아 상세 페이지 연결
             const originalIndex = boardData.findIndex(p => p.title === post.title && p.authorId === post.authorId);
@@ -236,6 +270,7 @@ function renderPostWriteHTML(post = null, index = null) {
     const title = isEditing ? '게시글 수정' : '새 게시글 작성';
     const saveButtonText = isEditing ? '수정 완료' : '저장';
     
+    // TinyMCE가 초기화될 때 사용할 초기 콘텐츠
     const initialContent = isEditing ? post.content : '';
 
     return `
@@ -352,17 +387,23 @@ function loadBoardContent(state, identifier = null) {
         const page = identifier !== null ? identifier : 1;
         mainContent.innerHTML = renderBoardListHTML(page);
 
+        // 검색 필드의 초기 상태를 유지 및 로드
+        const criteriaElement = document.getElementById('search-criteria');
+        const searchInput = document.getElementById('searchInput');
+        if (criteriaElement && searchInput) {
+            criteriaElement.value = currentSearchCriteria;
+            searchInput.value = currentSearchKeyword;
+        }
+
         const writeButton = document.getElementById('writePostButton');
         if (writeButton) {
             writeButton.addEventListener('click', () => {
-                // 검색 상태를 초기화하지 않음 (목록으로 돌아왔으니 검색 결과를 유지)
                 loadBoardContent('write'); 
             });
         }
         
         // 검색 기능 이벤트 리스너 추가 (목록 렌더링 시마다)
         const searchButton = document.getElementById('searchButton');
-        const searchInput = document.getElementById('searchInput');
 
         const performSearch = () => {
             filterPosts(); // 필터링 실행, currentDisplayedData 업데이트
@@ -382,11 +423,6 @@ function loadBoardContent(state, identifier = null) {
                 }
             });
         }
-        // 검색 필드의 초기 상태를 유지
-        if (searchInput) {
-            // 필터링된 목록을 표시하는 경우, 검색어는 이미 반영되었음
-            // 필요하다면 이곳에 마지막 검색어/조건을 로드하는 로직을 추가할 수 있음
-        }
 
     } else if (state === 'write') {
         let postToEdit = null;
@@ -403,18 +439,18 @@ function loadBoardContent(state, identifier = null) {
         if (typeof tinymce !== 'undefined') {
             tinymce.init({
                 selector: '#postContentEditor', 
-                // ⭐1. 상단 영어 메뉴바 완전히 제거⭐
+                // ⭐상단 영어 메뉴바 완전히 제거⭐
                 menubar: false,
-                // ⭐2. TinyMCE 한국어 설정 유지⭐
+                // ⭐TinyMCE 한국어 설정 유지⭐
                 language: 'ko',
-                // 3. 'table' 플러그인 포함
+                // 'table' 플러그인 포함
                 plugins: 'advlist autolink lists link charmap print preview anchor searchreplace visualblocks code fullscreen table paste code help wordcount',
-                // ⭐4. 툴바에 표(table) 기능 추가 및 기본 기능 간소화⭐
+                // ⭐툴바에 표(table) 기능 추가 및 기본 기능 간소화⭐
                 toolbar: 'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | table | removeformat | help',
                 height: 350
             });
         } else {
-             console.error("TinyMCE 라이브러리를 찾을 수 없습니다.");
+            console.error("TinyMCE 라이브러리를 찾을 수 없습니다.");
         }
         
         // 파일 첨부, 취소 버튼 로직
@@ -467,6 +503,7 @@ function loadBoardContent(state, identifier = null) {
                     content = tinymce.get('postContentEditor').getContent();
                 }
 
+                // TinyMCE에서 콘텐츠를 가져올 때, HTML 태그를 제거하여 실제 텍스트가 있는지 확인
                 const plainContent = content.replace(/<[^>]*>/g, '').trim();
 
                 if (!postType || postType === '유형 선택' || !postTitle.trim() || plainContent.length === 0) {
@@ -474,11 +511,14 @@ function loadBoardContent(state, identifier = null) {
                     return; 
                 }
 
+                // 새 글 작성 시에만 새로운 ID 생성
+                const authorId = indexToEdit !== null ? boardData[indexToEdit].authorId : generateNewAuthorId();
+                
                 const postData = {
                     type: postType,
                     title: postTitle,
                     content: content,
-                    authorId: indexToEdit !== null ? boardData[indexToEdit].authorId : 'N24000000' 
+                    authorId: authorId 
                 };
 
                 // 모드에 따른 데이터 처리 (저장/수정)
@@ -488,9 +528,12 @@ function loadBoardContent(state, identifier = null) {
                     // 수정 후 상세 보기로 이동
                     loadBoardContent('detail', indexToEdit); 
                 } else {
-                    boardData.unshift(postData); 
+                    boardData.unshift(postData); // 최신 글을 배열 맨 앞에 추가
                     alert('게시글이 성공적으로 저장되었습니다!');
+                    
                     // 새 글 작성 후 검색 상태 초기화하고 1페이지로 이동 (새 글은 1페이지에 나타나야 함)
+                    currentSearchCriteria = 'title';
+                    currentSearchKeyword = '';
                     currentDisplayedData = [...boardData];
                     loadBoardContent('list', 1); 
                 }
@@ -526,14 +569,21 @@ function loadBoardContent(state, identifier = null) {
             
             const totalPages = Math.ceil(currentDisplayedData.length / postsPerPage);
             let targetPage = currentPage;
+            
+            // 삭제 후 현재 페이지가 존재하지 않는 경우 (예: 마지막 페이지의 마지막 글 삭제)
             if (targetPage > totalPages && totalPages > 0) {
                 targetPage = totalPages; 
             } else if (totalPages === 0) {
                 targetPage = 1; 
-                currentDisplayedData = [...boardData]; // 빈 페이지가 되면 전체 목록으로 리셋
             }
             
             loadBoardContent('list', targetPage); 
         }
     }
 }
+
+// 초기 로드
+document.addEventListener('DOMContentLoaded', () => {
+    // 최초 로드시에는 전체 목록을 기준으로 1페이지를 보여줍니다.
+    loadBoardContent('list', 1);
+});
