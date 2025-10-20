@@ -44,7 +44,7 @@
             <div class = "filter-item">
                 <div class = "filitem-name">· 부서</div>
                 <div class = "filitem-input">
-                    <select class="edit-only" name="department_id" id="deptSelect">
+                    <select class="edit-only" name="department_id" id="deptSelectFilter">
                     	<option value="">
 					        전체
 					    </option>
@@ -244,7 +244,7 @@
 	                    <tr>
 	                        <td><input type="date" name="worker_join"></td>
 	                        <td>
-	                        	<select name="department_id" id="deptSelect">
+	                        	<select name="department_id" id="deptSelectInsert">
 	                        		<option value="">선택</option>
 					                <c:forEach var="dept" items="${deptList}">
 					                  <option value="${dept.department_id}">

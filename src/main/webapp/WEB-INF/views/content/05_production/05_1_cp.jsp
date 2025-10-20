@@ -14,6 +14,11 @@
     
     <script src="${pageContext.request.contextPath}/resources/js/common.js" defer></script>
     <script src="${pageContext.request.contextPath}/resources/js/05_1_cp.js"></script>
+<style>
+.hide {
+	display:none !important;
+}
+</style>
 </head>
 <body>
     <div class = "title">
@@ -41,7 +46,7 @@
                 </div>
             </div>
             <div class = "filter-item">
-                <div class = "filitem-name">· 검사일</div>
+                <div class = "filitem-name">· 계획일</div>
                 <div class = "filitem-input">
                     <input type = "date" name="fromDate" id="fromDate" value="${param.fromDate}">
                     <span class="tilde">~</span>
@@ -200,7 +205,7 @@
 	                        <td><input type="date" name="cp_start"></td>
 	                        <td><input type="date" name="cp_end"></td>
 	                        <td>
-								<select name="item_id" id="itemSelect">
+								<select name="item_id" id="itemSelectInsert">
 	                        		<option value="">선택</option>
 					                <c:forEach var="item" items="${itemList}">
 					                  <option value="${item.item_id}">
@@ -209,7 +214,7 @@
 					                </c:forEach>
 					            </select>
 							</td>
-	                        <td><input type="number" name="item_amount"></td>
+	                        <td><input type="number" name="cp_amount"></td>
 	                    </tr>
 	                </tbody>
 	            </table>
@@ -227,7 +232,7 @@
 	  <!-- 단일 form: 중첩 금지 -->
 	  <form id="cpForm" method="post" action="cpUpdate">
 	    <div class="slide-contents">
-	      <div class="silde-title"><h2>사원 상세</h2></div>
+	      <div class="silde-title"><h2>생산계획 상세</h2></div>
 	
 	      <div class="title-box">
 	        <!-- JS가 채움: .slide-cp 클래스명으로 통일 -->

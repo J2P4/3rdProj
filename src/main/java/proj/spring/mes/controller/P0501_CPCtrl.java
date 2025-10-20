@@ -1,14 +1,23 @@
 package proj.spring.mes.controller;
 
+import java.text.SimpleDateFormat;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import proj.spring.mes.dto.ItemDTO;
@@ -24,144 +33,182 @@ private static final Logger logger = LoggerFactory.getLogger(P0501_CPCtrl.class)
 	P0501_CPService CPService;
 	
 	
-	/** 목록 */
-	@RequestMapping("/cp")
-    public String list(
-    		Model model,
-    		@RequestParam(value = "size", required = false, defaultValue = "10") int pagePerRows, // 페이지당 행 수 파라미터 (기본 10)
-            @RequestParam(value = "page", required = false, defaultValue = "1")  int page         // 현재 페이지 번호 파라미터 (기본 1, 1-base)
-            ) {
-        
-     // ===================== 1) 입력값 방어/보정 =====================
-        int minSize = 1;                                 // 한 페이지 최소 1행
-        int maxSize = 100;                               // 과도한 요청 방지: 최대 100행까지만 허용
-        pagePerRows = Math.max(minSize, Math.min(pagePerRows, maxSize)); // 범위를 벗어나면 보정
-        page = Math.max(page, 1);                        // 페이지는 1보다 작을 수 없음(1-base 유지)
+	// ===============================================================
+    // [1] 목록 페이지 (JSP 렌더)
+    // ===============================================================
+    @RequestMapping(value = "/cp", method = RequestMethod.GET)
+    public String cp(
+            Model model,
+            @RequestParam(value = "size", required = false, defaultValue = "10") int pagePerRows,
+            @RequestParam(value = "page", required = false, defaultValue = "1") int page,
+            P0501_CPDTO searchFilter) {
 
-        // ===================== 2) 전체 레코드 수 조회 =====================
-        long totalCount = CPService.count();        // DB에서 아이템 총 개수 조회(서비스에 count() 구현 필요)
+        // ① 파라미터 보정
+        int minSize = 1;
+        int maxSize = 100;
+        pagePerRows = Math.max(minSize, Math.min(pagePerRows, maxSize));
+        page = Math.max(page, 1);
 
-        // ===================== 3) 총 페이지 수 계산 및 현재 페이지 보정 =====================
-        int totalPages = (int) Math.ceil((double) totalCount / pagePerRows); // 총 페이지 수 = 올림(총건수/페이지당수)
-        if (totalPages == 0) totalPages = 1;             // 데이터 0건일 때도 1페이지로 표시
-        if (page > totalPages) page = totalPages;        // 요청 페이지가 마지막 페이지 초과하면 마지막 페이지로 보정
+        // ② 전체 건수
+        long totalCount = CPService.count(searchFilter);
 
-        // ===================== 4) 목록 조회 =====================
-        List<P0501_CPDTO> list = CPService.list(page, pagePerRows);
-        //실제 OFFSET 계산((page-1)*pagePerRows)은 Service/Mapper에서 처리하도록 위임
-        model.addAttribute("list", list); // 현재 페이지에 해당하는 데이터 목록
+        // ③ 총 페이지 및 현재 페이지 보정
+        int totalPages = (int) Math.ceil((double) totalCount / pagePerRows);
+        if (totalPages == 0) totalPages = 1;
+        if (page > totalPages) page = totalPages;
 
-        // ===================== 5) 블록 페이지네이션 계산(10개 단위) =====================
-        final int blockSize = 10;                        // 페이지 번호를 묶어서 보여주기
-        int currentBlock = (int) Math.ceil((double) page / blockSize); // 현재 페이지가 속한 블록 번호
-        int startPage = (currentBlock - 1) * blockSize + 1;            // 블록 시작 페이지: …
-        int endPage   = Math.min(startPage + blockSize - 1, totalPages); // 블록 끝 페이지
+        // ④ 목록 데이터
+        List<P0501_CPDTO> list = CPService.list(page, pagePerRows, searchFilter);
+        model.addAttribute("list", list);
 
-        // 블록 이동 가능 여부/대상 계산
-        boolean hasPrevBlock  = startPage > 1;           // 시작 페이지가 1보다 크면 이전 블록 존재 (예: 11~20 블록이면 이전 블록은 1~10)
-        boolean hasNextBlock  = endPage < totalPages;    // 끝 페이지가 총 페이지보다 작으면 다음 블록 존재
-        int prevBlockStart    = Math.max(startPage - blockSize, 1);     // 이전 블록의 시작 페이지 (예: 11→1)
-        int nextBlockStart    = Math.min(startPage + blockSize, totalPages); // 다음 블록의 시작 페이지 (예: 1→11)
+        // ⑤ 페이지 블록 계산
+        final int blockSize = 10;
+        int currentBlock = (int) Math.ceil((double) page / blockSize);
+        int startPage = (currentBlock - 1) * blockSize + 1;
+        int endPage = Math.min(startPage + blockSize - 1, totalPages);
 
-        // ===================== 6) JSP로 전달할 모델 속성들 =====================
-        model.addAttribute("pagePerRows", pagePerRows);  // 페이지당 행 수 (JSP: Rows 셀렉터 selected 처리)
-        model.addAttribute("page", page);                // 현재 페이지 번호 (JSP: 현재 페이지 강조)
-        model.addAttribute("totalCount", totalCount);    // 총 레코드 수 (JSP: 총계 표기)
-        model.addAttribute("totalPages", totalPages);    // 총 페이지 수   (JSP: 루프/표기)
-        model.addAttribute("startPage", startPage);      // 현재 블록 시작 번호
-        model.addAttribute("endPage", endPage);          // 현재 블록 끝 번호
-        model.addAttribute("hasPrevBlock", hasPrevBlock);// 이전 블록 존재 여부 (JSP: "이전" 활성/비활성)
-        model.addAttribute("hasNextBlock", hasNextBlock);// 다음 블록 존재 여부 (JSP: "다음" 활성/비활성)
-        model.addAttribute("prevBlockStart", prevBlockStart); // 이전 블록이동 시 타깃 페이지(예: 11→1)
-        model.addAttribute("nextBlockStart", nextBlockStart); // 다음 블록이동 시 타깃 페이지(예: 1→11)
+        boolean hasPrevBlock = startPage > 1;
+        boolean hasNextBlock = endPage < totalPages;
+        int prevBlockStart = Math.max(startPage - blockSize, 1);
+        int nextBlockStart = Math.min(startPage + blockSize, totalPages);
 
+        // ⑥ JSP 전달값
+        model.addAttribute("pagePerRows", pagePerRows);
+        model.addAttribute("page", page);
+        model.addAttribute("totalCount", totalCount);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("startPage", startPage);
+        model.addAttribute("endPage", endPage);
+        model.addAttribute("hasPrevBlock", hasPrevBlock);
+        model.addAttribute("hasNextBlock", hasNextBlock);
+        model.addAttribute("prevBlockStart", prevBlockStart);
+        model.addAttribute("nextBlockStart", nextBlockStart);
+        model.addAttribute("filter", searchFilter);
+
+        // 품목 목록
         List<ItemDTO> itemList = CPService.itemList();
         model.addAttribute("itemList", itemList);
-        
-        System.out.println("목록페이지");
-        
-        
-        return "05_production/05_1_cp.tiles"; 
-    }
 
-    /** 상세 */
-	@RequestMapping("/cpdetail")
-    public String detail(Model model, String cp_id) {
-		
-		P0501_CPDTO dto = CPService.get(cp_id);
-        List<ItemDTO> itemList = CPService.itemList();
-        
-        model.addAttribute("dto", dto);
-        model.addAttribute("itemList", itemList);
-        
-//        model.addAttribute("mode", "view"); // 읽기모드
-        
-        System.out.println("상세페이지");
-        System.out.println("cp_id: "+cp_id);
+        logger.info("사원 목록 페이지");
         return "05_production/05_1_cp.tiles";
     }
 
-    /** 등록 */
-	@RequestMapping("/cpinsert")
-	public String insert(Model model, P0501_CPDTO dto) {
-       
-        
-		CPService.add(dto);
-        List<ItemDTO> itemList = CPService.itemList();
-        
-        // JSP에서 ${worker_id}로 접근 가능하도록 model에 담기
-        model.addAttribute("cp_id", dto.getCp_id());
-        model.addAttribute("CPdto", dto);
-        model.addAttribute("itemList", itemList);
-        
-//        model.addAttribute("mode", "add"); // 등록 모드
-        
-        // 결과 페이지로 이동 
-        return "05_production/05_1_cp.tiles";
-	}
+    // ===============================================================
+    // [2] 신규 등록 (AJAX, JSON 응답)
+    // ===============================================================
+    @RequestMapping(value = "/cpinsert", method = RequestMethod.POST, produces = "application/json; charset=UTF-8")
+    @ResponseBody
+    public Map<String, Object> insertAjax(
+            @ModelAttribute P0501_CPDTO dto,
+            HttpServletRequest request) {
 
-	/** 수정 후 상세 */
-	@RequestMapping("/cpmodify")
-	public String modify(Model model, P0501_CPDTO dto) {
-		P0501_CPDTO CPdto = CPService.get(dto.getCp_id());
-		List<ItemDTO> itemList = CPService.itemList();
-		model.addAttribute("dto", CPdto);
-		model.addAttribute("itemList", itemList);
-		
-		return "05_production/05_1_cp.tiles";
-	}
-    /** 수정 후 상세 */
-	@RequestMapping("/cpmodifyDetail")
-    public String modifyDetail(Model model, P0501_CPDTO dto) {
-        
-		CPService.edit(dto);
-	    List<ItemDTO> itemList = CPService.itemList();
+        Map<String, Object> res = new HashMap<String, Object>();
+        try {
+            boolean isAjax = "XMLHttpRequest".equals(request.getHeader("X-Requested-With"));
+            logger.debug("insertAjax() ajax?={} dto={}", isAjax, dto);
 
-	    model.addAttribute("dto", dto);
-        model.addAttribute("itemList", itemList);
-        
-        return "redirect:/cpdetail?cp_id=" + dto.getCp_id();
+            // --- 1) 유효성 검사 ---
+            if (dto.getCp_start() == null) return fail(res, "시작일은 필수입니다.");
+            if (dto.getCp_end() == null) return fail(res, "종료일은 필수입니다.");
+            if (isBlank(dto.getItem_id())) return fail(res, "품목을 선택하세요.");
+            if (isBlank(dto.getCp_amount())) return fail(res, "수량을 입력하세요.");
+
+            // --- 2) 등록 처리 ---
+            CPService.add(dto);
+            if (isBlank(dto.getCp_id())) return fail(res, "등록 실패(계획ID 생성 실패).");
+
+            // --- 5) 부서명 조회 ---
+            String itemName = null;
+            try {
+                ItemDTO d = CPService.getItemName(dto.getItem_id()); 
+                if (d != null) itemName = d.getItem_name();
+            } catch (Exception ignore) {}
+
+            // --- 6) JSON 결과 ---
+            res.put("ok", true);
+            res.put("message", "등록되었습니다.");
+            res.put("cp_id", dto.getCp_id());
+            res.put("cp_start", new SimpleDateFormat("yyyy-MM-dd").format(dto.getCp_start()));
+            res.put("cp_end", new SimpleDateFormat("yyyy-MM-dd").format(dto.getCp_end()));
+            res.put("item_name", itemName);
+            res.put("cp_amount", dto.getCp_amount());
+
+            return res;
+        } catch (Exception e) {
+            logger.error("insertAjax error", e);
+            return fail(res, "서버 오류: " + e.getMessage());
+        }
     }
 
-    /** 삭제 */
-	@RequestMapping("/cpdelete")
-    public String delete(@RequestParam(value = "many_CPs", required = false) List<String> many_CPs,
-    	    @RequestParam(defaultValue = "1") int page,
-    	    @RequestParam(defaultValue = "10") int size,
-    	    RedirectAttributes re
-    	) {
-    	    if (many_CPs == null || many_CPs.isEmpty()) {
-    	    	re.addFlashAttribute("msg", "선택된 항목이 없습니다.");
-    	    	re.addAttribute("page", page);
-    	    	re.addAttribute("size", size);
-    	        return "redirect:/cp";
-    	    }
-    	    int deleted = CPService.deleteCPs(many_CPs);
-    	    re.addFlashAttribute("msg", deleted + "건 삭제했습니다.");
-    	    // ★ 삭제 후에도 보고 있던 페이지로 돌아가기
-    	    re.addAttribute("page", page);
-    	    re.addAttribute("size", size);
-    	    return "redirect:/cp";
+    // ===============================================================
+    // [3] 상세 보기 (JSON)
+    // ===============================================================
+    @RequestMapping(value = "/cpdetail", method = RequestMethod.GET, produces = "application/json; charset=UTF-8")
+    @ResponseBody
+    public P0501_CPDTO detail(@RequestParam("cp_id") String cp_id) {
+        if (isBlank(cp_id)) return null;
+        return CPService.get(cp_id);
     }
-	
+
+    // ===============================================================
+    // [4] 수정
+    // ===============================================================
+    @RequestMapping(value="/cpupdate", method=RequestMethod.POST, produces="application/json; charset=UTF-8")
+    @ResponseBody
+    public Map<String,Object> cpupdate(@ModelAttribute P0501_CPDTO dto) {
+        Map<String,Object> res = new HashMap<String, Object>();
+        try {
+            System.out.println("cpupdate dto=" + dto);
+            CPService.edit(dto);
+            res.put("ok", true);
+            res.put("message", "수정되었습니다.");
+        } catch(Exception e) {
+            e.printStackTrace();
+            res.put("ok", false);
+            res.put("message", "오류: " + e.getMessage());
+        }
+        return res;
+    }
+
+    
+    // ===============================================================
+    // [5] 삭제
+    // ===============================================================
+    @RequestMapping(value = "/cpdelete", method = RequestMethod.POST)
+    public String delete(
+            @RequestParam(value = "many_cps", required = false) List<String> many_cps,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size,
+            RedirectAttributes re) {
+
+        if (many_cps == null || many_cps.isEmpty()) {
+            re.addFlashAttribute("msg", "선택된 항목이 없습니다.");
+            re.addAttribute("page", page);
+            re.addAttribute("size", size);
+            return "redirect:/cp";
+        }
+
+        int deleted = CPService.deleteCPs(many_cps);
+        re.addFlashAttribute("msg", deleted + "건 삭제했습니다.");
+        re.addAttribute("page", page);
+        re.addAttribute("size", size);
+
+        return "redirect:/cp";
+    }
+
+    // ===============================================================
+    // [공통 유틸 메서드]
+    // ===============================================================
+    private boolean isBlank(int i) {
+    	return i == 0;
+    }
+    private boolean isBlank(String s) {
+        return s == null || s.trim().isEmpty();
+    }
+
+    private Map<String, Object> fail(Map<String, Object> res, String msg) {
+        res.put("ok", false);
+        res.put("message", msg);
+        return res;
+    }
 }

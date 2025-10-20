@@ -15,9 +15,11 @@ public interface P0501_CPService {
     int edit(P0501_CPDTO dto);
     int deleteCPs(List<String> ids);
 	
-	//페이징 목록
-    List<P0501_CPDTO> list(int page, int pagePerRows);
+    ItemDTO getItemName(String item_id);
+    
+    //페이징 목록
+    List<P0501_CPDTO> list(int page, int pagePerRows, P0501_CPDTO searchFilter);
 
     //총 레코드 수
-    long count();
+    long count(P0501_CPDTO searchFilter);
 }

@@ -9,6 +9,7 @@ import lombok.Data;
 @Data
 public class P0501_CPDTO {
 	private String cp_id;		// 생산계획 ID
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "#,###")
 	private int cp_amount;		// 목표수량
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
 	private Date cp_start;		// 시작일
