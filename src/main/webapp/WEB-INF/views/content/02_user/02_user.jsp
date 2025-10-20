@@ -80,11 +80,11 @@
             <thead>
             	<tr>
 	                <th class = "chkbox"><input type="checkbox"  id="chkAll"></th>
-	                <th data-type="text">사원번호</th>
-	                <th data-type="text">이름</th>
-	                <th data-type="text">부서</th>
-	                <th data-type="date">입사일</th>
-	                <th data-type="text">권한</th>
+	                <th>사원번호</th>
+	                <th>이름</th>
+	                <th>부서</th>
+	                <th>입사일</th>
+	                <th>권한</th>
                 </tr>
             </thead>
             <tbody>
