@@ -512,7 +512,7 @@ if (closeInputBtn) {
         const stock_wrap = document.querySelector('#input_stock_wrap').value;
 
         // 로딩 문제 추가 코드들
-        const stock_id = document.querySelector('#input_stock_id').value;
+        const stockId = document.querySelector('#input_stock_id').value;
 
         // 값이 잘 들어갔는지 확인.
         // value가 비어있다면 alert 창이 뜨도록.

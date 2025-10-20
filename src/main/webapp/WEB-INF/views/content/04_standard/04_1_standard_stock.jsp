@@ -228,7 +228,7 @@
                                 <!-- select에 DB의 품목 id 데이터 불러와서 채워넣기 -->
                                 <!-- select 데이터 글씨가 너무 많으면 테이블이 깨져서 강제로 style 속성 지정 2 -->
                                 <select id="input_item_id" name="item_id" size = "1" style = "width: 100%;">
-                                    <option value="">품목 ID 선택</option>
+                                    <option value="" selected>품목 ID 선택</option>
                                     <c:forEach var="item" items="${itemList}">
                                         <option 
                                             value="${item.item_id}"
@@ -241,7 +241,7 @@
                             </td>
                             <td data-type = "select">
                                 <select id="input_item_div" name="item_div" size="1" style = "width: 100%;">
-                                    <option value="" selected>품목 ID 선택</option>
+                                    <option value="" selected>품목 분류 선택</option>
                                     <option value = "도서">도서</option>
                                     <option value = "포장지">포장지</option>
                                     <option value = "완제품">완제품</option>

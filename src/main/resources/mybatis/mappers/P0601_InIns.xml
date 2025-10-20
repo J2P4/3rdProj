@@ -116,11 +116,21 @@
 	
 	<!-- 조회 : 작업자 입력할 때 편하도록... -->
 	
-	<select id="selectWorkerName" resultType="workerDTO">
+	<select id="selectWorkerName" resultType="P0601_InInsDTO">
 		select 
 	        w.worker_id, w.worker_name
 	    from V3_worker w
 	    order by w.worker_id
+	</select>
+	
+	<!-- 조회 : 재고 입력 -->
+	<select id = "selectStock" resultType="P0601_InInsDTO">
+		select
+			s.stock_id, i.item_name, i.item_div
+		from v3_stock s
+		left outer join v3_item i
+			on s.item_id = i.item_id
+		where i.item_div = '도서' or i.item_div = '포장지'
 	</select>
 	
 	<!-- 수정 -->

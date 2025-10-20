@@ -50,6 +50,11 @@ public class P0601_InInsServiceImpl implements P0601_InInsService {
 		return inInsMapperDAO.selectWorkerName();
 	}
 	
+	@Override
+	public List<WorkerDTO> stockList() {
+		return inInsMapperDAO.selectStock();
+	}
+	
 	// 페이징
 	@Override
 	public List<P0601_InInsDTO> list(int page, int pagePerRows, P0601_InInsDTO searchFilter) {

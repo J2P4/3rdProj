@@ -1,4 +1,15 @@
 document.addEventListener('DOMContentLoaded', () => {
+
+    // 변수 모음
+    const slideInput = document.querySelector('#slide-input');
+    const inputStockId = document.querySelector('#input_stock_id');
+    const inputInInsDate = document.querySelector('#input_inIns_date');
+    const inputInInsGood = document.querySelector('#input_inIns_good');
+    const inputInInsBad = document.querySelector('#input_inIns_bad');
+    const inputWorkerName = document.querySelector('#input_worker_name');
+    const itemDiv = document.querySelector('#input_item_div');
+    const inInsId = document.querySelector('#input_inIns_id');
+    const inspectionResultIdValue = inInsId ? inInsId.value : null;
     
     // ============================
     // 삭제 기능
@@ -11,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (deleteBtn) {
             deleteBtn.addEventListener('click', async () => {
                 // 선택된 재고 ID 목록 추출
-                const checkedIds = Array.from(document.querySelectorAll('input[name="delete_inIns_id"]:checked')).map(checkbox => checkbox.value);
+                const checkedIds = Array.from(document.querySelectorAll('input[name="delete_InIns_id"]:checked')).map(checkbox => checkbox.value);
     
                 // 선택 항목 없으면(배열 길이 0이면) 경고 창 띄우기
                 if (checkedIds.length === 0) {
@@ -171,8 +182,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const detailEditBtn = document.querySelector('#detailEditBtn');
     const inSlideTitle = document.querySelector('#slide-title');
     const inInsIdShow = document.querySelector('#inIns-id-show');
-    const inInsIdVal = document.querySelector('inIns-id-val');
-    const inputInInsIdHidden = document.querySelector('#input_stock_id');
+    const inInsIdVal = document.querySelector('#inIns-id-val');
+    const inputInInsIdHidden = document.querySelector('#input_inIns_id');
 
     // mode(nowSlide)에 따라 등록/수정 변경
     function openSlideInput(mode, inInsID = null) {
@@ -182,10 +193,13 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // 등록 상태처럼 입력란 value 정리
         slideInput.querySelector('form').reset();
+        inputInInsDate.value = '';
+        inputInInsGood.value = '';
+        inputInInsBad.value = '';
         inputItemDiv.value = '';
-        inputItemName.value = '';
-        upItemIdOpt(allItems); 
-        inputItemId.value = '';
+        inputStockId.value = '';
+        upStockIdOpt(allItems); 
+        inputWorkerName.value = '';
 
         // 상세 -> 수정 전환 시 애니메이션 효과 없애서 바로 전환된 것처럼
         const editNoAnime = (mode === 'edit');
@@ -246,12 +260,17 @@ document.addEventListener('DOMContentLoaded', () => {
             originalDetailData = data;
             
             // form에 데이터 채우기
-            document.querySelector('#input_inIns_date').value = data.inspection_result_date || '';
+            document.querySelector('#input_inIns_date').value = formatDate(data.inspection_result_date) || '';
             document.querySelector('#input_inIns_good').value = data.inspection_result_good || '';
             document.querySelector('#input_inIns_bad').value = data.inspection_result_bad || '';
-            document.querySelector('#input_stock_id').value = data.input_stock_id || '';
-            document.querySelector('#input_item_name').value = data.input_item_name || '';
-            document.querySelector('#input_worker_name').value = data.input_worker_name || '';
+            document.querySelector('#input_item_div').value = data.item_div || '';
+
+            filterItems();
+
+            document.querySelector('#input_stock_id').value = data.stock_id || '';
+
+            document.querySelector('#input_worker_name').value = data.worker_id || '';
+
             
 
         }
@@ -261,5 +280,208 @@ document.addEventListener('DOMContentLoaded', () => {
             slideInput.classList.remove('open');
         }
     }    
+
+    // ==========================
+    // 등록 / 수정 슬라이드 닫기
+    // ==========================
+
+    const closeInputBtn = slideInput.querySelector('.close-btn');
+    if (closeInputBtn) {
+
+        closeInputBtn.addEventListener('click', async () => {
+            slideInput.classList.remove('open');
+
+            if (nowSlide === 'edit' && nowEditId && originalDetailData) {
+                slideInput.style.transition = 'none';
+                detail.style.transition = 'none';
+                void slideInput.offsetWidth;
+                slideInput.style.transition = 'right 1s ease';
+
+                fillDetail(detail, originalDetailData);
+
+                detail.classList.add('open');
+                void detail.offsetWidth;
+
+                detail.style.transition = 'right 1s ease';
+            }
+        });
+    }
+
+    // ==========================
+    // 등록 / 수정 슬라이드 - 품목 select용
+    // ==========================     
+    
+    const allItems = JSON.parse(stockListJson || '[]');
+    const inputItemDiv = document.querySelector('#input_item_div');
+
+    if(!allItems.length) {
+        console.warn('위 코드의 변수 정의 재확인');
+        return;
+    }
+
+    // 품목 id 갱신
+    function upStockIdOpt(stockToUp) {
+        while(inputStockId.options.length > 1) {
+            inputStockId.remove(1);
+        }
+
+        stockToUp.forEach(stock => {
+            const option = document.createElement('option');
+            option.value = stock.stock_id;
+            option.textContent = `${stock.stock_id} - ${stock.item_name}`;
+            option.dataset.id = stock.stock_id;
+            option.dataset.name = stock.item_name;
+            inputStockId.appendChild(option);
+        })
+    }
+
+    // 품목 분류에 따라 재고 목록(id) 필터링
+    function filterItems() {
+        const selectedDiv = inputItemDiv.value;
+        const resultId = document.querySelector('#input_stock_id').value.trim().toLowerCase();
+    
+        let filteredItems = allItems;
+
+        if (selectedDiv !== '') {
+            filteredItems = filteredItems.filter((item) => {
+                return item.item_div === selectedDiv;
+            })
+        }
+
+        upStockIdOpt(filteredItems);
+    }
+
+    inputItemDiv.addEventListener('change', filterItems);
+
+    document.querySelector('.btm-btn.new').addEventListener('click', () => {
+        openSlideInput('new');
+    });
+
+    if (detailEditBtn) {
+        detailEditBtn.addEventListener('click', () => {
+            const inInsIdDisplay = detail.querySelector('.slide-id').textContent;
+            const inInsId = inInsIdDisplay.split(': ')[1]; 
+            
+            if (inInsId) {
+                openSlideInput('edit', inInsId);
+            }
+            else {
+                alert('수정할 입고 검사 ID를 찾을 수 없습니다.');
+            }
+        });
+    }
+
+    // ==========================
+    // 등록 / 수정 슬라이드 - 데이터 저장
+    // ==========================    
+
+    const saveBtn = document.querySelector('.submit-btn');
+
+    saveBtn.addEventListener('click', async () => {
+
+        // 입력값 모음집
+        const inInsDate = document.querySelector('#input_inIns_date').value;
+        const inInsGood = document.querySelector('#input_inIns_good').value;
+        const inInsBad = document.querySelector('#input_inIns_bad').value;
+        const stockIds = document.querySelector('#input_stock_id').value;
+        const workerSelect = document.querySelector('#input_worker_name');
+        const selectedOption = workerSelect.options[workerSelect.selectedIndex];
+        const workerId = selectedOption.value;
+        const workerName = selectedOption.dataset.name;
+        const nowDivVal = itemDiv.value;
+
+
+
+        const inInsId = document.querySelector('#input_inIns_id');
+
+        // 값이 잘 들어갔는지 확인.
+        if (inInsDate === '') {
+            alert('검사일을 선택해 주세요.');
+            return;
+        }
+        if (inInsGood === '') {
+            alert('양품 수를 선택해 주세요.');
+            return;
+        }
+        if(parseInt(inInsGood) < 0) {
+            alert('수량은 0 이상의 값을 입력해 주세요.');
+            document.querySelector('#input_inIns_good').focus();
+            return;
+        }
+        if (inInsBad === '') {
+            alert('불량 수를 입력해 주세요.');
+            return;
+        }
+        if(stockIds === '') {
+            alert('품목을 선택해 주세요.');
+            return;
+        }
+        if (workerName === '') {
+            alert('담당자를 선택해 주세요.');
+            return;
+        }
+
+        // 객체 구성
+        const inInsData = {
+            inspection_result_id: inspectionResultIdValue,
+            inspection_result_date: inInsDate,
+            inspection_result_good: parseInt(inInsGood),
+            inspection_result_bad: parseInt(inInsBad),
+            item_div: nowDivVal,
+            stock_id: stockIds,
+            worker_id: workerId,
+            worker_name: workerName
+        };
+
+        if (nowSlide === 'edit') {
+            url = `${contextPath}/inInsupdate`;
+            inInsData.inspection_result_id = nowEditId; 
+        }
+        else {
+            url = `${contextPath}/inInsinsert`;
+        }
+
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+                },
+                body: new URLSearchParams(inInsData).toString() 
+            });
+
+            const result = await response.text();
+            const actionText = nowSlide === 'edit' ? '수정' : '등록';
+
+            if (response.ok && result === 'success') {
+                alert(`입고 검사 ${actionText}이 성공적으로 완료되었습니다.`);
+                
+                if(actionText == '수정') {
+                    // inInsId = nowEditId;
+
+                    slideInput.style.transition = 'none';
+                    slideInput.classList.remove('open');
+                    void slideInput.offsetWidth;
+                    slideInput.style.transition = 'right 1s ease';
+                    detail.style.transition = 'none';
+                    void detail.offsetWidth;
+                    detail.style.transition = 'right 1s ease';
+                    }
+                else {
+                    window.location.href = `${contextPath}/inInslist`;
+                }
+            }
+            else {
+                alert(`재고 ${actionText}에 실패했습니다. (서버 응답: ` + result + ')');
+            }
+
+        }
+        catch (error) {
+            console.error(`${nowSlide} 중 오류 발생:`, error);
+            alert(`${nowSlide} 중 통신 오류가 발생했습니다.`);
+        }
+
+
+    })
 
 })

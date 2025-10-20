@@ -13,6 +13,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import proj.spring.mes.dto.P0601_InInsDTO;
 import proj.spring.mes.dto.WorkerDTO;
 import proj.spring.mes.service.P0601_InInsService;
@@ -48,9 +52,10 @@ public class P0601_InInsCtrl {
         if (totalPages == 0) totalPages = 1;             // 데이터 0건일 때도 1페이지로 표시
         if (page > totalPages) page = totalPages;       // 요청 페이지가 마지막 페이지 초과하면 마지막 페이지로 보정
         
-        // ===================== 4) 목록(+작업자) 조회 =====================
+        // ===================== 4) 목록(+작업자, 재고) 조회 =====================
 		List<P0601_InInsDTO> list = service.list(page, pagePerRows, searchFilter);
 		List<WorkerDTO> wnlist = service.workerNameList();
+		List<WorkerDTO> stlist = service.stockList();
 		
         // ===================== 5) 블록 페이지네이션 계산(10개 단위) =====================
         final int blockSize = 10;                        // 페이지 번호를 묶어서 보여주기
@@ -77,8 +82,29 @@ public class P0601_InInsCtrl {
         model.addAttribute("nextBlockStart", nextBlockStart); // 다음 블록이동 시 타깃 페이지(예: 1→11)
         model.addAttribute("filter", searchFilter); 			// 필터 사용
 
+        ObjectMapper objectMapper = new ObjectMapper();
+        
+        String stockListJson = null;
+        
+        try {
+			objectMapper.configure(JsonGenerator.Feature.ESCAPE_NON_ASCII, false);
+			
+			String rawJson = objectMapper.writeValueAsString(stlist);
+			
+			stockListJson = rawJson.replaceAll("[\n\r]", "");
+			stockListJson = stockListJson.replaceAll("'", "\\\\'");
+			stockListJson = stockListJson.replaceAll("\"", "\\\\\""); 
+			stockListJson = stockListJson.replaceAll("`", "\\\\`");        	
+        }
+		catch (JsonProcessingException e) {
+			e.printStackTrace();
+			stockListJson = "[]"; 
+		}
+        
         model.addAttribute("list", list);
-        model.addAttribute("wnlist", wnlist); 		
+        model.addAttribute("wnlist", wnlist); 
+        model.addAttribute("stockList", stlist);
+        model.addAttribute("stockListJson", stockListJson);
 		
 		return "06_quality/06_1_in_inspection.tiles";
 	}

@@ -17,7 +17,7 @@
     <script>
         const contextPath = '${pageContext.request.contextPath}';
         // 품목 목록을 JSON 형식으로 js 변수에 저장하려고 작성
-        const allItemsJson = `${itemListJson}`; 
+        const stockListJson = `${stockListJson}`; 
     </script>    
     <script src="${pageContext.request.contextPath}/resources/js/common.js" defer></script>
     <script src="${pageContext.request.contextPath}/resources/js/06_1_inins.js" defer></script>
@@ -173,10 +173,11 @@
         </div>
     </div>
     <div class = "slide" id = "slide-input">
-        <div class = "slide-contents" id="inInsInsertForm">
+        <form class = "slide-contents" id="inInsInsertForm">
             <div class = "silde-title"><h2 id="slide-title">입고 검사 등록</h2></div>
             <div class = "slide-id" id="inIns-id-show" style = "display: none">
                 입고 검사 ID: <span id="inIns-id-val"></span>
+                <input type="hidden" id="input_inIns_id" name="inspection_result_id" value="">
             </div>
             <div class = "slide-tb">
                 <table>
@@ -203,21 +204,40 @@
             <div class = "slide-tb">
                 <table>
                     <thead>
+                        <th>검사 품목 분류</th>
                         <th>검사 품목명</th>
-                        <th>검사 품목 ID</th>
                         <th>담당 사원</th>
                     </thead>
                     <tbody>
                         <tr>
                             <td>
-                                <select name = "변수명" size = "1" id = "input_stock_id">
-                                    <option>검사 대상</option>
+                                <select name = "item_div" size = "1" id = "input_item_div">
+                                    <option value="" selected>품목 분류 선택</option>
+                                    <option value="도서">도서</option>
+                                    <option value="포장지">포장지</option>
                                 </select>
                             </td>
-                            <td id = "input_item_name"></td>
                             <td>
-                                <select name = "변수명" size = "1" id = "input_worker_name">
-                                    <option>담당 사원</option>
+                                <select name = "stock_id" size = "1" id = "input_stock_id" readonly>
+                                    <option value="" selected>검사 품목 선택</option>
+                                    <!-- <c:forEach var="stock" items="${stockList}">
+                                        <option
+                                            value="stock.stock_id"
+                                            data-id="${stock.stock_id}"
+                                            data-name="${stock.item_name}">
+                                            ${stock.stock_id} - ${stock.item_name}
+                                        </option>
+                                    </c:forEach> -->
+                                </select>
+                            </td>
+                            <td>
+                                <select name = "worker_id" size = "1" id = "input_worker_name">
+                                    <option value="" selected>담당자 선택</option>
+                                    <c:forEach var="worker" items="${wnlist}">
+                                        <option value="${worker.worker_id}" data-name = "${worker.worker_name}">
+                                            ${worker.worker_id} - ${worker.worker_name}
+                                        </option>
+                                    </c:forEach>
                                 </select>
                             </td>
                         </tr>
@@ -228,7 +248,7 @@
                 <input type = "button" class = "submit-btn slide-btn" value = "등록">
                 <input type = "button" class = "close-btn slide-btn" value = "취소">
             </div>
-        </div>
+        </form>
     </div>
     <div class = "slide" id = "slide-detail">
         <div class = "slide-contents">
