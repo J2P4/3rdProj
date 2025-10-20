@@ -18,6 +18,7 @@
     flex: 0 0 400px;
     height: 400px;
     position: relative;
+    font-size : 20px;
 }
 
 /* 이미지 미리보기 박스 */
@@ -74,6 +75,19 @@
     align-items: center;
     text-align: center;
     font-size: 20px;
+    font-weight: bold;
+    box-sizing: border-box;
+}
+
+.process-box {
+ 	flex: 0 0 500px;
+    height: 400px
+    background-color: #f9f9f9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-size: 30px;
     font-weight: bold;
     box-sizing: border-box;
 }
@@ -259,7 +273,8 @@
 
             <div class="process-box">
                 <!-- 공정 이미지 영역 -->
-                    공정 이미지
+        			공정<br>
+        			이미지
                 <div class="image-section">
                        <img class="image" id="preview">
     <br>
