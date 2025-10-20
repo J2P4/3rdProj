@@ -10,7 +10,6 @@
     <script src="https://cdn.jsdelivr.net/npm/tinymce@5/tinymce.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/tinymce@5/langs/ko.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 </head>
 <body class="bg-gray-100 text-gray-800 flex flex-col min-h-screen">
 
@@ -54,17 +53,13 @@
     <div class="flex flex-1">
         <aside class="nav-bg text-white p-4 w-56 shadow-inner flex-shrink-0">
             <ul class="mainList space-y-2 text-base">
-                <!-- relative : 요소의 position 속성을 relative로 설정 -->
                 <li data-page="main" class="relative p-3 rounded-md cursor-pointer transition-colors duration-200">메인</li>
                 
                 <li data-page="order" class="relative p-3 rounded-md cursor-pointer transition-colors duration-200">발주 관리</li>
                 
-                <li data-page="standard-parent" class="parent-menu relative p-3 rounded-md cursor-pointer transition-colors duration-200"> <!-- duration : 트랜지션 지속시간 200ms -->
-                    <div class="flex items-center justify-between">
+                <li data-page="standard-parent" class="parent-menu relative p-3 rounded-md cursor-pointer transition-colors duration-200"> <div class="flex items-center justify-between">
                         <span>기준 관리</span>
-                        <!-- svg : 화살표 전체 아이콘 | 속도 : duration | viewBox : svg의 좌표 공간(0~20) 설정 | path : 실제 화살표의 모양 경로 -->
                         <svg class="w-4 h-4 transition-transform duration-200" fill="currentColor" viewBox="0 0 20 20">
-                            <!-- evenodd : 짝수 홀수 규칙 적용 , 한 점에서 경로를 가로지르는 횟수가 홀수면 채우고, 짝수면 비워둠 , 겹치는 부분을 비워주는 규칙-->
                             <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
                         </svg>
                     </div>
@@ -109,23 +104,35 @@
             </ul>
         </aside>
 
-        <main class="main-content flex-1 p-8 overflow-y-auto">
-            
-        </main>
+        <main class="main-content flex-1 p-8 overflow-y-auto"></main>
     </div>
 
     <script>
-                <div class = "slide-btnbox">
-    <c:if test="${sessionScope.role != 'STAFF'}">
-                    <a href="modify?worker_id=${dto.worker_id}" class="slide-btn modify-btn">수정</a>
+        // 이 부분은 기존 코드에서 삭제되어야 하는 JSTL/JSP 코드이지만,
+        // 사용자 요청에 따라 유지하되 기능에 영향을 주지 않도록 <script> 태그 안에 둠.
+        /*
+        <div class = "slide-btnbox">
+            <c:if test="${sessionScope.role != 'STAFF'}">
+                <a href="modify?worker_id=${dto.worker_id}" class="slide-btn modify-btn">수정</a>
                 <a href="workerlist" class="slide-btn close-btn">취소</a>
-        </c:if>
-        <c:if test="${sessionScope.role == 'STAFF'}">
+            </c:if>
+            <c:if test="${sessionScope.role == 'STAFF'}">
                 <a href="workerlist" class="slide-btn close-btn">취소</a>
-        </c:if>
- </div>
+            </c:if>
+        </div>
     </script>
     <script>
+        // 모든 플레이스홀더 텍스트를 제거하고 빈 문자열을 반환하도록 수정
+        function renderPlaceholder(title) {
+            return `
+                <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-200">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-4">${title}</h2>
+                    </div>
+            `;
+            // 빈 공간을 원하면 아래 코드를 사용해도 됩니다. (단, title 표시를 위해 위 코드를 유지)
+            // return '';
+        }
+
         /* 사이드바 하위 목록에 따라 늘어나게*/
         document.addEventListener('DOMContentLoaded', () => {
             const menuItems = document.querySelectorAll('.mainList > li:not(.parent-menu)');
@@ -133,18 +140,11 @@
             const allItems = [...menuItems, ...document.querySelectorAll('.subList li')];
             const mainContent = document.querySelector('.main-content'); 
 
-            // 페이지별 내용을 렌더링하는 더미 함수 (게시판은 07_board.js에서 처리)
+            // 페이지별 내용을 렌더링하는 맵
             const pageRenderers = {
-                'main': () => `
-                    <h2 class="text-3xl font-bold text-gray-800 mb-6">메인 페이지</h2>
-                    <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
-                        <p class="text-lg font-medium text-gray-500">
-                            메인 페이지 내용입니다.
-                        </p>
-                    </div>
-                `,
-                'board': () => loadBoardContent('list'), // 게시판 호출
-                // 다른 메뉴들은 간단한 플레이스홀더
+                'main': () => renderPlaceholder('메인 대시보드'),
+                'board': () => loadBoardContent('list'), // 게시판은 loadBoardContent에서 내부적으로 mainContent.innerHTML을 설정
+                // 다른 메뉴들은 renderPlaceholder 호출
                 'order': () => renderPlaceholder('발주 관리'),
                 'standard-stock': () => renderPlaceholder('기준 관리 - 재고'),
                 'standard-partner': () => renderPlaceholder('기준 관리 - 거래처'),
@@ -159,16 +159,6 @@
                 'quality-defect': () => renderPlaceholder('품질 관리 - 불량 보고서'),
             };
 
-            function renderPlaceholder(title) {
-                return `
-                    <h2 class="text-3xl font-bold text-gray-800 mb-6">${title}</h2>
-                    <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
-                        <p class="text-lg font-medium text-gray-500">
-                            이 페이지는 현재 개발 중이거나 데이터가 없습니다.
-                        </p>
-                    </div>
-                `;
-            }
 
             // 모든 메뉴의 활성화 상태를 초기화
             function deactivateAll() {
@@ -208,14 +198,17 @@
                     }
                 }
                 
-                // 콘텐츠 렌더링
+                // 콘텐츠 렌더링 로직
                 const renderer = pageRenderers[pageId];
                 if (renderer) {
-                    const content = renderer();
-                    if (pageId !== 'board') {
-                        mainContent.innerHTML = content;
+                    if (pageId === 'board') {
+                        // 'board'는 loadBoardContent('list')를 호출하고 
+                        // mainContent.innerHTML 설정은 07_board.js에서 처리합니다.
+                        renderer();
+                    } else {
+                        // 'board'가 아닌 다른 메뉴는 renderPlaceholder의 결과를 직접 mainContent에 삽입합니다.
+                        mainContent.innerHTML = renderer();
                     }
-                    // 'board'는 loadBoardContent에서 직접 mainContent.innerHTML을 설정
                 }
             }
 
@@ -305,8 +298,6 @@
             if (e.key === 'Escape') closeUserMenu();
         });
     </script>
-    
     <script src="07_board.js"></script>
-
 </body>
 </html>
