@@ -50,18 +50,23 @@ public class P0501_CPServiceImpl implements P0501_CPService{
     
     // 신규: 페이징 전용 목록
     @Override
-    public List<P0501_CPDTO> list(int page, int pagePerRows) {
+    public List<P0501_CPDTO> list(int page, int pagePerRows, P0501_CPDTO searchFilter) {
         int size = Math.max(1, Math.min(pagePerRows, 100));
         int p = Math.max(1, page);
         int offset = (p - 1) * size;
 
         // Mapper는 LIMIT/OFFSET 받는 메서드가 필요함
-        return cpMapperDao.selectCPListPage(size, offset);
+        return cpMapperDao.selectCPListPage(size, offset, searchFilter);
     }
 
     //  총 레코드 수
     @Override
-    public long count() {
-        return cpMapperDao.selectCPCount();
+    public long count(P0501_CPDTO searchFilter) {
+        return cpMapperDao.selectCPCount(searchFilter);
     }
+
+	@Override
+	public ItemDTO getItemName(String item_id) {
+		return cpMapperDao.selectItemName(item_id);
+	}
 }

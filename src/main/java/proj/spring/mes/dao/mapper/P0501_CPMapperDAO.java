@@ -19,8 +19,10 @@ public interface P0501_CPMapperDAO {
     int updateCP(P0501_CPDTO dto);                // 수정
     int deleteCPs(@Param("cp_ids") List<String> cp_ids);
 	
+    ItemDTO selectItemName(String item_id);
+    
 	// 신규(페이징)
-    List<P0501_CPDTO> selectCPListPage(@Param("limit") int limit, @Param("offset") int offset);
+    List<P0501_CPDTO> selectCPListPage(@Param("limit") int limit, @Param("offset") int offset, @Param("filter") P0501_CPDTO searchFilter);
 	// 신규(총계)
-    long selectCPCount();
+    long selectCPCount(@Param("filter") P0501_CPDTO searchFilter);
 }

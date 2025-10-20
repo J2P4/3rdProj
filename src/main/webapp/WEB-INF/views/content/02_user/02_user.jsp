@@ -44,7 +44,7 @@
             <div class = "filter-item">
                 <div class = "filitem-name">· 부서</div>
                 <div class = "filitem-input">
-                    <select class="edit-only" name="department_id" id="deptSelect">
+                    <select class="edit-only" name="department_id" id="deptSelectFilter">
                     	<option value="">
 					        전체
 					    </option>
@@ -80,11 +80,11 @@
             <thead>
             	<tr>
 	                <th class = "chkbox"><input type="checkbox"  id="chkAll"></th>
-	                <th data-type="text">사원번호</th>
-	                <th data-type="text">이름</th>
-	                <th data-type="text">부서</th>
-	                <th data-type="date">입사일</th>
-	                <th data-type="text">권한</th>
+	                <th>사원번호</th>
+	                <th>이름</th>
+	                <th>부서</th>
+	                <th>입사일</th>
+	                <th>권한</th>
                 </tr>
             </thead>
             <tbody>
@@ -244,7 +244,7 @@
 	                    <tr>
 	                        <td><input type="date" name="worker_join"></td>
 	                        <td>
-	                        	<select name="department_id" id="deptSelect">
+	                        	<select name="department_id" id="deptSelectInsert">
 	                        		<option value="">선택</option>
 					                <c:forEach var="dept" items="${deptList}">
 					                  <option value="${dept.department_id}">

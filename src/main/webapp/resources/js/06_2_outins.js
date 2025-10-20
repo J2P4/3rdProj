@@ -217,7 +217,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // mode에 따라 등록, 수정 구분
         if (mode === 'edit' && outInsID) {
             // 수정 모드 : 슬라이드 제목 영역. 저장 버튼의 value를 수정으로 함.
-            inSlideTitle.textContent = '입고 검사 수정';
+            inSlideTitle.textContent = '출고 검사 수정';
             saveBtn.value = '수정';
             // ID 표시. 기존(등록)에는 display: none 상태였음
             outInsIdShow.style.display = 'flex';
@@ -231,7 +231,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         else {
             // 등록 모드 : 슬라이드 제목 영역. 저장 버튼의 value를 등록으로 함.
-            inSlideTitle.textContent = '입고 검사 등록';
+            inSlideTitle.textContent = '출고 검사 등록';
             saveBtn.value = '등록';
             // ID 숨김
             outInsIdShow.style.display = 'none';
@@ -366,7 +366,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 openSlideInput('edit', outInsId);
             }
             else {
-                alert('수정할 입고 검사 ID를 찾을 수 없습니다.');
+                alert('수정할 출고 검사 ID를 찾을 수 없습니다.');
             }
         });
     }
@@ -454,7 +454,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const actionText = nowSlide === 'edit' ? '수정' : '등록';
 
             if (response.ok && result === 'success') {
-                alert(`입고 검사 ${actionText}이 성공적으로 완료되었습니다.`);
+                alert(`출고 검사 ${actionText}이 성공적으로 완료되었습니다.`);
                 
                 if(actionText == '수정') {
                     // outInsId = nowEditId;
