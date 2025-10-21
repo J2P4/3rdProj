@@ -117,7 +117,7 @@
         const allItemsJson = `${itemListJson}`;
     </script>
     <script src="${pageContext.request.contextPath}/resources/js/common.js" defer></script>
-    <script src="${pageContext.request.contextPath}/resources/js/04_1_stock.js" defer></script>
+    <script src="${pageContext.request.contextPath}/resources/js/04_1_process.js" defer></script>
 </head>
 
 <body>
@@ -125,7 +125,7 @@
     <div class="title"><h1>공정 관리</h1></div>
 
     <!-- 검색 필터 -->
-    <form class="filter" method="get" action="${pageContext.request.contextPath}/stocklist">
+    <form class="filter" method="get" action="${pageContext.request.contextPath}/processlist">
         <div class="filter-item-box">
             <div class="filter-item">
                 <div class="filitem-name">· 공정ID</div>
@@ -142,7 +142,7 @@
             <div class="filter-item">
                 <div class="filitem-name">· 공정명</div>
                 <div class="filitem-input">
-                    <input type="text" name="stock_id" placeholder=" 공정명을 입력해주세요" />
+                    <input type="text" name="process_id" placeholder=" 공정명을 입력해주세요" />
                 </div>
             </div>
             <div class="filter-item"></div>
@@ -171,12 +171,12 @@
                     </tr>
                 </c:if>
                 <c:if test="${not empty list}">
-                    <c:forEach var="P0401_StockDTO" items="${list}">
-                        <tr data-id="${P0401_StockDTO.stock_id}">
-                            <td><input type="checkbox" class="rowChk" name="delete_stock_id" value="${P0401_StockDTO.stock_id}" /></td>
-                            <td>${P0401_StockDTO.stock_id}</td>
-                            <td>${P0401_StockDTO.stock_amount}</td>
-                            <td>${P0401_StockDTO.item_div}</td>
+                    <c:forEach var="P0405_ProcessDTO" items="${list}">
+                        <tr data-id="${P0405_ProcessDTO.process_id}">
+                            <td><input type="checkbox" class="rowChk" name="delete_process_id" value="${P0405_ProcessDTO.process_id}" /></td>
+                            <td>${P0405_ProcessDTO.process_id}</td>
+                            <td>${P0405_ProcessDTO.process_amount}</td>
+                            <td>${P0405_ProcessDTO.item_div}</td>
                         </tr>
                     </c:forEach>
                 </c:if>
@@ -195,11 +195,11 @@
 
     <!-- 입력용 슬라이드 -->
     <div class="slide" id="slide-input">
-        <form class="slide-contents" id="stockInsertForm">
+        <form class="slide-contents" id="processInsertForm">
             <div class="silde-title"><h2 id="slide-title">공정 상세</h2></div>
-            <div class="slide-id" id="stock-id-show" style="display:none">
-                재고 ID: <span id="stock-id-val"></span>
-                <input type="hidden" id="input_stock_id" name="stock_id" value="" />
+            <div class="slide-id" id="process-id-show" style="display:none">
+                재고 ID: <span id="process-id-val"></span>
+                <input type="hidden" id="input_process_id" name="process_id" value="" />
             </div>
 
             <div class="slide-tb">
