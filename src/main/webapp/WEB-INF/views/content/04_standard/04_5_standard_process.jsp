@@ -236,7 +236,7 @@
             </div>
 
             <div class="slide-btnbox">
-                <input type="button" class="slide-btn" id="detailEditBtn" value="수정" />
+                <input type="button" class="slide-btn" id="detailEditBtn" value="저장" />
                 <input type="button" class="close-btn slide-btn" value="취소" />
             </div>
         </form>
