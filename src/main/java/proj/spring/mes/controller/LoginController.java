@@ -81,26 +81,25 @@ public class LoginController {
         newSession.setAttribute("worker_id", user.getWorker_id());
         
         // 로그인 성공 직후
-        boolean mustChange = workerService.mustChangeNow(worker_id, hashed);
+        boolean mustChange = workerService.mustChangeNow(worker_id);
         if (mustChange) {
             newSession.setAttribute("mustChangePw", true);   // 강제변경 플래그(유지)
             newSession.removeAttribute("showPwModal");    // 모달 띄우기 플래그
-            // 초기비밀번호 여부만 메시지 용도로 별도 체크
             
-            boolean isInitial = workerService.match("j2p4mes", hashed);
-            
-            if (isInitial) {
-                ra.addFlashAttribute("alert", "초기 비밀번호로 로그인하셨습니다. 반드시 비밀번호를 변경해 주세요.");
-            } else {
-                ra.addFlashAttribute("alert", "비밀번호 유효기간이 만료되었거나 보안을 위해 변경이 필요합니다.");
-            }
-            return "redirect:/pw_change?mode=force";
-            
-        } else {
+         // 초기/임시 여부를 DB 플래그로 구분 (PW_MUST_CHANGE == 1 이면 '임시/초기')
+         boolean isTempOrInitial = workerService.isPwMustChange(worker_id);
+         if (isTempOrInitial) {
+             ra.addFlashAttribute("alert", "임시/초기 비밀번호로 로그인하셨습니다. 반드시 비밀번호를 변경해 주세요.");
+         } else {
+             ra.addFlashAttribute("alert", "비밀번호 유효기간이 만료되었습니다. 변경이 필요합니다.");
+         }
+         return "redirect:/pw_change?mode=force";
+
+         } else {
             newSession.setAttribute("mustChangePw", false);
             newSession.removeAttribute("showPwModal");
             return "redirect:/stocklist";
-        }
+         }
         
 	}
 	

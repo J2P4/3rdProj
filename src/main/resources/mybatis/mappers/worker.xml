@@ -181,7 +181,7 @@
 
 
 	<select id="isPwMustChange" parameterType="string" resultType="int">
-	  SELECT NVL(PW_MUST_CHANGE, 0)
+	  SELECT NVL(TO_NUMBER(PW_MUST_CHANGE), 0)
 	    FROM V3_worker
 	   WHERE worker_id = #{worker_id}
 	</select>
@@ -235,8 +235,8 @@
 	
 	<!-- 로그인 시 강제변경/만료 상태 조회 -->
 	<select id="selectPwState" parameterType="string" resultType="map">
-	  SELECT NVL(PW_MUST_CHANGE,0) AS must_change,
-	         PW_EXPIRES_AT         AS expires_at
+	  SELECT NVL(TO_NUMBER(PW_MUST_CHANGE),0) AS "must_change",
+	         PW_EXPIRES_AT         AS "expires_at"
 	    FROM V3_worker
 	   WHERE worker_id = #{worker_id}
 	</select>

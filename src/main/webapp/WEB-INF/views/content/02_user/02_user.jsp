@@ -276,22 +276,18 @@
 	<!--  상세 슬라이드 -->
 	<div class="slide" id="slide-detail">
 	  <!-- 단일 form: 중첩 금지 -->
-	  <form id="workerForm" method="post" action="workerUpdate">
 	    <div class="slide-contents">
-	      <div class="silde-title"><h2>사원 상세</h2></div>
+	      <div class="silde-title"><h2>사원정보 상세</h2></div>
 	
 	      <div class="title-box">
 	        <!-- JS가 채움: .slide-worker 클래스명으로 통일 -->
 	        <div class="slide-worker slide-id">사번 : </div>
 	
-	        <!-- 비밀번호 초기화: 같은 폼에서 별도 전송 (중첩 form 제거) -->
-	        <input type="hidden" name="worker_id" id="detail-worker-id" value="">
-	        <button type="submit"
-	                class="pw-reset"
-	                formaction="<c:url value='/temp'/>"
-	                formmethod="post">
-	          비밀번호 초기화
-	        </button>
+			<input type="hidden" id="detail-worker-id">
+			<form id="pwResetForm" action="${pageContext.request.contextPath}/temp" method="post">
+			  <input type="hidden" name="worker_id" id="pwResetWorkerId">
+			  <input type="submit" value="비밀번호 초기화" class="pw-reset">
+			</form>
 	      </div>
 	
 	      <div class="slide-tb">
@@ -346,7 +342,6 @@
 	      </div>
 	
 	    </div>
-	  </form>
 	</div>
     <!-- 등록 확인 모달 -->
     <div class="modal-bg hide">
@@ -354,7 +349,7 @@
             <div class="modal-title">J2P4 MES</div>
             <div class="modal-content">
                 <div class="field"><span>아이디 :</span> ${worker_id }</div>
-                <div class="field"><span>초기 비밀번호 :</span> j2p4mes</div>
+                <div class="field"><span>초기 비밀번호 :</span>임시비밀번호 메일 발송</div>
                 <div class="field"><span>이메일 :</span> ${worker_email }</div>
                 <div class="confirm">
                     <div>등록되었습니다.</div>
@@ -365,6 +360,9 @@
             </div>
         </div>
     </div>
+<c:if test="${not empty alert}">
+<script>alert('${fn:escapeXml(alert)}');</script>
+</c:if>
 
 </body>
 </html>

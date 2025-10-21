@@ -66,6 +66,7 @@ function openDetail(detailSlide, data) {
         tds[4].textContent = data.department_name || '';
         tds[5].textContent = data.worker_code || '';
     }
+    
 }
 
 // 외부에서 호출할 수 있게 공개 (동적 DOM에 날짜가드 재적용)
@@ -134,6 +135,14 @@ function bindworker() {
                 if (!res.ok) throw new Error(`HTTP ${res.status}`);
                 const data = await res.json();
                 openDetail(detailSlide, data);
+                const wid = (data && data.worker_id) ? data.worker_id : workerId;
+
+				const elDetail = document.getElementById('detail-worker-id');
+				if (elDetail) elDetail.value = wid;
+				
+				const elPw = document.getElementById('pwResetWorkerId');
+				if (elPw) elPw.value = wid;
+                
             } catch (err) {
                 console.error('상세 불러오기 실패:', err);
                 alert('상세 정보를 불러오는 중 오류가 발생했습니다.');
@@ -393,7 +402,7 @@ function bindinsert() {
         const fields = modal.querySelectorAll('.modal-content .field');
         if (fields.length >= 3) {
             fields[0].innerHTML = `<span>아이디 :</span> ${payload.worker_id || ''}`;
-            fields[1].innerHTML = `<span>초기 비밀번호 :</span> ${payload.temp_pw || 'j2p4mes'}`;
+            fields[1].innerHTML = `<span>초기 비밀번호 : 임시비밀번호 메일 발송</span>'}`;
             fields[2].innerHTML = `<span>이메일 :</span> ${payload.worker_email || ''}`;
         }
         modal.classList.remove('hide');

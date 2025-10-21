@@ -21,6 +21,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import proj.spring.mes.dto.DeptDTO;
 import proj.spring.mes.dto.WorkerDTO;
+import proj.spring.mes.service.EmailService;
+import proj.spring.mes.service.PwResetService;
 import proj.spring.mes.service.WorkerService;
 
 @Controller
@@ -30,6 +32,12 @@ public class UserController {
 
     @Autowired
     WorkerService workerService;
+    
+    @Autowired
+    PwResetService pwresetService;
+    
+    @Autowired
+    EmailService emailService;
 
     // ===============================================================
     // [1] 목록 페이지 (JSP 렌더)
@@ -111,7 +119,6 @@ public class UserController {
             if (isBlank(dto.getWorker_name())) return fail(res, "이름은 필수입니다.");
             if (dto.getWorker_birth() == null) return fail(res, "생년월일은 필수입니다.");
             if (dto.getWorker_join() == null) return fail(res, "입사일은 필수입니다.");
-            if (dto.getWorker_email() == null) return fail(res, "이메일은 필수입니다.");
             if (isBlank(dto.getDepartment_id())) return fail(res, "부서를 선택하세요.");
             if (isBlank(dto.getWorker_code()) || "1".equals(dto.getWorker_code()))
                 return fail(res, "권한을 선택하세요.");
@@ -122,28 +129,37 @@ public class UserController {
                     && domain_email != null && !domain_email.isEmpty()) {
                 dto.setWorker_email(person_email + "@" + domain_email);
             }
+            if (dto.getWorker_email() == null) return fail(res, "이메일은 필수입니다.");
+
             // 이메일 중복 확인
             if (workerService.emailExists(dto.getWorker_email())) {
                 return fail(res, "이미 등록된 이메일입니다.");
             }
+            // --- 3) 먼저 '등록'해서 worker_id 생성하기 전, NOT NULL 회피용 더미 PW 세팅 ---
+            dto.setWorker_pw("dummy"); // 해시는 service.add()에서 처리됨
             
-            // --- 3) 초기 비밀번호 = j2p4mes ---
-            dto.setWorker_pw("j2p4mes");
-
-            // --- 4) 등록 처리 ---
+            // --- 3) 먼저 '등록'해서 worker_id 생성 ---
             workerService.add(dto);
             if (isBlank(dto.getWorker_id())) return fail(res, "등록 실패(사번 생성 실패).");
 
-            // --- 5) 부서명 조회 ---
+            // --- 4) 임시비밀번호 생성 + DB 반영(강제변경 플래그 포함) ---
+            // PwResetServiceImpl.updateTempPw(worker_id)는 평문 임시비번을 리턴하도록 구현됨
+            String tempPw = pwresetService.updateTempPw(dto.getWorker_id());
+            if (tempPw == null) return fail(res, "임시 비밀번호 생성 실패.");
+
+            // --- 5) 메일 발송 (시그니처 3개 인자에 맞춤) ---
+            emailService.sendTempPassword(dto.getWorker_email(), dto.getWorker_id(), tempPw);
+
+            // --- 6) 부서명 조회 ---
             String deptName = null;
             try {
-                DeptDTO d = workerService.getDeptName(dto.getDepartment_id()); // 또는 getDeptName(...)
+                DeptDTO d = workerService.getDeptName(dto.getDepartment_id());
                 if (d != null) deptName = d.getDepartment_name();
             } catch (Exception ignore) {}
 
-            // --- 6) JSON 결과 ---
+            // --- 7) JSON 결과 ---
             res.put("ok", true);
-            res.put("message", "등록되었습니다.");
+            res.put("message", "등록 및 임시 비밀번호가 발급되어 이메일로 전송되었습니다.");
             res.put("worker_id", dto.getWorker_id());
             res.put("worker_name", dto.getWorker_name());
             res.put("worker_email", dto.getWorker_email());
@@ -151,7 +167,7 @@ public class UserController {
             res.put("worker_join", new SimpleDateFormat("yyyy-MM-dd").format(dto.getWorker_join()));
             res.put("worker_birth", new SimpleDateFormat("yyyy-MM-dd").format(dto.getWorker_birth()));
             res.put("department_name", deptName);
-            res.put("temp_pw", "j2p4mes");
+            res.put("temp_pw", tempPw); 
 
             return res;
         } catch (Exception e) {
@@ -159,6 +175,7 @@ public class UserController {
             return fail(res, "서버 오류: " + e.getMessage());
         }
     }
+
 
     // ===============================================================
     // [3] 상세 보기 (JSON)

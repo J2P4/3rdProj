@@ -102,10 +102,6 @@ public class WorkerServiceImpl implements WorkerService{
             throw new IllegalArgumentException("현재 비밀번호가 올바르지 않습니다.");
         }
 
-        if (encoder.matches(newPw, user.getWorker_pw())) {
-            throw new IllegalArgumentException("현재 비밀번호와 동일한 비밀번호로는 변경할 수 없습니다.");
-        }
-        
         // 동일 비밀번호 금지
         if (encoder.matches(newPw, user.getWorker_pw()))
             throw new IllegalArgumentException("현재 비밀번호와 동일한 비밀번호로는 변경할 수 없습니다.");
@@ -229,18 +225,21 @@ public class WorkerServiceImpl implements WorkerService{
 	}
     
 	// 로그인 만료/강제변경 판단
-	public boolean mustChangeNow(String worker_id, String currentHashed) {
-	    boolean must = false;
-	    Map<String, Object> m = workerMapperDao.selectPwState(worker_id);
-	    if (m != null) {
-	        Object flag = m.get("must_change");
-	        if (flag instanceof Number && ((Number)flag).intValue() == 1) must = true;
-	        java.util.Date exp = (java.util.Date) m.get("expires_at");
-	        if (exp != null && !new java.util.Date().before(exp)) must = true; // today >= exp
-	    }
-	    if (encoder.matches("j2p4mes", currentHashed)) must = true;
-	    return must;
+	@Override
+	public boolean mustChangeNow(String worker_id) {
+	    Map<String, Object> s = workerMapperDao.selectPwState(worker_id);
+	    System.out.println("PW_STATE for " + worker_id + " => " + s);
+	    if (s == null) return false;
+
+	    int flag = 0;
+	    try {
+	        flag = Integer.parseInt(String.valueOf(s.get("must_change")));
+	    } catch (Exception ignore) {}
+
+	    Date exp = (Date) s.get("expires_at");
+	    return flag == 1 || (exp != null && exp.before(new Date()));
 	}
+
 
 	@Override
 	public void extendPwExpiry(String worker_id, int days) {
