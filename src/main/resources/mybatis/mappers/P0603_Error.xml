@@ -8,9 +8,12 @@
 	
 	<!-- 전체 조회 -->
 	<select id = "selectError" resultType = "P0603_ErrorDTO" parameterType="P0401_StockDTO">
-		select
+		select distinct
 			d.defect_reason_id, d.defect_reason, d.defect_exhaust,
-			d.inspection_result_id, s.stock_id, it.item_id, it.item_name
+			d.defect_amount, d.inspection_result_id,
+			i.inspection_result_date, i.inspection_type,
+			i.inspection_result_bad,
+			s.stock_id, it.item_id, it.item_name
 		from v3_defect d
 			left outer join v3_inspection_result i
 				on d.inspection_result_id = i.inspection_result_id
@@ -45,6 +48,19 @@
 		where d.defect_reason_id = {#parameter}
 		order by defect_reason_id
 	</select>
+	
+	<!-- 검사 조회(전체 조회 개념) -->
+<!-- 	<select id = "selectResult" resultType = "P0603_ErrorDTO"> -->
+<!-- 		select -->
+<!-- 			i.inspection_result_id, i.inspection_result_date, -->
+<!-- 			i.inspection_result_type, -->
+<!-- 			i.inspection_result_bad, -->
+<!-- 			d.defect_reason_id, d.defect_reason, -->
+<!-- 			d.defect_exhaust, d.defect_amount -->
+<!-- 		from v3_defect d left outer join v3_inspection_result i -->
+<!-- 		 on d.inspection_result_id = i.inspection_result_id -->
+<!-- 		order by d.inspection_result_id -->
+<!-- 	</select> -->
 	
 	<!-- 수정 -->
 	<update id = "updateError" parameterType = "P0603_ErrorDTO">

@@ -12,6 +12,8 @@ public class P0603_ErrorDTO {
 	private String inspection_result_id;
 	
 	private Date inspection_result_date;
+	private int inspection_type;
+	private int inspection_result_bad;
 	private String stock_id;
 	private String item_id;
 	private String item_name;

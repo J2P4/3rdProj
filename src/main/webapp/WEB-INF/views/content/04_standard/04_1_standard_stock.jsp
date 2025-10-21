@@ -218,12 +218,20 @@
                 <table>
                     <thead>
                         <!-- select 데이터 글씨가 너무 많으면 테이블이 깨져서 강제로 style 속성 지정 1 -->
-                        <th style = "width: 40%">품목 ID</th>
                         <th>품목 분류</th>
+                        <th style = "width: 40%">품목 ID</th>
                         <th>품목 이름</th>
                     </thead>
                     <tbody>
                         <tr>
+                            <td data-type = "select">
+                                <select id="input_item_div" name="item_div" size="1" style = "width: 100%;">
+                                    <option value="" selected>품목 분류 선택</option>
+                                    <option value = "도서">도서</option>
+                                    <option value = "포장지">포장지</option>
+                                    <option value = "완제품">완제품</option>
+                                </select>
+                            </td>
                             <td>
                                 <!-- select에 DB의 품목 id 데이터 불러와서 채워넣기 -->
                                 <!-- select 데이터 글씨가 너무 많으면 테이블이 깨져서 강제로 style 속성 지정 2 -->
@@ -239,15 +247,7 @@
                                     </c:forEach>
                                 </select>
                             </td>
-                            <td data-type = "select">
-                                <select id="input_item_div" name="item_div" size="1" style = "width: 100%;">
-                                    <option value="" selected>품목 분류 선택</option>
-                                    <option value = "도서">도서</option>
-                                    <option value = "포장지">포장지</option>
-                                    <option value = "완제품">완제품</option>
-                                </select>
-                            </td>
-                            <td><input type = "text" id="input_item_name" placeholder = "품목명을 입력해주세요" style = "width: 100%;"></td>
+                            <td><input type = "text" id="input_item_name" placeholder = "품목명을 입력해주세요" style = "width: 100%;" readonly="readonly"></td>
                         </tr>
                     </tbody>
                 </table>
@@ -316,19 +316,21 @@
                     </tbody>
                 </table>
             </div>
+            <h3 class = "slide-subTitle">재고 변동 이력</h3>
             <div class = "slide-tb detail-list" style="overflow-y: scroll; overflow-x: hidden;">
-                <h3>재고 변동 이력</h3>
                 <div style="font-size:0.8em; color: red;">재고 이력 테이블!! 수정하기</div>
                 <table id = "stock_info">
                     <thead>
                         <tr>
                             <th>재고 변동일</th>
                             <th>변동 수량</th>
-                            <th>총 수량</th>
+                            <th>최종 수량</th>
+                            <th>변동 사유</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
+                            <td></td>
                             <td></td>
                             <td></td>
                             <td></td>
@@ -337,7 +339,8 @@
                 </table>
             </div>
             <div class = "slide-btnbox">
-                <input type = "button" class = "slide-btn" id="detailEditBtn" value = "수정">
+                <input type = "button" class = "slide-btn" value = "수량 수정">
+                <input type = "button" class = "slide-btn" id="detailEditBtn" value = "전체 수정">
                 <input type = "button" class = "close-btn slide-btn" value = "취소">
             </div>
         </div>

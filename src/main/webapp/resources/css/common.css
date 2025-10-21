@@ -258,11 +258,11 @@ td {
 	margin: 30px;
 }
 
-.slide-id {
+.slide-id, .slide-subTitle {
 	margin: 30px;
     font-weight: bold;
     font-size: 1.6rem;
-}
+} 
 
 .slide-contents {
     margin: 50px 30px;

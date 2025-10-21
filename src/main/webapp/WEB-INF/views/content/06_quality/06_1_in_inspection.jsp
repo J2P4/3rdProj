@@ -254,10 +254,7 @@
     <div class = "slide" id = "slide-detail">
         <div class = "slide-contents">
             <div class = "silde-title"><h2>입고 검사 상세</h2></div>
-            <div class = "slide-id" id="inIns-id-show" style = "display: none">
-                입고 검사 ID: <span id="inIns-id-val"></span>
-                <input type="hidden" id="input_inIns_id" name="inspection_result_id" value="">
-            </div>
+            <div class = "slide-id">입고 검사 ID: </div>
             <div class = "slide-tb">
                 <table id = "inspectionInfo">
                     <thead>

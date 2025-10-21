@@ -103,6 +103,30 @@
 		from v3_item
 	</select>
 	
+	<!-- 재고 이력 조회용 -->
+	<select id = "selectHistory" resultType = "P0401_StockDTO">
+		select
+			stock_history_id, stock_history_before,
+			stock_history_after, stock_history_time,
+			stock_history_reason, stock_id
+		where stock_id = #{stock_id}
+	</select>
+	
+	<!-- 재고 입력용 -->
+	<insert id = "insertHistory" parameterType = "P0401_StockDTO">
+		<selectKey keyProperty="stock_history_id" resultType="string" order="BEFORE">
+		  select 'HS' || TO_CHAR(SYSDATE, 'YYMMDD') || LPAD(stock_history_id_seq.NEXTVAL, 4, '0')
+		  from dual
+		</selectKey>
+		insert into v3_stock_history
+			(stock_history_id, stock_history_before,
+			 stock_history_after, stock_history_time,
+			 stock_history_reason, stock_id)
+		values
+			(#{stock_history_id}, #{stock_history_before},
+			 #{stock_history_after}, #{stock_history_time},
+			 #{stock_history_reason}, #{stock_id})
+	</insert>
 	
 	<!-- 수정 : 아마 ㅇㅋ-->
 	<update id = "updateStock" parameterType = "P0401_StockDTO">

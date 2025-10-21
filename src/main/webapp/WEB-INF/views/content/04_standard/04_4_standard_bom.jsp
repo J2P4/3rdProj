@@ -42,7 +42,6 @@
                         <option value = "" ${empty filter.item_div ? 'selected' : ''}>재고 구분 선택</option>
                         <option value = "도서" ${filter.item_div eq '도서' ? 'selected' : ''}>도서</option>
                         <option value = "포장지" ${filter.item_div eq '포장지' ? 'selected' : ''}>포장지</option>
-                        <option value = "완제품" ${filter.item_div eq '완제품' ? 'selected' : ''}>완제품</option>
                     </select>                    
                 </div>
             </div>
@@ -99,6 +98,25 @@
                     <th>목표 품목명</th>
                 </tr>
             </thead>
+            <tbody>
+                <tr>
+                    <c:if test="${empty list}">
+                        <tr>
+                            <td><input type="checkbox" class="rowChk" disabled></td>
+                            <td colspan="5"> 조회 내역이 없습니다.</td>
+                        </tr>
+                    </c:if>
+                    <c:if test="${not empty list}">
+                        <c:forEach var="P0404_BOMDTO" items="${list}">
+                            <tr data-id="${P0404_BOMDTO.item_id}">
+                                <td><input type="checkbox" class="rowChk" name="delete_item_id" value="${P0404_BOMDTO.item_id}"></td>
+                                <td>${P0404_BOMDTO.item_id}</td>
+                                <td>${P0404_BOMDTO.item_name}</td>
+                            </tr>
+                        </c:forEach>
+                    </c:if>                    
+                </tr>
+            </tbody>
         </table>
     </div>
     <!-- 현재 페이지 유지 -->

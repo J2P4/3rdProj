@@ -50,8 +50,8 @@
                 <div class = "filitem-name">· 폐기 여부</div>
                 <div class = "filitem-input">
                     <select name = "inout" size = "1">
-                        <option value = "1" selected>나중에 입력</option>
-                        <option value = "2">나중에 입력</option>
+                        <option value = "0" selected>폐기 포함</option>
+                        <option value = "1">폐기 미포함</option>
                     </select>
                 </div>
             </div>
@@ -99,12 +99,32 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td class = "chkbox"><input type="checkbox" class="rowChk" name="delete_defect_id" value="${P0603_ErrorDTO.defect_reason_id}"></td>
-                    <td>검사 ID</td>
-                    <td>검사일</td>
-                    <td>검사 종류</td>
-                </tr>
+           		<c:if test="${empty list}">
+					<tr>
+                        <td><input type="checkbox" class="rowChk" disabled></td>
+						<td colspan="3"> 조회 내역이 없습니다.</td>
+					</tr>
+				</c:if>
+                <c:if test="${not empty list}">
+                    <c:forEach var="P0603_ErrorDTO" items="${list}">
+                        <tr>
+                            <td class = "chkbox"><input type="checkbox" class="rowChk" name="delete_defect_id" value="${P0603_ErrorDTO.defect_reason_id}"></td>
+                            <td>${P0603_ErrorDTO.inspection_result_id}</td>
+                            <td>${P0603_ErrorDTO.inspection_result_date}</td>
+                            <td>
+                                <c:choose>
+                                    <c:when test="${P0603_ErrorDTO.inspection_type == 0}">
+                                        입고 검사
+                                    </c:when>
+                                    <c:when test="${P0603_ErrorDTO.inspection_type == 1}">
+                                        출고 검사
+                                    </c:when>
+                                    <c:otherwise>-</c:otherwise>
+                                </c:choose> 
+                            </td>
+                        </tr>
+                    </c:forEach>
+                </c:if>
             </tbody>
         </table>
     </div>
@@ -122,15 +142,27 @@
             <div class = "slide-tb">
                 <table>
                     <thead>
-                        <th>검사 ID</th>
                         <th>검사일</th>
                         <th>검사 대상</th>
+                        <th>검사 ID</th>
                     </thead>
                     <tbody>
                         <tr>
-                            <td>2</td>
-                            <td>2</td>
-                            <td>2</td>
+                            <td><input type = "date" name= "input_ins_date" id="input_ins_date"></td>
+                            <td>
+                                <!-- date 설정 전까지는 readonly
+                                    date 설정 후에 고를 수 있도록 -->
+                                <select name = "input_ins_item" id = "input_ins_item" size = "1">
+                                    <option value="">검사 대상 선택</option>
+                                </select>
+                            </td>
+                            <td>
+                                <!-- 여기 date, 검사 대상 설정 전까지는 readonly로 됐다가,
+                                    date, 검사 대상 설정 후에 고를 수 있도록 -->
+                                <select name = "input_ins_id" id = "input_ins_id" size = "1">
+                                    <option value="">검사 ID 선택</option>
+                                </select>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
@@ -140,19 +172,31 @@
                     <thead>
                         <th class = "chkbox"><input type="checkbox" id="chkAll"></th>
                         <th>불량 사유명</th>
+                        <th>불량 수량</th>
                         <th>폐기 여부</th>
                     </thead>
                     <tbody>
                         <tr>
-                            <td>1</td>
-                            <td>1</td>
-                            <td>1</td>
+                            <td class = "chkbox"><input type="checkbox" class="rowChk" name = "delete_defect_id" value="${P0603_ErrorDTO.defect_id}"></td>
+                            <td>
+                                <input type = "text" name = "defect_reason" id = "defect_reason">
+                            </td>
+                            <td>
+                                <input type = "number" name = "defect_amount" id = "defect_amount">
+                            </td>
+                            <td>
+                                <select name = "input_defect_exhaust" id = "input_defect_exhaust">
+                                    <option value = "">폐기 여부 선택</option>
+                                    <option value = "0">폐기</option>
+                                    <option value = "1">재검사</option>
+                                </select>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
                 <div class = "slide-tb-btnbox">
-                    <input type="button" class = "material" value="불량 사유 추가">
-                    <input type="button" class = "material" value="불량 사유 삭제">
+                    <input type="button" class = "material" style = "width: 20%" value="불량 사유 추가">
+                    <input type="button" class = "material" style = "width: 20%" value="불량 사유 삭제">
                 </div>
             </div>
             <div class = "slide-btnbox">

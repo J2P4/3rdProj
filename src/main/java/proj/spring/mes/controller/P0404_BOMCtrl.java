@@ -27,7 +27,7 @@ public class P0404_BOMCtrl {
 	public String bomList(Model model, P0404_BOMDTO searchCondition) {
 		System.out.println("BOM 기본 조회");
 		
-		List<P0404_BOMDTO> list = service.bomList(searchCondition);
+		List<P0404_BOMDTO> list = service.itemList(searchCondition);
 		
 		model.addAttribute("list", list);
 		
