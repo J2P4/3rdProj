@@ -318,14 +318,14 @@
             </div>
             <h3 class = "slide-subTitle">재고 변동 이력</h3>
             <div class = "slide-tb detail-list" style="overflow-y: scroll; overflow-x: hidden;">
-                <div style="font-size:0.8em; color: red;">재고 이력 테이블!! 수정하기</div>
+                <!-- <div style="font-size:0.8em; color: red;">재고 이력 테이블!! 수정하기</div> -->
                 <table id = "stock_info">
                     <thead>
                         <tr>
-                            <th>재고 변동일</th>
-                            <th>변동 수량</th>
-                            <th>최종 수량</th>
-                            <th>변동 사유</th>
+                            <th class = "date">일자</th>
+                            <th>보관 위치</th>
+                            <th class = "gb">증감 수량</th>
+                            <th class = "gb">최종 수량</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -339,8 +339,7 @@
                 </table>
             </div>
             <div class = "slide-btnbox">
-                <input type = "button" class = "slide-btn" value = "수량 수정">
-                <input type = "button" class = "slide-btn" id="detailEditBtn" value = "전체 수정">
+                <input type = "button" class = "slide-btn" id="detailEditBtn" value = "수정">
                 <input type = "button" class = "close-btn slide-btn" value = "취소">
             </div>
         </div>

@@ -27,28 +27,28 @@
     <form class = "filter" method="get" action="">
         <div class = "filter-item-box">
             <div class = "filter-item">
-                <div class = "filitem-name">· 검사 ID</div>
+                <div class = "filitem-name" style = "width: 115px;">· 검사 ID</div>
                 <div class = "filitem-input">
                     <input type = "text" name = "inspection_result_id" placeholder = "검사 결과 id를 입력해주세요">
                 </div>
             </div>
             <div class = "filter-item">
-                <div class = "filitem-name">· 검사일</div>
+                <div class = "filitem-name" style = "width: 115px;">· 검사일</div>
                 <div class = "filitem-input">
-                    <input type = "date" name="fromDate" id="fromDate">
+                    <input type = "date" name="fromDate" id="fromDate" style = "width: 115px;">
                     <span class="tilde">~</span>
-                    <input type = "date" name="toDate" id="toDate">
+                    <input type = "date" name="toDate" id="toDate" style = "width: 115px;">
                 </div>
             </div>
             <div class = "filter-item">
-                <div class = "filitem-name">· 품명</div>
+                <div class = "filitem-name" style = "width: 115px;">· 품명</div>
                 <div class = "filitem-input">
                     <input type = "text" name = "item_name" placeholder = "품명을 입력해주세요">
                 </div>
             </div>
             <div class = "filter-item">
-                <div class = "filitem-name">· 폐기 여부</div>
-                <div class = "filitem-input">
+                <div class = "filitem-name" style = "width: 115px;">· 폐기 여부</div>
+                <div class = "filitem-input" style = "width: 78%;">
                     <select name = "inout" size = "1">
                         <option value = "0" selected>폐기 포함</option>
                         <option value = "1">폐기 미포함</option>

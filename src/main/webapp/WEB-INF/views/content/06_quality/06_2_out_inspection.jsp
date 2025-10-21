@@ -29,23 +29,23 @@
     <form class = "filter" method="get" action="${pageContext.request.contextPath}/outInslist">
         <div class = "filter-item-box">
             <div class = "filter-item">
-                <div class = "filitem-name">· 결과 ID</div>
-                <div class = "filitem-input">
+                <div class = "filitem-name" style = "width: 115px;">· 결과 ID</div>
+                <div class = "filitem-input" style = "width: 60%;">
                     <input type = "text" name = "inspection_result_id" placeholder = "검사 결과 id를 입력해주세요" value="${filter.inspection_result_id}">
                 </div>
             </div>
             <div class = "filter-item">
-                <div class = "filitem-name">· 검사일</div>
-                <div class = "filitem-input">
+                <div class = "filitem-name" style = "width: 115px;">· 품명</div>
+                <div class = "filitem-input" style = "width: 60%;">
+                    <input type = "text" name = "item_name" placeholder = "품명을 입력해주세요" value="${filter.item_name}">
+                </div>
+            </div>
+            <div class = "filter-item" style = "width: 70%;">
+                <div class = "filitem-name" style = "width: 115px;">· 검사일</div>
+                <div class = "filitem-input" style = "width: 60%;">
                     <input type = "date" name="fromDate" id="fromDate" value="${param.fromDate}">
                     <span class="tilde">~</span>
                     <input type = "date" name="toDate" id="toDate" value="${param.toDate}">
-                </div>
-            </div>
-            <div class = "filter-item">
-                <div class = "filitem-name">· 품명</div>
-                <div class = "filitem-input">
-                    <input type = "text" name = "item_name" placeholder = "품명을 입력해주세요" value="${filter.item_name}">
                 </div>
             </div>
         </div>

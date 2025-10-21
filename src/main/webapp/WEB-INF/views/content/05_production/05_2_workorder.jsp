@@ -37,22 +37,22 @@
     <form class = "filter" method="get" action="${pageContext.request.contextPath}/workorderlist">
         <div class = "filter-item-box">
             <div class = "filter-item">
-                <div class = "filitem-name">· 작업 지시서 ID</div>
-                <div class = "filitem-input">
+                <div class = "filitem-name" style = "width: 35%;">· 작업 지시서 ID</div>
+                <div class = "filitem-input" style = "width: 60%;">
                     <c:set var="filter.work_order_id" value="${param.work_order_id}" />
                     <input type="text" name="work_order_id" placeholder="지시서 ID를 입력해주세요" value="${filter.work_order_id}">
                 </div>
             </div>
             <div class = "filter-item">
-                <div class = "filitem-name">· 생산계획 ID</div>
-                 <div class = "filitem-input">
+                <div class = "filitem-name" style = "width: 35%;">· 생산계획 ID</div>
+                 <div class = "filitem-input" style = "width: 60%;">
                     <c:set var="filter.cp_id" value="${param.cp_id}" />
                     <input type="text" name="cp_id" placeholder="계획 ID를 입력해주세요" value="${filter.cp_id}">
                 </div>
               
             </div>
-            <div class = "filter-item">
-                <div class = "filitem-name">· 작업지시일</div>
+            <div class = "filter-item" style = "width: 100%;">
+                <div class = "filitem-name" style = "width: 15%">· 작업지시일</div>
                 <div class = "filitem-input">
 	                	<input type="date" name="fromDate" id="fromDate" value="${empty param.fromDate ? '' : param.fromDate}">
 	                	<span class="tilde">~</span>
@@ -60,7 +60,6 @@
 	                   
 	               	 </div>
             </div>
-            <div class = "filter-item"></div>
         </div>
         <div class = "filter-btn">
             <input type="hidden" name="page" value="1"/> <%-- 조회 시 항상 1페이지부터 --%>
@@ -79,8 +78,8 @@
                 <tr>
                     <th class = "chkbox"><input type="checkbox" id="chkAll"></th>
                     <th class = "id">작업 지시서 ID</th>
-                    <th>작업 지시일</th>
-                    <th class = "type">지시 수량</th>
+                    <th class = "date">작업 지시일</th>
+                    <th>지시 수량</th>
                     <th>생산 수량</th>
                 </tr>
             </thead>

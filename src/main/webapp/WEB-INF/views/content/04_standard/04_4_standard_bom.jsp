@@ -205,8 +205,11 @@
     </div>
     <div class = "slide" id = "slide-input">
         <div class = "slide-contents">
-            <div class = "silde-title"><h2>BOM 등록</h2></div>
-            <div class = "slide-id">목표 품목 ID: </div>
+            <div class = "silde-title"><h2 id="slide-title">BOM 등록</h2></div>
+            <div class = "slide-id" id="stock-id-show" style = "display: none">
+                목표 품목 ID: <span id="item-id-val"></span>
+                <input type="hidden" id="input_item_id" name="item_id" value="">
+            </div>
             <div class = "slide-tb">
                 <table>
                     <thead>
@@ -215,12 +218,13 @@
                     </thead>
                     <tbody>
                         <tr>
+                            <div style="font-size:0.8em; color: red; margin-bottom: 10px;">목표 품목명을 입력 후, ID를 선택해주세요.</div>
                             <td>
-                                <select size = "1">
-                                        <option value = "">아래 select에 따라 달라지도록 입력하기!!</option>
+                                <select size = "1" style = "width: 100%;">
+                                        <option value = "">품목 ID를 선택해주세요</option>
                                 </select>
                             </td>
-                            <td><input type = "text" placehoder = "품목명을 입력해주세요"></td>
+                            <td><input type = "text" placeholder = "품목명을 입력해주세요" style = "width: 100%;"></td>
                         </tr>
                     </tbody>
                 </table>
@@ -229,21 +233,21 @@
                 <table>
                     <thead>
                         <th><input type=checkbox></th>
-                        <th>재료 품목 ID</th>
-                        <th>품목명</th>
+                        <th class = "id">재료 품목 ID</th>
+                        <th class = "name">품목명</th>
                         <th>분류</th>
-                        <th>소요량</th>
+                        <th class = "gb">소요량</th>
                     </thead>
                     <tbody>
                         <tr>
                             <td><input type="checkbox"></td>
                             <td>
-                                <select size = "1">
-                                        <option value = "">아래 select에 따라 달라지도록 입력하기!!</option>
+                                <select size = "1" style = "width: 100%;">
+                                        <option value = "">품목 ID를 선택해주세요</option>
                                 </select>                                
                             </td>
                             <td>
-                                <input type = "text" placehoder = "품목명을 입력해주세요">
+                                <input type = "text" placeholder = "품목명을 입력해주세요">
                             </td>
                             <td>
                                 <select size="1">
