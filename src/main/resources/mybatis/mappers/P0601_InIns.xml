@@ -11,7 +11,7 @@
 	<select id = "selectInIns" resultType = "P0601_InInsDTO"  parameterType="P0601_InInsDTO">
 		select
 		    i.inspection_result_id, i.inspection_result_date, i.inspection_result_good,
-		    i.inspection_result_bad, i.worker_id, i.stock_id,
+		    i.inspection_result_bad, i.inspection_type, i.worker_id, i.stock_id,
 		    w.worker_name, it.item_name
 		from v3_inspection_result i 
 		    left outer join v3_worker w
@@ -21,7 +21,9 @@
 		    left outer join v3_item it
 		        on s.item_id = it.item_id
 		<where>
-			inspection_type = 0
+			<if test="inspection_type != null and inspection_type != ''">
+				and i.inspection_type = #{inspection_type}
+			</if>
 			<if test="inspection_result_id != null and inspection_result_id != ''">
 				and lower(i.inspection_result_id) like lower('%' || #{inspection_result_id} || '%')
 			</if>
@@ -52,7 +54,9 @@
 					left outer join v3_stock s on i.stock_id = s.stock_id
 					left outer join v3_item it on s.item_id = it.item_id
 				<where>
-					inspection_type = 0
+					<if test="filter.inspection_type != null and filter.inspection_type != ''">
+						and i.inspection_type = #{filter.inspection_type}
+					</if>
 					<if test="filter.inspection_result_id != null and filter.inspection_result_id != ''">
 						and lower(i.inspection_result_id) like lower('%' || #{filter.inspection_result_id} || '%')
 					</if>

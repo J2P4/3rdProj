@@ -167,7 +167,7 @@
                     </tbody>
                 </table>
             </div>
-            <div class = "slide-tb">
+            <div class = "slide-tb" id = "defect-report">
                 <table>
                     <thead>
                         <th class = "chkbox"><input type="checkbox" id="chkAll"></th>
@@ -195,8 +195,8 @@
                     </tbody>
                 </table>
                 <div class = "slide-tb-btnbox">
-                    <input type="button" class = "material" style = "width: 20%" value="불량 사유 추가">
-                    <input type="button" class = "material" style = "width: 20%" value="불량 사유 삭제">
+                    <input type="button" class = "material" id="addD" style = "width: 20%" value="불량 사유 추가">
+                    <input type="button" class = "material" id="delD" style = "width: 20%" value="불량 사유 삭제">
                 </div>
             </div>
             <div class = "slide-btnbox">

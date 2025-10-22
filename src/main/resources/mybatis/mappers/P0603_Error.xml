@@ -8,34 +8,39 @@
 	
 	<!-- 전체 조회 -->
 	<select id = "selectError" resultType = "P0603_ErrorDTO" parameterType="P0401_StockDTO">
-		select distinct
-			d.defect_reason_id, d.defect_reason, d.defect_exhaust,
-			d.defect_amount, d.inspection_result_id,
-			i.inspection_result_date, i.inspection_type,
-			i.inspection_result_bad,
-			s.stock_id, it.item_id, it.item_name
-		from v3_defect d
-			left outer join v3_inspection_result i
-				on d.inspection_result_id = i.inspection_result_id
-			left outer join v3_worker w
-		        on i.worker_id = w.worker_id
-		    left outer join v3_stock s
-		        on i.stock_id = s.stock_id
-		    left outer join v3_item it
-		        on s.item_id = it.item_id
-		<where>
-			<if test="inspection_result_id != null and inspection_result_id != ''">
-				and lower(d.inspection_result_id) like lower('%' || #{inspection_result_id} || '%')
-			</if>
-	        <if test="fromDate != null and fromDate != '' and toDate != null and toDate != ''">
-	            and i.inspection_result_date BETWEEN #{fromDate} AND #{toDate}
-	        </if>
-			<if test="item_name != null and item_name != ''">
-				and lower(it.item_name) like lower('%' || #{item_name} || '%')
-			</if>
-		</where>
-		order by d.defect_reason_id
+		select 
+			inspection_result_id, inspection_result_date, inspection_type
+		from v3_inspection_result
 	</select>
+	
+<!-- 		select distinct -->
+<!-- 			d.defect_reason_id, d.defect_reason, d.defect_exhaust, -->
+<!-- 			d.defect_amount,  -->
+<!-- 			d.inspection_result_id, -->
+<!-- 			i.inspection_result_date, i.inspection_type, -->
+<!-- 			i.inspection_result_bad, -->
+<!-- 			s.stock_id, it.item_id, it.item_name -->
+<!-- 		from v3_defect d -->
+<!-- 			left outer join v3_inspection_result i -->
+<!-- 				on d.inspection_result_id = i.inspection_result_id -->
+<!-- 			left outer join v3_worker w -->
+<!-- 		        on i.worker_id = w.worker_id -->
+<!-- 		    left outer join v3_stock s -->
+<!-- 		        on i.stock_id = s.stock_id -->
+<!-- 		    left outer join v3_item it -->
+<!-- 		        on s.item_id = it.item_id -->
+<!-- 		<where> -->
+<!-- 			<if test="inspection_result_id != null and inspection_result_id != ''"> -->
+<!-- 				and lower(d.inspection_result_id) like lower('%' || #{inspection_result_id} || '%') -->
+<!-- 			</if> -->
+<!-- 	        <if test="fromDate != null and fromDate != '' and toDate != null and toDate != ''"> -->
+<!-- 	            and i.inspection_result_date BETWEEN #{fromDate} AND #{toDate} -->
+<!-- 	        </if> -->
+<!-- 			<if test="item_name != null and item_name != ''"> -->
+<!-- 				and lower(it.item_name) like lower('%' || #{item_name} || '%') -->
+<!-- 			</if> -->
+<!-- 		</where> -->
+<!-- 		order by d.defect_reason_id -->
 
 	
 	<!-- 단일 조회 -->
@@ -67,7 +72,7 @@
 		update v3_defect
 		set defect_reason = #{defect_reason},
 			defect_exhaust = #{defect_exhaust},
-			inspection_result_id = #{inspection_result_id}
+			inspection_result_id = #{inspection_result_id},
 			defect_amount = #{defect_amount}
 		where defect_reason_id = #{defect_reason_id}
 	</update>

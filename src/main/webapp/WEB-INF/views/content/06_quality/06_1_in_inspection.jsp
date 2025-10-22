@@ -12,7 +12,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>입고 검사 < 품질 관리 < J2P4</title>
+    <title>품질 검사 < 품질 관리 < J2P4</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/common.css" type="text/css">
     <script>
         const contextPath = '${pageContext.request.contextPath}';
@@ -23,7 +23,7 @@
     <script src="${pageContext.request.contextPath}/resources/js/06_1_inins.js" defer></script>
 </head>
 <body>
-    <div class = "title"><h1>입고 검사</h1></div>
+    <div class = "title"><h1>품질 검사</h1></div>
    	<c:url var="/inInslist" value="/inInslist"/> <%-- 모든 내부 링크의 기준 URL(중복 /mes/mes 방지) 이거 떄믄에 한시간.... --%>
 	<c:set var="selfPath" value="/inInslist"/> <%-- c:url value에 사용할 경로 문자열 --%>
     <form class = "filter" method="get" action="${pageContext.request.contextPath}/inInslist">
@@ -40,12 +40,22 @@
                     <input type = "text" name = "item_name" placeholder = "품명을 입력해주세요" value="${filter.item_name}">
                 </div>
             </div>
-            <div class = "filter-item" style = "width: 70%;">
+            <div class = "filter-item">
                 <div class = "filitem-name" style = "width: 115px;">· 검사일</div>
-                <div class = "filitem-input" style = "width: 70%;">
-                    <input type = "date" name="fromDate" id="fromDate" value="${param.fromDate}">
+                <div class = "filitem-input">
+                    <input type = "date" style = "width: 130px; padding: 2px;" name="fromDate" id="fromDate" value="${param.fromDate}">
                     <span class="tilde">~</span>
-                    <input type = "date" name="toDate" id="toDate" value="${param.toDate}">
+                    <input type = "date" style = "width: 130px; padding: 2px;" name="toDate" id="toDate" value="${param.toDate}">
+                </div>
+            </div>
+            <div class = "filter-item">
+                <div class = "filitem-name" style = "width: 115px;">· 검사 유형</div>
+                <div class = "filitem-input">
+                    <select name = "inspection_type" size = "1" style = "width: 130px; padding: 2px;">
+                        <option value = "" selected>전체</option>
+                        <option value = "0">입고</option>
+                        <option value = "1">출고</option>
+                    </select>
                 </div>
             </div>
         </div>
@@ -60,25 +70,28 @@
             <thead>
                 <tr>
                     <th class = "chkbox"><input type="checkbox" id="chkAll"></th>
-                    <th class = "id">검사 결과 ID</th>
-                    <th class = "date">검사일</th>
+                    <th style = "width: 25%;">검사 결과 ID</th>
+                    <th>검사 유형</th>
+                    <th style = "width: 25%;">검사일</th>
                     <th class = "gb">양품 수</th>
                     <th class = "gb">불량 수</th>
                 </tr>
             </thead>
             <tbody>
+                <!-- c:if로 검사 타입 넣어두기. 애초에 지금 0만 뜨는데 데이터 input 잘못 했었나 확인하고 수정하기. -->
            		<c:if test="${empty list}">
 					<tr>
                         <td><input type="checkbox" class="rowChk" disabled></td>
-						<td colspan="5"> 조회 내역이 없습니다.</td>
+						<td colspan="6"> 조회 내역이 없습니다.</td>
 					</tr>
 				</c:if>
 				<c:if test="${not empty list}">
 					<c:forEach var="P0601_InInsDTO" items="${list}">
 		                <tr data-id="${P0601_InInsDTO.inspection_result_id}">
 		                    <td class = "chkbox"><input type="checkbox" name="delete_InIns_id" value="${P0601_InInsDTO.inspection_result_id}" class="rowChk"></td>
-		                    <td class = "id">${P0601_InInsDTO.inspection_result_id}</td>
-		                    <td class = "date">${P0601_InInsDTO.inspection_result_date}</td>
+		                    <td style = "width: 25%;">${P0601_InInsDTO.inspection_result_id}</td>
+		                    <td style = "width: 20%;">${P0601_InInsDTO.inspection_type}</td>
+		                    <td style = "width: 25%;">${P0601_InInsDTO.inspection_result_date}</td>
 		                    <td class = "gb">${P0601_InInsDTO.inspection_result_good}</td>
 		                    <td class = "gb">${P0601_InInsDTO.inspection_result_bad}</td>
 		                </tr>
@@ -103,6 +116,7 @@
             <input type="hidden" name="item_name" value="${fn:escapeXml(param.item_name)}"/> 
             <input type="hidden" name="fromDate" value="${fn:escapeXml(param.fromDate)}"/> 
             <input type="hidden" name="toDate" value="${fn:escapeXml(param.toDate)}"/>
+            <input type="hidden" name="inspection_type" value="${fn:escapeXml(param.inspection_type)}"/>
 
             <label>Rows:
                 <select name="size" onchange="document.querySelector('#sizeForm').submit()">
@@ -123,6 +137,7 @@
                     <c:param name="inspection_result_id" value="${param.inspection_result_id}"/> <%-- 필터 유지 --%>
                     <c:param name="fromDate" value="${param.fromDate}"/>   <c:param name="toDate" value="${param.toDate}"/>
                     <c:param name="item_name" value="${param.item_name}"/>
+                    <c:param name="inspection_type" value="${param.inspection_type}"/>
                 </c:url>
                 <a class="page-link" href="${prevBlockUrl}">이전</a> <%-- 클릭 시 이전 블록 시작으로 --%>
             </c:when>
@@ -138,6 +153,7 @@
                 <c:param name="inspection_result_id" value="${param.inspection_result_id}"/>
                 <c:param name="fromDate" value="${param.fromDate}"/>   <c:param name="toDate" value="${param.toDate}"/>
                 <c:param name="item_name" value="${param.item_name}"/>
+                <c:param name="inspection_type" value="${param.inspection_type}"/>
             </c:url>
             <c:choose>
                 <c:when test="${p == page}">
@@ -157,6 +173,7 @@
                     <c:param name="inspection_result_id" value="${param.inspection_result_id}"/>
                     <c:param name="fromDate" value="${param.fromDate}"/>   <c:param name="toDate" value="${param.toDate}"/>
                     <c:param name="item_name" value="${param.item_name}"/>
+                    <c:param name="inspection_type" value="${param.inspection_type}"/>
                 </c:url>
                 <a class="page-link" href="${nextBlockUrl}">다음</a> <%-- 클릭 시 11, 21, … --%>
             </c:when>
@@ -179,29 +196,7 @@
                 입고 검사 ID: <span id="inIns-id-val"></span>
                 <input type="hidden" id="input_inIns_id" name="inspection_result_id" value="">
             </div>
-            <div class = "slide-tb">
-                <table>
-                    <thead>
-                        <th>검사일</th>
-                        <th>양품 수</th>
-                        <th>불량 수</th>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>
-                                <input type = "date" id="input_inIns_date">
-                            </td>
-                            <td>
-                                <input type = "number" id="input_inIns_good" placeholder="양품 수를 입력해주세요">
-                            </td>
-                            <td>
-                                <input type = "number" id="input_inIns_bad" placeholder="불량 수를 입력해주세요">
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class = "slide-tb">
+        <div class = "slide-tb">
                 <table>
                     <thead>
                         <th>검사 품목 분류</th>
@@ -244,6 +239,60 @@
                         </tr>
                     </tbody>
                 </table>
+            </div>
+            <div class = "slide-tb">
+                <table>
+                    <thead>
+                        <th>검사일</th>
+                        <th>양품 수</th>
+                        <th>불량 수</th>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <input type = "date" id="input_inIns_date">
+                            </td>
+                            <td>
+                                <input type = "number" id="input_inIns_good" placeholder="양품 수를 입력해주세요">
+                            </td>
+                            <td>
+                                <input type = "number" id="input_inIns_bad" placeholder="불량 수를 입력해주세요">
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class = "slide-tb" id = "defect-report" style = "margin-bottom: 100px;">
+                <table>
+                    <thead>
+                        <th class = "chkbox"><input type="checkbox" id="chkAll"></th>
+                        <th>불량 사유명</th>
+                        <th>불량 수량</th>
+                        <th>폐기 여부</th>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class = "chkbox"><input type="checkbox" class="rowChk" name = "delete_defect_id" value="${P0603_ErrorDTO.defect_id}"></td>
+                            <td>
+                                <input type = "text" name = "defect_reason" id = "defect_reason">
+                            </td>
+                            <td>
+                                <input type = "number" name = "defect_amount" id = "defect_amount">
+                            </td>
+                            <td>
+                                <select name = "input_defect_exhaust" id = "input_defect_exhaust">
+                                    <option value = "">폐기 여부 선택</option>
+                                    <option value = "0">폐기</option>
+                                    <option value = "1">재검사</option>
+                                </select>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class = "slide-tb-btnbox">
+                    <input type="button" class = "material" id="addD" style = "width: 20%" value="불량 사유 추가">
+                    <input type="button" class = "material" id="delD" style = "width: 20%" value="불량 사유 삭제">
+                </div>
             </div>
             <div class = "slide-btnbox">
                 <input type = "button" class = "submit-btn slide-btn" value = "등록">

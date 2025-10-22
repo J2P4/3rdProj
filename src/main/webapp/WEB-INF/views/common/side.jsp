@@ -48,9 +48,9 @@
                         </svg>
                     </div>
                     <ul class="subList space-y-1 mt-2 pl-4">
-                        <li class="py-2 px-3 rounded-md cursor-pointer transition-colors duration-200" data-link="${pageContext.request.contextPath}/inInslist">입고 검사</li>
-                        <li class="py-2 px-3 rounded-md cursor-pointer transition-colors duration-200" data-link="${pageContext.request.contextPath}/outInslist">출고 검사</li>
-                        <li class="py-2 px-3 rounded-md cursor-pointer transition-colors duration-200" data-link="${pageContext.request.contextPath}/errorlist">불량 보고서</li>
+                        <li class="py-2 px-3 rounded-md cursor-pointer transition-colors duration-200" data-link="${pageContext.request.contextPath}/inInslist">품질 검사</li>
+                        <!-- <li class="py-2 px-3 rounded-md cursor-pointer transition-colors duration-200" data-link="${pageContext.request.contextPath}/outInslist">출고 검사</li>
+                        <li class="py-2 px-3 rounded-md cursor-pointer transition-colors duration-200" data-link="${pageContext.request.contextPath}/errorlist">불량 보고서</li> -->
                     </ul>
                 </li>
 
