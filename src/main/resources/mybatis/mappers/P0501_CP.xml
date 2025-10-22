@@ -25,7 +25,6 @@
 	<select id="selectCPListPage" resultType="P0501_CPDTO">
 	    <bind name="startRow" value="offset + 1"/>
 	    <bind name="endRow"   value="offset + limit"/>
-	    <![CDATA[
 		    SELECT *
 			FROM (
 			  SELECT t.*, ROWNUM rn
@@ -40,12 +39,22 @@
 			    from V3_cp c
 			    LEFT JOIN V3_item i
 			      on c.item_id = i.item_id
-			    order by c.cp_id ASC
-			  ) t
-			  WHERE ROWNUM <= #{endRow}
-			)
-			WHERE rn >= #{startRow}
-	    ]]>
+			    WHERE 1=1
+		      <if test="filter.fromDate != null and filter.toDate != null">
+			    AND reg_date BETWEEN #{filter.fromDate} AND #{filter.toDate}
+			  </if>
+		      <if test="filter.item_id != null and filter.item_id != ''">
+		        AND i.item_id = #{filter.item_id}
+		      </if>
+	    <![CDATA[
+		      ORDER BY c.cp_id ASC
+		      ) t
+		      WHERE ROWNUM <= 
+		      #{endRow}
+		  	  )
+		  	  WHERE rn >= 
+		     #{startRow}
+	     ]]>
 	  </select>
 	
 	  <!-- 총 레코드 수 -->

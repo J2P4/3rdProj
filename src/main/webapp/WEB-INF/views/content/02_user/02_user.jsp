@@ -49,7 +49,8 @@
 					        전체
 					    </option>
 					    <c:forEach var="dept" items="${deptList}">
-					      <option value="${dept.department_id}">
+					      <option value="${dept.department_id}"
+				      			${dept.department_id == filter.department_id ? 'selected' : ''}>
 					        ${dept.department_name}
 					      </option>
 					    </c:forEach>

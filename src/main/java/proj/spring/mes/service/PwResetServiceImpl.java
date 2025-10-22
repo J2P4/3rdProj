@@ -13,18 +13,18 @@ import org.springframework.util.StringUtils;
 import proj.spring.mes.dao.mapper.WorkerMapperDAO;
 
 /**
- * 비밀번호 초기화(메일 없이, 새 페이지에 표시) 서비스 구현
+ * 비밀번호 초기화 서비스 구현
  *
  * 흐름:
  *   1) workerId 유효성 검사
  *   2) 임시 비밀번호 생성 (대/소문자+숫자+특수 각 1자 이상, 길이 10)
  *   3) BCrypt 해시
  *   4) MyBatis로 DB 업데이트 (parameterType=map)
- *   5) 컨트롤러로 "평문 임시비번" 반환 → JSP 새 창에서 노출
+ *   5) 컨트롤러로 "평문 임시비번" 반환 
  *
  * 주의:
  *   - 여기서는 이메일 발송을 하지 않음.
- *   - DAO 메서드는 Map 파라미터를 받도록 설계(다음 턴에 worker.xml 제공).
+ *   - DAO 메서드는 Map 파라미터를 받도록 설
  */
 @Service
 public class PwResetServiceImpl implements PwResetService {

@@ -44,7 +44,7 @@ public class EmailServiceImpl implements EmailService {
         + "   <h1 style='font-size:16px;margin:0;color:#111'>임시 비밀번호 발급</h1>"
         + "  </div>"
         + "  <div style='padding:20px 18px 18px'>"
-        + "   <div style='margin:8px 0;color:#666;font-size:13px'>사번: <strong style='color:#333'>" + worker_id + "</strong></div>"
+        + "   <div style='margin:8px 0;color:#666;font-size:13px'>아이디(사원번호): <strong style='color:#333; font-size:16px'>" + worker_id + "</strong></div>"
         + "   <div style='display:inline-flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;background:#111;color:#fff;"
         + "        font-weight:700;letter-spacing:.4px;font-size:16px;margin:10px 0 6px'>" + tempPw + "</div>"
         + "   <div style='margin-top:10px;font-size:12px;color:#777;line-height:1.7'>"

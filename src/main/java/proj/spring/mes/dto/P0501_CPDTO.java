@@ -17,4 +17,8 @@ public class P0501_CPDTO {
 	private Date cp_end;		// 종료일
 	private String item_id;		// 품목ID
 	private String item_name;	// 품목명
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+	private Date fromDate;		// 필터시작일
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+	private Date toDate;		// 필터종료일
 }

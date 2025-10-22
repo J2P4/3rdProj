@@ -32,26 +32,26 @@
             <div class = "filter-item">
                 <div class = "filitem-name">· 계획 품목</div>
                 <div class = "filitem-input">
-                    <select name="item_name">
+                    <select name="item_id">
 					      <option value="">
 					        전체
 					      </option>
-					      <c:forEach var="i" items="${list}">
-				            <option value="${i.item_name}"
-				              ${i.item_name == filter.item_name ? 'selected' : ''}>
+					      <c:forEach var="i" items="${itemList}">
+				            <option value="${i.item_id}"
+			              		${i.item_id == filter.item_id ? 'selected' : ''}>
 				              ${i.item_name}
 				            </option>
 				          </c:forEach>
 				  	</select>                    
                 </div>
             </div>
-            <div class = "filter-item">
-                <div class = "filitem-name">· 계획일</div>
-                <div class = "filitem-input">
-                    <input type = "date" name="fromDate" id="fromDate" value="${param.fromDate}">
-                    <span class="tilde">~</span>
-                    <input type = "date" name="toDate" id="toDate" value="${param.toDate}">
-                </div>
+            <div class = "filter-item" style = "width: 100%;">
+                <div class = "filitem-name" style = "width: 15%">· 계획일</div>
+<!--                 <div class = "filitem-input"> -->
+<%--                     <input type = "date" name="fromDate" id="fromDate" value="${empty filter.fromDate ? '' : filter.fromDate}"> --%>
+<!--                     <span class="tilde">~</span> -->
+<%--                     <input type = "date" name="toDate" id="toDate" value="${empty filter.toDate ? '' : filter.toDate}"> --%>
+<!--                 </div> -->
             </div>
         </div>
         <div class = "filter-btn">
@@ -60,7 +60,7 @@
             <input type="submit" class="fil-btn" value="조회">
         </div>
     </form>
-   	<form id="deleteForm" method="post" action="cpDelete">
+   	<form id="deleteForm" method="post" action="cpdelete">
     <div class = "table">
 		<table border=1>
             <thead>
@@ -87,7 +87,7 @@
 							    ${cpDTO.item_name}
 							</td>
 		                    <td><span>${cpDTO.cp_start }</span>~<span>${cpDTO.cp_end}</span></td>
-		                    <td>${cpDTO.cp_amount }</td>
+		                    <td style= "text-align: right"><fmt:formatNumber value="${cpDTO.cp_amount }" pattern="#,###"></fmt:formatNumber></td>
 		                </tr>
 	                </c:forEach>
 	            </c:if>	

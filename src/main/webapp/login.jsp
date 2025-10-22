@@ -211,12 +211,12 @@
     <div class="card">
         <div class="form-row">
           <label for="userid">아이디</label>
-          <input id="userid" name="worker_id" type="text" value="A25101468">
+          <input id="userid" name="worker_id" type="text" placeholder="사원번호를 입력하세요" value="A25101468">
         </div>
 
         <div class="form-row">
           <label for="userpw">비밀번호</label>
-          <input id="userpw" name="worker_pw" type="password" value="admin1234">
+          <input id="userpw" name="worker_pw" type="password" placeholder="비밀번호를 입력하세요" value="admin1234">
         </div>
 
 		<c:if test="${not empty msg}">

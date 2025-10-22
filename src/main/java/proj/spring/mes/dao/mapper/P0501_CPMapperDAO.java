@@ -13,7 +13,7 @@ public interface P0501_CPMapperDAO {
 
 	// CRUD
     List<P0501_CPDTO> selectCP();                 	// 전체 조회
-    List<ItemDTO> selectItem();                 	// 부서 조회
+    List<ItemDTO> selectItem();                 	// 품목 조회
     P0501_CPDTO selectOneCP(String cp_id);    // 하나만 조회
     int insertCP(P0501_CPDTO dto);                // 등록
     int updateCP(P0501_CPDTO dto);                // 수정

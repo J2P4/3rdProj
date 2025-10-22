@@ -145,7 +145,7 @@
 
       <div class="form-row">
         <label for="currentPw">현재 비밀번호</label>
-        <input id="currentPw" name="current_pw" type="password" required>
+        <input id="currentPw" name="current_pw" type="password" placeholder="현재 비밀번호를 입력하세요" required>
       </div>
 
       <div class="form-row">
@@ -155,7 +155,7 @@
 
       <div class="form-row">
         <label for="pw-confirm">비밀번호 확인</label>
-        <input id="pw-confirm" name="confirm_pw" type="password" autocomplete="new-password">
+        <input id="pw-confirm" name="confirm_pw" type="password" autocomplete="new-password" placeholder="변경할 비밀번호를 한번 더 입력하세요 ">
       </div>
 
       <!-- 상태 문구: 빨강→주황→초록 -->
