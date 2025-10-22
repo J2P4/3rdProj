@@ -3,10 +3,11 @@ package proj.spring.mes.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import proj.spring.mes.dao.mapper.P0405_ProcessMapperDAO;
 import proj.spring.mes.dto.P0405_ProcessDTO;
-
+@Service("p0405ProcessService")
 public class P0405_ProcessServiceImpl implements P0405_ProcessService {
 	@Autowired
 	P0405_ProcessMapperDAO ProcessMapperDAO;

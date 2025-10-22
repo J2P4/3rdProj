@@ -1,18 +1,148 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper
-	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
 <mapper namespace="proj.spring.mes.dao.mapper.P0405_ProcessMapperDAO">
-	<select id = "selectProcess" resultType = "P0405_processDTO" parameterType="P0405_ProcessDTO">
-		select 
-			process_id,
-		 	process_name,
-		 	process_seq 
-		 	from v3_process
-	</select>
 
+  <!-- 전체 공정 목록 -->
+  <select id="selectProcess"
+          resultType="proj.spring.mes.dto.P0405_ProcessDTO"
+          parameterType="proj.spring.mes.dto.P0405_ProcessDTO">
+    SELECT
+      process_id,
+      process_name,
+      process_seq,
+      process_img,
+      process_info,
+      department_id
+    FROM v3_process
+    <where>
+      <if test="process_id != null and process_id != ''">
+        AND process_id LIKE '%' || #{process_id} || '%'
+      </if>
+      <if test="process_name != null and process_name != ''">
+        AND process_name LIKE '%' || #{process_name} || '%'
+      </if>
+      <if test="department_id != null and department_id != ''">
+        AND department_id = #{department_id}
+      </if>
+    </where>
+    ORDER BY process_seq ASC, process_id ASC
+  </select>
 
+  <!-- 단일 공정 상세 조회 -->
+  <select id="selectOneProcess"
+          resultType="proj.spring.mes.dto.P0405_ProcessDTO"
+          parameterType="string">
+    SELECT
+      process_id,
+      process_name,
+      process_seq,
+      process_img,
+      process_info,
+      department_id
+    FROM v3_process
+    WHERE process_id = #{process_id}
+  </select>
 
+  <!-- 등록화면용 목록 -->
+  <select id="selectProcessItem"
+          resultType="proj.spring.mes.dto.P0405_ProcessDTO">
+    SELECT
+      process_id,
+      process_name,
+      process_seq,
+      process_img,
+      process_info,
+      department_id
+    FROM v3_process
+    ORDER BY process_seq ASC, process_id ASC
+  </select>
 
+  <!-- 등록 -->
+  <insert id="insertProcess"
+          parameterType="proj.spring.mes.dto.P0405_ProcessDTO">
+    INSERT INTO v3_process (
+      process_id, process_name, process_seq, process_img, process_info, department_id
+    ) VALUES (
+      #{process_id}, #{process_name}, #{process_seq}, #{process_img}, #{process_info}, #{department_id}
+    )
+  </insert>
+
+  <!-- 수정 -->
+  <update id="updateProcess"
+          parameterType="proj.spring.mes.dto.P0405_ProcessDTO">
+    UPDATE v3_process
+    SET
+      process_name  = #{process_name},
+      process_seq   = #{process_seq},
+      process_img   = #{process_img},
+      process_info  = #{process_info},
+      department_id = #{department_id}
+    WHERE process_id = #{process_id}
+  </update>
+
+  <!-- 다중 삭제 -->
+  <delete id="deleteProcesss" parameterType="list">
+    DELETE FROM v3_process
+    WHERE process_id IN
+    <foreach collection="list" item="id" open="(" close=")" separator=",">
+      #{id}
+    </foreach>
+  </delete>
+
+  <!-- 페이징 조회  -->
+  <select id="selectprocessPage"
+          resultType="proj.spring.mes.dto.P0405_ProcessDTO"
+          parameterType="map">
+    SELECT *
+    FROM (
+      SELECT t.*, ROWNUM rn
+      FROM (
+        SELECT
+          process_id,
+          process_name,
+          process_seq,
+          process_img,
+          process_info,
+          department_id
+        FROM v3_process
+        <where>
+          <if test="filter.process_id != null and filter.process_id != ''">
+            AND process_id LIKE '%' || #{filter.process_id} || '%'
+          </if>
+          <if test="filter.process_name != null and filter.process_name != ''">
+            AND process_name LIKE '%' || #{filter.process_name} || '%'
+          </if>
+          <if test="filter.department_id != null and filter.department_id != ''">
+            AND department_id = #{filter.department_id}
+          </if>
+        </where>
+        ORDER BY process_seq ASC, process_id ASC
+      ) t
+      WHERE ROWNUM &lt;= (#{offset} + #{limit})
+    )
+    WHERE rn &gt; #{offset}
+  </select>
+
+  <!-- 전체 카운트 -->
+  <select id="selectprocessCount"
+          resultType="long"
+          parameterType="map">
+    SELECT COUNT(1)
+    FROM v3_process
+    <where>
+      <if test="filter.process_id != null and filter.process_id != ''">
+        AND process_id LIKE '%' || #{filter.process_id} || '%'
+      </if>
+      <if test="filter.process_name != null and filter.process_name != ''">
+        AND process_name LIKE '%' || #{filter.process_name} || '%'
+      </if>
+      <if test="filter.department_id != null and filter.department_id != ''">
+        AND department_id = #{filter.department_id}
+      </if>
+    </where>
+  </select>
 
 </mapper>

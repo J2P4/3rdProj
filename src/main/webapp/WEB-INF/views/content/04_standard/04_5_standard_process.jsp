@@ -26,14 +26,12 @@
             position: relative;
             font-size: 20px;
         }
-        /* 섹션 제목(이미지) */
         .image-section::before {
             content: "공정 이미지";
             display: block;
             font-weight: 600;
             margin-bottom: 8px;
         }
-        /* 이미지 자체 */
         .image {
             width: 100%;
             height: 350px;
@@ -44,7 +42,7 @@
             display: block;
         }
 
-        /* 공정 상세 영역(이미지 섹션과 동일 패턴) */
+        /* 공정 상세 영역 */
         .specific {
             display: flex;
             flex-direction: column;
@@ -62,7 +60,7 @@
         }
         .specific-box {
             width: 100%;
-            height: 350px;           /* 이미지와 동일 높이 */
+            height: 350px;
             border: 1px solid #ccc;
             background-color: #f9f9f9;
             box-sizing: border-box;
@@ -81,41 +79,12 @@
             margin-top: 20px;
             height: 400px;
         }
-
-        /* 테이블 관련 */
-/*         .detail-table { */
-/*             width: 100%; */
-/*             table-layout: fixed; */
-/*             border-collapse: collapse; */
-/*         } */
-/*         .detail-table th, */
-/*         .detail-table td { */
-/*             width: 33.33%; */
-/*             text-align: center; */
-/*             padding: 8px; */
-/*             border: none; */
-/*             outline: none; */
-/*             box-sizing: border-box; */
-/*         } */
-/*         .detail-table input[type="text"] { */
-/*             border: none; */
-/*             outline: none; */
-/*             background: transparent; */
-/*             width: 100%; */
-/*             text-align: center; */
-/*             font-size: 14px; */
-/*             padding: 4px; */
-/*         } */
-
-/*         /* 리스트 테이블(간단 스타일) */ */
-/*         .table table { width: 100%; border-collapse: collapse; } */
-/*         .table thead th { padding: 8px; border-bottom: 1px solid #ddd; } */
-/*         .table tbody td { padding: 8px; border-bottom: 1px solid #eee; } */
     </style>
 
     <script>
         const contextPath = '${pageContext.request.contextPath}';
-        const allItemsJson = `${itemListJson}`;
+        // 서버에서 이스케이프된 JSON 문자열을 객체로 변환
+        const allItemsJson = JSON.parse('${itemListJson}');
     </script>
     <script src="${pageContext.request.contextPath}/resources/js/common.js" defer></script>
     <script src="${pageContext.request.contextPath}/resources/js/04_5_process.js" defer></script>
@@ -126,24 +95,20 @@
     <div class="title"><h1>공정 관리</h1></div>
 
     <!-- 검색 필터 -->
-    <form class="filter" method="get" action="${pageContext.request.contextPath}/processlist">
+    <!-- 변경: /processlist → /process/list -->
+    <form class="filter" method="get" action="${pageContext.request.contextPath}/process/list">
         <div class="filter-item-box">
             <div class="filter-item">
                 <div class="filitem-name">· 공정ID</div>
                 <div class="filitem-input">
-                    <input type="text" name="process_id" placeholder=" ID를 입력해주세요" />
+                    <input type="text" name="process_id" placeholder=" ID를 입력해주세요" value="${filter.process_id}"/>
                 </div>
             </div>
-<!--             <div class="filter-item"> -->
-<!--                 <div class="filitem-name">· 부서</div> -->
-<!--                 <div class="filitem-input"> -->
-<!--                     <input type="text" name="deparment" placeholder=" 부서를 입력해주세요" /> -->
-<!--                 </div> -->
-<!--             </div> -->
             <div class="filter-item">
                 <div class="filitem-name">· 공정명</div>
                 <div class="filitem-input">
-                    <input type="text" name="process_id" placeholder=" 공정명을 입력해주세요" />
+                    <!-- 변경: name="process_id" → name="process_name" -->
+                    <input type="text" name="process_name" placeholder=" 공정명을 입력해주세요" value="${filter.process_name}"/>
                 </div>
             </div>
             <div class="filter-item"></div>
@@ -216,7 +181,8 @@
                         <tr>
                             <td><input type="text" name="process_seq" /></td>
                             <td><input type="text" name="process_name" /></td>
-                            <td><input type="text" name="department" /></td>
+                            <!-- 변경: name="department" → name="department_id" -->
+                            <td><input type="text" name="department_id" /></td>
                         </tr>
                     </tbody>
                 </table>
@@ -230,7 +196,7 @@
                     <input type="file" id="img" accept="image/*" />
                 </div>
 
-                <!-- 공정 상세(이미지와 동일 패턴) -->
+                <!-- 공정 상세 -->
                 <div class="specific">
                     <div class="specific-box" contenteditable="true" aria-label="공정 상세 입력 영역"></div>
                 </div>
@@ -243,7 +209,7 @@
         </form>
     </div>
 
-    <!-- 이미지 미리보기 스크립트 -->
+    <!-- 이미지 미리보기 -->
     <script>
         document.addEventListener('change', function(e) {
             if (e.target && e.target.id === 'img') {
