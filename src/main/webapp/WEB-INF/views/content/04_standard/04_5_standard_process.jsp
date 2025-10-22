@@ -6,6 +6,7 @@
     String todayStr = new java.text.SimpleDateFormat("yyyy-MM-dd").format(new java.util.Date());
     request.setAttribute("todayStr", todayStr);
 %>
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -117,7 +118,7 @@
         const allItemsJson = `${itemListJson}`;
     </script>
     <script src="${pageContext.request.contextPath}/resources/js/common.js" defer></script>
-    <script src="${pageContext.request.contextPath}/resources/js/04_1_process.js" defer></script>
+    <script src="${pageContext.request.contextPath}/resources/js/04_5_process.js" defer></script>
 </head>
 
 <body>
