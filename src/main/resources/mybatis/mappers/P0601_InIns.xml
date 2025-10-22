@@ -47,7 +47,7 @@
 			FROM (
 				select
 					i.inspection_result_id, i.inspection_result_date, i.inspection_result_good,
-					i.inspection_result_bad, i.worker_id, i.stock_id,
+					i.inspection_result_bad, i.worker_id, i.stock_id, i.inspection_type,
 					w.worker_name, it.item_name
 				from v3_inspection_result i
 					left outer join v3_worker w on i.worker_id = w.worker_id
@@ -86,7 +86,9 @@
 		left outer join v3_stock s on i.stock_id = s.stock_id
 		left outer join v3_item it on s.item_id = it.item_id
 		<where>
-			inspection_type = 0
+			<if test="filter.inspection_type != null and filter.inspection_type != ''">
+			and i.inspection_type = #{filter.inspection_type}
+			</if>
 			<if test="filter.inspection_result_id != null and filter.inspection_result_id != ''">
 			and lower(i.inspection_result_id) like lower('%' || #{filter.inspection_result_id} || '%')
 			</if>
@@ -177,7 +179,7 @@
 		values (
 			#{inspection_result_id}, #{inspection_result_date},
 			#{inspection_result_good}, #{inspection_result_bad},
-			#{worker_id}, #{stock_id}, 0
+			#{worker_id}, #{stock_id}, #{inspection_type}
 		)
 	</insert>
 </mapper>

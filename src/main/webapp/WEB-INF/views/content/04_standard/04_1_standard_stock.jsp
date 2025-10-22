@@ -208,6 +208,7 @@
     </form>
     <!-- 입력용 슬라이드 -->
     <div class = "slide" id = "slide-input">
+        <button class="slide-close-btn">✕</button>
         <form class = "slide-contents" id="stockInsertForm">
             <div class = "silde-title"><h2 id="slide-title">재고 등록</h2></div>
             <div class = "slide-id" id="stock-id-show" style = "display: none">
@@ -281,6 +282,7 @@
     </div>
     <!-- 상세용 슬라이드 : ajax로 채울 거라 el 태그 사용 필요 X -->
     <div class = "slide" id = "slide-detail">
+        <button class="slide-close-btn">✕</button>
         <div class = "slide-contents">
             <div class = "silde-title"><h2>재고 상세</h2></div>
             <div class = "slide-id">재고 ID: </div>

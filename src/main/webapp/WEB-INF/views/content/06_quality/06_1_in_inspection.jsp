@@ -78,7 +78,6 @@
                 </tr>
             </thead>
             <tbody>
-                <!-- c:if로 검사 타입 넣어두기. 애초에 지금 0만 뜨는데 데이터 input 잘못 했었나 확인하고 수정하기. -->
            		<c:if test="${empty list}">
 					<tr>
                         <td><input type="checkbox" class="rowChk" disabled></td>
@@ -90,7 +89,19 @@
 		                <tr data-id="${P0601_InInsDTO.inspection_result_id}">
 		                    <td class = "chkbox"><input type="checkbox" name="delete_InIns_id" value="${P0601_InInsDTO.inspection_result_id}" class="rowChk"></td>
 		                    <td style = "width: 25%;">${P0601_InInsDTO.inspection_result_id}</td>
-		                    <td style = "width: 20%;">${P0601_InInsDTO.inspection_type}</td>
+                            <td style = "width: 20%;">
+                                <c:choose>
+                                    <c:when test="${P0601_InInsDTO.inspection_type == 0}">
+                                        입고
+                                    </c:when>
+                                    <c:when test="${P0601_InInsDTO.inspection_type == 1}">
+                                        출고
+                                    </c:when>
+                                    <c:otherwise>
+                                        -
+                                    </c:otherwise>
+                                </c:choose>
+                            </td>
 		                    <td style = "width: 25%;">${P0601_InInsDTO.inspection_result_date}</td>
 		                    <td class = "gb">${P0601_InInsDTO.inspection_result_good}</td>
 		                    <td class = "gb">${P0601_InInsDTO.inspection_result_bad}</td>
@@ -190,10 +201,11 @@
         </div>
     </div>
     <div class = "slide" id = "slide-input">
+        <button class="slide-close-btn">✕</button>
         <form class = "slide-contents" id="inInsInsertForm">
-            <div class = "silde-title"><h2 id="slide-title">입고 검사 등록</h2></div>
+            <div class = "silde-title"><h2 id="slide-title">품질 검사 등록</h2></div>
             <div class = "slide-id" id="inIns-id-show" style = "display: none">
-                입고 검사 ID: <span id="inIns-id-val"></span>
+                품질 검사 ID: <span id="inIns-id-val"></span>
                 <input type="hidden" id="input_inIns_id" name="inspection_result_id" value="">
             </div>
         <div class = "slide-tb">
@@ -265,25 +277,26 @@
             <div class = "slide-tb" id = "defect-report" style = "margin-bottom: 100px;">
                 <table>
                     <thead>
-                        <th class = "chkbox"><input type="checkbox" id="chkAll"></th>
+                        <th class = "chkbox"><input type="checkbox" id="chkAllDefect"></th>
                         <th>불량 사유명</th>
                         <th>불량 수량</th>
                         <th>폐기 여부</th>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td class = "chkbox"><input type="checkbox" class="rowChk" name = "delete_defect_id" value="${P0603_ErrorDTO.defect_id}"></td>
+                        <tr class="initial-row">
+                            <td class = "chkbox"><input type="checkbox" class="rowChk existingDefectChk" name = "delete_defect_id" value=""></td>
                             <td>
-                                <input type = "text" name = "defect_reason" id = "defect_reason">
+                                <input type = "text" name = "defectReasonList" class="defect_reason">
                             </td>
                             <td>
-                                <input type = "number" name = "defect_amount" id = "defect_amount">
+                                <input type = "number" name = "defectAmountList" class="defect_amount">
                             </td>
                             <td>
-                                <select name = "input_defect_exhaust" id = "input_defect_exhaust">
+                                <select name = "defectExhaustList" class="input_defect_exhaust" size="1">
                                     <option value = "">폐기 여부 선택</option>
                                     <option value = "0">폐기</option>
                                     <option value = "1">재검사</option>
+                                    <option value = "2">재작업</option>
                                 </select>
                             </td>
                         </tr>
@@ -301,9 +314,26 @@
         </form>
     </div>
     <div class = "slide" id = "slide-detail">
+        <button class="slide-close-btn">✕</button>
         <div class = "slide-contents">
-            <div class = "silde-title"><h2>입고 검사 상세</h2></div>
-            <div class = "slide-id">입고 검사 ID: </div>
+            <div class = "silde-title"><h2>품질 검사 상세</h2></div>
+            <div class = "slide-id">품질 검사 ID: </div>
+            <div class = "slide-tb">
+                <table id = "charge">
+                    <thead>
+                        <th>검사 품목 ID</th>
+                        <th>검사 품목명</th>
+                        <th>담당 사원</th>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td data-type = "select"></td>
+                            <td data-type = "select"></td>
+                            <td data-type = "select"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
             <div class = "slide-tb">
                 <table id = "inspectionInfo">
                     <thead>
@@ -320,18 +350,18 @@
                     </tbody>
                 </table>
             </div>
-            <div class = "slide-tb">
-                <table id = "charge">
+            <div class = "slide-tb" id = "defect-info">
+                <table>
                     <thead>
-                        <th>검사 품목 ID</th>
-                        <th>검사 품목명</th>
-                        <th>담당 사원</th>
+                        <th>불량 사유명</th>
+                        <th>불량 수량</th>
+                        <th>폐기 여부</th>
                     </thead>
                     <tbody>
                         <tr>
-                            <td data-type = "select"></td>
-                            <td data-type = "select"></td>
-                            <td data-type = "select"></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
                         </tr>
                     </tbody>
                 </table>

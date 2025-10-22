@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
                 // 선택 항목 없으면(배열 길이 0이면) 경고 창 띄우기
                 if (checkedIds.length === 0) {
-                    alert('삭제할 입고 검사 내역을 선택해 주세요.');
+                    alert('삭제할 품질 검사 내역을 선택해 주세요.');
                     return;
                 }
     
@@ -124,7 +124,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        slide.querySelector('.slide-id').textContent = `입고 검사 ID: ${data.inspection_result_id}`;
+        slide.querySelector('.slide-id').textContent = `품질 검사 ID: ${data.inspection_result_id}`;
 
         const inspectionInfo = slide.querySelector('#inspectionInfo tbody tr');
         if (inspectionInfo) {
@@ -217,7 +217,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // mode에 따라 등록, 수정 구분
         if (mode === 'edit' && inInsID) {
             // 수정 모드 : 슬라이드 제목 영역. 저장 버튼의 value를 수정으로 함.
-            inSlideTitle.textContent = '입고 검사 수정';
+            inSlideTitle.textContent = '품질 검사 수정';
             saveBtn.value = '수정';
             // ID 표시. 기존(등록)에는 display: none 상태였음
             inInsIdShow.style.display = 'flex';
@@ -231,7 +231,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         else {
             // 등록 모드 : 슬라이드 제목 영역. 저장 버튼의 value를 등록으로 함.
-            inSlideTitle.textContent = '입고 검사 등록';
+            inSlideTitle.textContent = '품질 검사 등록';
             saveBtn.value = '등록';
             // ID 숨김
             inInsIdShow.style.display = 'none';
@@ -271,7 +271,20 @@ document.addEventListener('DOMContentLoaded', () => {
             document.querySelector('#input_stock_id').value = data.stock_id || '';
             document.querySelector('#input_worker_name').value = data.worker_id || '';
 
-            
+            // 불량 사유용: 데이터 테이블 초기화 및 채우기
+                // 템플릿 행 제외 전부 제거
+                while (defectTbody.children.length > 1) {
+                    defectTbody.removeChild(defectTbody.lastChild);
+                }
+                
+                // 불량 사유 데이터(defectList)가 있다면 행 추가
+                if (data.defectList && Array.isArray(data.defectList)) {
+                    data.defectList.forEach(defect => {
+                        // 아래에 새로운 함수 정의
+                        const newRow = createDefectRow(defect); 
+                        defectTbody.appendChild(newRow);
+                    });
+                }            
 
         }
         catch (err) {
@@ -366,7 +379,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 openSlideInput('edit', inInsId);
             }
             else {
-                alert('수정할 입고 검사 ID를 찾을 수 없습니다.');
+                alert('수정할 품질 검사 ID를 찾을 수 없습니다.');
             }
         });
     }
@@ -389,9 +402,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const workerId = selectedOption.value;
         const workerName = selectedOption.dataset.name;
         const nowDivVal = itemDiv.value;
+        // 불량 사유용(추후 bom 쪽에도 참고해서 넣기)
+        const defectData = collectDefectData();
 
-
-
+        // 기존 코드~~~
         const inInsId = document.querySelector('#input_inIns_id');
 
         // 값이 잘 들어갔는지 확인.
@@ -433,9 +447,15 @@ document.addEventListener('DOMContentLoaded', () => {
             worker_name: workerName
         };
 
+        // 불량 사유 관련 코드
+        // 수집된 불량 사유 데이터 배열을 메인 데이터 객체에 추가
+        inInsData.defectListJson = JSON.stringify(defectData.newDefects);
+
         if (nowSlide === 'edit') {
             url = `${contextPath}/inInsupdate`;
             inInsData.inspection_result_id = nowEditId; 
+            // 수정 모드인 경우에만 삭제할 기존 항목 ID 추가
+            inInsData.deletedDefectIds = JSON.stringify(defectData.deletedDefectIds);
         }
         else {
             url = `${contextPath}/inInsinsert`;
@@ -454,7 +474,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const actionText = nowSlide === 'edit' ? '수정' : '등록';
 
             if (response.ok && result === 'success') {
-                alert(`입고 검사 ${actionText}이 성공적으로 완료되었습니다.`);
+                alert(`품질 검사 ${actionText}이 성공적으로 완료되었습니다.`);
                 
                 if(actionText == '수정') {
                     // inInsId = nowEditId;
@@ -483,5 +503,171 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     })
+
+
+    // ===================================
+    // 불량 사유 : 행 추가, 행 삭제
+    // ===================================
+
+    // 변수 모음집
+    const addDefectBtn = document.querySelector('#addD');
+    const delDefectBtn = document.querySelector('#delD');
+    const defectTbody = document.querySelector('#defect-report table tbody');
+    // 첫 행 숨기기용 1
+    const initialRow = defectTbody ? defectTbody.querySelector('.initial-row') : null;
+
+    // 새로운 행의 임시 ID를 위해 지정. 삭제 기능에 사용!
+    let newRowCounter = 0;
+
+    // 첫 행 숨기기용 2
+    if (initialRow) {
+        initialRow.style.display = 'none';
+    }
+
+    // 불량 사유 추가
+    if (addDefectBtn && defectTbody) {
+        addDefectBtn.addEventListener('click', () => {
+            // 행 수에 1 추가
+            newRowCounter++;
+            // 행 수를 임시 ID로 지정
+            const tempId = `temp_${newRowCounter}`;
+
+            // select 생성
+            const exhaustOptionsHtml = Array.from(document.querySelector('.initial-row .input_defect_exhaust').options)
+                .map(option => `<option value="${option.value}">${option.textContent}</option>`)
+                .join('');
+
+            // tr 새로 만들기(+클래스 추가, data 속성에 id 저장)
+            const newRow = document.createElement('tr');
+            newRow.classList.add('new-defect-row');
+            newRow.dataset.tempId = tempId; 
+
+            // td 내용을 HTML 문자열로 정의
+            const newRowHtml = `
+                <td class="chkbox">
+                    <input type="checkbox" class="rowChk newDefectChk" name="new_defect_delete" value="${tempId}">
+                </td>
+                <td>
+                    <input type="text" name="defectReasonList" class="defect_reason" placeholder="불량 사유명 입력">
+                </td>
+                <td>
+                    <input type="number" name="defectAmountList" class="defect_amount" placeholder="수량" value="0" min="0">
+                </td>
+                <td>
+                    <select name="defectExhaustList" class="input_defect_exhaust" size="1">
+                        ${exhaustOptionsHtml}
+                    </select>
+                </td>
+            `;
+
+            // tr 내용 추가
+            newRow.innerHTML = newRowHtml;
+
+            // tbody에 새 행 추가
+            defectTbody.appendChild(newRow);
+        });
+    }
+
+    // 불량 사유 삭제 버튼 클릭 이벤트
+    if (delDefectBtn && defectTbody) {
+        delDefectBtn.addEventListener('click', () => {
+            // 새로 추가된 행 중 체크된 것들을 먼저 처리
+            const checkedNewRows = Array.from(defectTbody.querySelectorAll('input[name="new_defect_delete"]:checked'));
+            // 기존 행 중 체크된 것들을 처리
+            const checkedExistingRows = Array.from(defectTbody.querySelectorAll('input[name="delete_defect_id"]:checked'));
+            
+            // 삭제할 항목이 없으면 경고
+            if (checkedNewRows.length === 0 && checkedExistingRows.length === 0) {
+                alert('삭제할 불량 사유 행을 선택해 주세요.');
+                return;
+            }
+
+            // 삭제 수 확인 후 그에 따라 경고문 표시
+            const totalToDelete = checkedNewRows.length + checkedExistingRows.length;
+            const isConfirmed = confirm(`선택된 불량 사유 행 ${totalToDelete}개를 삭제하시겠습니까?`);
+
+            if (isConfirmed) {
+                // 새로 추가된 행은 화면에서 즉시 제거(어차피 db에는 없으니까~)
+                checkedNewRows.forEach(checkbox => {
+                    const rowToRemove = checkbox.closest('tr');
+                    if (rowToRemove) {
+                        rowToRemove.remove();
+                    }
+                });
+                
+                // 기존 행: 화면 즉시 제거 + 서버 전송 준비
+                checkedExistingRows.forEach(checkbox => {
+                    const rowToRemove = checkbox.closest('tr');
+                    if (rowToRemove) {
+                        // 삭제 ID 수집
+                        rowToRemove.remove();
+                    }
+                });
+
+                alert('선택된 불량 사유 행이 삭제되었습니다.');
+            }
+        });
+    }
+
+    // 테이블에서 모든 불량 데이터 수집
+    function collectDefectData() {
+        const defectRows = defectTbody.querySelectorAll('tr:not(.initial-row)'); // 템플릿 행 제외
+
+        const newDefects = []; // insert 데이터
+        const existingDefects = []; // update 데이터
+        const deletedDefectIds = []; // delete 데이터
+
+        defectRows.forEach(row => {
+            // 새로 추가된 행
+            if (row.classList.contains('new-defect-row')) {
+                const reasonInput = row.querySelector('input[name="defectReasonList"]');
+                const amountInput = row.querySelector('input[name="defectAmountList"]');
+                const exhaustSelect = row.querySelector('select[name="defectExhaustList"]');
+
+                newDefects.push({
+                    defect_reason: reasonInput ? reasonInput.value : '',
+                    defect_amount: amountInput ? parseInt(amountInput.value) : 0,
+                    defect_exhaust: exhaustSelect ? exhaustSelect.value : ''
+                });
+            }
+        });
+        
+        return { 
+            newDefects: newDefects,
+            deletedDefectIds: deletedDefectIds
+        };
+    }
+
+    // 기존 데이터(defect)를 기반으로 행 생성
+    function createDefectRow(defect) {
+        const row = document.createElement('tr');
+        // 기존 데이터임을 식별하기 위한 클래스
+        row.classList.add('existing-defect-row');
+        // 기존 데이터의 고유 ID를 data 속성에 저장 (수정 / 삭제용)
+        row.dataset.defectId = defect.defect_id; 
+
+        // 폐기 여부 옵션을 포함한 HTML 생성
+        const exhaustOptionsHtml = Array.from(document.querySelector('.initial-row .input_defect_exhaust').options)
+            .map(option => `<option value="${option.value}" ${option.value == defect.defect_exhaust ? 'selected' : ''}>${option.textContent}</option>`)
+            .join('');
+        
+        row.innerHTML = `
+            <td class="chkbox">
+                <input type="checkbox" class="rowChk existingDefectChk" name="delete_defect_id" value="${defect.defect_id}">
+            </td>
+            <td>
+                <input type="text" name="defectReasonList" class="defect_reason" value="${defect.defect_reason || ''}">
+            </td>
+            <td>
+                <input type="number" name="defectAmountList" class="defect_amount" value="${defect.defect_amount || 0}" min="0">
+            </td>
+            <td>
+                <select name="defectExhaustList" class="input_defect_exhaust" size="1">
+                    ${exhaustOptionsHtml}
+                </select>
+            </td>
+        `;
+        return row;
+    }
 
 })

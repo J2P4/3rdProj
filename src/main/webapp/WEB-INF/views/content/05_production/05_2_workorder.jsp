@@ -196,6 +196,7 @@
     </form>
     <!-- 입력용 슬라이드 -->
     <div class = "slide" id = "slide-input">
+        <button class="slide-close-btn">✕</button>
         <form class = "slide-contents" id="woInsertForm">
             <div class = "silde-title"><h2 id="slide-title">작업 지시서 등록</h2></div>
             <div class = "slide-id" id="work-order-id-show" style = "display: none">
@@ -216,7 +217,7 @@
                                 <input type = "date" id="input_work_order_date" placeholder = "작업 지시일" style = "width: 100%;"></td> 
                             </td>
                             <td data-type = "number">
-                               <input type = "number" id="input_work_order_num" placeholder = "지시 수량을 입력해주세요" style = "width: 100%;"></td> 
+                                <input type = "number" id="input_work_order_num" placeholder = "지시 수량을 입력해주세요" style = "width: 100%;"></td> 
                             </td>
                             <td>
                                 <input type = "number" id="input_work_order_fin" placeholder = "생산 수량을 입력해주세요" style = "width: 100%;">
@@ -253,6 +254,7 @@
     </div>
     <!-- 상세용 슬라이드 : ajax로 채울 거라 el 태그 사용 필요 X -->
     <div class = "slide" id = "slide-detail">
+        <button class="slide-close-btn">✕</button>
         <div class = "slide-contents">
             <div class = "silde-title"><h2>작업 지시서 상세</h2></div>
             <div class = "slide-id">작업 지시서 ID: </div>
