@@ -9,29 +9,29 @@
 	<!-- 전체 조회 : 이쪽은 ㅇㅋ. -->
 	<select id = "selectBOM" resultType = "P0404_BOMDTO" parameterType="P0404_BOMDTO">
 		select
-		    b.bom_id,
-		    b.bom_amount,
-		    b.item_id,
-		    i.item_div,
-		    i.item_name
+		    b.bom_id, b.bom_amount, b.item_id,
+		    im.item_div, im.item_name,
+		    ip.item_div, ip.item_name
 		from v3_bom b
-		left join v3_item i
-		    on i.item_id = 
+		left join v3_item im
+		    on im.item_id = 
 		    	ltrim(SUBSTR(b.bom_id, 1, LENGTH(b.bom_id) - 2), 'F')
+		left join v3_item ip
+			on ip.item_id = b.item_id
 		
 		<where>
 			<if test="bom_id != null and bom_id != ''">
 				and lower(b.bom_id) like lower('%' || #{bom_id} || '%')
 			</if>
 			<if test="item_div != null and item_div != ''">
-				and i.item_div = #{item_div}
+				and im.item_div = #{item_div}
 			</if>
 			<if test="item_id != null and item_id != ''">
-				and lower(i.item_id) like lower('%' || #{item_id} || '%')
+				and lower(b.item_id) like lower('%' || #{item_id} || '%')
 			</if>					
 		</where>
 		
-		order by b.bom_id
+		order by b.item_id
 	</select>
 
 	
@@ -107,7 +107,7 @@
 	
 	<delete id = "deleteBOMs" parameterType = "java.util.List">
 		delete from v3_bom
-		where bom_id in
+		where item_id in
 		<foreach item="id" collection="list" open="(" separator="," close=")">
 			#{id}
 		</foreach>

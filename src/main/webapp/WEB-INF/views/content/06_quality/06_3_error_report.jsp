@@ -35,9 +35,9 @@
             <div class = "filter-item">
                 <div class = "filitem-name" style = "width: 115px;">· 검사일</div>
                 <div class = "filitem-input">
-                    <input type = "date" name="fromDate" id="fromDate" style = "width: 115px;">
+                    <input type = "date" name="fromDate" id="fromDate" style = "width: 110px;">
                     <span class="tilde">~</span>
-                    <input type = "date" name="toDate" id="toDate" style = "width: 115px;">
+                    <input type = "date" name="toDate" id="toDate" style = "width: 110px;">
                 </div>
             </div>
             <div class = "filter-item">

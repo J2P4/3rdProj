@@ -204,6 +204,7 @@
         </div>
     </div>
     <div class = "slide" id = "slide-input">
+        <button class="slide-close-btn">✕</button>
         <div class = "slide-contents">
             <div class = "silde-title"><h2 id="slide-title">BOM 등록</h2></div>
             <div class = "slide-id" id="stock-id-show" style = "display: none">
@@ -271,6 +272,9 @@
         </div>
     </div>
     <div class = "slide" id = "slide-detail">
+        <!-- 슬라이드 닫힘 버튼! 이 자리에 넣어주고, 슬라이드 전체가 클래스명이 slide로 되어 있는지 확인.
+        common css, js 이미 추가해서 이것만 넣으면 ㅇㅋ-->
+        <button class="slide-close-btn">✕</button>
         <div class = "slide-contents">
             <div class = "silde-title"><h2>BOM 상세</h2></div>
             <div class = "slide-id">목표 품목 ID: </div>

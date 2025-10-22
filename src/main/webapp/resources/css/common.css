@@ -252,6 +252,15 @@ td {
     right: 0;
 }
 
+.slide-close-btn {
+    background: transparent;
+    border: none;
+    font-size: 1.2rem;
+    float: right;
+    cursor: pointer;
+    margin: 50px;
+}
+
 .silde-title {
 	font-size: 2rem;
 	font-weight: bold;

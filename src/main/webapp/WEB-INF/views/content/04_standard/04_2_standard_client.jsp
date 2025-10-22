@@ -33,15 +33,15 @@
 <form class="panel" method="get" action="${clientlistUrl}">
     <div class="filter">
         <div class="filter-item-box">
-            <div class="filter-item">
-                <span class="filitem-name">· 사업자등록번호</span>
+            <div class="filter-item" style = "width: 100%;">
+                <div class="filitem-name" style = "width: 150px;">· 사업자등록번호</div>
                 <div class="filitem-input">
                     <input type="text" name="client_id" value="${fn:escapeXml(param.client_id)}">
                 </div>
             </div>
 
-            <div class="filter-item">
-                <span class="filitem-name">· 거래처 이름</span>
+            <div class="filter-item" style = "width: 100%;">
+                <div class="filitem-name" style = "width: 150px;">· 거래처 이름</div>
                 <div class="filitem-input">
                     <input type="text" name="clientName" value="${fn:escapeXml(param.clientName)}">
                 </div>

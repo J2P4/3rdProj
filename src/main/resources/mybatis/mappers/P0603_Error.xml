@@ -68,6 +68,7 @@
 		set defect_reason = #{defect_reason},
 			defect_exhaust = #{defect_exhaust},
 			inspection_result_id = #{inspection_result_id}
+			defect_amount = #{defect_amount}
 		where defect_reason_id = #{defect_reason_id}
 	</update>
 	
@@ -84,18 +85,31 @@
 		</foreach>
 	</delete>
 	
+	<delete id = "deletePack" parameterType = "java.util.List">
+		delete from v3_defect
+		where inspection_result_id in
+		<foreach item = "insId" collection="list" open="(" separator="," close=")">
+			#{insId}
+		</foreach>
+	</delete>
+	
 	<!-- 삽입 -->
-	<insert id = "insertError" parameterType = "P0603_ErrorDTO">
-		<selectKey keyProperty="defect_reason_id" resultType="string" order="BEFORE">
-		  select 'N' || TO_CHAR(SYSDATE, 'YYMMDD') || LPAD(defect_reason_id_seq.NEXTVAL, 2, '0')
-		  from dual
-		</selectKey>
-		
-		insert into v3_defect (
-			defect_reason_id, defect_reason, defect_exhaust, inspection_result_id
-		)
-		values (
-			#{defect_reason_id}, #{defect_reason}, #{defect_exhaust}, #{inspection_result_id}
-		)
+	<insert id="insertError" parameterType="java.util.Map">
+	    insert into v3_defect (
+	        defect_reason_id, 
+	        defect_reason, 
+	        defect_exhaust, 
+	        inspection_result_id
+	    )
+	    values
+	    <foreach collection="list" item="item" separator=" , ">
+	        (
+	            'N' || TO_CHAR(SYSDATE, 'YYMMDD') || LPAD(defect_reason_id_seq.NEXTVAL, 2, '0'), 
+	            
+	            #{item.defect_reason}, 
+	            #{item.defect_exhaust},
+	            #{item.inspection_result_id} 
+	        )
+	    </foreach>
 	</insert>
 </mapper>

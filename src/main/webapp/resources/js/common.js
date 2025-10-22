@@ -20,6 +20,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // X 버튼 누를 때 닫히도록
+    document.querySelectorAll('.slide-close-btn').forEach(btn => {
+        btn.addEventListener('click', () => btn.closest('.slide').classList.remove('open'));
+    });
     
     // ============================
     // 체크 박스 전체 선택
