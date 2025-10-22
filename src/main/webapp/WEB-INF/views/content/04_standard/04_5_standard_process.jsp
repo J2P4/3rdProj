@@ -95,8 +95,7 @@
     <div class="title"><h1>공정 관리</h1></div>
 
     <!-- 검색 필터 -->
-    <!-- 변경: /processlist → /process/list -->
-    <form class="filter" method="get" action="${pageContext.request.contextPath}/process/list">
+    <form class="filter" method="get" action="${pageContext.request.contextPath}/processlist">
         <div class="filter-item-box">
             <div class="filter-item">
                 <div class="filitem-name">· 공정ID</div>
