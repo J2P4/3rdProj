@@ -83,34 +83,34 @@
         }
 
         /* 테이블 관련 */
-        .detail-table {
-            width: 100%;
-            table-layout: fixed;
-            border-collapse: collapse;
-        }
-        .detail-table th,
-        .detail-table td {
-            width: 33.33%;
-            text-align: center;
-            padding: 8px;
-            border: none;
-            outline: none;
-            box-sizing: border-box;
-        }
-        .detail-table input[type="text"] {
-            border: none;
-            outline: none;
-            background: transparent;
-            width: 100%;
-            text-align: center;
-            font-size: 14px;
-            padding: 4px;
-        }
+/*         .detail-table { */
+/*             width: 100%; */
+/*             table-layout: fixed; */
+/*             border-collapse: collapse; */
+/*         } */
+/*         .detail-table th, */
+/*         .detail-table td { */
+/*             width: 33.33%; */
+/*             text-align: center; */
+/*             padding: 8px; */
+/*             border: none; */
+/*             outline: none; */
+/*             box-sizing: border-box; */
+/*         } */
+/*         .detail-table input[type="text"] { */
+/*             border: none; */
+/*             outline: none; */
+/*             background: transparent; */
+/*             width: 100%; */
+/*             text-align: center; */
+/*             font-size: 14px; */
+/*             padding: 4px; */
+/*         } */
 
-        /* 리스트 테이블(간단 스타일) */
-        .table table { width: 100%; border-collapse: collapse; }
-        .table thead th { padding: 8px; border-bottom: 1px solid #ddd; }
-        .table tbody td { padding: 8px; border-bottom: 1px solid #eee; }
+/*         /* 리스트 테이블(간단 스타일) */ */
+/*         .table table { width: 100%; border-collapse: collapse; } */
+/*         .table thead th { padding: 8px; border-bottom: 1px solid #ddd; } */
+/*         .table tbody td { padding: 8px; border-bottom: 1px solid #eee; } */
     </style>
 
     <script>
@@ -134,12 +134,12 @@
                     <input type="text" name="process_id" placeholder=" ID를 입력해주세요" />
                 </div>
             </div>
-            <div class="filter-item">
-                <div class="filitem-name">· 부서</div>
-                <div class="filitem-input">
-                    <input type="text" name="deparment" placeholder=" 부서를 입력해주세요" />
-                </div>
-            </div>
+<!--             <div class="filter-item"> -->
+<!--                 <div class="filitem-name">· 부서</div> -->
+<!--                 <div class="filitem-input"> -->
+<!--                     <input type="text" name="deparment" placeholder=" 부서를 입력해주세요" /> -->
+<!--                 </div> -->
+<!--             </div> -->
             <div class="filter-item">
                 <div class="filitem-name">· 공정명</div>
                 <div class="filitem-input">
@@ -175,9 +175,9 @@
                     <c:forEach var="P0405_ProcessDTO" items="${list}">
                         <tr data-id="${P0405_ProcessDTO.process_id}">
                             <td><input type="checkbox" class="rowChk" name="delete_process_id" value="${P0405_ProcessDTO.process_id}" /></td>
+                            <td>${P0405_ProcessDTO.process_seq}</td>
                             <td>${P0405_ProcessDTO.process_id}</td>
-                            <td>${P0405_ProcessDTO.process_amount}</td>
-                            <td>${P0405_ProcessDTO.item_div}</td>
+                            <td>${P0405_ProcessDTO.process_name}</td>
                         </tr>
                     </c:forEach>
                 </c:if>
@@ -189,8 +189,8 @@
     <form class="bottom-btn">
         <div class="page"></div>
         <div class="bottom-btn-box">
-            <input type="button" class="btm-btn new" value="입력" />
-            <input type="button" class="btm-btn del" value="등록" />
+            <input type="button" class="btm-btn new" value="등록" />
+            <input type="button" class="btm-btn del" value="삭제" />
         </div>
     </form>
 
@@ -199,7 +199,7 @@
         <form class="slide-contents" id="processInsertForm">
             <div class="silde-title"><h2 id="slide-title">공정 상세</h2></div>
             <div class="slide-id" id="process-id-show" style="display:none">
-                재고 ID: <span id="process-id-val"></span>
+                공정 ID: <span id="process-id-val"></span>
                 <input type="hidden" id="input_process_id" name="process_id" value="" />
             </div>
 
@@ -214,7 +214,7 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td><input type="text" name="process_order" /></td>
+                            <td><input type="text" name="process_seq" /></td>
                             <td><input type="text" name="process_name" /></td>
                             <td><input type="text" name="department" /></td>
                         </tr>
