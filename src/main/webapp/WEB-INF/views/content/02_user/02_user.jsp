@@ -63,7 +63,7 @@
                     <select name = "worker_code" size = "1">
 						  <option value=""  ${empty filter.worker_code ? 'selected' : ''}>전체</option>
 						  <option value="ADMIN" ${filter.worker_code == 'ADMIN' ? 'selected' : ''}>ADMIN</option>
-						  <option value="HEAD" ${filter.worker_code == 'HEAD' ? 'selected' : ''}>HEAD</option>
+						  <option value="MANAGER" ${filter.worker_code == 'MANAGER' ? 'selected' : ''}>MANAGER</option>
 						  <option value="STAFF" ${filter.worker_code == 'STAFF' ? 'selected' : ''}>STAFF</option>
 					 </select>
                 </div>
@@ -202,8 +202,9 @@
 	            </c:otherwise>
 	        </c:choose>
         </div>
-    <form id="workerInsertForm" method="post" action="workerinsert">
     <div class = "slide" id = "slide-input">
+    	<button type="button" class="slide-close-btn">✕</button>
+    <form id="workerInsertForm" method="post" action="workerinsert">
     	<div class = "slide-contents">
 	        <div class = "silde-title"><h2>사원 등록</h2></div>
 	        <div class = "slide-id">사번 : 자동생성</div>
@@ -271,12 +272,12 @@
                 <input type = "button" class = "close-btn slide-btn" value = "취소">
             </div>
        	</div>
-    </div>
     </form>
+    </div>
     
 	<!--  상세 슬라이드 -->
 	<div class="slide" id="slide-detail">
-	  <!-- 단일 form: 중첩 금지 -->
+		<button type="button" class="slide-close-btn">✕</button>
 	    <div class="slide-contents">
 	      <div class="silde-title"><h2>사원정보 상세</h2></div>
 	

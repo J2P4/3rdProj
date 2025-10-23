@@ -47,11 +47,11 @@
             </div>
             <div class = "filter-item" style = "width: 100%;">
                 <div class = "filitem-name" style = "width: 15%">· 계획일</div>
-<!--                 <div class = "filitem-input"> -->
-<%--                     <input type = "date" name="fromDate" id="fromDate" value="${empty filter.fromDate ? '' : filter.fromDate}"> --%>
-<!--                     <span class="tilde">~</span> -->
-<%--                     <input type = "date" name="toDate" id="toDate" value="${empty filter.toDate ? '' : filter.toDate}"> --%>
-<!--                 </div> -->
+                <div class = "filitem-input">
+                    <input type = "date" name="fromDate" id="fromDate" value="${empty filter.fromDate ? '' : filter.fromDate}">
+                    <span class="tilde">~</span>
+                    <input type = "date" name="toDate" id="toDate" value="${empty filter.toDate ? '' : filter.toDate}">
+                </div>
             </div>
         </div>
         <div class = "filter-btn">
@@ -186,8 +186,9 @@
 	            </c:otherwise>
 	        </c:choose>
         </div>
-    <form id="cpInsertForm" method="post" action="cpinsert">
     <div class = "slide" id = "slide-input">
+    	<button type="button" class="slide-close-btn">✕</button>
+    	<form id="cpInsertForm" method="post" action="cpinsert">
     	<div class = "slide-contents">
 	        <div class = "silde-title"><h2>생산계획 등록</h2></div>
 	        <div class = "slide-tb">
@@ -224,13 +225,14 @@
                 <input type = "button" class = "close-btn slide-btn" value = "취소">
             </div>
        	</div>
-    </div>
     </form>
+    </div>
     
 	<!--  상세 슬라이드 -->
 	<div class="slide" id="slide-detail">
 	  <!-- 단일 form: 중첩 금지 -->
-	  <form id="cpForm" method="post" action="cpUpdate">
+	    <button type="button" class="slide-close-btn">✕</button>
+	  <form id="cpForm" method="post" action="cpupdate">
 	    <div class="slide-contents">
 	      <div class="silde-title"><h2>생산계획 상세</h2></div>
 	

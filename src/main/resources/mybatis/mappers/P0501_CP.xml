@@ -40,13 +40,20 @@
 			    LEFT JOIN V3_item i
 			      on c.item_id = i.item_id
 			    WHERE 1=1
-		      <if test="filter.fromDate != null and filter.toDate != null">
-			    AND reg_date BETWEEN #{filter.fromDate} AND #{filter.toDate}
-			  </if>
-		      <if test="filter.item_id != null and filter.item_id != ''">
-		        AND i.item_id = #{filter.item_id}
-		      </if>
-	    <![CDATA[
+			    <if test="filter.item_id != null and filter.item_id != ''">
+			        AND c.item_id = #{filter.item_id}
+			    </if>
+		      	<if test="filter.fromDate != null">
+				  <![CDATA[
+				    AND c.cp_end   >= #{filter.fromDate}
+				  ]]>
+				</if>
+				<if test="filter.toDate != null">
+				  <![CDATA[
+				    AND c.cp_start <= #{filter.toDate} + 1
+				  ]]>
+				</if>
+	    	<![CDATA[
 		      ORDER BY c.cp_id ASC
 		      ) t
 		      WHERE ROWNUM <= 
@@ -54,7 +61,7 @@
 		  	  )
 		  	  WHERE rn >= 
 		     #{startRow}
-	     ]]>
+	     	]]>
 	  </select>
 	
 	  <!-- 총 레코드 수 -->

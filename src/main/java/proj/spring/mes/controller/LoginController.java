@@ -23,7 +23,7 @@ public class LoginController {
  	@Autowired
 	WorkerService workerService;
 	
-	@RequestMapping("/loginPage")
+	@RequestMapping("/login")
 	public String loginPage() {
 		System.out.println("로그인");
 		return "forward:/login.jsp";
@@ -46,7 +46,7 @@ public class LoginController {
 	    return "content/01_main/pw_change";
 	}
 	
-	@RequestMapping("/login")
+	@RequestMapping("/loginPage")
 	public String login(String worker_id, String worker_pw, HttpServletRequest request, RedirectAttributes ra) {
 
 	    WorkerDTO user = workerService.get(worker_id);
@@ -54,7 +54,7 @@ public class LoginController {
 	    // 아이디가 null인 경우
 	    if (user == null) {
 	    	ra.addFlashAttribute("error", "존재하지 않는 아이디입니다.");
-	        return "redirect:/loginPage";
+	        return "redirect:/login";
 	    }
 
 	    // 비밀번호가져와서 암호화로 저장
@@ -65,7 +65,7 @@ public class LoginController {
 
 	    if (!ok) {
 	    	ra.addFlashAttribute("error","비밀번호가 올바르지 않습니다.");
-	        return "redirect:/loginPage";
+	        return "redirect:/login";
 	    }
 
 	    // 세션 고정 공격 방지: 기존 세션 무효화 후 새 세션 발급
@@ -123,7 +123,7 @@ public class LoginController {
             session.setAttribute("mustChangePw", false);
 
             ra.addFlashAttribute("msg", "비밀번호가 변경되었습니다. 다시 로그인해주세요.");
-            return "redirect:/loginPage";
+            return "redirect:/login";
         } catch (IllegalArgumentException ex) {
             // 정책 위반/현재PW 불일치/기타 서비스 메시지
             ra.addFlashAttribute("error", ex.getMessage());
@@ -138,7 +138,7 @@ public class LoginController {
 	@RequestMapping("/extend_pw")
 	public String extendPw(HttpSession session, RedirectAttributes ra) {
 	    String worker_id = (String) session.getAttribute("worker_id");
-	    if (worker_id == null) return "redirect:/loginPage";
+	    if (worker_id == null) return "redirect:/login";
 
 	    workerService.extendPwExpiry(worker_id, 90); // 원하는 일수
 	    // 모달 한 번만 띄우도록 플래그 제거
@@ -154,6 +154,6 @@ public class LoginController {
 	@RequestMapping("/logout")
 	public String logout(HttpSession session) {
 	    if (session != null) session.invalidate(); 
-	    return "redirect:/loginPage";
+	    return "redirect:/login";
 	}
 }

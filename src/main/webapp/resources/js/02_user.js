@@ -205,7 +205,7 @@ function bindworker() {
             const code = state.original.worker_code || '';
             const codeOpts = `
         <option value="ADMIN" ${code === 'ADMIN' ? 'selected' : ''}>ADMIN</option>
-        <option value="HEAD"  ${code === 'HEAD' ? 'selected' : ''}>HEAD</option>
+        <option value="MANAGER"  ${code === 'MANAGER' ? 'selected' : ''}>MANAGER</option>
         <option value="STAFF" ${code === 'STAFF' ? 'selected' : ''}>STAFF</option>
       `;
 
@@ -402,7 +402,7 @@ function bindinsert() {
         const fields = modal.querySelectorAll('.modal-content .field');
         if (fields.length >= 3) {
             fields[0].innerHTML = `<span>아이디 :</span> ${payload.worker_id || ''}`;
-            fields[1].innerHTML = `<span>초기 비밀번호 : 임시비밀번호 메일 발송</span>'}`;
+            fields[1].innerHTML = `<span>초기 비밀번호 : 임시비밀번호 메일 발송</span>`;
             fields[2].innerHTML = `<span>이메일 :</span> ${payload.worker_email || ''}`;
         }
         modal.classList.remove('hide');

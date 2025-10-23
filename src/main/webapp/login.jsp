@@ -204,7 +204,7 @@
 
 </head>
 <body>
-<form method="post" action="login">
+<form method="post" action="loginPage">
   <div class="wrap">
     <h1 class="title">J2P4 <span>MES</span></h1>
 	

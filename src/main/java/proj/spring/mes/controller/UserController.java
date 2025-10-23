@@ -102,7 +102,7 @@ public class UserController {
     // ===============================================================
     // [2] 신규 등록 (AJAX, JSON 응답)
     // ===============================================================
-    @RequestMapping(value = "/workerinsert", method = RequestMethod.POST, produces = "application/json; charset=UTF-8")
+    @RequestMapping("/workerinsert")
     @ResponseBody
     public Map<String, Object> insertAjax(
             @ModelAttribute WorkerDTO dto,
@@ -180,7 +180,7 @@ public class UserController {
     // ===============================================================
     // [3] 상세 보기 (JSON)
     // ===============================================================
-    @RequestMapping(value = "/workerDetail", method = RequestMethod.GET, produces = "application/json; charset=UTF-8")
+    @RequestMapping(value = "/workerDetail", method = RequestMethod.GET)
     @ResponseBody
     public WorkerDTO detail(@RequestParam("worker_id") String workerId) {
         if (isBlank(workerId)) return null;
@@ -190,7 +190,7 @@ public class UserController {
     // ===============================================================
     // [4] 수정
     // ===============================================================
-    @RequestMapping(value="/workerUpdate", method=RequestMethod.POST, produces="application/json; charset=UTF-8")
+    @RequestMapping("/workerUpdate")
     @ResponseBody
     public Map<String,Object> workerUpdate(@ModelAttribute WorkerDTO dto) {
         Map<String,Object> res = new HashMap<String, Object>();

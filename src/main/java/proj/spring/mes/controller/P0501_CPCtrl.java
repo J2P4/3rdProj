@@ -12,6 +12,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -35,7 +37,7 @@ private static final Logger logger = LoggerFactory.getLogger(P0501_CPCtrl.class)
 	// ===============================================================
     // [1] 목록 페이지 (JSP 렌더)
     // ===============================================================
-    @RequestMapping(value = "/cp", method = RequestMethod.GET)
+    @RequestMapping("/cp")
     public String cp(
             Model model,
             @RequestParam(value = "size", required = false, defaultValue = "10") int pagePerRows,
@@ -95,7 +97,7 @@ private static final Logger logger = LoggerFactory.getLogger(P0501_CPCtrl.class)
     // ===============================================================
     // [2] 신규 등록 (AJAX, JSON 응답)
     // ===============================================================
-    @RequestMapping(value = "/cpinsert", method = RequestMethod.POST, produces = "application/json; charset=UTF-8")
+    @RequestMapping("/cpinsert")
     @ResponseBody
     public Map<String, Object> insertAjax(
             @ModelAttribute P0501_CPDTO dto,
@@ -142,7 +144,7 @@ private static final Logger logger = LoggerFactory.getLogger(P0501_CPCtrl.class)
     // ===============================================================
     // [3] 상세 보기 (JSON)
     // ===============================================================
-    @RequestMapping(value = "/cpdetail", method = RequestMethod.GET, produces = "application/json; charset=UTF-8")
+    @RequestMapping("/cpdetail")
     @ResponseBody
     public P0501_CPDTO detail(@RequestParam("cp_id") String cp_id) {
         if (isBlank(cp_id)) return null;
@@ -152,7 +154,7 @@ private static final Logger logger = LoggerFactory.getLogger(P0501_CPCtrl.class)
     // ===============================================================
     // [4] 수정
     // ===============================================================
-    @RequestMapping(value="/cpupdate", method=RequestMethod.POST, produces="application/json; charset=UTF-8")
+    @RequestMapping("/cpupdate")
     @ResponseBody
     public Map<String,Object> cpupdate(@ModelAttribute P0501_CPDTO dto) {
         Map<String,Object> res = new HashMap<String, Object>();
@@ -198,6 +200,14 @@ private static final Logger logger = LoggerFactory.getLogger(P0501_CPCtrl.class)
     // ===============================================================
     // [공통 유틸 메서드]
     // ===============================================================
+    
+    // 기간 조회시 빈 문자열 들어오면 null로 허용
+    @InitBinder
+    public void allowEmptyDate(WebDataBinder binder) {
+        binder.registerCustomEditor(java.sql.Date.class, new org.springframework.beans.propertyeditors.CustomDateEditor(
+            new java.text.SimpleDateFormat("yyyy-MM-dd"), true)); 
+    }
+    
     private boolean isBlank(int i) {
     	return i == 0;
     }
