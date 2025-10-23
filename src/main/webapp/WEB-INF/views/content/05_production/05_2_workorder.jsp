@@ -14,6 +14,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>작업 지시서 < 생산관리 < J2P4</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/common.css" type="text/css">
+    <style>
+        .modal-detail {
+            width: 100%;
+            display: flex;
+        }
+        .modal-content {
+            overflow-y: scroll;
+        }
+        .detail-title {
+            width: 110px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            text-align: left;
+        }
+
+        .detail-content {
+            width: 310px;
+            text-align: justify;
+        }
+    </style>
     <script>
         const contextPath = '${pageContext.request.contextPath}';
         // 품목 목록을 JSON 형식으로 js 변수에 저장하려고 작성
@@ -226,7 +246,8 @@
                                 <input type = "number" id="input_work_order_num" placeholder = "지시 수량을 입력해주세요" style = "width: 100%;"></td> 
                             </td>
                             <td>
-                                <input type = "number" id="input_work_order_fin" placeholder = "생산 수량을 입력해주세요" style = "width: 100%;">
+                                <input type = "number" id="input_work_order_fin" placeholder = "생산 수량을 입력해주세요" value = "0" style = "width: 100%; display: none;">
+                                0
                             </td>
                         </tr>
                     </tbody>
@@ -251,6 +272,11 @@
                         </tr>
                     </tbody>
                 </table>
+            </div>
+            <div>
+                계획<br>
+                1. 생산 계획 id 선택은 지시일 선택으로 select할 수 있는 option이 나오도록<br>
+                2. 담당 사원을 위 테이블 영역으로 올리고, 대신 생산 계획 id 옆에 목표 품목을 같이 표시해주기
             </div>
             <div class = "slide-btnbox">
                 <input type = "button" class = "submit-btn slide-btn" value = "등록">
@@ -339,7 +365,20 @@
         <div class = "add-modal">
             <div class="modal-title">공정 상세</div>
             <div class="modal-content">
-                <div class="field"><span>항목 제목</span> 어쩌고~ 복사하자.</div>
+                <div class = "modal-detail">
+                    <div class="detail-title">공정명</div>
+                    <div class="detail-content">test text</div>
+                </div>
+                <div class = "modal-detail">
+                    <div class="detail-title">공정 이미지</div>
+                    <div
+                        class="detail-content"
+                        style="height: 300px; background-image: url('https://i.namu.wiki/i/TF_8LZBtFeIl9JCL4jb-tTWcfC1KnMukjXreMutvX3Vlrhckv-akWHr54VT10ZjiatFC7g3mQsvdW2jeUr66Kg.webp');"></div>
+                </div>
+                <div class = "modal-detail">
+                    <div class="detail-title">공정 설명</div>
+                    <div class="detail-content">test text</div>
+                </div>
                 <div class="confirm">
                 </div>
             </div>
