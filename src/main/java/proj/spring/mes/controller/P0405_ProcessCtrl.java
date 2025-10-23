@@ -121,7 +121,7 @@ public class P0405_ProcessCtrl {
     }
 
     // ===== 상세 =====  GET /processdetail?process_id=...
-    @GetMapping("/processdetail")
+    @GetMapping("/process/detail")
     @ResponseBody
     public P0405_ProcessDTO detail(@RequestParam("process_id") String process_id) {
         logger.info("[PROCESS/DETAIL] id={}", process_id);

@@ -13,18 +13,21 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>공정 관리 &lt; 기준 관리 &lt; J2P4</title>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/common.css" type="text/css" />
+
+    <c:url var="cssUrl" value="/resources/css/common.css"/>
+    <c:url var="commonJsUrl" value="/resources/js/common.js"/>
+    <link rel="stylesheet" href="${cssUrl}" type="text/css" />
 
     <style>
-        /* 공정 이미지 영역 */
+        /* 이미지/설명 공용 레이아웃 */
         .image-section {
             display: flex;
             flex-direction: column;
             align-items: center;
             flex: 0 0 400px;
-            height: 400px;
+            min-height: 300px;
             position: relative;
-            font-size: 20px;
+            font-size: 16px;
         }
         .image-section::before {
             content: "공정 이미지";
@@ -34,7 +37,7 @@
         }
         .image {
             width: 100%;
-            height: 350px;
+            height: 260px;
             object-fit: cover;
             border: 1px solid #ccc;
             background-color: #f9f9f9;
@@ -42,15 +45,14 @@
             display: block;
         }
 
-        /* 공정 상세 영역 */
         .specific {
             display: flex;
             flex-direction: column;
             align-items: center;
-            flex: 0 0 500px;
-            height: 400px;
+            flex: 1 1 500px;
+            min-height: 300px;
             position: relative;
-            font-size: 20px;
+            font-size: 16px;
         }
         .specific::before {
             content: "공정 상세";
@@ -60,38 +62,34 @@
         }
         .specific-box {
             width: 100%;
-            height: 350px;
+            min-height: 260px;
             border: 1px solid #ccc;
             background-color: #f9f9f9;
             box-sizing: border-box;
             padding: 12px;
             overflow: auto;
-            font-size: 16px;
             line-height: 1.5;
             white-space: pre-wrap;
         }
 
-        /* 공정 박스 레이아웃 */
         .process-box {
             display: flex;
             gap: 16px;
             justify-content: center;
             margin-top: 20px;
-            height: 400px;
         }
+
+        .helper-text { font-size: 12px; color: #666; margin-top: 6px; }
+        .w-100 { width: 100%; }
+        .mt-8 { margin-top: 8px; }
     </style>
 
-    <script>
-        const contextPath = '${pageContext.request.contextPath}';
-        // 서버에서 이스케이프된 JSON 문자열을 객체로 변환
-        const allItemsJson = JSON.parse('${itemListJson}');
-    </script>
-    <script src="${pageContext.request.contextPath}/resources/js/common.js" defer></script>
+    <script>const contextPath='${pageContext.request.contextPath}';</script>
+    <script src="${commonJsUrl}" defer></script>
     <script src="${pageContext.request.contextPath}/resources/js/04_5_process.js" defer></script>
 </head>
 
 <body>
-    <!-- 페이지 제목 -->
     <div class="title"><h1>공정 관리</h1></div>
 
     <!-- 검색 필터 -->
@@ -106,7 +104,6 @@
             <div class="filter-item">
                 <div class="filitem-name">· 공정명</div>
                 <div class="filitem-input">
-                    <!-- 변경: name="process_id" → name="process_name" -->
                     <input type="text" name="process_name" placeholder=" 공정명을 입력해주세요" value="${filter.process_name}"/>
                 </div>
             </div>
@@ -149,19 +146,26 @@
         </table>
     </div>
 
-    <!-- 하단 버튼 영역 -->
-    <form class="bottom-btn">
+    <!-- 하단 버튼 -->
+    <div class="bottom-btn">
         <div class="page"></div>
         <div class="bottom-btn-box">
             <input type="button" class="btm-btn new" value="등록" />
-            <input type="button" class="btm-btn del" value="삭제" />
+            <input type="button" id="btnDelete" class="btm-btn del" value="삭제" />
         </div>
+    </div>
+
+    <!-- 삭제 폼(선택사항: 현재 JS는 /processdelete JSON POST를 사용하므로 없어도 됨) -->
+    <c:url var="deleteUrl" value="/process/delete"/>
+    <form id="deleteForm" method="post" action="${deleteUrl}" style="display:none;">
+        <input type="hidden" name="ids" id="deleteIds">
     </form>
 
-    <!-- 입력용 슬라이드 -->
+    <!-- 등록 슬라이드: 기존 유지(설명은 contenteditable에서 추출, 이미지 업로드는 미연동/미리보기만) -->
     <div class="slide" id="slide-input">
         <form class="slide-contents" id="processInsertForm">
-            <div class="silde-title"><h2 id="slide-title">공정 상세</h2></div>
+            <div class="silde-title"><h2 id="slide-title">공정 등록</h2></div>
+
             <div class="slide-id" id="process-id-show" style="display:none">
                 공정 ID: <span id="process-id-val"></span>
                 <input type="hidden" id="input_process_id" name="process_id" value="" />
@@ -180,7 +184,6 @@
                         <tr>
                             <td><input type="text" name="process_seq" /></td>
                             <td><input type="text" name="process_name" /></td>
-                            <!-- 변경: name="department" → name="department_id" -->
                             <td><input type="text" name="department_id" /></td>
                         </tr>
                     </tbody>
@@ -188,27 +191,69 @@
             </div>
 
             <div class="process-box">
-                <!-- 공정 이미지 -->
                 <div class="image-section">
                     <img class="image" id="preview" alt="" />
-                    <br />
-                    <input type="file" id="img" accept="image/*" />
+                    <input class="mt-8" type="file" id="img" accept="image/*" />
+                    <div class="helper-text">* 업로드는 미연동. 미리보기만 됩니다.</div>
                 </div>
 
-                <!-- 공정 상세 -->
                 <div class="specific">
-                    <div class="specific-box" contenteditable="true" aria-label="공정 상세 입력 영역"></div>
+                    <div class="specific-box" id="create-process-desc" contenteditable="true" aria-label="공정 상세 입력 영역"></div>
                 </div>
             </div>
 
             <div class="slide-btnbox">
-                <input type="button" class="slide-btn" id="detailEditBtn" value="저장" />
+                <input type="submit" class="slide-btn" id="processCreateBtn" value="등록" />
                 <input type="button" class="close-btn slide-btn" value="취소" />
             </div>
         </form>
     </div>
 
-    <!-- 이미지 미리보기 -->
+    <!-- 상세 슬라이드: 이미지 + 설명 추가 -->
+    <div class="slide" id="slide-detail">
+      <div class="slide-contents">
+        <div class="silde-title"><h2>공정 상세</h2></div>
+
+        <div class="slide-id">공정 ID: <span id="d-process-id"></span></div>
+
+        <div class="slide-tb">
+          <table class="detail-table">
+            <thead>
+              <tr>
+                <th>공정 순서</th>
+                <th>공정명</th>
+                <th>담당부서</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td id="d-process-seq"></td>
+                <td id="d-process-name"></td>
+                <td id="d-dept-id"></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- 새로 추가된 영역 -->
+        <div class="process-box">
+            <div class="image-section">
+                <img class="image" id="d-process-image" alt="" />
+                <div id="d-process-image-helper" class="helper-text"></div>
+            </div>
+            <div class="specific">
+                <div class="specific-box" id="d-process-desc" aria-label="공정 상세"></div>
+            </div>
+        </div>
+
+        <div class="slide-btnbox">
+          <input type="button" class="slide-btn" id="detailEditBtn" value="수정" />
+          <input type="button" class="close-btn slide-btn" value="취소" />
+        </div>
+      </div>
+    </div>
+
+    <!-- 등록 슬라이드 이미지 미리보기 -->
     <script>
         document.addEventListener('change', function(e) {
             if (e.target && e.target.id === 'img') {
