@@ -201,10 +201,13 @@
     -->
     <form class = "bottom-btn">
         <div class = "page"></div>
-        <div class = "bottom-btn-box">
-            <input type = "button" class = "btm-btn new" value="신규">
-            <input type = "button" class = "btm-btn del" value="삭제">
-        </div>
+        <c:if test="${sessionScope.role != 'STAFF'}">
+            <div class = "bottom-btn-box">
+                <input type = "button" class = "btm-btn new" value="신규">
+                <input type = "button" class = "btm-btn del" value="삭제">
+            </div>
+        </c:if>
+        <c:if test="${sessionScope.role == 'STAFF'}"></c:if>
     </form>
     <!-- 입력용 슬라이드 -->
     <div class = "slide" id = "slide-input">

@@ -7,6 +7,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,7 +20,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import proj.spring.mes.dto.P0601_InInsDTO;
-import proj.spring.mes.dto.WorkerDTO;
 import proj.spring.mes.service.P0601_InInsService;
 
 @Controller
@@ -28,6 +29,13 @@ public class P0601_InInsCtrl {
 	
 	@Autowired
 	P0601_InInsService service;
+	
+	// 기간 조회시 빈 문자열 들어오면 null로 허용
+    @InitBinder
+    public void allowEmptyDate(WebDataBinder binder) {
+        binder.registerCustomEditor(java.sql.Date.class, new org.springframework.beans.propertyeditors.CustomDateEditor(
+            new java.text.SimpleDateFormat("yyyy-MM-dd"), true)); 
+    }
 	
 	@RequestMapping("/inInslist")
 	public String inInsList(Model model,

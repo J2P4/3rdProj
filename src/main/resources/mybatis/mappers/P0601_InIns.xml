@@ -136,7 +136,6 @@
 		from v3_stock s
 		left outer join v3_item i
 			on s.item_id = i.item_id
-		where i.item_div = '도서' or i.item_div = '포장지'
 	</select>
 	
 	<!-- 수정 -->

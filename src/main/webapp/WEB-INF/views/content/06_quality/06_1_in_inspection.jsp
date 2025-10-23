@@ -43,9 +43,9 @@
             <div class = "filter-item">
                 <div class = "filitem-name" style = "width: 115px;">· 검사일</div>
                 <div class = "filitem-input">
-                    <input type = "date" style = "width: 130px; padding: 2px;" name="fromDate" id="fromDate" value="${param.fromDate}">
+                    <input type = "date" style = "width: 110px; padding: 2px;" name="fromDate" id="fromDate" value="${param.fromDate}">
                     <span class="tilde">~</span>
-                    <input type = "date" style = "width: 130px; padding: 2px;" name="toDate" id="toDate" value="${param.toDate}">
+                    <input type = "date" style = "width: 110px; padding: 2px;" name="toDate" id="toDate" value="${param.toDate}">
                 </div>
             </div>
             <div class = "filter-item">
@@ -194,11 +194,16 @@
         </c:choose>
     </div>
     <div class = "bottom-btn">
-        <div class = "page"></div>
-        <div class = "bottom-btn-box">
-            <input type = "button" class = "btm-btn new" value="신규">
-            <input type = "button" class = "btm-btn del" value="삭제">
-        </div>
+        <c:if test="${sessionScope.role != 'STAFF'}">
+            <div class = "bottom-btn-box">
+                <input type = "button" class = "btm-btn new" value="신규">
+                <input type = "button" class = "btm-btn del" value="삭제">
+            </div>
+        </c:if>
+		<c:if test="${sessionScope.role == 'STAFF'}">
+		    <!-- STAFF는 조회만 가능 -->
+		    <!-- 버튼 없음 -->
+		</c:if>
     </div>
     <div class = "slide" id = "slide-input">
         <button class="slide-close-btn">✕</button>
@@ -209,6 +214,7 @@
                 <input type="hidden" id="input_inIns_id" name="inspection_result_id" value="">
             </div>
         <div class = "slide-tb">
+            <div style="font-size:0.8em; color: red; margin-bottom: 10px;">검사 품목 분류 선택 후, 품목 데이터를 입력해주세요.</div>
                 <table>
                     <thead>
                         <th>검사 품목 분류</th>
@@ -268,7 +274,7 @@
                                 <input type = "number" id="input_inIns_good" placeholder="양품 수를 입력해주세요">
                             </td>
                             <td>
-                                <input type = "number" id="input_inIns_bad" placeholder="불량 수를 입력해주세요">
+                                <input type = "number" id="input_inIns_bad" placeholder="총 불량 수 확인(조회용)" readonly = "readonly">
                             </td>
                         </tr>
                     </tbody>

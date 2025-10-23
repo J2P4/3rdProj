@@ -189,14 +189,20 @@
     -->
     <form class = "bottom-btn">
         <div class = "page"></div>
-        <div class = "bottom-btn-box">
-            <input type = "button" class = "btm-btn new" value="신규">
-            <input type = "button" class = "btm-btn del" value="삭제">
-        </div>
+        <c:if test="${sessionScope.role != 'STAFF'}">
+            <div class = "bottom-btn-box">
+                <input type = "button" class = "btm-btn new" value="신규">
+                <input type = "button" class = "btm-btn del" value="삭제">
+            </div>
+        </c:if>
+        <c:if test="${sessionScope.role == 'STAFF'}">
+		    <!-- STAFF는 조회만 가능 -->
+		    <!-- 버튼 없음 -->
+		</c:if>
     </form>
     <!-- 입력용 슬라이드 -->
     <div class = "slide" id = "slide-input">
-        <button class="slide-close-btn">✕</button>
+        <button type = "button" class="slide-close-btn">✕</button>
         <form class = "slide-contents" id="woInsertForm">
             <div class = "silde-title"><h2 id="slide-title">작업 지시서 등록</h2></div>
             <div class = "slide-id" id="work-order-id-show" style = "display: none">
@@ -254,10 +260,24 @@
     </div>
     <!-- 상세용 슬라이드 : ajax로 채울 거라 el 태그 사용 필요 X -->
     <div class = "slide" id = "slide-detail">
-        <button class="slide-close-btn">✕</button>
+        <button type = "button" class="slide-close-btn">✕</button>
         <div class = "slide-contents">
             <div class = "silde-title"><h2>작업 지시서 상세</h2></div>
             <div class = "slide-id">작업 지시서 ID: </div>
+            <div class = "slide-tb">>
+                <table id="stockDetail">
+                    <thead>
+                        <th>생산계획 ID</th>
+                        <th>담당 사원</th>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
             <div class = "slide-tb">
                 <table id="itemDetail">
                     <thead>
@@ -274,11 +294,29 @@
                     </tbody>
                 </table>
             </div>
-            <div class = "slide-tb">>
-                <table id="stockDetail">
+            <div class = "slide-tb">
+                <table id = "bomDetail">
                     <thead>
-                        <th>생산계획 ID</th>
-                        <th>담당 사원</th>
+                        <tr>
+                            <th>재료명</th>
+                            <th>수량</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class = "slide-tb">
+                <table id = "processDetail">
+                    <thead>
+                        <tr>
+                            <th>순서</th>
+                            <th>공정명</th>
+                        </tr>
                     </thead>
                     <tbody>
                         <tr>
@@ -289,12 +327,24 @@
                 </table>
             </div>
             <div class = "slide-tb-btnbox">
-                <div style="font-size: 0.8em; color: red;">얘도 생산 수량 입력 변동 이력 테이블... 있는 게 낫나?</div>
                 <input type="button" class = "material" value="생산 수량 입력">
             </div>            
             <div class = "slide-btnbox">
                 <input type = "button" class = "slide-btn" id="detailEditBtn" value = "수정">
                 <input type = "button" class = "close-btn slide-btn" value = "취소">
+            </div>
+        </div>
+    </div>
+    <div class="modal-bg hide">
+        <div class = "add-modal">
+            <div class="modal-title">공정 상세</div>
+            <div class="modal-content">
+                <div class="field"><span>항목 제목</span> 어쩌고~ 복사하자.</div>
+                <div class="confirm">
+                </div>
+            </div>
+            <div class = "modal-btnbox">
+                <input type = "button" class = "close-btn m-btn slide-btn" value = "확인">
             </div>
         </div>
     </div>

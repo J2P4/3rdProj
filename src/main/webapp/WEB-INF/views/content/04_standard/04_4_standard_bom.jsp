@@ -198,10 +198,13 @@
     </div>    
     <!-- 하단 버튼 영역-->
     <div class = "bottom-btn">
-        <div class = "bottom-btn-box">
-            <input type = "button" class = "btm-btn new" value="신규">
-            <input type = "button" class = "btm-btn del" value="삭제">
-        </div>
+        <c:if test="${sessionScope.role != 'STAFF'}">
+            <div class = "bottom-btn-box">
+                <input type = "button" class = "btm-btn new" value="신규">
+                <input type = "button" class = "btm-btn del" value="삭제">
+            </div>
+        </c:if>
+        <c:if test="${sessionScope.role == 'STAFF'}"></c:if>
     </div>
     <div class = "slide" id = "slide-input">
         <button class="slide-close-btn">✕</button>
@@ -231,42 +234,43 @@
                 </table>
             </div>
             <div class = "slide-tb">
-                <table>
+                <table id = "bomLists">
                     <thead>
                         <th><input type=checkbox></th>
+                        <th>분류</th>
                         <th class = "id">재료 품목 ID</th>
                         <th class = "name">품목명</th>
-                        <th>분류</th>
                         <th class = "gb">소요량</th>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td><input type="checkbox"></td>
+                        <tr class = "initial-row">
+                            <td class = "chkbox"><input type="checkbox" class="rowChk existingDefectChk" name = "delete_bom_id" value=""></td>
                             <td>
-                                <select size = "1" style = "width: 100%;">
-                                        <option value = "">품목 ID를 선택해주세요</option>
-                                </select>                                
-                            </td>
-                            <td>
-                                <input type = "text" placeholder = "품목명을 입력해주세요">
-                            </td>
-                            <td>
-                                <select size="1">
+                                <select name = "bomDivList" class = "input_bom_div" size="1">
+                                    <option value = "0" selected>분류 선택</option>
                                     <option value = "1" selected>도서</option>
                                     <option value = "2">포장지</option>
                                 </select>
                             </td>
-                            <td><input type = "number"></td>
+                            <td>
+                                <select name = "bomItemList" class="input_bom_item" size = "1" style = "width: 100%;">
+                                        <option value = "">품목 ID 선택</option>
+                                </select>                                
+                            </td>
+                            <td>
+                                <input type = "text" name = "bomNameList" class="input_bom_name" placeholder = "품목명을 입력해주세요">
+                            </td>
+                            <td><input type = "number" name = "bomAmountList" class = "input_bom_amount"></td>
                         </tr>
                     </tbody>
                 </table>
                 <div class = "slide-tb-btnbox">
-                    <input type="button" class = "material" value="재료 추가">
-                    <input type="button" class = "material" value="재료 삭제">
+                    <input type="button" class = "material" id="addD" value="재료 추가">
+                    <input type="button" class = "material" id="delD" value="재료 삭제">
                 </div>
             </div>
             <div class = "slide-btnbox">
-                <input type = "button" class = "slide-btn" value = "등록">
+                <input type = "button" class = "submit-btn slide-btn" value = "등록">
                 <input type = "button" class = "close-btn slide-btn" value = "취소">
             </div>
         </div>
