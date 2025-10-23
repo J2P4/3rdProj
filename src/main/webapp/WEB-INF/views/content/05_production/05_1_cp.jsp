@@ -86,7 +86,14 @@
 		                    <td class="cp-row" data-id="${cpDTO.cp_id}">
 							    ${cpDTO.item_name}
 							</td>
-		                    <td><span>${cpDTO.cp_start }</span>~<span>${cpDTO.cp_end}</span></td>
+		                    <td>
+		                    	<fmt:formatDate value="${cpDTO.cp_start}" pattern="yy.MM.dd"/>~
+  								<fmt:formatDate value="${cpDTO.cp_end}" pattern="yy.MM.dd"/><br>
+								<c:if test="${not empty cpDTO.cp_start and not empty cpDTO.cp_end}">
+								    <c:set var="day" value="${(cpDTO.cp_end.time - cpDTO.cp_start.time) / (1000*60*60*24) + 1}" />
+								    (${day}일간)
+								</c:if>
+							</td>
 		                    <td style= "text-align: right"><fmt:formatNumber value="${cpDTO.cp_amount }" pattern="#,###"></fmt:formatNumber></td>
 		                </tr>
 	                </c:forEach>

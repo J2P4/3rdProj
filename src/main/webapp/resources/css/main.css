@@ -1,0 +1,176 @@
+:root {
+  --border:#d0d3d7;
+  --text:#111;
+  --muted:#64748b;
+  --card-bg:#fff;
+  --page-bg:#f6f7fb;
+  --radius:12px;
+  --box-shadow:0 6px 24px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
+  --accent-blue:#2563eb;   /* 기존에 쓰던 포인트 색 */
+  --accent-green:#16a34a;
+  --accent-red:#ef4444;
+}
+
+/* ============= 레이아웃 공통 ============= */
+html,
+body {
+  height:100%;
+}
+
+.up {
+  display:flex;
+  gap:20px;
+  align-items:stretch;
+  margin-bottom:20px;
+}
+
+.card {
+  flex:1 1 0;
+  display:flex;
+  flex-direction:column;
+  background:var(--card-bg);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  box-shadow:var(--box-shadow);
+  padding:18px;
+}
+
+.card__head {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  margin-bottom:14px;
+}
+
+.card__title {
+  font-size:24px;
+  font-weight:800;
+  letter-spacing:-.3px;
+}
+
+.card__more {
+  font-size:13px;
+  color:var(--muted);
+  cursor:pointer;
+}
+
+.card__more:hover {
+  text-decoration:underline;
+}
+
+/* ============= 생산 현황: KPI ============= */
+.kpi-list {
+  display:flex;
+  gap:16px;
+  align-items:stretch;
+  margin-top:10px;
+}
+
+.kpi {
+  flex:1 1 0;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  min-height:120px;
+  padding:10px 8px 14px;
+  border:1px solid var(--border);
+  border-radius:10px;
+  background:#fff;
+}
+
+.kpi__label {
+  font-size:13px;
+  color:var(--muted);
+}
+
+.kpi__value {
+  display:block;
+  font-size:32px;
+  font-weight:800;
+  letter-spacing:.5px;
+  padding-bottom:6px;
+  border-bottom:4px solid #222;
+}
+
+.kpi--total .kpi__value {
+  border-bottom-color:var(--accent-blue);
+}
+
+.kpi--goal .kpi__value {
+  border-bottom-color:#111;
+}
+
+.kpi--error .kpi__value {
+  border-bottom-color:var(--accent-red);
+  color:var(--accent-red);
+}
+
+/* ============= 재고 현황: 그래프 ============= */
+.chart {
+  flex:1;
+  border:1px solid var(--border);
+  border-radius:10px;
+  margin-top:6px;
+  position:relative;
+  overflow:hidden;
+  background:
+    linear-gradient(to bottom, rgba(0,0,0,.03) 1px, transparent 1px) 0 0/100% 36px,
+    linear-gradient(to right,  rgba(0,0,0,.03) 1px, transparent 1px) 0 0/48px 100%;
+}
+
+.chart__canvas {
+  width:100%;
+  height:100%;
+  display:block;
+}
+
+/* ============= 하단 게시판 ============= */
+.board.card {
+  padding:18px 18px 6px;
+}
+
+.board__table {
+  width:100%;
+  border-collapse:collapse;
+  margin-top:10px;
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:10px;
+  overflow:hidden;
+}
+
+.board__table tr {
+  border-bottom:1px solid var(--border);
+}
+
+.board__table tr:last-child {
+  border-bottom:none;
+}
+
+.board__table td {
+  padding:12px 14px;
+}
+
+.board__table tr:hover {
+  background:#f9fafb;
+}
+
+/* ============= 반응형 ============= */
+@media (max-width:980px) {
+  .up {
+    flex-wrap:wrap;
+  }
+
+  .card {
+    flex:1 1 100%;
+  }
+
+  .kpi-list {
+    flex-wrap:wrap;
+  }
+
+  .kpi {
+    flex:1 1 100%;
+  }
+}
