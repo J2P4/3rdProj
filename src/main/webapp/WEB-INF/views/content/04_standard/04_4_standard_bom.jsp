@@ -29,29 +29,20 @@
     <form class = "filter" method="get" action="${pageContext.request.contextPath}/bomlist">
         <div class = "filter-item-box">
             <div class = "filter-item">
-                <div class = "filitem-name">· BOM ID</div>
+                <div class = "filitem-name">· 재료명</div>
                 <div class = "filitem-input">
-                    <c:set var="filter.bom_id" value="${param.bom_id}" />
-                    <input type = "text" name = "bom_id" placeholder="BOM id를 입력해주세요" value = "${filter.bom_id}">
+                    <c:set var="filter.material_item_name" value="${param.material_item_name}" />
+                    <input type = "text" name = "material_item_name" placeholder="재료명을 입력해주세요" value = "${filter.bom_id}">
                 </div>
             </div>
             <div class = "filter-item">
-                <div class = "filitem-name">· 분류</div>
+                <div class = "filitem-name">· 품목명</div>
                 <div class = "filitem-input">
-                    <select name = "item_div" size = "1">
-                        <option value = "" ${empty filter.item_div ? 'selected' : ''}>재고 구분 선택</option>
-                        <option value = "도서" ${filter.item_div eq '도서' ? 'selected' : ''}>도서</option>
-                        <option value = "포장지" ${filter.item_div eq '포장지' ? 'selected' : ''}>포장지</option>
-                    </select>                    
+                    <c:set var="filter.product_item_name" value="${param.product_item_name}" />
+                    <input type = "text" name = "product_item_name" placeholder="품목명을 입력해주세요" value = "${filter.item_id}">   
                 </div>
             </div>
-            <div class = "filter-item">
-                <div class = "filitem-name">· 품목 ID</div>
-                <div class = "filitem-input">
-                    <input type = "text" name = "item_id" placeholder="품목 id를 입력해주세요" value = "${filter.item_id}">   
-                </div>
-            </div>
-            <div class = "filter-item"></div>
+            <!-- <div class = "filter-item"></div> -->
         </div>
         <div class = "filter-btn">
             <input type="hidden" name="page" value="1"/> <%-- 조회 시 항상 1페이지부터 --%>
@@ -108,10 +99,10 @@
                     </c:if>
                     <c:if test="${not empty list}">
                         <c:forEach var="P0404_BOMDTO" items="${list}">
-                            <tr data-id="${P0404_BOMDTO.item_id}">
-                                <td><input type="checkbox" class="rowChk" name="delete_item_id" value="${P0404_BOMDTO.item_id}"></td>
-                                <td>${P0404_BOMDTO.item_id}</td>
-                                <td>${P0404_BOMDTO.item_name}</td>
+                            <tr data-id="${P0404_BOMDTO.product_item_id}" class="product-row">
+                                <td><input type="checkbox" class="rowChk" name="delete_item_id" value="${P0404_BOMDTO.product_item_id}"></td>
+                                <td>${P0404_BOMDTO.product_item_id}</td>
+                                <td>${P0404_BOMDTO.product_item_name}</td>
                             </tr>
                         </c:forEach>
                     </c:if>                    
@@ -222,9 +213,9 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <div style="font-size:0.8em; color: red; margin-bottom: 10px;">목표 품목명을 입력 후, ID를 선택해주세요.</div>
+                            <div style = "font-size:0.8em; color: red; margin-bottom: 10px;">목표 품목명을 입력 후, ID를 선택해주세요.</div>
                             <td>
-                                <select size = "1" style = "width: 100%;">
+                                <select size = "1" style = "width: 100%;" disabled>
                                         <option value = "">품목 ID를 선택해주세요</option>
                                 </select>
                             </td>
@@ -234,6 +225,7 @@
                 </table>
             </div>
             <div class = "slide-tb">
+                <div style = "font-size:0.8em; color: red; margin-bottom: 10px;">재료 분류를 선택하고 품목명을 입력 후, ID를 선택해주세요.</div>
                 <table id = "bomLists">
                     <thead>
                         <th><input type=checkbox></th>
@@ -253,7 +245,7 @@
                                 </select>
                             </td>
                             <td>
-                                <select name = "bomItemList" class="input_bom_item" size = "1" style = "width: 100%;">
+                                <select name = "bomItemList" class="input_bom_item" size = "1" style = "width: 100%;" disabled>
                                         <option value = "">품목 ID 선택</option>
                                 </select>                                
                             </td>
@@ -281,7 +273,7 @@
         <button class="slide-close-btn">✕</button>
         <div class = "slide-contents">
             <div class = "silde-title"><h2>BOM 상세</h2></div>
-            <div class = "slide-id">목표 품목 ID: </div>
+            <div class = "slide-id">목표 품목 ID: <span id="detail-product-id"></span></div>
             <div class = "slide-tb">
                 <table>
                     <thead>
@@ -290,8 +282,8 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td data-type = "select">1</td>
-                            <td>1</td>
+                            <td id="detail-product-item-id"></td>
+                            <td id="detail-product-item-name"></td>
                         </tr>
                     </tbody>
                 </table>
@@ -299,14 +291,13 @@
             <div class = "slide-tb" style="overflow-x: hidden; overflow-y: scroll;">
                 <table>
                     <thead>
-                        <th><input type=checkbox></th>
                         <th>재료 품목 ID</th>
                         <th>품목명</th>
                         <th>분류</th>
                         <th>소요량</th>
                     </thead>
-                    <tbody>
-                        <tr>
+                    <tbody id="bom-detail-tbody">
+                        <!-- <tr>
                             <td><input type="checkbox"></td>
                             <td data-type = "select">2</td>
                             <td>2</td>
@@ -319,7 +310,7 @@
                             <td>2</td>
                             <td data-type = "select">2</td>
                             <td>2</td>
-                        </tr>
+                        </tr> -->
                     </tbody>
                 </table>
             </div>

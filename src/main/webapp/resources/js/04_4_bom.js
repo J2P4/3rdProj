@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 변수 모음집
     const addBomBtn = document.querySelector('#addD');
     const delBomBtn = document.querySelector('#delD');
-    const bomTbody = document.querySelector('#bomLists table tbody');
+    const bomTbody = document.querySelector('#bomLists tbody');
     // 첫 행 숨기기용 1
     const initialRow = bomTbody ? bomTbody.querySelector('.initial-row') : null;
 
@@ -17,89 +17,102 @@ document.addEventListener('DOMContentLoaded', () => {
     // 첫 행 숨기기용 2
     if (initialRow) {
         initialRow.style.display = 'none';
+        // 재사용 시 'List'를 다시 붙여 배열로 전송할 수 있도록
+        initialRow.innerHTML = initialRow.innerHTML.replace(/name="([^"]+)List"/g, 'data-name="$1"');
     }
 
     // bom 추가
-    if (addBomBtn && bomTbody) {
+    if (addBomBtn && bomTbody && initialRow) {
         addBomBtn.addEventListener('click', () => {
             // 행 수에 1 추가
             newRowCounter++;
             // 행 수를 임시 ID로 지정
             const tempId = `temp_${newRowCounter}`;
 
-            // select 생성
-            const bomDivHtml = Array.from(document.querySelector('.initial-row .input_bom_div').options)
-                .map(option => `<option value="${option.value}">${option.textContent}</option>`)
-                .join('');
-            const bomItemHtml = Array.from(document.querySelector('.initial-row .input_bom_item').options)
-                .map(option => `<option value="${option.value}">${option.textContent}</option>`)
-                .join('');
+            // // select 생성
+            // const bomDivHtml = Array.from(document.querySelector('.initial-row .input_bom_div').options)
+            //     .map(option => `<option value="${option.value}">${option.textContent}</option>`)
+            //     .join('');
+            // const bomItemHtml = Array.from(document.querySelector('.initial-row .input_bom_item').options)
+            //     .map(option => `<option value="${option.value}">${option.textContent}</option>`)
+            //     .join('');
 
             // tr 새로 만들기(+클래스 추가, data 속성에 id 저장)
-            const newRow = document.createElement('tr');
+            const newRow = initialRow.cloneNode(true);
+            newRow.style.display = ''; // 숨김 해제
+            newRow.classList.remove('initial-row', 'existing-bom-row');
             newRow.classList.add('new-bom-row');
             newRow.dataset.tempId = tempId; 
+            newRow.dataset.status = 'INSERT';
 
-            // td 내용을 HTML 문자열로 정의
-            const newRowHtml = `
-                            <td class = "chkbox"><input type="checkbox" class="rowChk existingDefectChk" name = "delete_bom_id" value=""></td>
-                            <td>
-                                <select name = "bomDivList" class = "input_bom_div" size="1">
-                                    ${bomDivHtml}
-                                </select>
-                            </td>
-                            <td>
-                                <select name = "bomItemList" class="input_bom_item" size = "1" style = "width: 100%;">
-                                    ${bomItemHtml}
-                                </select>                                
-                            </td>
-                            <td>
-                                <input type = "text" name = "bomNameList" class="input_bom_name" placeholder = "품목명을 입력해주세요">
-                            </td>
-                            <td><input type = "number" name = "bomAmountList" class = "input_bom_amount"></td>
-            `;
+            //  체크박스 수정: 신규 행은 tempId를 value로 사용하고, name을 분리
+            const chkbox = newRow.querySelector('.chkbox input[type="checkbox"]');
+            if (chkbox) {
+                chkbox.classList.remove('existingDefectChk');
+                chkbox.classList.add('newBomChk'); // 신규 행 체크박스 클래스
+                chkbox.name = 'new_bom_row_chk'; // 신규 등록 데이터를 위한 name 분리
+                chkbox.value = tempId;
+            }
 
-            // tr 내용 추가
-            newRow.innerHTML = newRowHtml;
+            // input/select 수정: name 속성 복구 및 값 초기화
+            newRow.querySelectorAll('input, select').forEach(element => {
+                // name 속성 복구
+                if (element.dataset.name) {
+                    element.name = element.dataset.name + 'List';
+                    delete element.dataset.name;
+                }
+                
+                // 값 초기화
+                if (element.tagName === 'SELECT') {
+                    element.value = element.options[0] ? element.options[0].value : '';
+                    element.removeAttribute('disabled'); // 필요한 경우 disabled 제거
+                } else if (element.type === 'text' || element.type === 'number') {
+                    element.value = element.type === 'number' ? 0 : '';
+                }
+            });
 
-            // tbody에 새 행 추가
-            bomTbody.appendChild(newRow);
+            // tbody에 새 행 추가 (첫 행 템플릿 바로 다음에 추가)
+            if (initialRow.nextSibling) {
+                initialRow.parentNode.insertBefore(newRow, initialRow.nextSibling);
+            } else {
+                bomTbody.appendChild(newRow);
+            }
         });
     }
 
     // bom 삭제 버튼 클릭 이벤트
     if (delBomBtn && bomTbody) {
-        delBomBtn.addEventListener('click', () => {
-            // 새로 추가된 행 중 체크된 것들을 먼저 처리
-            const checkedNewRows = Array.from(bomTbody.querySelectorAll('input[name="new_defect_delete"]:checked'));
-            // 기존 행 중 체크된 것들을 처리
-            const checkedExistingRows = Array.from(bomTbody.querySelectorAll('input[name="delete_defect_id"]:checked'));
+delBomBtn.addEventListener('click', () => {
+            // 새로 추가된 행 (new-bom-row) 체크박스 선택
+            const checkedNewRows = Array.from(bomTbody.querySelectorAll('.new-bom-row .newBomChk:checked'));
+            // 기존 행 (existing-bom-row) 체크박스 선택
+            const checkedExistingRows = Array.from(bomTbody.querySelectorAll('.existing-bom-row .existingBomChk:checked'));
             
-            // 삭제할 항목이 없으면 경고
-            if (checkedNewRows.length === 0 && checkedExistingRows.length === 0) {
+            const totalToDelete = checkedNewRows.length + checkedExistingRows.length;
+
+            if (totalToDelete === 0) {
                 alert('삭제할 BOM 행을 선택해 주세요.');
                 return;
             }
 
-            // 삭제 수 확인 후 그에 따라 경고문 표시
-            const totalToDelete = checkedNewRows.length + checkedExistingRows.length;
             const isConfirmed = confirm(`선택된 BOM 행 ${totalToDelete}개를 삭제하시겠습니까?`);
 
             if (isConfirmed) {
-                // 새로 추가된 행은 화면에서 즉시 제거(어차피 db에는 없으니까~)
+                // 새로 추가된 행: 화면에서 즉시 제거 (DB에 없으므로)
                 checkedNewRows.forEach(checkbox => {
-                    const rowToRemove = checkbox.closest('tr');
-                    if (rowToRemove) {
-                        rowToRemove.remove();
-                    }
+                    checkbox.closest('tr').remove();
                 });
                 
-                // 기존 행: 화면 즉시 제거 + 서버 전송 준비
+                // 기존 행: 화면에서 즉시 제거 + 서버 전송을 위한 준비 (UPDATE/DELETE 분리 시 유용)
                 checkedExistingRows.forEach(checkbox => {
                     const rowToRemove = checkbox.closest('tr');
                     if (rowToRemove) {
-                        // 삭제 ID 수집
-                        rowToRemove.remove();
+                        // DB에 존재하는 데이터이므로, 실제 삭제 요청을 위해 ID를 수집하거나 상태를 변경해야 함
+                        // rowToRemove.dataset.status = 'DELETE'; // 예를 들어, 상태를 DELETE로 변경
+                        // rowToRemove.style.display = 'none'; // 혹은 화면에서만 숨기고 폼 전송 시 ID를 수집
+                        
+                        // **현재는 화면에서 즉시 제거하는 방식으로 처리**
+                        rowToRemove.remove(); 
                     }
                 });
 
@@ -174,5 +187,82 @@ document.addEventListener('DOMContentLoaded', () => {
         return row;
     }
 
+    // ===================================
+    // 완제품 행 클릭 시, BOM 상세 조회 및 슬라이드 표시
+    // ===================================
+    
+    // product-row로 완제 행 데이터 가져오기
+    const productRows = document.querySelectorAll('tr[data-id][class*="product-row"]');
+    const slideDetail = document.querySelector('#slide-detail');
+    const bomDetailTbody = document.querySelector('#bom-detail-tbody');
+    const detailProId = document.querySelector('#detail-product-id');
+    const detailProductItemId = document.querySelector('#detail-product-item-id');
+    const detailProductItemName = document.querySelector('#detail-product-item-name');
+    
+    if (productRows.length > 0 && slideDetail && bomDetailTbody) {
+        productRows.forEach(row => {
+            row.addEventListener('click', async (event) => {
+                // 체크박스 클릭 제외
+                if (event.target.type === 'checkbox') {
+                    return; 
+                }
+
+                // 완제 ID
+                const productId = row.dataset.id;
+                // 완제명
+                const productName = row.cells[2].textContent.trim(); 
+                
+                if (!productId) {
+                    console.error("선택된 행에서 완제품 ID(data-id)를 찾을 수 없습니다.");
+                    return;
+                }
+                
+                // BOM 상세 조회 AJAX 호출
+                try {
+                    const response = await fetch(`${contextPath}/bomdetails?item_id=${productId}`);
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    const bomList = await response.json();
+
+                    // 완제 정보 채우기용
+                    detailProId.textContent = productId;
+                    detailProductItemId.textContent = productId;
+                    detailProductItemName.textContent = productName;
+                    
+                    // BOM 상세 목록 테이블 초기화 및 채우기
+                    // 먼저 기존 내용 날리고
+                    bomDetailTbody.innerHTML = '';
+                    
+                    // 길이 0이면(=데이터 없으면)
+                    if (bomList.length === 0) {
+                        bomDetailTbody.innerHTML = `<tr><td colspan="5">BOM 상세 내역이 없습니다.</td></tr>`;
+                    }
+                    // 데이터 있으면
+                    else {
+                        bomList.forEach(bom => {
+                            const newRow = `
+                                <tr>
+                                    <td>${bom.material_item_id || ''}</td>
+                                    <td>${bom.material_item_name || ''}</td>
+                                    <td>${bom.material_item_div || ''}</td>
+                                    <td>${bom.bom_amount || 0}</td>
+                                </tr>
+                            `;
+                            bomDetailTbody.insertAdjacentHTML('beforeend', newRow);
+                        });
+                    }
+
+                    // 상세 슬라이드 열기 
+                    slideDetail.classList.add('open'); 
+                    
+                }
+                catch (error) {
+                    console.error("BOM 상세 조회 중 오류 발생:", error);
+                    alert('BOM 상세 정보를 불러오는 데 실패했습니다.');
+                }
+            });
+        });
+    }    
 
 });

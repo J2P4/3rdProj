@@ -72,14 +72,47 @@
 	            ltrim(substr(b.bom_id, 1, length(b.bom_id) - 2), 'F')
 	    where b.item_id = #{bom_id}
 	    order by b.bom_id
-	</select>	
+	</select>
 	
-	<!-- 조회 : 품목 고르기용 1(완제) -->
-	<select id = "selectOneBOMItemF" resultType = "P0404_BOMDTO">
+	<!-- 조회 : 완제 기준 상세 목록 표시 -->
+	<select id = "selectBOMsByItem" resultType = "P0404_BOMDTO" parameterType="String">
 		select
-			item_id, item_name
-		from v3_item
-		where item_div = '완제품'
+			 b.bom_id,
+			 b.bom_amount,
+			 b.item_id as item_id,
+			 i_material.item_id as material_item_id,
+			 i_material.item_name as material_item_name,
+			 i_material.item_div as material_item_div,
+			 i_product.item_name as product_item_name
+		from v3_bom b
+			 left join v3_item i_product
+			 	 on b.item_id = i_product.item_id
+			 left join v3_item i_material
+			 	 on i_material.item_id =
+			 	 	 ltrim(substr(b.bom_id, 1, length(b.bom_id) - 2), 'F')
+		where b.item_id = #{item_id}
+		order by b.bom_id
+	</select>
+	
+	<!-- 조회 : 품목 기준 전체 조회 -->
+	<select id = "selectOneBOMItemF" resultType = "P0404_BOMDTO">
+		select distinct
+			ip.item_id as product_item_id,
+			ip.item_name as product_item_name
+		from v3_bom b
+		left outer join v3_item ip
+			on b.item_id = ip.item_id
+		left outer join v3_item im
+			on im.item_id = ltrim(substr(b.bom_id, 1, length(b.bom_id) - 2), 'F')
+		<where>
+			<if test="material_item_name != null and material_item_name != ''">
+				and lower(im.item_name) like lower('%' || #{material_item_name} || '%')
+			</if>
+			<if test="product_item_name != null and product_item_name != ''">
+				and lower(ip.item_name) like lower('%' || #{product_item_name} || '%')
+			</if>
+		</where>
+		order by product_item_id
 	</select>
 
 	<!-- 조회 : 품목 고르기용 2(재료) -->

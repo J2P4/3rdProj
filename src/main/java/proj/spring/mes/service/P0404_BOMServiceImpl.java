@@ -25,6 +25,11 @@ public class P0404_BOMServiceImpl implements P0404_BOMService {
 	}
 	
 	@Override
+    public List<P0404_BOMDTO> selectBOMByItem(String item_id) {
+        return bomMapperDAO.selectBOMsByItem(item_id);
+    }
+	
+	@Override
 	public P0404_BOMDTO getOneBOM(String bom_id) {
 		return bomMapperDAO.selectOneBOM(bom_id);
 	}

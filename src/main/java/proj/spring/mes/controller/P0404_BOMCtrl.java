@@ -33,6 +33,18 @@ public class P0404_BOMCtrl {
 		
 		return "04_standard/04_4_standard_bom.tiles";
 	}
+	
+	// 완제 ID 기반 조회
+	@RequestMapping("/bomdetails")
+    @ResponseBody
+    public List<P0404_BOMDTO> getBOMDetailsByItem(String item_id) {
+        logger.info("완제 기준 BOM 상세 조회: {}", item_id);
+        
+        // Service에 selectBOMByItem(String item_id) 메소드를 추가했다고 가정하고 사용합니다.
+        List<P0404_BOMDTO> bomDetails = service.selectBOMByItem(item_id);
+        
+        return bomDetails; // Spring이 자동으로 JSON으로 변환하여 응답
+    }
 
 	@RequestMapping("/bomdetail")
 	public String detail(Model model, String bom_id) {

@@ -9,6 +9,7 @@ public interface P0404_BOMService {
 	public List<P0404_BOMDTO> bomList(P0404_BOMDTO searchCondition);
 	public List<P0404_BOMDTO> itemList(P0404_BOMDTO searchCondition);
 	public P0404_BOMDTO getOneBOM(String bom_id);
+	List<P0404_BOMDTO> selectBOMByItem(String item_id);
 	public int editBOM(P0404_BOMDTO dto);
 //	public int removeBOM(String bom_id);
 	public int removeBOMs(List<String> bomIds);
