@@ -3,7 +3,7 @@
 //  - 등록:   POST /processinsert                 (text: "success"/"fail")
 //  - 수정:   POST /processupdate                 (text: "success"/"fail")
 //  - 삭제:   POST /processdelete                 (JSON body: ["ID1","ID2",...], text: "success"/"fail")
-//  - 업로드: POST /processimageupload            (multipart/form-data) -> JSON { image_url: "..." } 형태로 응답(권장)
+//  - 업로드: POST /processimageupload            (multipart/form-data) -> JSON { image_url: "..." }
 
 document.addEventListener('DOMContentLoaded', () => {
   // ===== 공통 DOM =====
@@ -19,14 +19,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const updateUrl = `${ctx}/processupdate`;
   const createUrl = `${ctx}/processinsert`;
   const deleteUrl = `${ctx}/processdelete`;
-  const uploadUrl = `${ctx}/processimageupload`;  // 서버에 이 엔드포인트 추가
+  const uploadUrl = `${ctx}/processimageupload`;
 
   // ===== 유틸 =====
   const text    = (el) => (el ? (el.textContent || '').trim() : '');
   const setHTML = (el, html) => { if (el) el.innerHTML = html; };
   const safe    = (v) => (v == null ? '' : String(v));
 
-  // ===== 상세 채우기 (뷰 모드: 등록과 동일, 이미지 1개 + 상세) =====
+  // ===== 상세 채우기 (뷰: 등록과 동일, 이미지 1개 + 공정 상세[process_info]) =====
   async function fillprocessDetail(slide, payload = {}) {
     if (!slide) return;
     const row = (Array.isArray(payload) ? payload[0] : payload) || {};
@@ -37,14 +37,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const department_id = row.department_id ?? row.department ?? '';
 
     const imgUrl = row.process_image_url || row.image_url || row.imagePath || row.image || '';
-    const desc   = row.process_content   || row.description || row.process_desc || '';
+    // ★ 공정 상세는 process_info 우선 사용. 백필드 호환.
+    const rawDesc = row.process_info ?? row.process_content ?? row.description ?? row.process_desc ?? '';
+    const desc    = String(rawDesc).replace(/\\n/g, '\n'); // "\n" 문자열 들어오면 실제 줄바꿈으로
 
     setHTML(slide.querySelector('#d-process-id'),   safe(process_id));
     setHTML(slide.querySelector('#d-process-seq'),  safe(process_seq));
     setHTML(slide.querySelector('#d-process-name'), safe(process_name));
     setHTML(slide.querySelector('#d-dept-id'),      safe(department_id));
 
-    // 등록 슬라이드와 동일 구조: 좌 이미지 / 우 상세 설명
     const processBox = slide.querySelector('.process-box');
     if (processBox) {
       processBox.innerHTML = `
@@ -53,9 +54,11 @@ document.addEventListener('DOMContentLoaded', () => {
           <div id="d-process-image-helper" class="helper-text">${imgUrl ? '' : '이미지 없음'}</div>
         </div>
         <div class="specific">
-          <div class="specific-box" id="d-process-desc" aria-label="공정 상세">${safe(desc)}</div>
+          <div class="specific-box" id="d-process-desc" aria-label="공정 상세"></div>
         </div>
       `;
+      const descEl = processBox.querySelector('#d-process-desc');
+      if (descEl) descEl.textContent = desc; // pre-wrap로 줄바꿈 유지
     }
 
     if (titleEl) titleEl.textContent = '공정 상세';
@@ -137,7 +140,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return url;
   }
 
-  // ===== 수정 모드 진입 (상세의 수정 전용: 좌 현재, 우 새 미리보기 + 아래 파일, 하단 설명) =====
+  // ===== 수정 모드 진입 (상세 수정 전용: 좌 현재, 우 새 미리보기 + 아래 파일, 하단 설명) =====
   function enterEdit() {
     if (!detail || state.mode === 'edit') return;
     state.mode = 'edit';
@@ -150,6 +153,7 @@ document.addEventListener('DOMContentLoaded', () => {
       processName: text(detail.querySelector('#d-process-name')),
       deptId:      text(detail.querySelector('#d-dept-id')),
       imageUrl:    (detail.querySelector('#d-process-image')?.getAttribute('src')) || '',
+      // 상세 뷰에 이미 process_info가 들어가 있으므로 그대로 백업
       desc:        text(detail.querySelector('#d-process-desc'))
     };
 
@@ -165,7 +169,11 @@ document.addEventListener('DOMContentLoaded', () => {
       const currentImgSrc = state.backup.imageUrl;
       processBox.innerHTML = `
         <div class="process-edit-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:16px;width:100%;">
-
+          <!-- 좌: 현재 저장된 이미지 -->
+          <div class="image-section" style="min-height:auto;">
+            <img class="image" id="d-process-image" alt="" ${currentImgSrc ? `src="${safe(currentImgSrc)}"` : 'style="display:none"'} />
+            <div class="helper-text">현재 저장된 이미지</div>
+          </div>
 
           <!-- 우: 새 업로드 미리보기 + 파일 버튼(미리보기 아래) -->
           <div class="image-section" style="min-height:auto;">
@@ -177,7 +185,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="helper-text">* 파일을 선택하면 위 미리보기가 표시되고, 저장 시 서버로 업로드됩니다.</div>
           </div>
 
-          <!-- 하단 전체: 상세 설명 에디터 -->
+          <!-- 하단 전체: 상세 설명 에디터 (process_info 편집) -->
           <div style="grid-column:1 / -1;">
             <div class="specific">
               <div class="specific-box" style="padding:0; border:none; background:transparent;">
@@ -240,19 +248,21 @@ document.addEventListener('DOMContentLoaded', () => {
     setHTML(detail.querySelector('#d-process-name'), safe(newName));
     setHTML(detail.querySelector('#d-dept-id'),      safe(newDept));
 
-    // 뷰 모드 복원: 등록과 동일 (이미지 1개 + 상세)
+    // 뷰 복원: 등록과 동일 (이미지 1개 + 상세[process_info])
     const processBox = detail.querySelector('.process-box');
     if (processBox) {
-      const newUrl = detail.querySelector('#d-process-image')?.getAttribute('src') || state.backup.imageUrl || '';
+      const currentImgSrc = detail.querySelector('#d-process-image')?.getAttribute('src') || state.backup.imageUrl || '';
       processBox.innerHTML = `
         <div class="image-section">
-          <img class="image" id="d-process-image" alt="" ${newUrl ? `src="${safe(newUrl)}"` : 'style="display:none"'} />
-          <div id="d-process-image-helper" class="helper-text">${newUrl ? '' : '이미지 없음'}</div>
+          <img class="image" id="d-process-image" alt="" ${currentImgSrc ? `src="${safe(currentImgSrc)}"` : 'style="display:none"'} />
+          <div id="d-process-image-helper" class="helper-text">${currentImgSrc ? '' : '이미지 없음'}</div>
         </div>
         <div class="specific">
-          <div class="specific-box" id="d-process-desc" aria-label="공정 상세">${safe(newDesc)}</div>
+          <div class="specific-box" id="d-process-desc" aria-label="공정 상세"></div>
         </div>
       `;
+      const d = processBox.querySelector('#d-process-desc');
+      if (d) d.textContent = String(newDesc).replace(/\\n/g, '\n');
     }
 
     if (btnEdit) btnEdit.value = '수정';
@@ -271,7 +281,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const vDept = detail.querySelector('#e-dept-id')?.value?.trim()
                ?? text(detail.querySelector('#d-dept-id'));
 
-    // 현재 이미지 src 기준
+    // 현재 이미지(src)
     let vImg  = detail.querySelector('#d-process-image')?.getAttribute('src') || '';
     const vDesc = detail.querySelector('#e-process-desc')?.value?.trim()
                ?? text(detail.querySelector('#d-process-desc'));
@@ -295,7 +305,7 @@ document.addEventListener('DOMContentLoaded', () => {
     body.set('process_name', vName || '');
     body.set('department_id', vDept || '');
     body.set('process_image_url', vImg || '');
-    body.set('process_content',   vDesc || '');
+    body.set('process_info',     vDesc || ''); // ★ process_info로 저장
 
     try {
       const res = await fetch(updateUrl, {
@@ -309,7 +319,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const raw = (await res.text()).trim();
       if (!res.ok || raw !== 'success') throw new Error(`update failed: ${raw}`);
 
-      // UI 동기화: 뷰 복귀(이미지 1 + 상세)
+      // UI 동기화: 뷰 복귀(이미지 1 + 상세[process_info])
       exitEdit(false);
       updateTableRow(process_id, { process_id, process_seq: vSeq, process_name: vName });
       alert('저장되었습니다.');
@@ -425,7 +435,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 // ──────────────────────────────────────────────
-// 등록 슬라이드: 신규 등록 저장 (설명 포함, 이미지 1개 레이아웃 유지)
+// 등록 슬라이드: 신규 등록 저장 (설명 포함, 이미지 1개 + 상세)
 // ──────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('processInsertForm');
@@ -456,7 +466,7 @@ document.addEventListener('DOMContentLoaded', () => {
     body.set('process_seq', seq);
     body.set('process_name', name);
     body.set('department_id', dept);
-    body.set('process_content', desc);
+    body.set('process_info', desc); // ★ 등록도 process_info로 저장
 
     try {
       const res = await fetch(createUrl, {
