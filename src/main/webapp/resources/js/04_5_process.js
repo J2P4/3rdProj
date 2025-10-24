@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const slideInput = document.getElementById('slide-input');
   const titleEl    = detail ? detail.querySelector('.silde-title h2') : null;
 
-  const ctx = (typeof contextPath === 'string') ? contextPath : '';
+  const ctx = (typeof contextPath === 'string') ? contextPath : ''; // "/mes"
   const detailApi = `${ctx}/process/detail`;
   const updateUrl = `${ctx}/processupdate`;
   const createUrl = `${ctx}/processinsert`;
@@ -26,8 +26,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const text    = (el) => (el ? (el.textContent || '').trim() : '');
   const setHTML = (el, html) => { if (el) el.innerHTML = html; };
   const safe    = (v) => (v == null ? '' : String(v));
+  const toAppUrl = (url) => {
+    if (!url) return '';
+    // DB에는 /resources/... 형태로 저장되므로 화면에서는 컨텍스트(/mes) 접두
+    if (url.startsWith('/resources')) return `${ctx}${url}`;
+    return url;
+  };
 
-  // ===== 상세 채우기 (뷰: 이미지 1개 + 공정 상세[process_info]) =====
+  // ===== 상세 채우기 =====
   async function fillprocessDetail(slide, payload = {}) {
     if (!slide) return;
     const row = (Array.isArray(payload) ? payload[0] : payload) || {};
@@ -38,12 +44,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const department_id = row.department_id ?? row.department ?? '';
 
     // DB 컬럼 우선
-    const imgUrl = row.process_img
-                || row.process_image_url
-                || row.image_url
-                || row.imagePath
-                || row.image
-                || '';
+    let imgUrl = row.process_img
+              || row.process_image_url
+              || row.image_url
+              || row.imagePath
+              || row.image
+              || '';
+    imgUrl = toAppUrl(imgUrl);
 
     const rawDesc = row.process_info ?? row.process_content ?? row.description ?? row.process_desc ?? '';
     const desc    = String(rawDesc).replace(/\\n/g, '\n');
@@ -57,7 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (processBox) {
       processBox.innerHTML = `
         <div class="image-section">
-          <img class="image" id="d-process-image" alt="" ${imgUrl ? `src="/mes${safe(imgUrl)}"` : 'style="display:none"'} />
+          <img class="image" id="d-process-image" alt="" ${imgUrl ? `src="${safe(imgUrl)}"` : 'style="display:none"'} />
           <div id="d-process-image-helper" class="helper-text">${imgUrl ? '' : '이미지 없음'}</div>
         </div>
         <div class="specific">
@@ -130,7 +137,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (tds[3]) tds[3].textContent = dto.process_name ?? tds[3].textContent;
   }
 
-  // ===== 수정 모드 진입 (좌 현재 / 우 새 미리보기 + 아래 파일 / 하단 설명) =====
+  // ===== 수정 모드 진입 =====
   function enterEdit() {
     if (!detail || state.mode === 'edit') return;
     state.mode = 'edit';
@@ -207,7 +214,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ===== 수정 모드 종료 =====
-  function exitEdit(restore) {
+  function exitEdit() {
     if (!detail || state.mode !== 'edit') return;
     state.mode = 'view';
     if (titleEl) titleEl.textContent = '공정 상세';
@@ -231,7 +238,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const currentImgSrc = detail.querySelector('#d-process-image')?.getAttribute('src') || state.backup.imageUrl || '';
       processBox.innerHTML = `
         <div class="image-section">
-          <img class="image" id="d-process-image" alt="" ${currentImgSrc ? `src="/mes${safe(currentImgSrc)}` : 'style="display:none"'} />
+          <img class="image" id="d-process-image" alt="" ${currentImgSrc ? `src="${safe(currentImgSrc)}"` : 'style="display:none"'} />
           <div id="d-process-image-helper" class="helper-text">${currentImgSrc ? '' : '이미지 없음'}</div>
         </div>
         <div class="specific">
@@ -246,7 +253,7 @@ document.addEventListener('DOMContentLoaded', () => {
     state.pendingFile = null;
   }
 
-  // ===== 저장(수정): 파일 업로드(파일명=공정ID) → 경로 반영하여 update =====
+  // ===== 저장(수정): 업로드 → 업데이트 → 화면 즉시 갱신 =====
   async function saveEdit() {
     if (!detail) return;
 
@@ -264,11 +271,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!vName) { alert('공정명을 입력하세요.'); return; }
 
+    // 1) 파일 업로드
     if (state.pendingFile) {
       try {
         const fd = new FormData();
         fd.append('file', state.pendingFile);
-        fd.append('process_id', process_id); // ★ 파일명 = 공정ID
+        fd.append('process_id', process_id); // 파일명 = 공정ID
         const res = await fetch(uploadUrl, { method: 'POST', body: fd });
         const raw = await res.text();
         if (!res.ok) throw new Error(`upload ${res.status}: ${raw}`);
@@ -283,12 +291,13 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
+    // 2) UPDATE
     const body = new URLSearchParams();
     if (process_id) body.set('process_id', process_id);
     body.set('process_seq',  vSeq || '');
     body.set('process_name', vName || '');
     body.set('department_id', vDept || '');
-    body.set('process_img',  vImg || '');   // ★ 컬럼명에 맞춤
+    body.set('process_img',  vImg || '');   // DB 컬럼명
     body.set('process_info', vDesc || '');
 
     try {
@@ -303,8 +312,21 @@ document.addEventListener('DOMContentLoaded', () => {
       const raw = (await res.text()).trim();
       if (!res.ok || raw !== 'success') throw new Error(`update failed: ${raw}`);
 
-      exitEdit(false);
+      // 3) UI 반영
+      exitEdit();
       updateTableRow(process_id, { process_id, process_seq: vSeq, process_name: vName });
+
+      // 상세 이미지 src 즉시 갱신 (DB엔 /resources 저장, 화면엔 /mes 접두)
+      if (vImg) {
+        const imgEl = document.getElementById('d-process-image');
+        if (imgEl) {
+          imgEl.src = toAppUrl(vImg);
+          imgEl.style.display = '';
+        }
+        const helper = document.getElementById('d-process-image-helper');
+        if (helper) helper.textContent = '';
+      }
+
       alert('저장되었습니다.');
     } catch (e) {
       console.error('update error', e);
@@ -313,6 +335,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ===== 버튼 이벤트 =====
+
   if (btnEdit) {
     btnEdit.addEventListener('click', () => {
       if (btnEdit.value === '수정') enterEdit();
@@ -323,7 +346,7 @@ document.addEventListener('DOMContentLoaded', () => {
     btnClose.addEventListener('click', () => {
       if (state.mode === 'edit') {
         if (!confirm('수정을 취소하시겠습니까? 변경 내용은 저장되지 않습니다.')) return;
-        exitEdit(true);
+        exitEdit();
       }
       allowClose = true;
       detail.classList.remove('open');
@@ -347,7 +370,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       try {
         await openDetail(process_id);
-        if (state.mode === 'edit') exitEdit(true);
+        if (state.mode === 'edit') exitEdit();
       } catch (e) {
         console.error('상세 로드 실패:', e);
         alert('상세 정보를 불러오는 중 오류가 발생했습니다.');
@@ -418,7 +441,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 // ──────────────────────────────────────────────
-// 등록 슬라이드: 멀티파트 1회 요청으로 서버에서 ID발급 + 파일명=ID 저장
+// 등록 슬라이드: 멀티파트 1회 요청(서버에서 ID 발급 + 파일명=ID 저장)
 // ──────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   const form       = document.getElementById('processInsertForm');
@@ -438,16 +461,15 @@ document.addEventListener('DOMContentLoaded', () => {
   document.addEventListener('change', (e) => {
     if (e.target && e.target.id === 'img') {
       const f = e.target.files && e.target.files[0];
-      if (!f) { previewImg?.removeAttribute('src'); return; }
+      if (!f) { if (previewImg) previewImg.removeAttribute('src'); return; }
       const reader = new FileReader();
       reader.readAsDataURL(f);
-      reader.onload = (ev) => { previewImg?.setAttribute('src', ev.target.result); };
+      reader.onload = (ev) => { if (previewImg) previewImg.setAttribute('src', ev.target.result); };
     }
   });
 
   if (!form) return;
 
-  // 등록: 멀티파트 1회(서버에서 ID 생성 + 파일명=ID로 저장)
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
 

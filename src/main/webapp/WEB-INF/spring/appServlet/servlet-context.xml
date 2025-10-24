@@ -43,8 +43,8 @@
 	</bean>
 
 	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
-		<property name="maxUploadSize" value="5242880" />
-		<property name="maxInMemorySize" value="1048576" />
+		<property name="maxUploadSize" value="52428800" />
+		<property name="maxInMemorySize" value="10485760" />
 	</bean>
 
 	<context:component-scan base-package="proj.spring.mes" />
@@ -60,4 +60,5 @@
 		<property name="viewClass" value="org.springframework.web.servlet.view.tiles3.TilesView" />
 		<property name="order" value="1" />
 	</bean>
+	
 </beans>
