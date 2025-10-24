@@ -1,28 +1,43 @@
-/* 기본 색상 설정 */ 
+/* 기본 색상 설정 */
 :root{
-    --primary:#7e75ff;           /* 버튼 색 */
-    --primary-600:#6b64e6;       /* 버튼 색 : 클릭 등이 됐을 때의 강조색*/
-    --header:#dfe4ff;            /* 테이블 헤더 배경 */
-    --border:#aeb3c7;            /* 외곽선 색 */
-    --grid:#d7d9e3;              /* 셀 경계선 */
-    --bg:#fafbff;               /* 전체 페이지 배경색 */
-    --text:#222;                /* 기본 글자색 */
-    --muted:#666;               /* 입력 불가능 상태일 때...라고 생각하지만 여기에서 쓰인 곳이 없습니다. */
+    --primary:#7e75ff;             /* 버튼 색 */
+    --primary-600:#6b64e6;         /* 버튼 색 : 클릭 등이 되었을 때의 강조색*/
+    --header:#f7f7f7;              /* ✅ 재수정: 테이블 헤더 배경 (이미지/일반적인 웹 디자인에 맞춰 아주 밝은 회색) */
+    --border:#e5e7eb;              /* 외곽선 색 */
+    --grid:#d7d9e3;                /* 줄 경계선 */
+    --bg:#transparent;             /* 전체 페이지 배경색을 순수 흰색으로 강제 */
+    --text:#374151;                /* 기본 글자색 */
+   	--text-color: #1f2937;		   /* h1 글자색 */
+   	--margin-bottom: 1.5rem;       /* h1 마진 */
+    --muted:#666;                  /* 입력 불가능 상태일 때...라고 생각하기에는 여기서 쓰인 곳이 없습니다. */
+    --font-size: 1.875rem; 		   /* Tailwind CSS의 text-3xl은 보통 30px (1.875rem)입니다. */
+ 	--line-height: 2.25rem; 	   /* line-height는 보통 36px (2.25rem)입니다. */
 }
 
 /* 전체 배경 설정용 */
 body { 
-    background: var(--bg);
+    bg:#transparent; /* 배경색 흰색 강제 (Tailwind 기본 배경 덮어쓰기) */
     color: var(--text);
 }
 
 /* 버튼 기본 양식 */
 .fil-btn, .btm-btn, .slide-btn, .material {
-    background: var(--primary);
-    border: 1px solid var(--primary);
-    cursor: pointer;
-    transition: all .15s ease;
-    color: #ffffff;
+	background-color: #4f46e5; /* bg-indigo-600 */
+  	color: #ffffff; /* text-white */
+  	font-weight: 600; /* font-semibold */
+  	padding-top: 0.5rem; /* py-2 */
+  	padding-bottom: 0.5rem; /* py-2 */
+  	padding-left: 1rem; /* px-4 */
+  	padding-right: 1rem; /* px-4 */
+  	border-radius: 0.5rem; /* rounded-lg (일반적으로 8px) */
+  	box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06); /* shadow-md */
+    cursor: pointer; /* cursor-pointer */
+    width: 6rem; /* w-24 (96px 또는 6rem) */
+    border: none; /* 버튼 태그의 기본 테두리 제거 */
+
+  	/* 전환 효과 (Transition) */
+  	transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter; /* transition-colors */
+  	transition-duration: 150ms; /* duration-150 */
 }
 .fil-btn:hover, .btm-btn:hover, .slide-btn:hover, .material:hover {
     background: var(--primary-600);
@@ -32,7 +47,17 @@ body {
 /* 글씨 입력, 드롭다운 선택 기본 양식 */
 input, select {
     outline: none;
-    border: 2px solid var(--border);
+    border: 1px solid var(--border); /* 기본 2px에서 1px로 얇게 변경 */
+    border-radius: 5px; /* input, select 테두리 둥글게 처리 */
+    height: 40px; /* 높이 통일 */
+    padding: 5px 10px; /* 내부 여백 조정 */
+    box-sizing: border-box; /* 패딩이 너비에 포함되도록 설정 */
+    font-size: 1.0rem; /* ✅ 재수정: 1.1rem에서 1.0rem으로 조정하여 통일성 확보 */
+}
+/* select 요소는 기본 폼 스타일이 강해 height/padding을 명시적으로 재설정 */
+select {
+    height: 40px;
+    padding: 8px 10px;
 }
 
 /* 테이블 헤더 토글 css - 메인 조회 테이블 순서 바꾸는 것 */
@@ -43,7 +68,7 @@ input, select {
   padding-right: 20px;
 }
 .table th::after {
-  content: "↕";  /* 초기 상태: 양방향 화살표 */
+  content: "⇅";  /* 초기 상태: 양방향 화살표 */
   position: absolute;
   right: 6px;
   font-size: 0.8em;
@@ -58,179 +83,238 @@ input, select {
   color: #000;
 }
 .table th.chkbox {
-  padding: 10px;        /* 화살표 자리 제거 */
+  padding: 10px;      /* 화살표 자리 제거 */
   text-align: center;      /* 수평 가운데 */
 }
-
 .table th.chkbox::after {
   content: none !important;
 }
 
-
-/* 페이지 제목 영역 */
-.title {
-    margin-bottom: 50px;
-}
-
 /* 페이지 제목 영역 내 텍스트 */
-
 h1{
-    margin: 10px 0;
-    font-size: 2.2rem;
+    margin: 0; /* 기존 상하 여백 제거 */
+    font-size: 1.875rem;
+ 	line-height: 2.25rem;
     font-weight: bold;
+    text-color: #1f2937;
     letter-spacing: -0.3px;
+    margin-bottom: 1.5rem;
 }
 
 /* 각 페이지 별로 있는 조회 조건 선택 영역 */
-/*
-    - filter-item-box : 조회 조건 모음
-        + filter-item: 개별 조건 선택 영역
-            * filitem-name : 조건명
-            * filitem-input : 실제 조건 선택 영역
-    - filter-btn : 조회 버튼 영억
-*/
-
 .filter {
-    border: 2px solid var(--border);
-    width: 100%;
-    display: flex;
+    border: 1px solid #e5e7eb;
+    border-top: none; /* 제목 영역과 연결되도록 상단 테두리 제거 */
+    border-radius: 0.75rem; /* 모서리를 둥글게, 보통 12px (0.75rem) */
     background-color: #ffffff;
+    
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* 크고 부드러운 그림자 효과 */
+    
+    display: flex;
+    width: 100%;
+    
+    padding: 1.5rem; /* 상단, 하단 패딩 조정 */
+    margin-bottom: 1.5rem; /* 아래쪽에 24px (1.5rem) 마진 */
 }
 
 .filter-item-box {
-    margin: 15px;
+    margin: 0; /* 필터 내 item-box의 margin 제거 */
+    padding: 0 15px; /* 좌우 패딩으로 공간 확보 */
     display: flex;
     flex-wrap: wrap;
     width: 90%;
-    justify-content: space-between;
-    gap: 15px;
+    gap: 15px 30px; /* 행/열 간격 조정 */
 }
 
+/* ✅ 수정: filter-item의 너비를 3열 기반으로 임시 조정 (JSP 인라인 필터 항목 개수 3개) */
+/* JSP 원본: 3개의 filter-item이 있으므로, 3열로 계산되도록 width 조정 (약 33%) */
 .filter-item {
     display: flex;
-    width: 45%;
+    /* ✅ 수정: 3열 레이아웃을 위해 33.333%에서 gap을 뺀 너비로 재조정 */
+    width: calc(33.333% - 20px); 
     align-items: center;
+}
+/* 필터에 4번째 filter-item이 비어 있어도 레이아웃이 깨지지 않게 2열, 3열 레이아웃을 지원 */
+@media (max-width: 1400px) { /* 화면이 좁아지면 2열로 자동 전환 */
+    .filter-item {
+        width: calc(50% - 15px);
+    }
+}
+@media (max-width: 900px) { /* 더 좁아지면 1열로 자동 전환 */
+    .filter-item {
+        width: 100%;
+    }
+    .filter-item-box {
+        gap: 15px 0px;
+    }
 }
 
 .filitem-name {
     width: 25%;
-    font-size: 1.2rem;
-    font-weight: bold;
+    font-size: 1rem; /* 글자 크기 약간 줄임 */
+    font-weight: 600; /* 폰트 굵기 조정 */
     line-height: 1.1rem;
+    color: #4a5568;
 }
 
 .filitem-input {
     width: 75%;
-}
-
-.filitem-input > select, .filitem-input > input[type="text"], .filitem-input > input[type="button"] {
-    font-size: 1.1rem;
-    padding: 2px;
-    height: 35px;
-}
-
-.tilde{
-	margin:0 3px;
-	color:#333333;
-}
-
-.filter-btn {
-    width: 10%;
-    margin: 10px;
-    display: flex;
-    justify-content: center;
+    display: flex; 
     align-items: center;
 }
 
+/* 날짜 입력 필드 (재고 관리 JSP에는 없지만, 발주 리스트 이미지를 위해 대비) */
+.filitem-input > input[type="date"] {
+    width: 47%; 
+    min-width: 120px; /* 최소 너비 지정 */
+}
+/* 일반 텍스트 입력 및 드롭다운의 너비를 100%로 설정 */
+.filitem-input > select, .filitem-input > input[type="text"] {
+    width: 100%;
+}
+/* 두 개의 날짜 입력 필드가 있는 경우를 대비하여 너비 조정 */
+.filitem-input > input[type="date"]:first-child {
+    margin-right: 6px; /* 틸드와의 간격 조정 */
+}
+
+
+.tilde{
+	margin:0 5px; /* ~ 기호 좌우 여백 조정 */
+	color: var(--text);	
+	font-weight: bold; /* 틸드 굵게 */
+}
+
+.filter-btn {
+	border-radius: 0.5rem;
+	padding: 0.5rem 1rem;
+    display: flex;
+    margin-top: auto; /* 버튼을 아래로 내리는 속성 추가 */
+}
+
 .filter-btn > input {
-    width: 70%;
-    height: 50px;
-    font-weight: bold;
-    font-size: 1.2rem;
+	display: flex;
+    flex-direction: column; /* 수직 정렬을 위해 flex-direction을 column으로 설정 */
+    align-items: center; /* (선택 사항) 가로 방향 중앙 정렬 */
+    justify-content: flex-end; /* 버튼을 아래로 내리는 핵심 코드 */
+    height: 100%; /* 부모 컨테이너가 충분한 높이를 가져야 작동합니다! */
 }
 
 
 /* 테이블 영역 디자인. 슬라이드 영역의 테이블도 일부 적용됨 */
-
-/* overflow, max-height는 수정 X */
 .table {
     width: 100%;
-    margin: 50px auto;
-    max-height: none; 
+    margin: 0px auto 20px auto;	
+    max-height: none;	
     overflow: visible;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);	
+    border-radius: 10px;	
 }
 
-/* border-collapse, table-layout는 수정 X */
 .table > table {
     margin: 0;
     width: 100%;
     text-align: center;
-    border: 2px solid var(--border);
     background-color: #ffffff;
     border-collapse: collapse;
     table-layout: fixed;
+    border-radius: 10px;	
+    overflow: hidden;	
 }
 
 th {
-    font-size: 1.3rem;
-    padding: 10px;
+    font-size: 1.1rem;	
+    padding: 12px 10px;	
     background: var(--header);
+    color: #333;	
+    font-weight: 600;	
 }
 
 td {
-    font-size: 1.1rem;
-    padding: 10px;
+    font-size: 1rem;	
+    padding: 12px 10px;	
     border-bottom:1px solid var(--grid);
-    border-right:1px solid var(--grid);
+    border-right: none; /* 우측 경계선 제거 */
+    vertical-align: middle; /* 테이블 셀 내용 수직 가운데 정렬 */
 }
 
-/* 
-    테이블 width 분배 계산 잘하기.
-    가로 길이가 아마 다 맞춰져 있을 거라 웬만해서 안 건드리시는 걸 추천.
-        chkbox : 체크박스
-        id : ~~id 영역
-        type : 분류, 폐기 여부
-        name : 불량사유명
-        date : 일자
-        amount : 수량... 인데 왜 50으로 바뀌어 있는지 모르겠습니다.
-        gb : 검사의 good, bad. 혹은 수량 요소에 적용.
-*/
+/* 마지막 행의 하단 경계선 제거 */
+.table > table > tbody > tr:last-child > td {
+    border-bottom: none;
+}
 
+/* 테이블 width 분배 계산 (재고 관리 JSP 컬럼 기반으로 시각적 균형 조정) */
+/* 재고 ID / 재고량 / 구분 / 보관 위치 (JSP 원본) */
 .chkbox {
-    width: 5%;
+    width: 5%; /* 체크박스 */
 }
 
-.id, .date {
-    width: 35%;
+.id {
+    width: 20%; /* 재고 ID (조금 더 넓게) */
 }
 
 .type {
-    width: 10%;
-}
-
-.name {
-    width: 30%;
+    width: 15%; /* 구분 */
 }
 
 .amount {
-    width: 50%;
+    width: 20%; /* 재고량 (길게) */
 }
 
-.gb {
-    width: 15%;
-}
+/* stock_wrap(보관 위치)에 해당하는 컬럼이 JSP에 클래스 없이 들어가 있어 width 조정이 어려우나, 
+   전체 100%를 맞춰 남은 공간이 자동으로 채워지게 합니다. (100 - 5 - 20 - 15 - 20 = 40%) */
 
-/* 테이블 하단 버튼 영역 */
-
+/* 하단 버튼 영역 */
 .bottom-btn {
     width: 100%;
+    margin-bottom: 50px;	
+    display: flex;	
+    justify-content: space-between;	
+    align-items: center; /* 페이징과 버튼 박스 수직 가운데 정렬 */
 }
 
-/* 페이징이라 글씨체 등등 새 요소 추가는 괜찮은데 현재 있는 설정은 그대로 두기 */
+/* 페이징 영역 */
 .page {
     text-align: center;
-    z-index: 1;
+    display: flex;	
+    align-items: center;
+    margin-left: 100px;
 }
+
+/* 페이징 링크 스타일 */
+.page-link {
+    display: inline-block;
+    padding: 6px 12px; /* 패딩 조정 */
+    margin: 0 3px;
+    border: 1px solid var(--grid);
+    border-radius: 5px;
+    text-decoration: none;
+    color: var(--text);
+    transition: background-color 0.15s ease;
+}
+
+.page-link.current {
+    background-color: var(--primary);
+    color: #ffffff;
+    border-color: var(--primary);
+    font-weight: bold;
+}
+
+.page-link.disabled {
+    color: #ccc;
+    cursor: default;
+    background-color: #f7f7f7;
+    border-color: #eee;
+}
+.page-link:not(.current):not(.disabled):hover {
+    background-color: var(--header);
+}
+/* Rows 선택 영역 스타일 */
+#sizeForm select {
+    padding: 5px;
+    height: 35px;
+    border: 1px solid var(--border);
+}
+
 
 .bottom-btn-box {
     display: flex;
@@ -239,77 +323,211 @@ td {
 }
 
 .btm-btn {
-    width: 5%;
-    font-size: 1.2rem;
+    width: 100px;	
+    font-size: 1.1rem;	
     font-weight: bold;
-    padding: 5px;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;	
 }
 
-/* 
-    슬라이드 공통 : .silde 기준
-    템플릿 적용 후에 width 더 줄여야 할 듯.
-*/
+.btm-btn.new { /* 커스텀 클래스를 포함한 기본 스타일 정의 */
+  background-color: #4f46e5; /* bg-indigo-600 */
+  color: #ffffff; /* text-white */
+  font-weight: 600; /* font-semibold */
+  padding: 0.5rem 1rem; /* py-2 px-4 */ /* 상하 0.5rem (8px), 좌우 1rem (16px) */
+  border-radius: 0.5rem; /* rounded-lg */ /* 8px 둥근 모서리 */
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06); /* shadow-md */
+  
+  /* transition-colors duration-150 */
+  /* 색상 변화에만 애니메이션 적용 */
+  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+  transition-duration: 150ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); /* Tailwind의 기본 ease-in-out */
+  
+  /* 기타 필수 속성 (버튼 태그를 가정) */
+  border: none;
+  display: inline-flex; /* 텍스트를 중앙 정렬하기 위해 flex 사용 */
+  align-items: center;
+  justify-content: center;
+}
 
-/* background-color, box-shadow 말고는 바꾸기 X */
+/* 호버 (Hover) 상태 스타일 */
+.btm-btn.new:hover {
+  /* hover:bg-indigo-700 */
+  background-color: #4338ca;
+}
+
+/* 포커스 (Focus) 상태 스타일 */
+.btm-btn.new:focus {
+  /* focus:outline-none */
+  outline: none;
+  
+  /* focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 */
+  /* ring 효과는 box-shadow로 구현합니다. */
+  box-shadow: 
+    /* ring-offset-2 (흰색 오프셋) */
+    0 0 0 2px #ffffff,
+    /* ring-2 (링 두께)와 ring-indigo-500 (링 색상: #6366f1) */
+    0 0 0 calc(2px + 2px) #6366f1,
+    /* 기존 shadow-md 유지 */
+    0 4px 6px -1px rgba(0, 0, 0, 0.1), 
+    0 2px 4px -2px rgba(0, 0, 0, 0.06);
+}
+
+.btm-btn.del {
+  /* 기본 스타일 정의 */
+  
+  /* bg-red-600 */
+  background-color: #dc2626;
+  
+  /* text-white */
+  color: #ffffff;
+  
+  /* font-semibold */
+  font-weight: 600;
+  
+  /* py-2 px-4 */
+  padding: 0.5rem 1rem; /* 상하 0.5rem (8px), 좌우 1rem (16px) */
+  
+  /* rounded-lg */
+  border-radius: 0.5rem; /* 8px 둥근 모서리 */
+  
+  /* shadow-md */
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 
+              0 2px 4px -2px rgba(0, 0, 0, 0.06);
+  
+  /* transition-colors duration-150 */
+  /* 색상 변화에만 애니메이션 적용 */
+  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+  transition-duration: 150ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); /* Tailwind의 기본 ease-in-out */
+  
+  /* 기타 필수 속성 (버튼 태그를 가정) */
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 2. 호버 (Hover) 상태 스타일 */
+.btm-btn.del:hover {
+  /* hover:bg-red-700 */
+  background-color: #b91c1c;
+}
+
+/* 3. 포커스 (Focus) 상태 스타일 (접근성 및 키보드 사용자를 위해 중요) */
+.btm-btn.del:focus {
+  /* focus:outline-none */
+  outline: none;
+  
+  /* focus:ring-2 focus:ring-red-500 focus:ring-offset-2 */
+  /* ring 효과는 box-shadow를 사용해 구현합니다. */
+  box-shadow: 
+    /* ring-offset-2 (흰색 오프셋) */
+    0 0 0 2px #ffffff,
+    /* ring-2 (링 두께)와 ring-red-500 (링 색상: #ef4444) */
+    0 0 0 calc(2px + 2px) #ef4444,
+    /* 기존 shadow-md 유지 */
+    0 4px 6px -1px rgba(0, 0, 0, 0.1), 
+    0 2px 4px -2px rgba(0, 0, 0, 0.06);
+}
+
+/* 슬라이드 공통 */
 .slide {
     position: fixed;
     top: 0;
     right: -110%;
     width: calc(100% - 14rem);
     height: 100%;
-    background-color: #f3f3f3;
-    box-shadow: -2px 0 6px rgba(0,0,0,0.2);
+    background-color: #ffffff !important; /* ✅ 재수정: 배경색 흰색 강제 통일 */
+    box-shadow: -4px 0 10px rgba(0, 0, 0, 0.1) !important; /* ✅ 재수정: 그림자 효과 통일 */
+    border-left: 1px solid var(--border) !important; /* ✅ 재수정: 경계선 추가 */
     transition: right 1s ease;
     overflow-y: auto;
 }
 
-/* 변경 X : 여닫기 기능과 연동되어 있음 */
-.slide.open {
-    right: 0;
-}
-
-/* 슬라이드 닫기 버튼(우상단의 회색 X) */
+/* 슬라이드 닫기 버튼 */
 .slide-close-btn {
     background: transparent;
     border: none;
-    font-size: 1.2rem;
+    font-size: 2rem; /* 크기 키움 */
     float: right;
     cursor: pointer;
-    margin: 50px;
+    margin: 30px; /* 여백 조정 */
+    color: #999;	
 }
 
-/* 슬라이드 제목(가장 위에 있는 것) */
+/* 슬라이드 제목 */
 .silde-title {
 	font-size: 2rem;
 	font-weight: bold;
 	margin: 30px;
+    padding-bottom: 10px;	
+    border-bottom: 2px solid var(--grid);	
 }
 
-/* 슬라이드 제목 아래에 ~ id: ~~라고 써져 있는 부분, 혹은 슬라이드 내 소제목*/
+/* 슬라이드 ID / 소제목 */
 .slide-id, .slide-subTitle {
 	margin: 30px;
     font-weight: bold;
-    font-size: 1.6rem;
-} 
+    font-size: 1.4rem;	
+    color: #4a5568;	
+}	
 
 /* 슬라이드 내부 요소들 묶음*/
 .slide-contents {
-    margin: 50px 30px;
+    margin: 30px;	
 }
 
 /* 슬라이드 내 테이블 영역 */
 .slide-contents > .slide-tb {
-    margin: 30px;
+    margin: 30px 0;	
 }
 
-/* 슬라이드 내 테이블 영역의 실제 테이블 */
+/* 슬라이드 내 실제 테이블 */
 .slide-contents > .slide-tb > table {
     background-color: #ffffff;
     width: 100%;
     text-align: center;
+    border: 1px solid var(--grid);	
+    border-collapse: separate; /* border-radius 적용을 위해 collapse 해제 */
+    border-spacing: 0;
+    border-radius: 8px;	
+    overflow: hidden;
 }
 
-/* 슬라이드 내 공통으로 있는 등록, 취소, 수정 버튼 영역*/
+/* 슬라이드 테이블 헤더 스타일 조정 */
+.slide-contents > .slide-tb > table th {
+    padding: 10px;
+    font-size: 1rem;
+    background: var(--header);
+}
+
+/* 슬라이드 테이블 셀 스타일 조정 */
+.slide-contents > .slide-tb > table td {
+    padding: 10px;
+    font-size: 1rem;
+    border-bottom: 1px solid var(--grid);
+    
+}
+/* 슬라이드 테이블 마지막 행 하단 선 제거 */
+.slide-contents > .slide-tb > table > tbody > tr:last-child > td {
+    border-bottom: none;
+}
+/* 슬라이드 테이블 내 입력 요소 스타일 통일 */
+.slide-contents table input[type="text"],	
+.slide-contents table input[type="number"],	
+.slide-contents table select {
+    height: 35px;
+    padding: 5px 10px;
+    font-size: 1rem;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    width: 100%; /* 너비 100%로 설정하여 셀에 꽉 채움 */
+}
+
+/* 슬라이드 버튼 박스 */
 .slide-btnbox {
     display: flex;
     justify-content: flex-end;
@@ -317,47 +535,63 @@ td {
     margin: 30px;
 }
 
-/* bom, 품질 검사에 있는 ~추가, ~삭제 버튼 */
+/* 슬라이드 테이블 버튼 박스 (추가/삭제 등) */
 .slide-tb-btnbox {
     display: flex;
-    justify-content: center;
+    justify-content: flex-end;	
     gap: 10px;
-    margin: 30px;
+    margin: 10px 0;	
 }
 
-/* 위에 있는 slide-btnbox와 slide-tb-btnbox의 글씨 설정용 */
+/* 슬라이드 내 버튼 스타일 */
 .slide-btnbox > input, .slide-tb-btnbox > input {
-    width: 10%;
-    font-size: 1.2rem;
+    width: 100px;	
+    font-size: 1.1rem;	
     font-weight: bold;
-    padding: 5px;
+    padding: 10px 15px;
+    border-radius: 8px;	
 }
 
-
-
-
-/* .material {
-    width: 5%;
-    font-size: 1.2rem;
-    font-weight: bold;
-    padding: 5px;
-} */
-
-
-/* 입력 & 수정용 슬라이드 : #slide-input 기준 */
-/* 수정 X!! */
-#slide-input {
-    z-index: 2000;
+/* 취소 버튼 스타일 */
+.slide-btn.close-btn {
+    background-color: #6c757d;
+    border-color: #6c757d;
+    /* ✅ 재수정: 취소 버튼을 회색으로 유지하되, hover만 살짝 어둡게 */
 }
 
-/* 상세 슬라이드 : #slide-detail 기준 */
-/* 수정 X!!! */
-#slide-detail {
-    z-index: 1000;
+.slide-btn.close-btn:hover {
+    background-color: #5a6268;
+    border-color: #5a6268;
 }
 
-/* 모달 박스 - 작업 지시서 하단에 display: none 적용 안 해둔 상태라, 그쪽에서 확인 가능. */
-/* 모달 전체 영역. 아마 색상이랑 글씨 빼고 안 하는 게 나을 수도? 필요할 것 같으면 얘기해주세요. */
+/* 등록/수정 버튼 스타일 */
+.slide-btn.submit-btn, #detailEditBtn {
+    background-color: var(--primary);
+    border-color: var(--primary);
+}
+
+.slide-btn.submit-btn:hover, #detailEditBtn:hover {
+    background-color: var(--primary-600);
+    border-color: var(--primary-600);
+}
+
+/* 기타 슬라이드 내 테이블 버튼 */
+.slide-tb-btnbox > input {
+    width: 80px;	
+    font-size: 1rem;
+    padding: 8px;
+}
+
+/* 상세 슬라이드 재고 이력 테이블의 스크롤 영역 높이 조정 */
+.slide-tb.detail-list {
+    max-height: 300px; /* 고정 높이 지정 */
+    border: 1px solid var(--grid); /* 스크롤 영역 경계선 추가 */
+    border-radius: 8px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+/* 모달 박스 스타일 (기존 유지) */
 .add-modal {
     background: #fff;
     border-radius: 16px;
@@ -373,7 +607,7 @@ td {
     z-index: 6000;
 }
 
-/* 모달의 전체 제목(최상단에 있는 것) */
+/* 모달 제목 */
 .modal-title {
     font-size: 26px;
     font-weight: 800;
@@ -382,7 +616,7 @@ td {
     padding-bottom: 10px;
 }
 
-/* 모달의 실제 데이터 표시 영역*/
+/* 모달 내용 */
 .modal-content {
     display: flex;
     flex-direction: column;
@@ -392,31 +626,29 @@ td {
     font-size: 20px;
 }
 
-/* 모달 내 실제 데이터 표시 영역의 하위 영역 - 개별 데이터*/
+/* 모달 개별 필드 */
 .field {
     padding: 0 50px;
 }
 
-/* 개별 데이터 제목용 */
 .field > span {
 	font-weight: bold;
 }
 
-/* 이거... 아마 아라씨 쪽 계정 관리 비밀번호 초기화에 있는 겁니다. */
 .confirm {
     margin: 20px auto 0;
     padding: 25px 0;
-    font-weight:  bold;
+    font-weight:	bold;
 }
 
-/* 모달 하단의 버튼 묶음 영역 */
+/* 모달 버튼 박스 */
 .modal-btnbox {
     display: flex;
     justify-content: center;
     gap: 15px;
 }
 
-/* 실제 버튼 영역*/
+/* 모달 버튼 */
 .m-btn {
     min-width: 90px;
     padding: 10px 0;

@@ -25,7 +25,7 @@
 </head>
 <body>
     <!-- 페이지 제목 -->
-    <div class = "title"><h1>재고 관리</h1></div>
+    <h1>재고 관리</h1>
     <!-- 페이징용 추가 코드 1-->
    	<c:url var="/stocklist" value="/stocklist"/> <%-- 모든 내부 링크의 기준 URL(중복 /mes/mes 방지) 이거 떄믄에 한시간.... --%>
 	<c:set var="selfPath" value="/stocklist"/> <%-- c:url value에 사용할 경로 문자열 --%>
@@ -203,8 +203,8 @@
         <div class = "page"></div>
         <c:if test="${sessionScope.role != 'STAFF'}">
             <div class = "bottom-btn-box">
-                <input type = "button" class = "btm-btn new" value="신규">
                 <input type = "button" class = "btm-btn del" value="삭제">
+                <input type = "button" class = "btm-btn new" value="신규">
             </div>
         </c:if>
         <c:if test="${sessionScope.role == 'STAFF'}"></c:if>
@@ -278,8 +278,8 @@
                 </table>
             </div>
             <div class = "slide-btnbox">
-                <input type = "button" class = "submit-btn slide-btn" value = "등록">
                 <input type = "button" class = "close-btn slide-btn" value = "취소">
+                <input type = "button" class = "submit-btn slide-btn" value = "등록">
             </div>
         </form>
     </div>
@@ -344,8 +344,8 @@
                 </table>
             </div>
             <div class = "slide-btnbox">
-                <input type = "button" class = "slide-btn" id="detailEditBtn" value = "수정">
                 <input type = "button" class = "close-btn slide-btn" value = "취소">
+                <input type = "button" class = "slide-btn" id="detailEditBtn" value = "수정">
             </div>
         </div>
     </div>
