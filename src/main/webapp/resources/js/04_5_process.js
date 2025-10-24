@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const process_name  = row.process_name ?? '';
     const department_id = row.department_id ?? row.department ?? '';
 
-    //  DB 컬럼 우선
+    // DB 컬럼 우선
     const imgUrl = row.process_img
                 || row.process_image_url
                 || row.image_url
@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (processBox) {
       processBox.innerHTML = `
         <div class="image-section">
-          <img class="image" id="d-process-image" alt="" ${imgUrl ? `src="${safe(imgUrl)}"` : 'style="display:none"'} />
+          <img class="image" id="d-process-image" alt="" ${imgUrl ? `src="/mes${safe(imgUrl)}"` : 'style="display:none"'} />
           <div id="d-process-image-helper" class="helper-text">${imgUrl ? '' : '이미지 없음'}</div>
         </div>
         <div class="specific">
@@ -155,12 +155,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const processBox = detail.querySelector('.process-box');
     if (processBox) {
-      const currentImgSrc = state.backup.imageUrl;
       processBox.innerHTML = `
         <div class="process-edit-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:16px;width:100%;">
-
-
-          <!-- 우: 새 업로드 미리보기 + 파일버튼(미리보기 아래) -->
           <div class="image-section" style="min-height:auto;">
             <img class="image" id="e-process-image-preview" alt="업로드 미리보기" style="display:none" />
             <div class="helper-text">업로드 미리보기</div>
@@ -169,8 +165,6 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
             <div class="helper-text">* 저장 시 공정ID 파일명으로 저장됩니다.</div>
           </div>
-
-          <!-- 하단 전체: 공정 상세(process_info) -->
           <div style="grid-column:1 / -1;">
             <div class="specific">
               <div class="specific-box" style="padding:0; border:none; background:transparent;">
@@ -237,7 +231,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const currentImgSrc = detail.querySelector('#d-process-image')?.getAttribute('src') || state.backup.imageUrl || '';
       processBox.innerHTML = `
         <div class="image-section">
-          <img class="image" id="d-process-image" alt="" ${currentImgSrc ? `src="${safe(currentImgSrc)}"` : 'style="display:none"'} />
+          <img class="image" id="d-process-image" alt="" ${currentImgSrc ? `src="/mes${safe(currentImgSrc)}` : 'style="display:none"'} />
           <div id="d-process-image-helper" class="helper-text">${currentImgSrc ? '' : '이미지 없음'}</div>
         </div>
         <div class="specific">
@@ -470,7 +464,7 @@ document.addEventListener('DOMContentLoaded', () => {
     fd.append('process_name', name);
     fd.append('department_id', dept);
     fd.append('process_info', desc);
-    if (file) fd.append('file', file); 
+    if (file) fd.append('file', file);
 
     try {
       const res = await fetch(`${ctx}/processinsert`, {
