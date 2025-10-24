@@ -1,163 +1,169 @@
 package proj.spring.mes.controller;
 
 import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+import javax.servlet.ServletContext;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import proj.spring.mes.dto.P0405_ProcessDTO;
 import proj.spring.mes.service.P0405_ProcessService;
 
-@Controller("p0405ProcessCtrl") // 빈 이름 명시(충돌 예방)
+@Controller("p0405ProcessCtrl")
 public class P0405_ProcessCtrl {
 
     private static final Logger logger = LoggerFactory.getLogger(P0405_ProcessCtrl.class);
 
-    @Autowired
-    P0405_ProcessService service;
+    private static final String WEB_PATH = "/resources/img/04_5_process";
+    private static final String PLACEHOLDER_IMG = WEB_PATH + "/noimage.png";
 
-    /** 모든 String 파라미터 trim + 빈문자 → null */
+    @Autowired private P0405_ProcessService service;
+    @Autowired private ServletContext servletContext;
+
     @InitBinder
     public void initBinder(WebDataBinder binder) {
         binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
     }
 
-    // ===== 목록 =====  GET /processlist  (요구사항)
+    // 목록
     @GetMapping("/processlist")
     public String processList(Model model,
-            @RequestParam(value = "size", required = false, defaultValue = "10") int pagePerRows,
-            @RequestParam(value = "page", required = false, defaultValue = "1") int page,
+            @RequestParam(value="size", defaultValue="10") int pagePerRows,
+            @RequestParam(value="page", defaultValue="1") int page,
             P0405_ProcessDTO searchFilter) {
 
-        logger.info("[PROCESS/LIST] in page={}, size={}", page, pagePerRows);
-        logger.info("[PROCESS/LIST] filter={}", searchFilter);
-
-        // 1) 입력값 보정
-        int minSize = 1, maxSize = 100;
-        pagePerRows = Math.max(minSize, Math.min(pagePerRows, maxSize));
-        page = Math.max(page, 1);
-
-        // 2) 전체 카운트
         long totalCount = service.count(searchFilter);
-        logger.info("[PROCESS/LIST] count={}", totalCount);
-
-        // 3) 총 페이지 / 현재 페이지 보정
-        int totalPages = (int) Math.ceil((double) totalCount / pagePerRows);
+        int totalPages = (int)Math.ceil((double)totalCount / Math.max(1,pagePerRows));
         if (totalPages == 0) totalPages = 1;
         if (page > totalPages) page = totalPages;
 
-        // 4) 목록 조회 (페이징)
         List<P0405_ProcessDTO> list = service.list(page, pagePerRows, searchFilter);
-        logger.info("[PROCESS/LIST] listSize={}", (list == null ? null : list.size()));
-
-        // 5) 블록 페이지네이션
-        final int blockSize = 10;
-        int currentBlock = (int) Math.ceil((double) page / blockSize);
-        int startPage = (currentBlock - 1) * blockSize + 1;
-        int endPage = Math.min(startPage + blockSize - 1, totalPages);
-
-        boolean hasPrevBlock = startPage > 1;
-        boolean hasNextBlock = endPage < totalPages;
-        int prevBlockStart = Math.max(startPage - blockSize, 1);
-        int nextBlockStart = Math.min(startPage + blockSize, totalPages);
-
-        //  품목 목록 유지
         List<P0405_ProcessDTO> itemList = service.processItem();
 
-       
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.configure(JsonGenerator.Feature.ESCAPE_NON_ASCII, false);
-
+        ObjectMapper om = new ObjectMapper();
+        om.configure(JsonGenerator.Feature.ESCAPE_NON_ASCII, false);
         String itemListJson;
-        try {
-            String rawJson = objectMapper.writeValueAsString(itemList);
-            itemListJson = rawJson.replaceAll("[\n\r]", "")
-                                  .replaceAll("'", "\\\\'")
-                                  .replaceAll("\"", "\\\\\"")
-                                  .replaceAll("`", "\\\\`");
-        } catch (JsonProcessingException e) {
-            logger.error("itemList JSON 직렬화 실패", e);
-            itemListJson = "[]";
-        }
+        try { itemListJson = om.writeValueAsString(itemList); }
+        catch(Exception e){ itemListJson="[]"; }
 
-        // 모델 바인딩
         model.addAttribute("pagePerRows", pagePerRows);
         model.addAttribute("page", page);
         model.addAttribute("totalCount", totalCount);
         model.addAttribute("totalPages", totalPages);
-        model.addAttribute("startPage", startPage);
-        model.addAttribute("endPage", endPage);
-        model.addAttribute("hasPrevBlock", hasPrevBlock);
-        model.addAttribute("hasNextBlock", hasNextBlock);
-        model.addAttribute("prevBlockStart", prevBlockStart);
-        model.addAttribute("nextBlockStart", nextBlockStart);
         model.addAttribute("filter", searchFilter);
-
         model.addAttribute("list", list);
         model.addAttribute("itemList", itemList);
         model.addAttribute("itemListJson", itemListJson);
-
-        logger.info("[PROCESS/LIST] out page={}, size={}", page, pagePerRows);
-        logger.info("[PROCESS/LIST] out totalPages={}, listSize={}", totalPages, (list == null ? null : list.size()));
-
         return "04_standard/04_5_standard_process.tiles";
     }
 
-    // ===== 상세 =====  GET /processdetail?process_id=...
+    // 상세(JSON)
     @GetMapping("/process/detail")
     @ResponseBody
     public P0405_ProcessDTO detail(@RequestParam("process_id") String process_id) {
-        logger.info("[PROCESS/DETAIL] id={}", process_id);
-        P0405_ProcessDTO dto = service.getOneprocess(process_id);
-        logger.debug("[PROCESS/DETAIL] dto={}", dto);
-        return dto;
-     }
-
-    // ===== 등록 =====  POST /processinsert
-    @PostMapping("/processinsert")
-    @ResponseBody
-    public String insert(P0405_ProcessDTO dto) {
-        logger.info("[PROCESS/INSERT] dto={}", dto);
-        int result = service.addprocess(dto);
-        logger.info("[PROCESS/INSERT] result={}", result);
-        return result > 0 ? "success" : "fail";
+        return service.getOneprocess(process_id);
     }
 
-    // ===== 수정 =====  POST /processupdate
-    @PostMapping("/processupdate")
+    // 등록(멀티파트 1요청, 서버에서 ID 선발급, 파일명=ID, JSON 응답)
+    @PostMapping(
+        value="/processinsert",
+        consumes=MediaType.MULTIPART_FORM_DATA_VALUE,
+        produces=MediaType.APPLICATION_JSON_VALUE
+    )
+    @ResponseBody
+    public ResponseEntity<String> insert(
+        @RequestParam(value="file", required=false) MultipartFile file,
+        @ModelAttribute P0405_ProcessDTO dto
+    ) {
+        Map<String,Object> resp = new HashMap<String,Object>();
+        try {
+            String id = service.createWithFile(file, dto, WEB_PATH, PLACEHOLDER_IMG, servletContext);
+            resp.put("status","success");
+            resp.put("process_id", id);
+            resp.put("process_img", dto.getProcess_img());
+            String json = new ObjectMapper().writeValueAsString(resp);
+            return ResponseEntity.ok(json);
+        } catch (Exception e) {
+            e.printStackTrace();
+            resp.put("status","fail");
+            resp.put("message", e.getMessage());
+            try {
+                String json = new ObjectMapper().writeValueAsString(resp);
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(json);
+            } catch (Exception ignore) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"status\":\"fail\"}");
+            }
+        }
+    }
+
+    // 수정(JSON: text/plain 유지해도 되지만 통일)
+    @PostMapping(value="/processupdate", produces=MediaType.TEXT_PLAIN_VALUE)
     @ResponseBody
     public String update(P0405_ProcessDTO dto) {
-        logger.info("[PROCESS/UPDATE] dto={}", dto);
         int result = service.editprocess(dto);
-        logger.info("[PROCESS/UPDATE] result={}", result);
         return result > 0 ? "success" : "fail";
     }
 
-    // ===== 삭제 =====  POST /processdelete
-    @PostMapping("/processdelete")
+    // 삭제(JSON text/plain)
+    @PostMapping(value="/processdelete", consumes=MediaType.APPLICATION_JSON_VALUE, produces=MediaType.TEXT_PLAIN_VALUE)
     @ResponseBody
-    public String deleteprocesss(@RequestBody List<String> processIds) { // 메서드명 유지
-        logger.info("[PROCESS/DELETE] ids={}", processIds);
+    public String deleteprocesss(@RequestBody List<String> processIds) {
         if (processIds == null || processIds.isEmpty()) return "fail";
-        int deletedCount = service.removeprocesss(processIds); // 서비스 메서드명 유지
-        logger.info("[PROCESS/DELETE] deletedCount={}, requested={}", deletedCount, (processIds == null ? null : processIds.size()));
-        return (deletedCount == (processIds == null ? 0 : processIds.size())) ? "success" : "fail";
+        int deletedCount = service.removeprocesss(processIds);
+        return (deletedCount == processIds.size()) ? "success" : "fail";
+    }
+
+    // (선택) 수정 슬라이드용 이미지 재업로드 엔드포인트
+    @PostMapping(
+        value="/processimageupload",
+        consumes=MediaType.MULTIPART_FORM_DATA_VALUE,
+        produces=MediaType.APPLICATION_JSON_VALUE
+    )
+    @ResponseBody
+    public ResponseEntity<String> uploadImage(
+        @RequestParam("file") MultipartFile file,
+        @RequestParam("process_id") String processId
+    ) {
+        Map<String,Object> resp = new HashMap<String,Object>();
+        try {
+            String url = service.saveImageForId(file, processId, WEB_PATH, servletContext); // 파일명=공정ID
+            resp.put("status","success");
+            resp.put("image_url", url);
+            String json = new ObjectMapper().writeValueAsString(resp);
+            return ResponseEntity.ok(json);
+        } catch (Exception e) {
+            e.printStackTrace();
+            resp.put("status","fail");
+            resp.put("message", e.getMessage());
+            try {
+                String json = new ObjectMapper().writeValueAsString(resp);
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(json);
+            } catch (Exception ignore) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"status\":\"fail\"}");
+            }
+        }
     }
 }

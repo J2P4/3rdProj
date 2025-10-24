@@ -1,17 +1,18 @@
-// 컨트롤러/엔드포인트 매핑:
+// 04_5_process.js
+// 컨트롤러/엔드포인트 매핑
 //  - 상세:   GET  /process/detail?process_id=... (JSON)
-//  - 등록:   POST /processinsert                 (text: "success"/"fail")
+//  - 등록:   POST /processinsert                 (multipart/form-data → JSON {status, process_id, process_img})
 //  - 수정:   POST /processupdate                 (text: "success"/"fail")
-//  - 삭제:   POST /processdelete                 (JSON body: ["ID1","ID2",...], text: "success"/"fail")
-//  - 업로드: POST /processimageupload            (multipart/form-data) -> JSON { image_url: "..." }
+//  - 삭제:   POST /processdelete                 (JSON ["ID1","ID2",...], text: "success"/"fail")
+//  - 업로드: POST /processimageupload            (multipart/form-data) -> { image_url: "/resources/img/04_5_process/{process_id}.{ext}" }
 
 document.addEventListener('DOMContentLoaded', () => {
   // ===== 공통 DOM =====
   const tableBody  = document.querySelector('.table tbody');
 
   // 상세/등록 슬라이드
-  const detail     = document.getElementById('slide-detail');   // 상세 패널
-  const slideInput = document.getElementById('slide-input');    // 등록 패널
+  const detail     = document.getElementById('slide-detail');
+  const slideInput = document.getElementById('slide-input');
   const titleEl    = detail ? detail.querySelector('.silde-title h2') : null;
 
   const ctx = (typeof contextPath === 'string') ? contextPath : '';
@@ -26,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const setHTML = (el, html) => { if (el) el.innerHTML = html; };
   const safe    = (v) => (v == null ? '' : String(v));
 
-  // ===== 상세 채우기 (뷰: 등록과 동일, 이미지 1개 + 공정 상세[process_info]) =====
+  // ===== 상세 채우기 (뷰: 이미지 1개 + 공정 상세[process_info]) =====
   async function fillprocessDetail(slide, payload = {}) {
     if (!slide) return;
     const row = (Array.isArray(payload) ? payload[0] : payload) || {};
@@ -36,10 +37,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const process_name  = row.process_name ?? '';
     const department_id = row.department_id ?? row.department ?? '';
 
-    const imgUrl = row.process_image_url || row.image_url || row.imagePath || row.image || '';
-    // ★ 공정 상세는 process_info 우선 사용. 백필드 호환.
+    //  DB 컬럼 우선
+    const imgUrl = row.process_img
+                || row.process_image_url
+                || row.image_url
+                || row.imagePath
+                || row.image
+                || '';
+
     const rawDesc = row.process_info ?? row.process_content ?? row.description ?? row.process_desc ?? '';
-    const desc    = String(rawDesc).replace(/\\n/g, '\n'); // "\n" 문자열 들어오면 실제 줄바꿈으로
+    const desc    = String(rawDesc).replace(/\\n/g, '\n');
 
     setHTML(slide.querySelector('#d-process-id'),   safe(process_id));
     setHTML(slide.querySelector('#d-process-seq'),  safe(process_seq));
@@ -58,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       `;
       const descEl = processBox.querySelector('#d-process-desc');
-      if (descEl) descEl.textContent = desc; // pre-wrap로 줄바꿈 유지
+      if (descEl) descEl.textContent = desc;
     }
 
     if (titleEl) titleEl.textContent = '공정 상세';
@@ -123,24 +130,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (tds[3]) tds[3].textContent = dto.process_name ?? tds[3].textContent;
   }
 
-  // ===== 파일 업로드 호출 =====
-  async function uploadImage(file, processId) {
-    const fd = new FormData();
-    fd.append('file', file);              // @RequestParam("file") MultipartFile file
-    if (processId) fd.append('process_id', processId);
-
-    const res = await fetch(uploadUrl, { method: 'POST', body: fd });
-    const raw = await res.text();
-    if (!res.ok) throw new Error(`upload ${res.status}: ${raw}`);
-
-    let data = {};
-    try { data = raw ? JSON.parse(raw) : {}; } catch (_) { data = {}; }
-    const url = data.image_url || data.url || data.process_image_url || data.location || '';
-    if (!url) throw new Error('업로드 응답에 이미지 URL이 없습니다.');
-    return url;
-  }
-
-  // ===== 수정 모드 진입 (상세 수정 전용: 좌 현재, 우 새 미리보기 + 아래 파일, 하단 설명) =====
+  // ===== 수정 모드 진입 (좌 현재 / 우 새 미리보기 + 아래 파일 / 하단 설명) =====
   function enterEdit() {
     if (!detail || state.mode === 'edit') return;
     state.mode = 'edit';
@@ -153,7 +143,6 @@ document.addEventListener('DOMContentLoaded', () => {
       processName: text(detail.querySelector('#d-process-name')),
       deptId:      text(detail.querySelector('#d-dept-id')),
       imageUrl:    (detail.querySelector('#d-process-image')?.getAttribute('src')) || '',
-      // 상세 뷰에 이미 process_info가 들어가 있으므로 그대로 백업
       desc:        text(detail.querySelector('#d-process-desc'))
     };
 
@@ -169,23 +158,19 @@ document.addEventListener('DOMContentLoaded', () => {
       const currentImgSrc = state.backup.imageUrl;
       processBox.innerHTML = `
         <div class="process-edit-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:16px;width:100%;">
-          <!-- 좌: 현재 저장된 이미지 -->
-          <div class="image-section" style="min-height:auto;">
-            <img class="image" id="d-process-image" alt="" ${currentImgSrc ? `src="${safe(currentImgSrc)}"` : 'style="display:none"'} />
-            <div class="helper-text">현재 저장된 이미지</div>
-          </div>
 
-          <!-- 우: 새 업로드 미리보기 + 파일 버튼(미리보기 아래) -->
+
+          <!-- 우: 새 업로드 미리보기 + 파일버튼(미리보기 아래) -->
           <div class="image-section" style="min-height:auto;">
             <img class="image" id="e-process-image-preview" alt="업로드 미리보기" style="display:none" />
             <div class="helper-text">업로드 미리보기</div>
             <div style="margin-top:8px;">
               <input type="file" id="e-process-image-file" accept="image/*" />
             </div>
-            <div class="helper-text">* 파일을 선택하면 위 미리보기가 표시되고, 저장 시 서버로 업로드됩니다.</div>
+            <div class="helper-text">* 저장 시 공정ID 파일명으로 저장됩니다.</div>
           </div>
 
-          <!-- 하단 전체: 상세 설명 에디터 (process_info 편집) -->
+          <!-- 하단 전체: 공정 상세(process_info) -->
           <div style="grid-column:1 / -1;">
             <div class="specific">
               <div class="specific-box" style="padding:0; border:none; background:transparent;">
@@ -243,12 +228,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const newDept = deptEl ? deptEl.value : state.backup.deptId;
     const newDesc = descEl ? descEl.value : state.backup.desc;
 
-    // 헤더 값 반영
     setHTML(detail.querySelector('#d-process-seq'),  safe(newSeq));
     setHTML(detail.querySelector('#d-process-name'), safe(newName));
     setHTML(detail.querySelector('#d-dept-id'),      safe(newDept));
 
-    // 뷰 복원: 등록과 동일 (이미지 1개 + 상세[process_info])
     const processBox = detail.querySelector('.process-box');
     if (processBox) {
       const currentImgSrc = detail.querySelector('#d-process-image')?.getAttribute('src') || state.backup.imageUrl || '';
@@ -269,7 +252,7 @@ document.addEventListener('DOMContentLoaded', () => {
     state.pendingFile = null;
   }
 
-  // ===== 저장(수정) =====
+  // ===== 저장(수정): 파일 업로드(파일명=공정ID) → 경로 반영하여 update =====
   async function saveEdit() {
     if (!detail) return;
 
@@ -281,7 +264,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const vDept = detail.querySelector('#e-dept-id')?.value?.trim()
                ?? text(detail.querySelector('#d-dept-id'));
 
-    // 현재 이미지(src)
     let vImg  = detail.querySelector('#d-process-image')?.getAttribute('src') || '';
     const vDesc = detail.querySelector('#e-process-desc')?.value?.trim()
                ?? text(detail.querySelector('#d-process-desc'));
@@ -290,8 +272,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (state.pendingFile) {
       try {
-        const uploadedUrl = await uploadImage(state.pendingFile, process_id);
-        vImg = uploadedUrl;
+        const fd = new FormData();
+        fd.append('file', state.pendingFile);
+        fd.append('process_id', process_id); // ★ 파일명 = 공정ID
+        const res = await fetch(uploadUrl, { method: 'POST', body: fd });
+        const raw = await res.text();
+        if (!res.ok) throw new Error(`upload ${res.status}: ${raw}`);
+        let data = {};
+        try { data = raw ? JSON.parse(raw) : {}; } catch (_) {}
+        vImg = data.image_url || data.url || data.process_image_url || '';
+        if (!vImg) throw new Error('업로드 응답에 image_url 없음');
       } catch (e) {
         console.error('upload error', e);
         alert('이미지 업로드 중 오류가 발생했습니다.');
@@ -304,8 +294,8 @@ document.addEventListener('DOMContentLoaded', () => {
     body.set('process_seq',  vSeq || '');
     body.set('process_name', vName || '');
     body.set('department_id', vDept || '');
-    body.set('process_image_url', vImg || '');
-    body.set('process_info',     vDesc || ''); // ★ process_info로 저장
+    body.set('process_img',  vImg || '');   // ★ 컬럼명에 맞춤
+    body.set('process_info', vDesc || '');
 
     try {
       const res = await fetch(updateUrl, {
@@ -319,7 +309,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const raw = (await res.text()).trim();
       if (!res.ok || raw !== 'success') throw new Error(`update failed: ${raw}`);
 
-      // UI 동기화: 뷰 복귀(이미지 1 + 상세[process_info])
       exitEdit(false);
       updateTableRow(process_id, { process_id, process_seq: vSeq, process_name: vName });
       alert('저장되었습니다.');
@@ -435,14 +424,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 // ──────────────────────────────────────────────
-// 등록 슬라이드: 신규 등록 저장 (설명 포함, 이미지 1개 + 상세)
+// 등록 슬라이드: 멀티파트 1회 요청으로 서버에서 ID발급 + 파일명=ID 저장
 // ──────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
-  const form = document.getElementById('processInsertForm');
-  const btnNew = document.querySelector('.btm-btn.new');
+  const form       = document.getElementById('processInsertForm');
+  const btnNew     = document.querySelector('.btm-btn.new');
   const slideInput = document.getElementById('slide-input');
-  const ctx = (typeof contextPath === 'string') ? contextPath : '';
-  const createUrl = `${ctx}/processinsert`;
+  const fileInput  = document.getElementById('img');
+  const previewImg = document.getElementById('preview');
+  const ctx        = (typeof contextPath === 'string') ? contextPath : '';
 
   if (btnNew && slideInput) {
     btnNew.addEventListener('click', () => {
@@ -450,8 +440,20 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // 미리보기
+  document.addEventListener('change', (e) => {
+    if (e.target && e.target.id === 'img') {
+      const f = e.target.files && e.target.files[0];
+      if (!f) { previewImg?.removeAttribute('src'); return; }
+      const reader = new FileReader();
+      reader.readAsDataURL(f);
+      reader.onload = (ev) => { previewImg?.setAttribute('src', ev.target.result); };
+    }
+  });
+
   if (!form) return;
 
+  // 등록: 멀티파트 1회(서버에서 ID 생성 + 파일명=ID로 저장)
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
@@ -459,32 +461,34 @@ document.addEventListener('DOMContentLoaded', () => {
     const name = form.querySelector('input[name="process_name"]')?.value?.trim() || '';
     const dept = form.querySelector('input[name="department_id"]')?.value?.trim() || '';
     const desc = document.getElementById('create-process-desc')?.textContent?.trim() || '';
+    const file = fileInput?.files?.[0] || null;
 
     if (!name) { alert('공정명을 입력하세요.'); return; }
 
-    const body = new URLSearchParams();
-    body.set('process_seq', seq);
-    body.set('process_name', name);
-    body.set('department_id', dept);
-    body.set('process_info', desc); // ★ 등록도 process_info로 저장
+    const fd = new FormData();
+    fd.append('process_seq',  seq);
+    fd.append('process_name', name);
+    fd.append('department_id', dept);
+    fd.append('process_info', desc);
+    if (file) fd.append('file', file); 
 
     try {
-      const res = await fetch(createUrl, {
+      const res = await fetch(`${ctx}/processinsert`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-          'Accept': 'text/plain'
-        },
-        body: body.toString()
+        headers: { 'Accept': 'application/json' },
+        body: fd
       });
-      const raw = (await res.text()).trim();
-      if (!res.ok || raw !== 'success') throw new Error(`create failed: ${raw}`);
+      const raw = await res.text();
+      if (!res.ok) throw new Error(`insert ${res.status}: ${raw}`);
+      let data = {};
+      try { data = raw ? JSON.parse(raw) : {}; } catch {}
+      if (data.status !== 'success') throw new Error(raw);
 
       alert('등록되었습니다.');
       location.reload();
     } catch (err) {
-      console.error('[등록] 저장 오류:', err);
-      alert('저장 중 오류가 발생했습니다.');
+      console.error('[등록] 오류:', err);
+      alert('등록 중 오류가 발생했습니다. (콘솔/서버 로그 확인)');
     }
   });
 

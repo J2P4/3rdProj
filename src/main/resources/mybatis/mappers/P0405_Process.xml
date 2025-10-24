@@ -5,17 +5,18 @@
 
 <mapper namespace="proj.spring.mes.dao.mapper.P0405_ProcessMapperDAO">
 
+  <!-- 유일 ID 선발급: 동시성 안전(시퀀스) -->
+  <select id="selectNextProcessId" resultType="string">
+    SELECT 'G' || TO_CHAR(SYSDATE,'YYMMDD') || LPAD(SEQ_PROCESS_ID.NEXTVAL, 3, '0') AS ID
+    FROM dual
+  </select>
+
   <!-- 전체 공정 목록 -->
   <select id="selectProcess"
           resultType="proj.spring.mes.dto.P0405_ProcessDTO"
           parameterType="proj.spring.mes.dto.P0405_ProcessDTO">
     SELECT
-      process_id,
-      process_name,
-      process_seq,
-      process_img,
-      process_info,
-      department_id
+      process_id, process_name, process_seq, process_img, process_info, department_id
     FROM v3_process
     <where>
       <if test="process_id != null and process_id != ''">
@@ -31,17 +32,12 @@
     ORDER BY process_seq ASC, process_id ASC
   </select>
 
-  <!-- 단일 공정 상세 조회 -->
+  <!-- 단일 공정 상세 -->
   <select id="selectOneProcess"
           resultType="proj.spring.mes.dto.P0405_ProcessDTO"
           parameterType="string">
     SELECT
-      process_id,
-      process_name,
-      process_seq,
-      process_img,
-      process_info,
-      department_id
+      process_id, process_name, process_seq, process_img, process_info, department_id
     FROM v3_process
     WHERE process_id = #{process_id}
   </select>
@@ -50,19 +46,13 @@
   <select id="selectProcessItem"
           resultType="proj.spring.mes.dto.P0405_ProcessDTO">
     SELECT
-      process_id,
-      process_name,
-      process_seq,
-      process_img,
-      process_info,
-      department_id
+      process_id, process_name, process_seq, process_img, process_info, department_id
     FROM v3_process
     ORDER BY process_seq ASC, process_id ASC
   </select>
 
   <!-- 등록 -->
-  <insert id="insertProcess"
-          parameterType="proj.spring.mes.dto.P0405_ProcessDTO">
+  <insert id="insertProcess" parameterType="proj.spring.mes.dto.P0405_ProcessDTO">
     INSERT INTO v3_process (
       process_id, process_name, process_seq, process_img, process_info, department_id
     ) VALUES (
@@ -71,8 +61,7 @@
   </insert>
 
   <!-- 수정 -->
-  <update id="updateProcess"
-          parameterType="proj.spring.mes.dto.P0405_ProcessDTO">
+  <update id="updateProcess" parameterType="proj.spring.mes.dto.P0405_ProcessDTO">
     UPDATE v3_process
     SET
       process_name  = #{process_name},
@@ -92,7 +81,7 @@
     </foreach>
   </delete>
 
-  <!-- 페이징 조회  -->
+  <!-- 페이징 -->
   <select id="selectprocessPage"
           resultType="proj.spring.mes.dto.P0405_ProcessDTO"
           parameterType="map">
@@ -101,12 +90,7 @@
       SELECT t.*, ROWNUM rn
       FROM (
         SELECT
-          process_id,
-          process_name,
-          process_seq,
-          process_img,
-          process_info,
-          department_id
+          process_id, process_name, process_seq, process_img, process_info, department_id
         FROM v3_process
         <where>
           <if test="filter.process_id != null and filter.process_id != ''">
@@ -126,7 +110,7 @@
     WHERE rn &gt; #{offset}
   </select>
 
-  <!-- 전체 카운트 -->
+  <!-- 카운트 -->
   <select id="selectprocessCount"
           resultType="long"
           parameterType="map">
