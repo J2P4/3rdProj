@@ -1,3 +1,6 @@
+// JSON 객체(jsp의 재료용 품목). 테스트용.
+let allItems = [];
+
 document.addEventListener('DOMContentLoaded', () => {
 
     // ===================================
@@ -65,16 +68,26 @@ document.addEventListener('DOMContentLoaded', () => {
                 // 값 초기화
                 if (element.tagName === 'SELECT') {
                     element.value = element.options[0] ? element.options[0].value : '';
-                    element.removeAttribute('disabled'); // 필요한 경우 disabled 제거
-                } else if (element.type === 'text' || element.type === 'number') {
+                    if (element.classList.contains('input_bom_item')) {
+                        element.setAttribute('disabled', true);
+                    }
+                    else if (element.classList.contains('input_bom_div')) {
+                        element.removeAttribute('disabled');
+                    }
+                }
+                else if (element.type === 'text' || element.type === 'number') {
                     element.value = element.type === 'number' ? 0 : '';
+                    if (element.classList.contains('input_bom_name')) {
+                        element.setAttribute('disabled', true);
+                    }
                 }
             });
 
             // tbody에 새 행 추가 (첫 행 템플릿 바로 다음에 추가)
             if (initialRow.nextSibling) {
                 initialRow.parentNode.insertBefore(newRow, initialRow.nextSibling);
-            } else {
+            }
+            else {
                 bomTbody.appendChild(newRow);
             }
         });
@@ -123,7 +136,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 테이블에서 모든 BOM 수집
     function collectBOMData() {
-const rows = bomTbody.querySelectorAll('tr:not(.initial-row)'); // 템플릿 행 제외
+    const rows = bomTbody.querySelectorAll('tr:not(.initial-row)'); // 템플릿 행 제외
 
         const newBOMs = []; // INSERT 데이터 (new-bom-row)
         const updatedBOMs = []; // UPDATE 데이터 (existing-bom-row)
@@ -277,6 +290,149 @@ const rows = bomTbody.querySelectorAll('tr:not(.initial-row)'); // 템플릿 행
         });
     }    
     // ===================================
-    // 등록/수정에서 재료 분류 선택 시, 
+    // 등록/수정에서 재료 분류 선택 혹은 품목명 입력 시, id 선택 option 조정
     // ===================================
+
+
+    try {
+        // allItemsJson 변수를 바로 사용
+        if (typeof allItemsJson !== 'undefined' && allItemsJson.trim() !== '') {
+            allItems = JSON.parse(allItemsJson);
+        }
+    } 
+    catch (e) {
+        console.error("allItemsJson 오류:", e);
+    }
+
+    function divFilter(itemDiv) {
+        if (!itemDiv || itemDiv === '0') { // '분류 선택'이거나 값이 없으면 빈 배열 반환
+            return [];
+        }
+        // 'item_div' 속성이 일치하는 항목만 필터링
+        return allItems.filter(item => String(item.material_item_div) === itemDiv);
+    }
+
+    /* 분류 변경 시 품목 ID 드롭다운 갱신 함수 */
+
+    function bomDivChange(event) {
+        const selectedDiv = event.target.value;
+        const row = event.target.closest('tr');
+        const itemSelect = row.querySelector('.input_bom_item');
+        const itemNameInput = row.querySelector('.input_bom_name');
+
+        if (!itemSelect || !itemNameInput) return;
+        
+        // 품목명 초기화
+        itemNameInput.value = '';
+            
+        if (selectedDiv !== '0') {
+            itemNameInput.removeAttribute('disabled');
+        }
+        else {
+            itemNameInput.setAttribute('disabled', true);
+        }
+
+        // 품목 ID 목록 초기화 및 비활성화
+        itemSelect.innerHTML = '<option value="">품목 ID 선택</option>';
+        itemSelect.setAttribute('disabled', true);
+
+        // 분류에 맞는 품목만 필터링
+        const filteredItems = divFilter(selectedDiv);
+
+        // data-filtered-items 속성에 JSON 문자열로 저장하여 품목명 검색 시 활용
+        row.dataset.filteredItems = JSON.stringify(filteredItems);
+    
+    }
+    
+    /* 이름 입력 시 ID 드롭다운 갱신 함수 */
+
+    function bomNameSearch(event) {
+        console.log("bomNameSearch 호출됨. 제발 좀. 이름 넣었잖아. 현재 입력 값:", event.target.value);
+
+        const inputName = event.target.value.trim().toUpperCase();
+        const row = event.target.closest('tr');
+
+    // 현재 행의 분류(Division) 값
+    const divisionSelect = row.querySelector('.input_bom_div');
+    const itemDiv = divisionSelect ? divisionSelect.value : '0'; // 분류 값 가져오기
+
+    console.log("선택된 분류:", itemDiv, "전체 품목 개수:", allItems.length);
+    
+    // 2해당 분류에 맞는 품목 목록
+    const filteredItems = divFilter(itemDiv); // 분류에 따라 필터링
+
+        const itemSelect = row.querySelector('.input_bom_item');
+
+        if (!itemSelect) return;
+        
+        // 품목 ID 목록 초기화 및 비활성화
+            itemSelect.innerHTML = '<option value="">품목 ID 선택</option>';
+            itemSelect.setAttribute('disabled', true); 
+
+            if (inputName.length === 0 || itemDiv === '0') {
+                // 이름 입력이 없거나 분류 선택을 안 했으면 disabled 유지
+                console.log("검색어 또는 분류 미선택. 왜...");
+                return; 
+            }
+
+            console.log("제발...... 억울하다 진짜")
+            console.log("필터링된 품목 개수:", filteredItems.length);
+            console.log("검색 시작 이름:", inputName);
+
+            // 품목명에 부분적으로 일치하는 항목 필터링 (material_item_name 사용)
+            const matchedItems = filteredItems.filter(item => 
+                // material_item_name 속성으로 검색
+                item.material_item_name && String(item.material_item_name).toUpperCase().includes(inputName)
+            );
+
+            if (matchedItems.length > 0) {
+                matchedItems.forEach(item => {
+                    const option = document.createElement('option');
+                    // material_item_id를 value로 사용
+                    option.value = item.material_item_id; 
+                    option.textContent = `${item.material_item_id} - ${item.material_item_name}`; 
+                    option.dataset.name = item.material_item_name; // 품목명을 data-name에 저장
+                    itemSelect.appendChild(option);
+                });
+                
+                // 검색 결과가 있으면 품목 ID 드롭다운 활성화
+                itemSelect.removeAttribute('disabled'); 
+            }
+    }
+
+    // id 선택 시, 해당 품목명으로 채우기
+    function idChangeName(event) {
+        const selectedOption = event.target.selectedOptions[0];
+        const row = event.target.closest('tr');
+        const itemNameInput = row.querySelector('.input_bom_name');
+        
+        if (selectedOption && itemNameInput && selectedOption.value !== '') {
+            // data-name 속성에서 품목명을 가져와 입력란에 채우기
+            itemNameInput.value = selectedOption.dataset.name || '';
+        }
+        else if (itemNameInput) {
+            if (selectedOption.value === '') {
+                itemNameInput.value = '';
+            }
+        }
+    }
+
+    if(bomTbody) {
+        bomTbody.addEventListener('change', (event) => {
+            if (event.target.classList.contains('input_bom_div')) {
+                bomDivChange(event);
+            }
+            if (event.target.classList.contains('input_bom_item')) {
+                idChangeName(event);
+            }
+        });
+
+        // 품목명 (input.input_bom_name) 입력 이벤트는 input으로 유지
+        bomTbody.addEventListener('input', (event) => {
+            if (event.target.classList.contains('input_bom_name')) {
+                bomNameSearch(event);
+            }
+        });
+    }
+
 });

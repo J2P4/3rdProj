@@ -17,7 +17,7 @@
     <script>
         const contextPath = '${pageContext.request.contextPath}';
         // 품목 목록을 JSON 형식으로 js 변수에 저장하려고 작성
-        const allItemsJson = `${itemListJson}`; 
+        const allItemsJson = `${materialListJson}`; 
     </script>
     <script src="${pageContext.request.contextPath}/resources/js/common.js" defer></script>
     <script src="${pageContext.request.contextPath}/resources/js/04_4_bom.js" defer></script>
@@ -219,7 +219,7 @@
                                         <option value = "">품목 ID를 선택해주세요</option>
                                 </select>
                             </td>
-                            <td><input type = "text" placeholder = "품목명을 입력해주세요" style = "width: 100%;"></td>
+                            <td><input type = "text" placeholder = "품목명을 입력해주세요" style = "width: 100%;" disabled></td>
                         </tr>
                     </tbody>
                 </table>
@@ -230,8 +230,8 @@
                     <thead>
                         <th><input type=checkbox></th>
                         <th>분류</th>
+                        <th class = "name">재료 품목명</th>
                         <th class = "id">재료 품목 ID</th>
-                        <th class = "name">품목명</th>
                         <th class = "gb">소요량</th>
                     </thead>
                     <tbody>
@@ -239,18 +239,28 @@
                             <td class = "chkbox"><input type="checkbox" class="rowChk existingDefectChk" name = "delete_bom_id" value=""></td>
                             <td>
                                 <select name = "bomDivList" class = "input_bom_div" size="1">
-                                    <option value = "0" selected>분류 선택</option>
-                                    <option value = "1" selected>도서</option>
-                                    <option value = "2">포장지</option>
+                                    <option value = "" selected>분류 선택</option>
+                                    <option value = "도서" selected>도서</option>
+                                    <option value = "포장지">포장지</option>
                                 </select>
                             </td>
                             <td>
-                                <select name = "bomItemList" class="input_bom_item" size = "1" style = "width: 100%;" disabled>
-                                        <option value = "">품목 ID 선택</option>
-                                </select>                                
+                                <input type = "text" name = "bomNameList" class="input_bom_name" placeholder = "품목명을 입력해주세요" disabled>
                             </td>
                             <td>
-                                <input type = "text" name = "bomNameList" class="input_bom_name" placeholder = "품목명을 입력해주세요">
+                                <select name = "bomItemList" class="input_bom_item" size = "1" style = "width: 100%;" disabled>
+                                        <option value = "" selected>품목 ID 선택</option>
+                                        <%-- <c:if test="${not empty list}">
+                                            <c:forEach var="ma" items="${materialList}">
+                                                <option 
+                                                    value = "${ma.material_item_id}"
+                                                    data-div = "${ma.material_item_div}"
+                                                    data-name="${ma.material_item_name}">
+                                                    ${ma.material_item_id} - ${ma.material_item_name}
+                                                </option>
+                                            </c:forEach>
+                                        </c:if>     --%>
+                                </select>
                             </td>
                             <td><input type = "number" name = "bomAmountList" class = "input_bom_amount"></td>
                         </tr>

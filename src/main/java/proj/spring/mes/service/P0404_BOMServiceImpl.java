@@ -54,7 +54,10 @@ public class P0404_BOMServiceImpl implements P0404_BOMService {
 		return bomMapperDAO.insertBOM(dto);
 	}
 	
-	// 품목 조회용*2 필요
+	@Override
+	public List<P0404_BOMDTO> bomLists() {
+		return bomMapperDAO.selectOneBOMItemM();
+	}
 
 	
 }

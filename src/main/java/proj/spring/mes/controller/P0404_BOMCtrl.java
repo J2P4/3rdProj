@@ -12,6 +12,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import proj.spring.mes.dto.P0404_BOMDTO;
 import proj.spring.mes.service.P0404_BOMService;
 
@@ -28,8 +32,34 @@ public class P0404_BOMCtrl {
 		System.out.println("BOM 기본 조회");
 		
 		List<P0404_BOMDTO> list = service.itemList(searchCondition);
+		List<P0404_BOMDTO> materialList = service.bomLists();
+		
+		ObjectMapper objectMapper = new ObjectMapper();
+		
+		String materialListJson = null;
+		try {
+			
+			// 한국어 깨짐 방지
+			objectMapper.configure(JsonGenerator.Feature.ESCAPE_NON_ASCII, false);
+			
+			String rawJson = objectMapper.writeValueAsString(materialList);
+			
+			// JSON 난리 나서 이스케이프...
+			// 진짜 가만 안 둬.
+			// 아마 품목 조회처럼 특문 많은 경우 아니면 이 영역은 지워도 될 듯.
+			materialListJson = rawJson.replaceAll("[\n\r]", "");
+			materialListJson = materialListJson.replaceAll("'", "\\\\'");
+			materialListJson = materialListJson.replaceAll("\"", "\\\\\""); 
+			materialListJson = materialListJson.replaceAll("`", "\\\\`");
+		}
+		catch (JsonProcessingException e) {
+			e.printStackTrace();
+			materialListJson = "[]"; 
+		}
 		
 		model.addAttribute("list", list);
+		model.addAttribute("materialList", materialList);
+		model.addAttribute("materialListJson", materialListJson);
 		
 		return "04_standard/04_4_standard_bom.tiles";
 	}

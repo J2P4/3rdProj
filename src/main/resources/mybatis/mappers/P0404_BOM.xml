@@ -118,7 +118,8 @@
 	<!-- 조회 : 품목 고르기용 2(재료) -->
 	<select id = "selectOneBOMItemM" resultType = "P0404_BOMDTO">
 		select
-			item_id, item_name
+			item_id as material_item_id, item_name as material_item_name,
+			item_div as material_item_div
 		from v3_item
 		where item_div in ('도서', '포장지')
 	</select>
