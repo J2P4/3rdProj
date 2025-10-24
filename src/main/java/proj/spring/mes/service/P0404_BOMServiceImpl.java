@@ -50,8 +50,12 @@ public class P0404_BOMServiceImpl implements P0404_BOMService {
 	}
 	
 	@Override
-	public int addBOM(P0404_BOMDTO dto) {
-		return bomMapperDAO.insertBOM(dto);
+	public int addBOM(List<P0404_BOMDTO> bomList) {
+	    int insertedCount = 0;
+	    for (P0404_BOMDTO dto : bomList) {
+	        insertedCount += bomMapperDAO.insertBOM(dto);
+	    }
+	    return insertedCount;
 	}
 	
 	@Override

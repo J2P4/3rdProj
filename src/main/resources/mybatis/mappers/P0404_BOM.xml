@@ -135,10 +135,7 @@
 	<!-- 수정 : 여기도 재료 id를 이용해 작성하는 거니까 update에 bom id도 포함되어야 함-->
 	<update id = "updateBOM" parameterType = "P0404_BOMDTO">
 		update v3_bom
-		set bom_id = 'test'
-			bom_amount = #{stock_amount},
-			item_id = #{item_id}
-		where bom_id = #{bom_id}
+		set bom_amount = #{bom_amount}, item_id = #{product_item_id} where bom_id = #{bom_id}
 	</update>
 	
 	<!-- 삭제 -->
@@ -156,17 +153,18 @@
 	</delete>
 	
 	<!-- 삽입 : 여기를 to_char(sysdate)가 아니라 입력받은 재료 id값 일부가 들어가도록 조정해야 함-->
-	<insert id = "insertBOM" parameterType = "P0404_BOMDTO">
-		<selectKey keyProperty="BOM_id" resultType="string" order="BEFORE">
-		  select 'F' || TO_CHAR(SYSDATE, 'YYMMDD') || LPAD(bom_id_seq.NEXTVAL, 2, '0')
-		  from dual
-		</selectKey>
-		
-		insert into v3_bom (
-			bom_id, bom_amount, item_id
-		)
-		values (
-			#{bom_id}, #{bom_amount}, #{item_id}
-		)
+	<insert id="insertBOM" parameterType="P0404_BOMDTO">
+	    <selectKey keyProperty="bom_id" resultType="string" order="BEFORE">
+	        select
+	            'F' || #{material_item_id} || LPAD(BOM_ID_SEQ.NEXTVAL, 2, '0')
+	        from dual
+	    </selectKey>
+	    
+	    insert into v3_bom (
+	        bom_id,           bom_amount,
+	        item_id           )
+	    values (
+	        #{bom_id},          #{bom_amount},
+	        #{product_item_id}  )
 	</insert>
 </mapper>

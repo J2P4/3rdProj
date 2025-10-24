@@ -16,4 +16,8 @@ public class P0404_BOMDTO {
 	private String material_item_div;
 	private String product_item_name;
 	private String product_item_id;
+	
+	private String pro_item_id;
+	private String pro_item_name;
+	private String pro_item_div;
 }

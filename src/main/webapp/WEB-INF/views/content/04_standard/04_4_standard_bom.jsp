@@ -33,7 +33,7 @@
                 <div class = "filitem-name">· 재료명</div>
                 <div class = "filitem-input">
                     <c:set var="filter.material_item_name" value="${param.material_item_name}" />
-                    <input type = "text" name = "material_item_name" placeholder="재료명을 입력해주세요" value = "${filter.bom_id}">
+                    <input type = "text" name = "material_item_name" placeholder="재료명을 입력해주세요" value = "${filter.material_item_name}">
                 </div>
             </div>
             <div class = "filter-item">
@@ -91,23 +91,21 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <c:if test="${empty list}">
-                        <tr>
-                            <td><input type="checkbox" class="rowChk" disabled></td>
-                            <td colspan="5"> 조회 내역이 없습니다.</td>
+                <c:if test="${empty list}">
+                    <tr>
+                        <td><input type="checkbox" class="rowChk" disabled></td>
+                        <td colspan="5"> 조회 내역이 없습니다.</td>
+                    </tr>
+                </c:if>
+                <c:if test="${not empty list}">
+                    <c:forEach var="P0404_BOMDTO" items="${list}">
+                        <tr data-id="${P0404_BOMDTO.product_item_id}" class="product-row">
+                            <td><input type="checkbox" class="rowChk" name="delete_item_id" value="${P0404_BOMDTO.product_item_id}"></td>
+                            <td>${P0404_BOMDTO.product_item_id}</td>
+                            <td>${P0404_BOMDTO.product_item_name}</td>
                         </tr>
-                    </c:if>
-                    <c:if test="${not empty list}">
-                        <c:forEach var="P0404_BOMDTO" items="${list}">
-                            <tr data-id="${P0404_BOMDTO.product_item_id}" class="product-row">
-                                <td><input type="checkbox" class="rowChk" name="delete_item_id" value="${P0404_BOMDTO.product_item_id}"></td>
-                                <td>${P0404_BOMDTO.product_item_id}</td>
-                                <td>${P0404_BOMDTO.product_item_name}</td>
-                            </tr>
-                        </c:forEach>
-                    </c:if>                    
-                </tr>
+                    </c:forEach>
+                </c:if>                    
             </tbody>
         </table>
     </div>
@@ -200,7 +198,7 @@
     </div>
     <div class = "slide" id = "slide-input">
         <button class="slide-close-btn">✕</button>
-        <form class = "slide-contents">
+        <form class = "slide-contents" id="bomForm" method="post">
             <div class = "silde-title"><h2 id="slide-title">BOM 등록</h2></div>
             <div class = "slide-id" id="stock-id-show" style = "display: none">
                 목표 품목 ID: <span id="item-id-val"></span>
@@ -216,11 +214,11 @@
                         <tr>
                             <div style = "font-size:0.8em; color: red; margin-bottom: 10px;">목표 품목명을 입력 후, ID를 선택해주세요.</div>
                             <td>
-                                <select size = "1" style = "width: 100%;" disabled>
+                                <select id="target-product-id" name="product_item_id" size = "1" style = "width: 100%;" disabled>
                                         <option value = "">품목 ID를 선택해주세요</option>
                                 </select>
                             </td>
-                            <td><input type = "text" placeholder = "품목명을 입력해주세요" style = "width: 100%;"></td>
+                            <td><input type = "text" id="target-product-name" placeholder = "품목명을 입력해주세요" style = "width: 100%;"></td>
                         </tr>
                     </tbody>
                 </table>
@@ -236,7 +234,7 @@
                         <th class = "gb">소요량</th>
                     </thead>
                     <tbody>
-                        <tr class = "initial-row">
+                        <tr class = "initial-row" data-status="IGNORE">
                             <td class = "chkbox"><input type="checkbox" class="rowChk existingDefectChk" name = "delete_bom_id" value=""></td>
                             <td>
                                 <select name = "bomDivList" class = "input_bom_div" size="1">
@@ -263,7 +261,7 @@
                                         </c:if>     --%>
                                 </select>
                             </td>
-                            <td><input type = "number" name = "bomAmountList" class = "input_bom_amount"></td>
+                            <td><input type = "number" name = "bomAmountList" class = "input_bom_amount" min="1" value="1"></td>
                         </tr>
                     </tbody>
                 </table>
@@ -273,7 +271,7 @@
                 </div>
             </div>
             <div class = "slide-btnbox">
-                <input type = "button" class = "submit-btn slide-btn" value = "등록">
+                <input type = "button" class = "submit-btn slide-btn" value = "등록" id="registerBomBtn">
                 <input type = "button" class = "close-btn slide-btn" value = "취소">
             </div>
         </form>

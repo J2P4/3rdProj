@@ -93,7 +93,29 @@ public class P0404_BOMCtrl {
 		return "04_standard/04_4_standard_bom.tiles";
 	}
 	
-//	@RequestMapping("/bominsert")
+    @PostMapping("/bominsert")
+    @ResponseBody
+    public String insertBOMs(@RequestBody List<P0404_BOMDTO> bomList) {
+        logger.info("BOM 등록 항목 수: {}", bomList.size());
+        
+        if (bomList == null || bomList.isEmpty()) {
+            return "bom 없음";
+        }
+        
+        try {
+            int insertedCount = service.addBOM(bomList);
+            
+            if (insertedCount == bomList.size()) {
+                return "success";
+            } else {
+                logger.error("BOM 등록 실패. 요청 수: {}, 실제 등록 수: {}", bomList.size(), insertedCount);
+                return "fail: Partial insertion";
+            }
+        } catch (Exception e) {
+            logger.error("BOM 등록 중 예외 발생:", e);
+            return "fail: " + e.getMessage();
+        }
+    }
 //	@RequestMapping("/bomupdate")
 	
 	@PostMapping("/bomdelete")

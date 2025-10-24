@@ -16,14 +16,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // 취소 버튼 누를 때 닫히도록.
     // 여기도 조금 수정됨. 컨펌창 띄울 필요 없는데 .close-btn js 사용중이었다면
     // '#slide-detail 대신 해당 영역의 id, class를 써서 추가 작성해주시면 됩니다.
-    document.querySelectorAll('#slide-detail > .close-btn').forEach(btn => {
+    document.querySelectorAll('#slide-detail .close-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             btn.closest('.slide')?.classList.remove('open');
         });
     });
 
     // X 버튼 누를 때 닫히도록
-    document.querySelectorAll('#slide-detail > .slide-close-btn').forEach(btn => {
+    document.querySelectorAll('#slide-detail .slide-close-btn').forEach(btn => {
         btn.addEventListener('click', () => btn.closest('.slide').classList.remove('open'));
     });
 
@@ -46,7 +46,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 inputSlide.classList.remove('open');
                 
                 // 폼 영역 초기화
-                inputSlide.querySelector('form')?.reset(); 
+                inputSlide.querySelector('form')?.reset();
+
+                // 슬라이드 내부의 행 추가들 원상복구 시키기(bom, 품질 검사 등)
+                // 1. bom의 경우(다른 페이지도... 귀찮으니 이 양식 참고해서 복붙하기로)
+                const bomTbody = document.querySelector('#bomLists tbody');
+                if (bomTbody) {
+                    // 'new-bom-row' 클래스를 가진 모든 행 선택
+                    const newRows = bomTbody.querySelectorAll('.new-bom-row');
+                    newRows.forEach(row => row.remove());
+
+                    // bom.js에서 설정해둔 행 카운터 초기화
+                    if (typeof newRowCounter !== 'undefined') {
+                        newRowCounter = 0; 
+                    }
+                }
             }
         });
     }
@@ -62,7 +76,24 @@ document.addEventListener('DOMContentLoaded', () => {
                 inputSlide.classList.remove('open');
                 
                 // 폼 영역 초기화
-                inputSlide.querySelector('form')?.reset(); 
+                inputSlide.querySelector('form')?.reset();
+                if (typeof window.resetBomNewRows === 'function') {
+                    window.resetBomNewRows();
+                }
+
+                // 슬라이드 내부의 행 추가들 원상복구 시키기(bom, 품질 검사 등)
+                // 1. bom의 경우(다른 페이지도... 귀찮으니 이 양식 참고해서 복붙하기로)
+                // const bomTbody = document.querySelector('#bomLists tbody');
+                // if (bomTbody) {
+                //     // 'new-bom-row' 클래스를 가진 모든 행 선택
+                //     const newRows = bomTbody.querySelectorAll('.new-bom-row');
+                //     newRows.forEach(row => row.remove());
+
+                //     // bom.js에서 설정해둔 행 카운터 초기화
+                //     if (typeof newRowCounter !== 'undefined') {
+                //         newRowCounter = 0; 
+                //     }
+                // }
             }
         });        
     }
