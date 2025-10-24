@@ -82,7 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // bom 삭제 버튼 클릭 이벤트
     if (delBomBtn && bomTbody) {
-delBomBtn.addEventListener('click', () => {
+    delBomBtn.addEventListener('click', () => {
             // 새로 추가된 행 (new-bom-row) 체크박스 선택
             const checkedNewRows = Array.from(bomTbody.querySelectorAll('.new-bom-row .newBomChk:checked'));
             // 기존 행 (existing-bom-row) 체크박스 선택
@@ -123,31 +123,43 @@ delBomBtn.addEventListener('click', () => {
 
     // 테이블에서 모든 BOM 수집
     function collectBOMData() {
-        const defectRows = bomTbody.querySelectorAll('tr:not(.initial-row)'); // 템플릿 행 제외
+const rows = bomTbody.querySelectorAll('tr:not(.initial-row)'); // 템플릿 행 제외
 
-        const newBOMs = []; // insert 데이터
-        const existingBOMs = []; // update 데이터
-        const deletedBOMs = []; // delete 데이터
+        const newBOMs = []; // INSERT 데이터 (new-bom-row)
+        const updatedBOMs = []; // UPDATE 데이터 (existing-bom-row)
+        const deletedBOMs = []; // DELETE 대상 ID
 
-        defectRows.forEach(row => {
-            // 새로 추가된 행
-            if (row.classList.contains('new-defect-row')) {
-                const divSelect = row.querySelector('input[name="bomDivList"]');
-                const itemSelect = row.querySelector('input[name="bomItemList"]');
-                const nameInput = row.querySelector('select[name="bomNameList"]');
-                const amountInput = row.querySelector('select[name="bomAmountList"]');
+        rows.forEach(row => {
+            const item_div = row.querySelector('.input_bom_div') ? row.querySelector('.input_bom_div').value : '';
+            const item_id = row.querySelector('.input_bom_item') ? row.querySelector('.input_bom_item').value : '';
+            const item_name = row.querySelector('.input_bom_name') ? row.querySelector('.input_bom_name').value : '';
+            const bom_amount = row.querySelector('.input_bom_amount') ? row.querySelector('.input_bom_amount').value : '';
+            
+            const bomData = {
+                item_div: item_div,
+                item_id: item_id,
+                item_name: item_name,
+                bom_amount: bom_amount
+            };
 
-                newBOM.push({
-                    item_div: divSelect ? divSelect.value : '',
-                    item_id: itemSelect ? parseInt(itemSelect.value) : 0,
-                    item_name: nameInput ? nameInput.value : '',
-                    bom_amount: amountInput ? amountInput.value : ''
-                });
+            // 신규 추가된 행
+            if (row.classList.contains('new-bom-row') && row.dataset.status !== 'DELETE') {
+                newBOMs.push(bomData);
+            } 
+            // 기존 행 (수정 시 로직 추가 필요)
+            else if (row.classList.contains('existing-bom-row')) {
+                // if (row.dataset.status === 'UPDATE') {
+                //     updatedBOMs.push({...bomData, bom_id: row.dataset.bomId});
+                // } else if (row.dataset.status === 'DELETE') {
+                //     deletedBOMs.push(row.dataset.bomId);
+                // }
+                // 현재는 별도 update/delete 로직이 없으므로, 기본적으로 아무 작업도 하지 않음
             }
         });
         
         return { 
-            newBOM: newBOM,
+            newBOMs: newBOMs,
+            updatedBOMs: updatedBOMs,
             deletedBOMs: deletedBOMs
         };
     }
@@ -221,7 +233,7 @@ delBomBtn.addEventListener('click', () => {
                 try {
                     const response = await fetch(`${contextPath}/bomdetails?item_id=${productId}`);
                     if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
+                        throw new Error(`에러: ${response.status}`);
                     }
                     const bomList = await response.json();
 
@@ -236,7 +248,7 @@ delBomBtn.addEventListener('click', () => {
                     
                     // 길이 0이면(=데이터 없으면)
                     if (bomList.length === 0) {
-                        bomDetailTbody.innerHTML = `<tr><td colspan="5">BOM 상세 내역이 없습니다.</td></tr>`;
+                        bomDetailTbody.innerHTML = `<tr><td colspan="4">BOM 상세 내역이 없습니다.</td></tr>`;
                     }
                     // 데이터 있으면
                     else {
@@ -264,5 +276,7 @@ delBomBtn.addEventListener('click', () => {
             });
         });
     }    
-
+    // ===================================
+    // 등록/수정에서 재료 분류 선택 시, 
+    // ===================================
 });
