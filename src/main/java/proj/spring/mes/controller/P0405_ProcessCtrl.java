@@ -1,5 +1,6 @@
 package proj.spring.mes.controller;
 
+import java.io.File;
 import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
@@ -10,6 +11,9 @@ import org.slf4j.LoggerFactory;
 
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.http.CacheControl;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
@@ -20,6 +24,7 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -37,8 +42,12 @@ public class P0405_ProcessCtrl {
 
     private static final Logger logger = LoggerFactory.getLogger(P0405_ProcessCtrl.class);
 
+    /** 브라우저가 요청하는 URL prefix (기존 유지) */
     private static final String WEB_PATH = "/resources/img/04_5_process";
     private static final String PLACEHOLDER_IMG = WEB_PATH + "/noimage.png";
+
+    /** 실제 파일 저장 디렉터리 (로컬) */
+    private static final File LOCAL_DIR = new File("D:/proj_v3/src/main/webapp/resources/img/04_5_process");
 
     @Autowired private P0405_ProcessService service;
     @Autowired private ServletContext servletContext;
@@ -103,7 +112,7 @@ public class P0405_ProcessCtrl {
             String id = service.createWithFile(file, dto, WEB_PATH, PLACEHOLDER_IMG, servletContext);
             resp.put("status","success");
             resp.put("process_id", id);
-            resp.put("process_img", dto.getProcess_img());
+            resp.put("process_img", dto.getProcess_img()); // 예: /resources/img/04_5_.../{id}.png
             String json = new ObjectMapper().writeValueAsString(resp);
             return ResponseEntity.ok(json);
         } catch (Exception e) {
@@ -119,7 +128,7 @@ public class P0405_ProcessCtrl {
         }
     }
 
-    // 수정(JSON: text/plain 유지해도 되지만 통일)
+    // 수정(JSON)
     @PostMapping(value="/processupdate", produces=MediaType.TEXT_PLAIN_VALUE)
     @ResponseBody
     public String update(P0405_ProcessDTO dto) {
@@ -127,7 +136,7 @@ public class P0405_ProcessCtrl {
         return result > 0 ? "success" : "fail";
     }
 
-    // 삭제(JSON text/plain)
+    // 삭제(JSON)
     @PostMapping(value="/processdelete", consumes=MediaType.APPLICATION_JSON_VALUE, produces=MediaType.TEXT_PLAIN_VALUE)
     @ResponseBody
     public String deleteprocesss(@RequestBody List<String> processIds) {
@@ -136,7 +145,7 @@ public class P0405_ProcessCtrl {
         return (deletedCount == processIds.size()) ? "success" : "fail";
     }
 
-    // (선택) 수정 슬라이드용 이미지 재업로드 엔드포인트
+    // 수정 슬라이드용 이미지 재업로드
     @PostMapping(
         value="/processimageupload",
         consumes=MediaType.MULTIPART_FORM_DATA_VALUE,
@@ -149,7 +158,7 @@ public class P0405_ProcessCtrl {
     ) {
         Map<String,Object> resp = new HashMap<String,Object>();
         try {
-            String url = service.saveImageForId(file, processId, WEB_PATH, servletContext); // 파일명=공정ID
+            String url = service.saveImageForId(file, processId, WEB_PATH, servletContext);
             resp.put("status","success");
             resp.put("image_url", url);
             String json = new ObjectMapper().writeValueAsString(resp);
@@ -164,6 +173,45 @@ public class P0405_ProcessCtrl {
             } catch (Exception ignore) {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"status\":\"fail\"}");
             }
+        }
+    }
+
+    /**
+     * /resources/img/04_5_process/{fileName} 요청을 톰캣 정적리소스가 아니라
+     * 로컬 디스크(LOCAL_DIR)에서 직접 읽어 반환.
+     * (JDK 1.6 호환 버전: java.nio.file.* 미사용)
+     */
+    @GetMapping(value = WEB_PATH + "/{fileName:.+}")
+    @ResponseBody
+    public ResponseEntity<Resource> serveProcessImage(@PathVariable("fileName") String fileName) {
+        try {
+            // 경로 이탈/확장자 화이트리스트
+            if (fileName.indexOf("..") >= 0)
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body((Resource) null);
+            if (!fileName.matches("^[A-Za-z0-9_-]+\\.(png|jpg|jpeg|gif|webp|bmp)$"))
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body((Resource) null);
+
+            if (!LOCAL_DIR.exists() && !LOCAL_DIR.mkdirs()) {
+                logger.error("LOCAL_DIR mkdirs fail: {}", LOCAL_DIR.getAbsolutePath());
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body((Resource) null);
+            }
+
+            File f = new File(LOCAL_DIR, fileName);
+            if (!f.exists() || !f.isFile())
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body((Resource) null);
+
+            String ct = servletContext.getMimeType(f.getName());
+            if (ct == null) ct = MediaType.APPLICATION_OCTET_STREAM_VALUE;
+
+            Resource res = new FileSystemResource(f);
+            return ResponseEntity.ok()
+                    .contentType(MediaType.parseMediaType(ct))
+                    .cacheControl(CacheControl.noCache())
+                    .body(res);
+
+        } catch (Exception e) {
+            logger.error("serveProcessImage error: {}", e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body((Resource) null);
         }
     }
 }
