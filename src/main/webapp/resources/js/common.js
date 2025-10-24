@@ -13,17 +13,61 @@ document.addEventListener('DOMContentLoaded', () => {
     // 작성 버튼 누를 때 뜨도록
     newBtn?.addEventListener('click', () => slideInput.classList.add('open'));
 
-    // 취소 버튼 누를 때 닫히도록
-    document.querySelectorAll('.close-btn').forEach(btn => {
+    // 취소 버튼 누를 때 닫히도록.
+    // 여기도 조금 수정됨. 컨펌창 띄울 필요 없는데 .close-btn js 사용중이었다면
+    // '#slide-detail 대신 해당 영역의 id, class를 써서 추가 작성해주시면 됩니다.
+    document.querySelectorAll('#slide-detail > .close-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             btn.closest('.slide')?.classList.remove('open');
         });
     });
 
     // X 버튼 누를 때 닫히도록
-    document.querySelectorAll('.slide-close-btn').forEach(btn => {
+    document.querySelectorAll('#slide-detail > .slide-close-btn').forEach(btn => {
         btn.addEventListener('click', () => btn.closest('.slide').classList.remove('open'));
     });
+
+    // 등록, 수정 영역의 취소 버튼. 중복 안 되도록 처리해둠.
+    // 다른 페이지에 js 있으면 문제가 생길수도... 혹시 문제 있으면 이 부분 확인 한 번만 부탁드립니다!!!
+
+    // 변수 지정
+    const inputSlide = document.querySelector('#slide-input');
+    const cancelBtn = inputSlide ? inputSlide.querySelector('.close-btn') : null;
+    const xBtn = inputSlide ? inputSlide.querySelector('.slide-close-btn') : null;
+
+    if(cancelBtn) {
+        cancelBtn.addEventListener('click', (e) => {
+            // 위 취소버튼 이벤트랑 꼬이지 않도록.
+            e.stopPropagation();
+
+            const isConfirmed = confirm(`현재 화면을 벗어나시겠습니까? 기존 작성 내용은 저장되지 않습니다.`);
+
+            if (isConfirmed) {
+                inputSlide.classList.remove('open');
+                
+                // 폼 영역 초기화
+                inputSlide.querySelector('form')?.reset(); 
+            }
+        });
+    }
+
+    if(xBtn) {
+        xBtn.addEventListener('click', (e) => {
+            // 아래 취소버튼 이벤트랑 꼬이지 않도록.
+            e.stopPropagation();
+
+            const isConfirmed = confirm(`현재 화면을 벗어나시겠습니까? 기존 작성 내용은 저장되지 않습니다.`);
+
+            if (isConfirmed) {
+                inputSlide.classList.remove('open');
+                
+                // 폼 영역 초기화
+                inputSlide.querySelector('form')?.reset(); 
+            }
+        });        
+    }
+
+
     
     // ============================
     // 체크 박스 전체 선택
@@ -174,5 +218,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     console.log('테이블 정렬 기능 활성화 완료');
+
+
 
 });

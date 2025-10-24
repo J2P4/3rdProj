@@ -11,6 +11,7 @@ public interface P0404_BOMService {
 	public P0404_BOMDTO getOneBOM(String bom_id);
 	List<P0404_BOMDTO> selectBOMByItem(String item_id);
 	public List<P0404_BOMDTO> bomLists();
+	public List<P0404_BOMDTO> proLists();
 	public int editBOM(P0404_BOMDTO dto);
 //	public int removeBOM(String bom_id);
 	public int removeBOMs(List<String> bomIds);

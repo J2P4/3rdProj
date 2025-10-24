@@ -105,14 +105,14 @@
                	<c:if test="${not empty list}">
                		<c:forEach var="P0401_StockDTO" items="${list}">
 	               		<tr data-id="${P0401_StockDTO.stock_id}">
-		                    <td><input type="checkbox" class="rowChk" name="delete_stock_id" value="${P0401_StockDTO.stock_id}"></td>
-		                    <td>${P0401_StockDTO.stock_id}</td>
-		                    <td><fmt:formatNumber value="${P0401_StockDTO.stock_amount}" pattern="#,###"></fmt:formatNumber></td>
-		                    <td>${P0401_StockDTO.item_div}</td>
-		                    <td>${P0401_StockDTO.stock_wrap}</td>
-	                    </tr>
+                            <td><input type="checkbox" class="rowChk" name="delete_stock_id" value="${P0401_StockDTO.stock_id}"></td>
+                            <td>${P0401_StockDTO.stock_id}</td>
+                            <td><fmt:formatNumber value="${P0401_StockDTO.stock_amount}" pattern="#,###"></fmt:formatNumber></td>
+                            <td>${P0401_StockDTO.item_div}</td>
+                            <td>${P0401_StockDTO.stock_wrap}</td>
+                        </tr>
                     </c:forEach>
-                 </c:if>
+                </c:if>
             </tbody>
         </table>
     </div>

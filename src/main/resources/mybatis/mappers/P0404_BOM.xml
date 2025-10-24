@@ -114,7 +114,15 @@
 		</where>
 		order by product_item_id
 	</select>
-
+	
+	<!-- 조회 : 품목 고르기용 1(완제) -->
+	<select id = "selectBOMPro" resultType = "P0404_BOMDTO">
+		select
+			item_id as pro_item_id, item_name as pro_item_name
+		from v3_item
+		where item_div = '완제품'
+	</select>
+	
 	<!-- 조회 : 품목 고르기용 2(재료) -->
 	<select id = "selectOneBOMItemM" resultType = "P0404_BOMDTO">
 		select

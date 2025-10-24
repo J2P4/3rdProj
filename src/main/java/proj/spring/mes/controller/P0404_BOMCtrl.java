@@ -33,17 +33,19 @@ public class P0404_BOMCtrl {
 		
 		List<P0404_BOMDTO> list = service.itemList(searchCondition);
 		List<P0404_BOMDTO> materialList = service.bomLists();
+		List<P0404_BOMDTO> proList = service.proLists();
 		
 		ObjectMapper objectMapper = new ObjectMapper();
 		
 		String materialListJson = null;
+		String proListJson = null;
 		try {
 			
 			// 한국어 깨짐 방지
 			objectMapper.configure(JsonGenerator.Feature.ESCAPE_NON_ASCII, false);
 			
 			String rawJson = objectMapper.writeValueAsString(materialList);
-			
+			String rawJsonPro = objectMapper.writeValueAsString(proList);
 			// JSON 난리 나서 이스케이프...
 			// 진짜 가만 안 둬.
 			// 아마 품목 조회처럼 특문 많은 경우 아니면 이 영역은 지워도 될 듯.
@@ -51,15 +53,23 @@ public class P0404_BOMCtrl {
 			materialListJson = materialListJson.replaceAll("'", "\\\\'");
 			materialListJson = materialListJson.replaceAll("\"", "\\\\\""); 
 			materialListJson = materialListJson.replaceAll("`", "\\\\`");
+			
+			proListJson = rawJsonPro.replaceAll("[\n\r]", "");
+			proListJson = proListJson.replaceAll("'", "\\\\'");
+			proListJson = proListJson.replaceAll("\"", "\\\\\""); 
+			proListJson = proListJson.replaceAll("`", "\\\\`");
 		}
 		catch (JsonProcessingException e) {
 			e.printStackTrace();
 			materialListJson = "[]"; 
+			proListJson = "[]";
 		}
 		
 		model.addAttribute("list", list);
 		model.addAttribute("materialList", materialList);
 		model.addAttribute("materialListJson", materialListJson);
+		model.addAttribute("proList", proList);
+		model.addAttribute("proListJson", proListJson);
 		
 		return "04_standard/04_4_standard_bom.tiles";
 	}

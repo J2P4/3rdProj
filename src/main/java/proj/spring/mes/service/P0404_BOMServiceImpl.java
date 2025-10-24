@@ -58,6 +58,11 @@ public class P0404_BOMServiceImpl implements P0404_BOMService {
 	public List<P0404_BOMDTO> bomLists() {
 		return bomMapperDAO.selectOneBOMItemM();
 	}
+	
+	@Override
+	public List<P0404_BOMDTO> proLists() {
+		return bomMapperDAO.selectBOMPro();
+	}
 
 	
 }
