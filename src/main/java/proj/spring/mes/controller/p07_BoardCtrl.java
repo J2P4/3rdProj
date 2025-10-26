@@ -1,21 +1,15 @@
 package proj.spring.mes.controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+// 필요 시 동일 타입 빈 여러 개면 @Qualifier 사용
+// import org.springframework.beans.factory.annotation.Qualifier;
+
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import proj.spring.mes.dto.P07_BoardDTO;
 import proj.spring.mes.service.P07_BoardService;
@@ -24,71 +18,87 @@ import proj.spring.mes.service.P07_BoardService;
 @RequestMapping("/board")
 public class p07_BoardCtrl {
 
-    private static final Logger logger = LoggerFactory.getLogger(p07_BoardCtrl.class);
-
     @Autowired
+    // @Qualifier("p07_BoardServiceImpl") // 동일 타입 빈이 여러 개라면 주석 해제
     private P07_BoardService boardService;
 
-    /** 게시판 화면 진입 **/
-    @RequestMapping(value = {"", "/"}, method = RequestMethod.GET)
-    public String boardView(Model model) {
-        return "07_board/07_board.tiles";
+   
+    @RequestMapping(value = "", method = RequestMethod.GET)
+    public String page() {
+        return "07_board/07_board.tiles";   // ← tiles 정의 id
+    }    
+    
+
+    // 목록
+    @RequestMapping(value="/list", method=RequestMethod.GET, produces="application/json;charset=UTF-8")
+    @ResponseBody
+    public Map<String, Object> list(
+            @RequestParam(value="page", required=false, defaultValue="1") int page,
+            @RequestParam(value="size", required=false, defaultValue="10") int size,
+            @RequestParam(value="keyword", required=false, defaultValue="") String keyword
+    ) {
+        int offset = (page - 1) * size;
+        Map<String, Object> param = new HashMap<String, Object>();
+        param.put("offset", offset);
+        param.put("size",   size);
+        param.put("keyword", (keyword == null) ? "" : keyword);
+
+        List<P07_BoardDTO> list = boardService.findList(param);
+        int total = boardService.count(param);
+
+        Map<String, Object> res = new HashMap<String, Object>();
+        res.put("list", list);
+        res.put("totalCount", total);
+        return res;
     }
 
-    /** 목록 조회 **/
-    @RequestMapping(value = "/list", method = RequestMethod.GET)
+    // 상세
+    @RequestMapping(value="/{id}", method=RequestMethod.GET, produces="application/json;charset=UTF-8")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> list(
-            @RequestParam(value = "page", defaultValue = "1") int page,
-            @RequestParam(value = "size", defaultValue = "10") int size,
-            @RequestParam(value = "keyword", required = false) String keyword) {
-
-        Map<String, Object> result = boardService.findList(page, size, keyword);
-        return new ResponseEntity<Map<String, Object>>(result, HttpStatus.OK);
+    public P07_BoardDTO detail(@PathVariable("id") String id) {
+        return boardService.findById(id);
     }
 
-    /** 상세 조회 **/
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    // 등록
+    @RequestMapping(value="", method=RequestMethod.POST, consumes="application/json", produces="application/json;charset=UTF-8")
     @ResponseBody
-    public ResponseEntity<?> detail(@PathVariable("id") String id) {
-        P07_BoardDTO dto = boardService.findById(id);
-        if (dto == null) {
-            return new ResponseEntity<String>("NOT_FOUND", HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<P07_BoardDTO>(dto, HttpStatus.OK);
+    public Map<String, Object> create(@RequestBody P07_BoardDTO dto) {
+        int inserted = boardService.add(dto);
+        Map<String, Object> res = new HashMap<String, Object>();
+        res.put("inserted", inserted);
+        res.put("id", dto.getBoard_id()); // selectKey로 생성된 ID
+        return res;
     }
 
-    /** 등록 **/
-    @RequestMapping(method = RequestMethod.POST)
+    // 수정  ★핵심: PathVariable -> DTO 주입
+    @RequestMapping(value="/{id}", method=RequestMethod.PUT, consumes="application/json", produces="application/json;charset=UTF-8")
     @ResponseBody
-    public ResponseEntity<?> create(@RequestBody P07_BoardDTO dto) {
-        try {
-            String newId = boardService.create(dto);
-            Map<String, Object> body = new HashMap<String, Object>();
-            body.put("id", newId);
-            return new ResponseEntity<Map<String, Object>>(body, HttpStatus.CREATED);
-        } catch (Exception e) {
-            logger.error("create error", e);
-            return new ResponseEntity<String>("CREATE_FAILED", HttpStatus.BAD_REQUEST);
-        }
+    public Map<String, Object> update(@PathVariable("id") String id,
+                                      @RequestBody P07_BoardDTO dto) {
+        dto.setBoard_id(id); // 반드시 주입
+        int updated = boardService.modify(dto);
+        Map<String, Object> res = new HashMap<String, Object>();
+        res.put("updated", updated); // 1 기대
+        return res;
     }
 
-    /** 수정 **/
-    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+    // 삭제
+    @RequestMapping(value="/{id}", method=RequestMethod.DELETE, produces="application/json;charset=UTF-8")
     @ResponseBody
-    public ResponseEntity<?> update(@PathVariable("id") Long id, @RequestBody P07_BoardDTO dto) {
-        dto.setBoard_id(String.valueOf(id));
-        boolean ok = boardService.update(dto);
-        if (ok) return new ResponseEntity<String>("OK", HttpStatus.OK);
-        return new ResponseEntity<String>("NOT_FOUND", HttpStatus.NOT_FOUND);
+    public Map<String, Object> delete(@PathVariable("id") String id) {
+        int deleted = boardService.remove(id);
+        Map<String, Object> res = new HashMap<String, Object>();
+        res.put("deleted", deleted);
+        return res;
     }
 
-    /** 삭제 **/
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    // (레거시 폴백) form POST로 들어오는 업데이트도 허용
+    @RequestMapping(value="/update", method=RequestMethod.POST, produces="application/json;charset=UTF-8")
     @ResponseBody
-    public ResponseEntity<?> delete(@PathVariable("id") String id) {
-        boolean ok = boardService.delete(id);
-        if (ok) return new ResponseEntity<String>("OK", HttpStatus.OK);
-        return new ResponseEntity<String>("NOT_FOUND", HttpStatus.NOT_FOUND);
+    public Map<String, Object> legacyUpdate(P07_BoardDTO dto) {
+        int updated = boardService.modify(dto);
+        Map<String, Object> res = new HashMap<String, Object>();
+        res.put("updated", updated);
+        return res;
     }
 }

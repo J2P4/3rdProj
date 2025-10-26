@@ -4,6 +4,7 @@
  *  - JSON 파싱 방어(HTML 에러페이지 대비)
  *  - /board REST API 연동
  *  - 목록 중복 렌더 방지(뒤로가기 중복 바인딩 제거 + 레이스 가드)
+ *  - 수정 시 DTO에 board_id 주입(JS만 수정)
  * ============================ */
 
 // === 컨텍스트/베이스 URL 자동 인식 ===
@@ -53,7 +54,7 @@ const API = {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(dto),
-    }).then(r => r.text()),
+    }).then(r => r.text()), // 서버가 텍스트를 돌려주는 경우 대비
   delete: (id) =>
     fetch(`${CTX}/board/${id}`, { method: 'DELETE' }).then(r => r.text()),
 };
@@ -257,10 +258,13 @@ async function onSave() {
     };
 
     if (currentEditingPostId) {
+      // ✅ 서버가 PathVariable을 DTO에 주입하지 않는 경우 대비: JS에서 직접 세팅
+      dto.board_id = currentEditingPostId;
+
       await API.update(currentEditingPostId, dto);
       customAlert('게시글이 수정되었습니다.', () => openDetail(currentEditingPostId));
     } else {
-      await API.create(dto); // 서버가 ID 반환하면 필요 시 활용
+      await API.create(dto);
       customAlert('게시글이 등록되었습니다.', () => renderList(1));
     }
   } catch (err) {
