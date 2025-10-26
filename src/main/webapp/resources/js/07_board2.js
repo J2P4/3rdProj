@@ -1,8 +1,9 @@
 /* ============================
- *  07_board2.js (FULL)
+ *  07_board2.js (FULL, FIXED)
  *  - 컨텍스트 경로 자동 인식
  *  - JSON 파싱 방어(HTML 에러페이지 대비)
  *  - /board REST API 연동
+ *  - 목록 중복 렌더 방지(뒤로가기 중복 바인딩 제거 + 레이스 가드)
  * ============================ */
 
 // === 컨텍스트/베이스 URL 자동 인식 ===
@@ -17,7 +18,7 @@ const CTX =
 // === 유틸: 응답을 안전하게 JSON으로 변환(HTML 에러페이지 방어) ===
 async function toJSONorThrow(r) {
   const ct = r.headers.get('content-type') || '';
-  const text = await r.text(); // 먼저 문자열로 받는다(404 HTML 방어)
+  const text = await r.text(); // 먼저 문자열로 받는다(404/500 HTML 방어)
   if (!r.ok) throw new Error(`HTTP ${r.status}: ${text.substring(0, 200)}`);
   if (ct.indexOf('application/json') === -1)
     throw new Error(`Not JSON: ${text.substring(0, 200)}`);
@@ -30,6 +31,9 @@ let currentPage = 1;
 const postsPerPage = 10;
 const currentUserName = '관리자(N24100001)';
 let currentEditingPostId = null; // 수정 모드에서 사용
+
+// ★ 목록 렌더 동시요청 방지 토큰(레이스 가드)
+let listRenderSeq = 0;
 
 // === 서버 API ===
 const API = {
@@ -75,10 +79,18 @@ async function renderList(page = 1) {
     const emptyBox = $('#empty-list');
     const keyword = ($('#searchInput')?.value || '').trim();
 
+    // ★ 이번 호출의 시퀀스 번호(가장 마지막 호출만 유효)
+    const mySeq = ++listRenderSeq;
+
+    // 초기화
     tbody.innerHTML = '';
     emptyBox.classList.add('hidden');
 
     const res = await API.list(page, postsPerPage, keyword);
+
+    // ★ 내가 최신 호출이 아니면 렌더 중단(중복 그리기 방지)
+    if (mySeq !== listRenderSeq) return;
+
     currentDisplayedData = res.list || [];
     const total = res.totalCount || 0;
 
@@ -168,7 +180,7 @@ async function openDetail(id) {
     $('#detail-date').textContent = post.board_date || '';
     $('#detail-content').innerHTML = post.board_content || '';
 
-    // 버튼 이벤트
+    // 버튼 이벤트(중복 방지를 위해 '덮어쓰기' 방식)
     $('#backToListButton').onclick = () => renderList(currentPage);
     $('#editPostButton').onclick = () => openWrite(post);
     $('#deletePostButton').onclick = () => {
@@ -248,7 +260,7 @@ async function onSave() {
       await API.update(currentEditingPostId, dto);
       customAlert('게시글이 수정되었습니다.', () => openDetail(currentEditingPostId));
     } else {
-      const created = await API.create(dto); // { id: 'B0000000001' } 기대
+      await API.create(dto); // 서버가 ID 반환하면 필요 시 활용
       customAlert('게시글이 등록되었습니다.', () => renderList(1));
     }
   } catch (err) {
@@ -264,7 +276,6 @@ function onSearch() {
 
 // === 알림/확인 모달 (간단 래핑) ===
 function customAlert(msg, callback) {
-  // 간단히 window.alert로 처리 (필요 시 커스텀 모달 연동)
   alert(msg);
   if (callback) callback();
 }
@@ -284,8 +295,9 @@ function bindEvents() {
   const searchBtn = $('#searchButton');
   if (searchBtn) searchBtn.addEventListener('click', onSearch);
 
-  const backBtn = $('#backToListButton');
-  if (backBtn) backBtn.addEventListener('click', () => renderList(currentPage));
+  // ❌ '목록으로' 버튼은 상세 화면에서 상황별로 덮어쓰므로 여기선 바인딩하지 않는다.
+  // const backBtn = $('#backToListButton');
+  // if (backBtn) backBtn.addEventListener('click', () => renderList(currentPage));
 }
 
 // === 시작 ===
