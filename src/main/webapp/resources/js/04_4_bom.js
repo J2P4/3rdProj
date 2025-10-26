@@ -680,114 +680,114 @@ document.addEventListener('DOMContentLoaded', () => {
 // 등록 / 수정 슬라이드 - 데이터 저장 (BOM에 맞게 수정) - 현재 이벤트 충돌 나는 것 같아서 우선 주석 처리함
 // ============================
 
-    // const saveBtn = document.querySelector('.submit-btn');
+    const saveBtn = document.querySelector('.submit-btn');
 
-    // saveBtn.addEventListener('click', async () => {
+    saveBtn.addEventListener('click', async () => {
 
-    //     // 현재 모드 확인
-    //     let url = '';
-    //     const actionText = nowSlide === 'edit' ? '수정' : '등록';
+        // 현재 모드 확인
+        let url = '';
+        const actionText = nowSlide === 'edit' ? '수정' : '등록';
         
-    //     // 등록/수정 모드에 따라 필요한 입력값 추출
-    //     // 재료 ID (bom_id) = nowEditId 사용
+        // 등록/수정 모드에 따라 필요한 입력값 추출
+        // 재료 ID (bom_id) = nowEditId 사용
 
-    //     const bom_amount = document.querySelector('.input_bom_amount').value;
+        const bom_amount = document.querySelector('.input_bom_amount').value;
         
-    //     // 등록 모드에서만 필요한 값 (BOM의 재료/완제품 ID)
-    //     let product_item_id = '';
-    //     let material_item_id = '';
+        // 등록 모드에서만 필요한 값 (BOM의 재료/완제품 ID)
+        let product_item_id = '';
+        let material_item_id = '';
 
-    //     if (nowSlide === 'new') {
-    //         product_item_id = document.querySelector('#target-product-id').value;
-    //         material_item_id = document.querySelector('.input_bom_item').value;
+        if (nowSlide === 'new') {
+            product_item_id = document.querySelector('#target-product-id').value;
+            material_item_id = document.querySelector('.input_bom_item').value;
 
-    //         if (product_item_id === '') {
-    //             alert('완제품 ID를 선택해 주세요.');
-    //             return;
-    //         }
-    //         if (material_item_id === '') {
-    //             alert('재료 ID를 선택해 주세요.');
-    //             return;
-    //         }
-    //         url = `${contextPath}/bominsert`;
-    //     }
-    //     else { 
-    //         // 수정 모드
-    //         // 수정 시에는 BOM ID를 사용. 수량만 수정.
-    //         if (!nowEditId) {
-    //             alert('수정할 BOM ID를 찾을 수 없습니다.');
-    //             return;
-    //         }
-    //         url = `${contextPath}/bomupdate`;
-    //     }
+            if (product_item_id === '') {
+                alert('완제품 ID를 선택해 주세요.');
+                return;
+            }
+            if (material_item_id === '') {
+                alert('재료 ID를 선택해 주세요.');
+                return;
+            }
+            url = `${contextPath}/bominsert`;
+        }
+        else { 
+            // 수정 모드
+            // 수정 시에는 BOM ID를 사용. 수량만 수정.
+            if (!nowEditId) {
+                alert('수정할 BOM ID를 찾을 수 없습니다.');
+                return;
+            }
+            url = `${contextPath}/bomupdate`;
+        }
         
-    //     if (!bom_amount || parseInt(bom_amount) <= 0) {
-    //         alert('사용량은 0보다 큰 값을 입력해 주세요.');
-    //         document.querySelector('#input_bom_amount').focus();
-    //         return;
-    //     }
+        if (!bom_amount || parseInt(bom_amount) <= 0) {
+            alert('사용량은 0보다 큰 값을 입력해 주세요.');
+            document.querySelector('#input_bom_amount').focus();
+            return;
+        }
 
-    //     // 전송할 데이터 객체
-    //     const bomData = {
-    //         // 재료 수량
-    //         bom_amount: parseInt(bom_amount)
-    //     };
+        // 전송할 데이터 객체
+        const bomData = {
+            // 재료 수량
+            bom_amount: parseInt(bom_amount)
+        };
         
-    //     if (nowSlide === 'edit') {
-    //         // 수정 시 bom_id도 전송
-    //         bomData.bom_id = nowEditId; 
+        if (nowSlide === 'edit') {
+            // 수정 시 bom_id도 전송
+            bomData.bom_id = nowEditId; 
 
-    //     }
-    //     else {
-    //         // 등록 시에는 ID들 전송
-    //         bomData.product_item_id = product_item_id;
-    //         bomData.material_item_id = material_item_id;
-    //     }
+        }
+        else {
+            // 등록 시에는 ID들 전송
+            bomData.product_item_id = product_item_id;
+            bomData.material_item_id = material_item_id;
+        }
 
-    //     try {
-    //         let fetchOptions = {};
-    //         let requestBody;
-    //         let requestUrl = url;
+        try {
+            let fetchOptions = {};
+            let requestBody;
+            let requestUrl = url;
 
-    //         if (nowSlide === 'new') {
-    //             requestBody = JSON.stringify([bomData]);
-    //             fetchOptions = {
-    //                 method: 'POST',
-    //                 headers: {
-    //                     'Content-Type': 'application/json;charset=UTF-8'
-    //                 },
-    //                 body: requestBody
-    //             };
-    //         }
-    //         else {
-    //             requestBody = JSON.stringify(bomData);
-    //             fetchOptions = {
-    //                 method: 'POST',
-    //                 headers: {
-    //                     'Content-Type': 'application/json;charset=UTF-8'
-    //                 },
-    //                 body: requestBody
-    //             };
-    //         }
+            if (nowSlide === 'new') {
+                requestBody = JSON.stringify([bomData]);
+                fetchOptions = {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json;charset=UTF-8'
+                    },
+                    body: requestBody
+                };
+            }
+            else {
+                requestBody = JSON.stringify(bomData);
+                fetchOptions = {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json;charset=UTF-8'
+                    },
+                    body: requestBody
+                };
+            }
 
-    //         const response = await fetch(requestUrl, fetchOptions);
-    //         const result = await response.text();
+            const response = await fetch(requestUrl, fetchOptions);
+            const result = await response.text();
 
-    //         if (response.ok && result === 'success') {
-    //             alert(`BOM ${actionText}이 성공적으로 완료되었습니다.`);
-    //             // 성공 시 목록 페이지로 새로고침
-    //             window.location.href = `${contextPath}/bomlist`; 
-    //         }
-    //         else {
-    //             alert(`BOM ${actionText}에 실패했습니다. (서버 응답: ` + result + ')');
-    //         }
+            if (response.ok && result === 'success') {
+                alert(`BOM ${actionText}이 성공적으로 완료되었습니다.`);
+                // 성공 시 목록 페이지로 새로고침
+                window.location.href = `${contextPath}/bomlist`; 
+            }
+            else {
+                alert(`BOM ${actionText}에 실패했습니다. (서버 응답: ` + result + ')');
+            }
 
-    //     }
-    //     catch (error) {
-    //         console.error(`${actionText} 중 통신 오류 발생:`, error);
-    //         alert(`${actionText} 중 통신 오류가 발생했습니다.`);
-    //     }
-    // });
+        }
+        catch (error) {
+            console.error(`${actionText} 중 통신 오류 발생:`, error);
+            alert(`${actionText} 중 통신 오류가 발생했습니다.`);
+        }
+    });
 
     // ===================================
     // 상세 슬라이드 -> 수정 슬라이드 전환

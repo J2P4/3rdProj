@@ -47,22 +47,8 @@
     <!-- 페이징용 추가 코드 1-->
    	<c:url var="/workorderlist" value="/workorderlist"/> <%-- 모든 내부 링크의 기준 URL(중복 /mes/mes 방지) 이거 떄믄에 한시간.... --%>
 	<c:set var="selfPath" value="/workorderlist"/> <%-- c:url value에 사용할 경로 문자열 --%>
-    <!-- 검색 필터(filter)
-        - filter-item-box : select란 모음
-            + filter-item: 개별 select란
-                * filitem-name : select란 명
-                * filitem-input : 실제 select 영역
-        - filter-btn : 조회 버튼 영억
-    -->
     <form class = "filter" method="get" action="${pageContext.request.contextPath}/workorderlist">
         <div class = "filter-item-box">
-            <div class = "filter-item">
-                <div class = "filitem-name" style = "width: 35%;">· 작업 지시서 ID</div>
-                <div class = "filitem-input" style = "width: 60%;">
-                    <c:set var="filter.work_order_id" value="${param.work_order_id}" />
-                    <input type="text" name="work_order_id" placeholder="지시서 ID를 입력해주세요" value="${filter.work_order_id}">
-                </div>
-            </div>
             <div class = "filter-item">
                 <div class = "filitem-name" style = "width: 35%;">· 생산계획 ID</div>
                  <div class = "filitem-input" style = "width: 60%;">
