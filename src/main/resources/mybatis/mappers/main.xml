@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="proj.spring.mes.dao.mapper.MainMapperDAO">
+	<!-- SQL문 작성 영역 -->
+	<select id="selectStockByType" resultType="map">
+  SELECT
+    UPPER(NVL(i.ITEM_DIV, 'UNKNOWN')) AS ITEM_DIV,
+    SUM(s.STOCK_AMOUNT)               AS QTY
+  FROM V3_STOCK s
+  JOIN V3_ITEM  i ON i.ITEM_ID = s.ITEM_ID
+  GROUP BY UPPER(NVL(i.ITEM_DIV, 'UNKNOWN'))
+  ORDER BY
+    DECODE(UPPER(NVL(i.ITEM_DIV,'UNKNOWN')), 'RAW',1,'PRODUCT',2,'DEFECT',3,99)
+</select>
+
+	
+</mapper>
+
+
+
+
