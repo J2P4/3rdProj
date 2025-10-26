@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="proj.spring.mes.dao.mapper.p07_BoardMapperDAO">
+
+    <resultMap id="BoardMap" type="proj.spring.mes.dto.P07_BoardDTO">
+        <id     property="id"        column="id"/>
+        <result property="title"     column="title"/>
+        <result property="content"   column="content"/>
+        <result property="writer"    column="writer"/>
+        <result property="viewCount" column="view_count"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+        <result property="deleted"   column="deleted"/>
+    </resultMap>
+
+    <!-- 목록 -->
+    <select id="selectList" resultMap="BoardMap">
+        SELECT
+            id, title, content, writer, view_count, created_at, updated_at, deleted
+        FROM board
+        <where>
+            deleted = 0
+            <if test="keyword != null and keyword != ''">
+                AND (title LIKE CONCAT('%', #{keyword}, '%')
+                  OR  content LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+        </where>
+        ORDER BY id DESC
+        LIMIT #{size} OFFSET #{offset}
+        <!-- MySQL/MariaDB 기준. Oracle이면
+             OFFSET #{offset} ROWS FETCH NEXT #{size} ROWS ONLY 로 변경 -->
+    </select>
+
+    <!-- 전체건수 -->
+    <select id="count" resultType="int">
+        SELECT COUNT(1)
+        FROM board
+        <where>
+            deleted = 0
+            <if test="keyword != null and keyword != ''">
+                AND (title LIKE CONCAT('%', #{keyword}, '%')
+                  OR  content LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+        </where>
+    </select>
+
+    <!-- 상세 -->
+    <select id="selectById" parameterType="long" resultMap="BoardMap">
+        SELECT
+            id, title, content, writer, view_count, created_at, updated_at, deleted
+        FROM board
+        WHERE id = #{id} AND deleted = 0
+    </select>
+
+    <!-- 등록 -->
+    <insert id="insert" parameterType="proj.spring.mes.dto.P07_BoardDTO" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO board (title, content, writer, view_count, created_at, updated_at, deleted)
+        VALUES (#{title}, #{content}, #{writer}, 0, NOW(), NOW(), 0)
+    </insert>
+
+    <!-- 수정 -->
+    <update id="update" parameterType="proj.spring.mes.dto.P07_BoardDTO">
+        UPDATE board
+        SET title = #{title},
+            content = #{content},
+            writer = #{writer},
+            updated_at = NOW()
+        WHERE id = #{id} AND deleted = 0
+    </update>
+
+    <!-- 삭제(소프트 or 하드) : 필요에 따라 선택 -->
+    <!-- 소프트 삭제 -->
+    <update id="delete" parameterType="long">
+        UPDATE board SET deleted = 1, updated_at = NOW() WHERE id = #{id}
+    </update>
+
+    <!-- 하드 삭제를 원하면 위 delete 대신 아래 사용
+    <delete id="delete" parameterType="long">
+        DELETE FROM board WHERE id = #{id}
+    </delete>
+    -->
+</mapper>

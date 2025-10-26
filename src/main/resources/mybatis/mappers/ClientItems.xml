@@ -6,14 +6,14 @@
 <mapper namespace="proj.spring.mes.dao.mapper.ClientItemsMapperDAO">
   <select id="selectClientitemsByItem" parameterType="string"
           resultType="proj.spring.mes.dto.ClientitemsDTO">
-  <![CDATA[
+
   SELECT
     client_id,               
     item_id
   FROM V3_CLIENT_ITEMS
   WHERE item_id = #{itemId}
   ORDER BY client_id
-  ]]>
+
   </select>
 </mapper>
 

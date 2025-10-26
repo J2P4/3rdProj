@@ -30,6 +30,7 @@
     	<typeAlias type= "proj.spring.mes.dto.P0601_InInsDTO" alias="P0601_InInsDTO" />
     	<typeAlias type= "proj.spring.mes.dto.P0602_OutInsDTO" alias="P0602_OutInsDTO" />
     	<typeAlias type= "proj.spring.mes.dto.P0603_ErrorDTO" alias="P0603_ErrorDTO" />
+ 		<typeAlias alias="P07_BoardDTO" type="proj.spring.mes.dto.P07_BoardDTO"/>
     </typeAliases>
     
     
