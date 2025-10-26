@@ -1,85 +1,110 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper
-        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="proj.spring.mes.dao.mapper.p07_BoardMapperDAO">
 
-    <resultMap id="BoardMap" type="proj.spring.mes.dto.P07_BoardDTO">
-        <id     property="id"        column="id"/>
-        <result property="title"     column="title"/>
-        <result property="content"   column="content"/>
-        <result property="writer"    column="writer"/>
-        <result property="viewCount" column="view_count"/>
-        <result property="createdAt" column="created_at"/>
-        <result property="updatedAt" column="updated_at"/>
-        <result property="deleted"   column="deleted"/>
-    </resultMap>
+  <resultMap id="BoardMap" type="proj.spring.mes.dto.P07_BoardDTO">
+    <id     property="board_id"      column="board_id"/>
+    <result property="board_title"   column="board_title"/>
+    <result property="board_content" column="board_content"/>
+    <result property="board_type"    column="board_type"/>
+    <!-- DB 컬럼명: BOARD_ATTATCH -->
+    <result property="board_attatch" column="board_attatch"/>
+    <result property="worker_id"     column="worker_id"/>
+    <result property="board_date"    column="board_date"/>
+  </resultMap>
 
-    <!-- 목록 -->
-    <select id="selectList" resultMap="BoardMap">
+  <!-- 목록 -->
+  <select id="selectList" resultMap="BoardMap">
+    SELECT * FROM (
+      SELECT t.*, ROWNUM rn FROM (
         SELECT
-            id, title, content, writer, view_count, created_at, updated_at, deleted
-        FROM board
+          b.board_id,
+          b.board_title,
+          b."board_content",
+          b.board_type,
+          b.board_attatch AS board_attatch,  
+          b.worker_id,
+          b.board_date
+        FROM v3_board b                          
         <where>
-            deleted = 0
-            <if test="keyword != null and keyword != ''">
-                AND (title LIKE CONCAT('%', #{keyword}, '%')
-                  OR  content LIKE CONCAT('%', #{keyword}, '%'))
-            </if>
+          <if test="keyword != null and keyword != ''">
+            AND (b.board_title LIKE '%' || #{keyword} || '%'
+             OR  b."board_content" LIKE '%' || #{keyword} || '%')
+          </if>
         </where>
-        ORDER BY id DESC
-        LIMIT #{size} OFFSET #{offset}
-        <!-- MySQL/MariaDB 기준. Oracle이면
-             OFFSET #{offset} ROWS FETCH NEXT #{size} ROWS ONLY 로 변경 -->
-    </select>
+        ORDER BY b.board_id DESC
+      ) t
+      WHERE ROWNUM &lt;= #{offset} + #{size}
+    )
+    WHERE rn &gt; #{offset}
+  </select>
 
-    <!-- 전체건수 -->
-    <select id="count" resultType="int">
-        SELECT COUNT(1)
-        FROM board
-        <where>
-            deleted = 0
-            <if test="keyword != null and keyword != ''">
-                AND (title LIKE CONCAT('%', #{keyword}, '%')
-                  OR  content LIKE CONCAT('%', #{keyword}, '%'))
-            </if>
-        </where>
-    </select>
+  <!-- 전체 건수 -->
+  <select id="count" resultType="int">
+    SELECT COUNT(1)
+    FROM v3_board b                               -- ✅ 필요시 V3.BOARD
+    <where>
+      <if test="keyword != null and keyword != ''">
+        AND (b.board_title LIKE '%' || #{keyword} || '%'
+         OR  b."board_content" LIKE '%' || #{keyword} || '%')
+      </if>
+    </where>
+  </select>
 
-    <!-- 상세 -->
-    <select id="selectById" parameterType="long" resultMap="BoardMap">
-        SELECT
-            id, title, content, writer, view_count, created_at, updated_at, deleted
-        FROM board
-        WHERE id = #{id} AND deleted = 0
-    </select>
+  <!-- 상세 -->
+  <select id="selectById" parameterType="string" resultMap="BoardMap">
+    SELECT
+      b.board_id,
+      b.board_title,
+      b."board_content",
+      b.board_type,
+      b.board_attatch AS board_attatch,      
+      b.worker_id,
+      b.board_date
+    FROM v3_board b                               
+    WHERE b.board_id = #{id}
+  </select>
 
-    <!-- 등록 -->
-    <insert id="insert" parameterType="proj.spring.mes.dto.P07_BoardDTO" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO board (title, content, writer, view_count, created_at, updated_at, deleted)
-        VALUES (#{title}, #{content}, #{writer}, 0, NOW(), NOW(), 0)
-    </insert>
+  <!-- 등록 -->
+  <insert id="insert" parameterType="proj.spring.mes.dto.P07_BoardDTO">
+    <selectKey keyProperty="board_id" resultType="string" order="BEFORE">
+      SELECT 'B' || LPAD(seq_board.NEXTVAL, 10, '0') FROM dual
+    </selectKey>
+    INSERT INTO v3_board (                         
+      board_id,
+      board_title,
+      "board_content",
+      board_type,
+      board_attatch,                             -- ✅
+      worker_id,
+      board_date
+    ) VALUES (
+      #{board_id},
+      #{board_title},
+      #{board_content},
+      #{board_type},
+      #{board_attatch},
+      #{worker_id},
+      SYSDATE
+    )
+  </insert>
 
-    <!-- 수정 -->
-    <update id="update" parameterType="proj.spring.mes.dto.P07_BoardDTO">
-        UPDATE board
-        SET title = #{title},
-            content = #{content},
-            writer = #{writer},
-            updated_at = NOW()
-        WHERE id = #{id} AND deleted = 0
-    </update>
+  <!-- 수정 -->
+  <update id="update" parameterType="proj.spring.mes.dto.P07_BoardDTO">
+    UPDATE v3_board
+       SET board_title   = #{board_title},
+           "board_content" = #{board_content},
+           board_type    = #{board_type},
+           board_attatch = #{board_attatch},     
+           worker_id     = #{worker_id}
+     WHERE board_id      = #{board_id}
+  </update>
 
-    <!-- 삭제(소프트 or 하드) : 필요에 따라 선택 -->
-    <!-- 소프트 삭제 -->
-    <update id="delete" parameterType="long">
-        UPDATE board SET deleted = 1, updated_at = NOW() WHERE id = #{id}
-    </update>
+  <!-- 삭제 -->
+  <delete id="delete" parameterType="string">
+    DELETE FROM v3_board WHERE board_id = #{id}
+  </delete>
 
-    <!-- 하드 삭제를 원하면 위 delete 대신 아래 사용
-    <delete id="delete" parameterType="long">
-        DELETE FROM board WHERE id = #{id}
-    </delete>
-    -->
 </mapper>

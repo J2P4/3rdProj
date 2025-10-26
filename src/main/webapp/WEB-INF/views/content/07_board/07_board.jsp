@@ -10,14 +10,17 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 
   <!-- UI 라이브러리 -->
-      <script src="${pageContext.request.contextPath}/resources/js/07_board2.js" defer></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/tinymce@5/tinymce.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/tinymce@5/langs/ko.js"></script>
   <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/07_board.css" type="text/css">
+
+  <!-- 페이지 스크립트 (defer: DOM 파싱 후 실행) -->
+  <script src="${pageContext.request.contextPath}/resources/js/07_board2.js" defer></script>
 </head>
 
-<body class="bg-gray-100 text-gray-800 min-h-screen">
+<!-- ★ 추가: data-ctx 로 컨텍스트 경로 주입 -->
+<body class="bg-gray-100 text-gray-800 min-h-screen" data-ctx="${pageContext.request.contextPath}">
   <div class="max-w-6xl mx-auto py-8">
     <!-- 상단 바 -->
     <div class="flex justify-between items-center mb-6">
@@ -202,7 +205,5 @@
       </div>
     </div>
   </template>
-
-
 </body>
 </html>
