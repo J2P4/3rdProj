@@ -4,6 +4,9 @@ let allItems = [];
 // 완제용 json 데이터
 let allProductItems = [];
 
+// 현재 수정 id
+let nowEditId = null;
+
 // 전역 변수 설정용. 입력 슬라이드 내 테이블의 행 추가 원상복구하기 위한 용도.
 // 1. bom
 window.resetBomNewRows = function() {
@@ -19,7 +22,31 @@ window.resetBomNewRows = function() {
     }
 };
 
+// 상세 함수 밖으로 빼두기
+function showBOMDetail(productId) {
+    if (!productId) {
+        console.error("showBOMDetail: 완제품 ID가 누락되었습니다.");
+        return;
+    }
+
+    // DOM 요소 재선택 (전역 스코프에서는 이벤트 리스너 내부 변수 사용 불가)
+    const slideDetail = document.querySelector('#slide-detail');
+    const bomDetailTbody = document.querySelector('#bom-detail-tbody');
+    const detailProductItemId = document.querySelector('#detail-product-item-id');
+    const detailProductItemName = document.querySelector('#detail-product-item-name');
+    
+    window.location.href = `${contextPath}/bomlist?item_id=${productId}`;
+}
+
 document.addEventListener('DOMContentLoaded', () => {
+
+    // 현재 슬라이드 모드 ('INSERT' 또는 'UPDATE')
+    // 기본은 insert
+    let nowSlide = 'INSERT';
+    // 수정 모드에서 삭제할 BOM ID 목록 
+    let bomIdsToDelete = [];
+    // 입력 슬라이드
+    // const slideInput = document.querySelector('#slide-input');
 
     // ===================================
     // 등록 기능
@@ -29,44 +56,58 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (registerBomBtn) {
         registerBomBtn.addEventListener('click', async () => {
-            const collectedData = collectBOMData();
-            const newBOMs = collectedData.newBOMs;
+            const {newBOMs, updatedBOMs} = collectBOMData();
+            // 여기에서 ...의 의미
+            // 오타가 아니라 얕은 복사로 bomIdsToDelete 배열의 요소를 deletedBOMs에 넣는 것
+            const deletedBOMs = [...bomIdsToDelete];
 
-            if (newBOMs.length === 0) {
-                alert('등록할 유효한 BOM 재료가 없습니다. (목표 품목 ID, 재료 ID, 소요량 확인)');
+            if (newBOMs.length === 0 && updatedBOMs.length === 0 && deletedBOMs.length === 0) {
+                alert('등록, 수정, 삭제할 내용이 없습니다.');
                 return;
             }
 
-            const isConfirmed = confirm(`BOM 재료 ${newBOMs.length}개를 등록하시겠습니까?\n목표 품목 ID: ${inputHiddenId.value}`);
-            if (!isConfirmed) {
-                return;
-            }
+            const url = `${contextPath}/bomupdate`;
+            const method = 'POST';
+            const payload = {
+                newBOMs: newBOMs,
+                updatedBOMs: updatedBOMs,
+                deletedBOMs: deletedBOMs,
+                // 완제 id... 쓸 일 있을까 싶긴 한데
+                // 혹시 모르니까
+                product_item_id: inputHiddenId.value.trim()
+            };
 
+            // 서버 전송
             try {
-                // 전송되는 데이터는 재료 리스트 배열 (newBOMs)
-                const response = await fetch(`${contextPath}/bominsert`, { 
-                    method: 'POST',
+                const response = await fetch(url, {
+                    method: method,
                     headers: {
-                        'Content-Type': 'application/json', // JSON 형태로 데이터 전송
+                        'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify(newBOMs) 
+                    body: JSON.stringify(payload)
                 });
 
-                const result = await response.text(); // 응답을 text로 받음 (Controller에서 "success" 등의 문자열 반환 시)
+                const result = await response.text();
 
                 if (result === 'success') {
-                    alert('BOM 등록이 성공적으로 완료되었습니다.');
-                    // 슬라이드 닫고, 목록 새로고침
-                    document.querySelector('#slide-input').classList.remove('open');
-                    window.location.reload(); 
+                    alert('BOM 정보가 성공적으로 처리되었습니다.');
+                    // 성공 후 목록 새로고침 및 상세 슬라이드 재진입
+                    slideInput.classList.remove('open');
+                    // loadBOMList();
+                    // 완제 상세 수정 버전으로 바로 보여주기
+                    // showBOMDetail(inputHiddenId.value.trim());
+                    slideInput.classList.remove('open')
+
+                    window.location.href = `${contextPath}/bomlist`;
                 }
                 else {
-                    alert(`BOM 등록에 실패했습니다. 서버 응답: ${result}`);
+                    console.error('BOM 처리 실패:', result);
+                    alert('BOM 정보 처리에 실패했습니다. ' + result);
                 }
             }
             catch (error) {
-                console.error('BOM 등록 중 통신 오류 발생:', error);
-                alert('BOM 등록 중 서버와 통신 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.');
+                console.error("BOM 처리 중 오류 발생:", error);
+                alert("서버 통신 중 오류가 발생했습니다.");
             }
         });
     }
@@ -211,16 +252,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 checkedExistingRows.forEach(checkbox => {
                     const rowToRemove = checkbox.closest('tr');
                     if (rowToRemove) {
-                        // DB에 존재하는 데이터이므로, 실제 삭제 요청을 위해 ID를 수집하거나 상태를 변경해야 함
-                        // rowToRemove.dataset.status = 'DELETE'; // 예를 들어, 상태를 DELETE로 변경
-                        // rowToRemove.style.display = 'none'; // 혹은 화면에서만 숨기고 폼 전송 시 ID를 수집
-                        
-                        // **현재는 화면에서 즉시 제거하는 방식으로 처리**
-                        rowToRemove.remove(); 
+                        const bomId = rowToRemove.dataset.bomId || checkbox.value;
+                        // bomId가 유효하고, 아직 삭제 목록에 없으면 추가
+                        if (bomId && !bomIdsToDelete.includes(bomId)) {
+                            bomIdsToDelete.push(bomId);
+                            console.log('삭제할 BOM ID 추가:', bomId, '현재 목록:', bomIdsToDelete);
+                        }
+                        rowToRemove.remove();
                     }
                 });
 
-                alert('선택된 BOM 행이 삭제되었습니다.');
+                alert(`선택된 BOM 행 ${totalToDelete}개가 화면에서 제거되었습니다.\n'수정' 버튼을 눌러 변경사항을 저장해주세요.`);
             }
         });
     }
@@ -231,8 +273,8 @@ document.addEventListener('DOMContentLoaded', () => {
         // 목표 품목 ID
         const targetItemId = inputHiddenId.value.trim();
         if (!targetItemId) {
-            alert('목표 품목 ID를 먼저 선택해야 BOM을 등록할 수 있습니다.');
-            return { newBOMs: [] };
+            alert('목표 품목 ID가 설정되지 않았습니다.');
+            return { newBOMs: [], updatedBOMs: [] };
         }
 
 
@@ -240,33 +282,52 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const newBOMs = []; // INSERT 데이터 (new-bom-row)
         const updatedBOMs = []; // UPDATE 데이터 (existing-bom-row)
-        const deletedBOMs = []; // DELETE 대상 ID
 
         rows.forEach(row => {
+
             if (row.classList.contains('new-bom-row')) {
-                const material_item_id = row.querySelector('.input_bom_item') ? row.querySelector('.input_bom_item').value : '';
-                const bom_amount_str = row.querySelector('.input_bom_amount') ? row.querySelector('.input_bom_amount').value : '';
+                const material_item_id = row.querySelector('.input_bom_item')?.value.trim();
+                const bom_amount_str = row.querySelector('.input_bom_amount')?.value.trim();
                 const bom_amount = parseInt(bom_amount_str) || 0;
-                
-                // 필수 값 검증
+
+                // 검증
                 if (!material_item_id || bom_amount <= 0) {
-                    console.warn("경고: 필수 BOM 정보 누락 또는 소요량 0 이하. 이 행은 제외됩니다.", row);
+                    console.warn("경고: 신규 BOM 행에 필수 정보(재료 ID, 소요량 > 0) 누락. 제외됨.", row);
                     return;
                 }
-
+                
                 const bomData = {
                     product_item_id: targetItemId,    // 완제품 ID (부모 품목)
                     material_item_id: material_item_id, // 재료 품목 ID (자식 품목)
-                    bom_amount: bom_amount,         // 소요량
+                    bom_amount: bom_amount         // 소요량
                 };
                 newBOMs.push(bomData);
+            }
+            else if (row.classList.contains('existing-bom-row')) {
+                // 기존 행
+                const bom_id = row.dataset.bomId; // openSlideForEdit에서 저장한 실제 bom_id
+                // 수정된 소요량 추출
+                const bom_amount_str = row.querySelector('.input_bom_amount')?.value.trim();
+                const bom_amount = parseInt(bom_amount_str) || 0;
+
+                // 기존 행 값 검증
+                if (!bom_id || bom_amount <= 0) {
+                    console.warn("경고: BOM ID 누락 또는 소요량 0 이하. 업데이트 대상에서 제외됩니다.", row);
+                    return;
+                }
+
+                // bom_id가 있어야 수정 가능
+                const bomData = {
+                    bom_id: bom_id,         // 수정 대상 식별자
+                    bom_amount: bom_amount  // 수정할 수량
+                };
+                updatedBOMs.push(bomData);
             }
         });
         
         return { 
             newBOMs: newBOMs,
-            updatedBOMs: updatedBOMs,
-            deletedBOMs: deletedBOMs
+            updatedBOMs: updatedBOMs
         };
     }
 
@@ -614,5 +675,233 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 품목 ID Select 선택 시 이벤트 리스너 추가
     targetIdSelect?.addEventListener('change', changePro);
+
+// ============================
+// 등록 / 수정 슬라이드 - 데이터 저장 (BOM에 맞게 수정) - 현재 이벤트 충돌 나는 것 같아서 우선 주석 처리함
+// ============================
+
+    // const saveBtn = document.querySelector('.submit-btn');
+
+    // saveBtn.addEventListener('click', async () => {
+
+    //     // 현재 모드 확인
+    //     let url = '';
+    //     const actionText = nowSlide === 'edit' ? '수정' : '등록';
+        
+    //     // 등록/수정 모드에 따라 필요한 입력값 추출
+    //     // 재료 ID (bom_id) = nowEditId 사용
+
+    //     const bom_amount = document.querySelector('.input_bom_amount').value;
+        
+    //     // 등록 모드에서만 필요한 값 (BOM의 재료/완제품 ID)
+    //     let product_item_id = '';
+    //     let material_item_id = '';
+
+    //     if (nowSlide === 'new') {
+    //         product_item_id = document.querySelector('#target-product-id').value;
+    //         material_item_id = document.querySelector('.input_bom_item').value;
+
+    //         if (product_item_id === '') {
+    //             alert('완제품 ID를 선택해 주세요.');
+    //             return;
+    //         }
+    //         if (material_item_id === '') {
+    //             alert('재료 ID를 선택해 주세요.');
+    //             return;
+    //         }
+    //         url = `${contextPath}/bominsert`;
+    //     }
+    //     else { 
+    //         // 수정 모드
+    //         // 수정 시에는 BOM ID를 사용. 수량만 수정.
+    //         if (!nowEditId) {
+    //             alert('수정할 BOM ID를 찾을 수 없습니다.');
+    //             return;
+    //         }
+    //         url = `${contextPath}/bomupdate`;
+    //     }
+        
+    //     if (!bom_amount || parseInt(bom_amount) <= 0) {
+    //         alert('사용량은 0보다 큰 값을 입력해 주세요.');
+    //         document.querySelector('#input_bom_amount').focus();
+    //         return;
+    //     }
+
+    //     // 전송할 데이터 객체
+    //     const bomData = {
+    //         // 재료 수량
+    //         bom_amount: parseInt(bom_amount)
+    //     };
+        
+    //     if (nowSlide === 'edit') {
+    //         // 수정 시 bom_id도 전송
+    //         bomData.bom_id = nowEditId; 
+
+    //     }
+    //     else {
+    //         // 등록 시에는 ID들 전송
+    //         bomData.product_item_id = product_item_id;
+    //         bomData.material_item_id = material_item_id;
+    //     }
+
+    //     try {
+    //         let fetchOptions = {};
+    //         let requestBody;
+    //         let requestUrl = url;
+
+    //         if (nowSlide === 'new') {
+    //             requestBody = JSON.stringify([bomData]);
+    //             fetchOptions = {
+    //                 method: 'POST',
+    //                 headers: {
+    //                     'Content-Type': 'application/json;charset=UTF-8'
+    //                 },
+    //                 body: requestBody
+    //             };
+    //         }
+    //         else {
+    //             requestBody = JSON.stringify(bomData);
+    //             fetchOptions = {
+    //                 method: 'POST',
+    //                 headers: {
+    //                     'Content-Type': 'application/json;charset=UTF-8'
+    //                 },
+    //                 body: requestBody
+    //             };
+    //         }
+
+    //         const response = await fetch(requestUrl, fetchOptions);
+    //         const result = await response.text();
+
+    //         if (response.ok && result === 'success') {
+    //             alert(`BOM ${actionText}이 성공적으로 완료되었습니다.`);
+    //             // 성공 시 목록 페이지로 새로고침
+    //             window.location.href = `${contextPath}/bomlist`; 
+    //         }
+    //         else {
+    //             alert(`BOM ${actionText}에 실패했습니다. (서버 응답: ` + result + ')');
+    //         }
+
+    //     }
+    //     catch (error) {
+    //         console.error(`${actionText} 중 통신 오류 발생:`, error);
+    //         alert(`${actionText} 중 통신 오류가 발생했습니다.`);
+    //     }
+    // });
+
+    // ===================================
+    // 상세 슬라이드 -> 수정 슬라이드 전환
+    // ===================================
+
+    // DOM 요소 추가 선택
+    const slideInput = document.querySelector('#slide-input');
+    const inputSlideTitle = document.querySelector('#slide-title');
+    const editBomBtn = document.querySelector('#editBomBtn'); // JSP에서 추가한 ID
+
+    function openSlideForEdit(bomList, productInfo) {
+        nowSlide = 'UPDATE';
+        bomIdsToDelete = []; // 삭제 목록 초기화
+
+        // 기존 행 초기화 (신규, 기존 행 모두 제거)
+        resetBomNewRows(); 
+        bomTbody.querySelectorAll('.existing-bom-row').forEach(row => row.remove());
+
+        // 슬라이드 제목 및 버튼 텍스트 변경
+        inputSlideTitle.textContent = 'BOM 수정';
+        registerBomBtn.value = '수정'; // 등록 버튼을 '수정' 버튼으로 변경
+
+        // 목표 품목(완제품) 정보 설정 및 비활성화
+        targetNameInput.value = productInfo.name;
+        // selectbox를 조회된 값으로 고정
+        targetIdSelect.innerHTML = `<option value="${productInfo.id}" selected>${productInfo.id} - ${productInfo.name}</option>`;
+        inputHiddenId.value = productInfo.id; // 숨겨진 ID 설정
+        itemIdVal.textContent = productInfo.id;
+        stockIdShow.style.display = 'block'; // ID 표시 영역 보이기
+        
+        // 수정 모드에서는 목표 품목 변경 불가
+        targetNameInput.disabled = true;
+        targetIdSelect.disabled = true;
+
+        // 재료 목록(bomLists) 테이블 채우기
+        if (bomList.length > 0) {
+            bomList.forEach(bom => {
+                // initialRow(템플릿) 복제
+                const newRow = initialRow.cloneNode(true);
+                newRow.style.display = ''; // 숨김 해제
+                newRow.classList.remove('initial-row');
+                newRow.classList.add('existing-bom-row'); // '기존 행'으로 표시
+                newRow.dataset.status = 'UPDATE'; // 상태: 수정
+                newRow.dataset.bomId = bom.bom_id; // 실제 BOM ID 저장 (필수)
+
+                // 체크박스 설정
+                const chkbox = newRow.querySelector('.chkbox input[type="checkbox"]');
+                chkbox.classList.remove('existingDefectChk');
+                chkbox.classList.add('existingBomChk');
+                chkbox.name = 'delete_bom_id'; // 삭제용 name
+                chkbox.value = bom.bom_id; // value에 실제 BOM ID 설정
+
+                // 각 input/select name 속성 복구 및 값 채우기
+                const divSelect = newRow.querySelector('.input_bom_div');
+                divSelect.name = 'bomDivList';
+                divSelect.value = bom.material_item_div || '';
+                divSelect.disabled = true;
+                
+                const nameInput = newRow.querySelector('.input_bom_name');
+                nameInput.name = 'bomNameList';
+                nameInput.value = bom.material_item_name || '';
+                nameInput.disabled = true;
+                
+                const itemSelect = newRow.querySelector('.input_bom_item');
+                itemSelect.name = 'bomItemList';
+                // 재료 ID selectbox 채우기 (이미 선택된 값으로)
+                itemSelect.innerHTML = `<option value="${bom.material_item_id}" selected data-name="${bom.material_item_name}">${bom.material_item_id} - ${bom.material_item_name}</option>`;
+                itemSelect.disabled = true;
+                
+                const amountInput = newRow.querySelector('.input_bom_amount');
+                amountInput.name = 'bomAmountList';
+                amountInput.value = bom.bom_amount || 1;
+
+                // 테이블에 행 추가
+                bomTbody.appendChild(newRow);
+            });
+        }
+        
+        // 슬라이드 전환
+        slideDetail.classList.remove('open');
+        slideInput.classList.add('open');
+    }
+
+    // 수정 버튼 클릭 이벤트
+    if (editBomBtn) {
+        editBomBtn.addEventListener('click', async () => {
+            // 상세 슬라이드에서 현재 완제품 ID와 이름 가져오기
+            const productId = detailProductItemId.textContent.trim();
+            const productName = detailProductItemName.textContent.trim();
+
+            if (!productId) {
+                alert('완제품 ID를 찾을 수 없어 수정 모드로 진입할 수 없습니다.');
+                return;
+            }
+
+            try {
+                // 상세 정보 재조회
+                // - 상세 슬라이드 테이블에는 bom_id가 없으므로, 
+                //   수정/삭제에 필요한 bom_id를 얻기 위해 데이터 재조회
+                const response = await fetch(`${contextPath}/bomdetails?item_id=${productId}`);
+                if (!response.ok) {
+                    throw new Error('BOM 상세 정보 재조회 실패');
+                }
+                
+                const bomList = await response.json();
+
+                // 수정 슬라이드 열기 함수 호출
+                openSlideForEdit(bomList, { id: productId, name: productName });
+                
+            } catch (error) {
+                console.error("수정 모드 진입 실패:", error);
+                alert("수정 모드를 여는 데 실패했습니다.");
+            }
+        });
+    }
 
 });

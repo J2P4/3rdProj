@@ -577,19 +577,40 @@ if (closeInputBtn) {
                 alert(`재고 ${actionText}이 성공적으로 완료되었습니다.`);
                 
                 if(actionText == '수정') {
-                    stockId = nowEditId;
 
-                    // 여기!!! 애니메이션 효과 없애기. 기존 noAnime 가져옴.
-
+                    // 수정 슬라이드 닫기 (애니메이션 제거)
                     slideInput.style.transition = 'none';
                     slideInput.classList.remove('open');
                     void slideInput.offsetWidth;
                     slideInput.style.transition = 'right 1s ease';
 
+                    // 상세 슬라이드 애니메이션 재설정
                     detail.style.transition = 'none';
                     void detail.offsetWidth;
                     detail.style.transition = 'right 1s ease';
+
+                    // 수정된 데이터 다시 로드 및 상세 슬라이드 열기 (비동기)
+                    try {
+                        const detailResponse = await fetch(
+                            `${contextPath}/stockdetail?stock_id=${nowEditId}`
+                        );
+                        if (!detailResponse.ok) {
+                            throw new Error('수정 후 상세 데이터 로드 오류');
+                        }
+                        
+                        const detailData = await detailResponse.json();
+                        // 원본 데이터도 갱신하여 취소 버튼 클릭 시에도 갱신된 내용이 보이도록 함
+                        originalDetailData = detailData;
+
+                        fillDetail(detail, detailData);
+                        detail.classList.add('open');
                     }
+                    catch (detailError) {
+                        console.error('수정 후 상세 화면 복귀 중 오류 발생:', detailError);
+                        alert('수정은 완료되었으나, 상세 정보를 불러오는 데 실패했습니다. 목록을 새로고침합니다.');
+                        window.location.href = `${contextPath}/stocklist`;
+                    }
+                }
                 else {
                     window.location.href = `${contextPath}/stocklist`;
                 }
@@ -608,11 +629,3 @@ if (closeInputBtn) {
     })
 
 });
-
-
-
-
-
-
-
-

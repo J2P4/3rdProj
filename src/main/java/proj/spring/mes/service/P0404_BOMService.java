@@ -1,6 +1,7 @@
 package proj.spring.mes.service;
 
 import java.util.List;
+import java.util.Map;
 
 import proj.spring.mes.dto.P0404_BOMDTO;
 
@@ -16,5 +17,8 @@ public interface P0404_BOMService {
 //	public int removeBOM(String bom_id);
 	public int removeBOMs(List<String> bomIds);
 	public int addBOM(List<P0404_BOMDTO> bomList);
+	
+	// bom 추가 삭제 수정 일괄 처리용
+	boolean processBomUpdates(Map<String, Object> payload);
 	
 }

@@ -1,6 +1,7 @@
 package proj.spring.mes.dao.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
@@ -20,7 +21,12 @@ public interface P0404_BomMapperDAO {
 	
 	int updateBOM(P0404_BOMDTO dto);
 //	int deleteBOM(String bom_id);
-	int deleteBOMs(List<String> bomIds);
+	int deleteBOMs(List<String> itemIds); // 이거는 완제 기준
 	int insertBOM(P0404_BOMDTO dto);
+	
+	// 여기는 bom 기준. map으로 통합 구현할 거라 추가해둠.
+	int deleteBOMByIds(List<String> bomIds);
+	int updateBOMByMap(Map<String, Object> bomMap);
+	int insertBOMByMap(Map<String, Object> bomMap);
 	
 }

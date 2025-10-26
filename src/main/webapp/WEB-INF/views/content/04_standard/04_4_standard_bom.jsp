@@ -234,7 +234,7 @@
                         <th class = "gb">소요량</th>
                     </thead>
                     <tbody>
-                        <tr class = "initial-row" data-status="IGNORE">
+                        <tr class = "initial-row" data-status="IGNORE" style="display: none;">
                             <td class = "chkbox"><input type="checkbox" class="rowChk existingDefectChk" name = "delete_bom_id" value=""></td>
                             <td>
                                 <select name = "bomDivList" class = "input_bom_div" size="1">
@@ -324,7 +324,7 @@
                 </table>
             </div>
             <div class = "slide-btnbox">
-                <input type = "button" class = "slide-btn" value = "수정">
+                <input type = "button" class = "slide-btn" id="editBomBtn" value = "수정">
                 <input type = "button" class = "close-btn slide-btn" value = "취소">
             </div>
         </div>

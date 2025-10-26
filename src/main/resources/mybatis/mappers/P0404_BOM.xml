@@ -135,7 +135,8 @@
 	<!-- 수정 : 여기도 재료 id를 이용해 작성하는 거니까 update에 bom id도 포함되어야 함-->
 	<update id = "updateBOM" parameterType = "P0404_BOMDTO">
 		update v3_bom
-		set bom_amount = #{bom_amount}, item_id = #{product_item_id} where bom_id = #{bom_id}
+		set bom_amount = #{bom_amount}
+		where bom_id = #{bom_id}
 	</update>
 	
 	<!-- 삭제 -->
@@ -167,4 +168,36 @@
 	        #{bom_id},          #{bom_amount},
 	        #{product_item_id}  )
 	</insert>
+	
+	<!-- 통합 구현용 코드들 -->
+	
+	<update id = "updateBOMByMap" parameterType = "java.util.Map">
+		update v3_bom
+		set bom_amount = #{bom_amount}
+		where bom_id = #{bom_id}
+	</update>
+	
+	<delete id = "deleteBOMByIds" parameterType = "java.util.List">
+		delete from v3_bom
+		where bom_id in
+		<foreach item="id" collection="list" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+	
+	<insert id="insertBOMByMap" parameterType="java.util.Map">
+		<selectKey keyProperty="bom_id" resultType="string" order="BEFORE">
+			select
+				'F' || #{material_item_id} || LPAD(BOM_ID_SEQ.NEXTVAL, 2, '0')
+			from dual
+		</selectKey>
+		
+		insert into v3_bom (
+			bom_id, bom_amount, item_id
+		)
+		values (
+			#{bom_id}, #{bom_amount}, #{product_item_id}
+		)
+	</insert>
+
 </mapper>

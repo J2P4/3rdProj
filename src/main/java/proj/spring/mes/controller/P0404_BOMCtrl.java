@@ -1,6 +1,7 @@
 package proj.spring.mes.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -87,10 +88,11 @@ public class P0404_BOMCtrl {
     }
 
 	@RequestMapping("/bomdetail")
-	public String detail(Model model, String bom_id) {
+	@ResponseBody
+	public P0404_BOMDTO detail(String bom_id) {
+		logger.info("BOM 상세 조회 요청: {}", bom_id);
 		P0404_BOMDTO dto = service.getOneBOM(bom_id);
-		model.addAttribute("bom", dto);
-		return "04_standard/04_4_standard_bom.tiles";
+		return dto;
 	}
 	
     @PostMapping("/bominsert")
@@ -116,26 +118,47 @@ public class P0404_BOMCtrl {
             return "fail: " + e.getMessage();
         }
     }
-//	@RequestMapping("/bomupdate")
+
+    @PostMapping("/bomupdate")
+	@ResponseBody
+		public String updateBOM(@RequestBody Map<String, Object> payload) {
+    	logger.info("BOM 일괄 수정/추가/삭제 요청 (/bomupdate)");
+
+    	try {
+    		// Service의 processBomUpdates 메소드를 사용하여 모든 CRUD 작업 처리
+    		boolean result = service.processBomUpdates(payload);
+
+    		if (result) {
+    			return "success";
+    		}
+    		else {
+    			// 부분적인 실패는 예외로 처리되지 않고 boolean으로 반환될 경우 대비
+    			return "fail: Partial failure or no changes processed";
+    		}
+    	}
+    	catch (Exception e) {
+    		logger.error("BOM 일괄 처리 중 예외 발생:", e);
+    		return "fail: " + e.getMessage();
+    	}
+    }
 	
 	@PostMapping("/bomdelete")
 	@ResponseBody
-	public String deleteBOMs(@RequestBody List<String> bomIds) {
-		logger.info("선택된 재고 ID 삭제 요청: " + bomIds);
+	public String deleteBOMs(@RequestBody List<String> itemIds) {
+		logger.info("선택된 완제품 ID 내 bom 전체 삭제 요청: " + itemIds);
 		
-		if (bomIds == null || bomIds.isEmpty()) {
-            return "fail: No IDs provided"; // 방어 코드
-        }
-        
-		// Service의 다중 삭제 메소드 호출
-		int deletedCount = service.removeBOMs(bomIds); 
-		
-		if (deletedCount == bomIds.size()) {
+		if (itemIds == null || itemIds.isEmpty()) {
+			return "fail: No IDs provided";
+		}
+		// 완제품 item_id 기준 다중 삭제
+		int deletedCount = service.removeBOMs(itemIds);
+		if (deletedCount > 0) {
+			// 하나라도 삭제되면 성공으로 처리
 			return "success";
-		} else {
-            // 일부 또는 전체 삭제 실패 시
-            logger.error("재고 삭제 실패. 요청 ID 수: {}, 실제 삭제 수: {}", bomIds.size(), deletedCount);
-			return "fail"; 
+		}
+		else {
+			logger.error("완제품 BOM 삭제 실패. 요청 ID 수: {}, 실제 삭제 수: {}", itemIds.size(), deletedCount);
+			return "fail";
 		}
 	}
 	
