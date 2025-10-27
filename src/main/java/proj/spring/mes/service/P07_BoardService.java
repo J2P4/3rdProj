@@ -11,4 +11,5 @@ public interface P07_BoardService {
     int add(P07_BoardDTO dto);
     int modify(P07_BoardDTO dto);
     int remove(String id);
+	List<P07_BoardDTO> mainlist();
 }

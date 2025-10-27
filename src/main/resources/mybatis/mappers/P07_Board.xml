@@ -15,6 +15,11 @@
     <result property="board_date"    column="board_date"/>
   </resultMap>
 
+	<!-- 메인에 보여질 리스트 -->
+	<select id="mainList" resultType="P07_BoardDTO">
+		select * from v3_board
+	</select>
+
   <!-- 목록 -->
   <select id="selectList" resultMap="BoardMap">
     SELECT * FROM (

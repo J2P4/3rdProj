@@ -14,7 +14,13 @@
   ORDER BY
     DECODE(UPPER(NVL(i.ITEM_DIV,'UNKNOWN')), 'RAW',1,'PRODUCT',2,'DEFECT',3,99)
 </select>
-
+<select id="selectMainDashboard" resultType="map">
+  SELECT
+    SUM(CP_RATE) AS "totalProduction",
+    ROUND(SUM(CP_SUCCESSRATE)/SUM(CP_RATE)*100, 1) AS "successRate",
+    SUM(CP_DEFECTRATE) AS "totalDefect"
+  FROM V3_CP_LIST
+</select>
 	
 </mapper>
 

@@ -35,7 +35,7 @@ body {
   padding:18px;
 }
 
-.card__head {
+.card_head {
   display:flex;
   justify-content:space-between;
   align-items:center;
@@ -43,19 +43,19 @@ body {
   margin-bottom:14px;
 }
 
-.card__title {
+.card_title {
   font-size:24px;
   font-weight:800;
   letter-spacing:-.3px;
 }
 
-.card__more {
+.card_more {
   font-size:13px;
   color:var(--muted);
   cursor:pointer;
 }
 
-.card__more:hover {
+.card_more:hover {
   text-decoration:underline;
 }
 
@@ -79,12 +79,12 @@ body {
   background:#fff;
 }
 
-.kpi__label {
+.kpi_label {
   font-size:13px;
   color:var(--muted);
 }
 
-.kpi__value {
+.kpi_value {
   display:block;
   font-size:32px;
   font-weight:800;
@@ -93,15 +93,15 @@ body {
   border-bottom:4px solid #222;
 }
 
-.kpi--total .kpi__value {
+.kpi-total .kpi_value {
   border-bottom-color:var(--accent-blue);
 }
 
-.kpi--goal .kpi__value {
+.kpi-goal .kpi_value {
   border-bottom-color:#111;
 }
 
-.kpi--error .kpi__value {
+.kpi-error .kpi_value {
   border-bottom-color:var(--accent-red);
   color:var(--accent-red);
 }
@@ -119,7 +119,7 @@ body {
     linear-gradient(to right,  rgba(0,0,0,.03) 1px, transparent 1px) 0 0/48px 100%;
 }
 
-.chart__canvas {
+.chart_canvas {
   width:100%;
   height:100%;
   display:block;
@@ -130,7 +130,7 @@ body {
   padding:18px 18px 6px;
 }
 
-.board__table {
+.board_table {
   width:100%;
   border-collapse:collapse;
   margin-top:10px;
@@ -140,19 +140,20 @@ body {
   overflow:hidden;
 }
 
-.board__table tr {
+.board_table tr {
   border-bottom:1px solid var(--border);
 }
 
-.board__table tr:last-child {
+.board_table tr:last-child {
   border-bottom:none;
 }
 
-.board__table td {
-  padding:12px 14px;
+.board_table td {
+  padding:8px 14px;
+  font-size: 12px;
 }
 
-.board__table tr:hover {
+.board_table tr:hover {
   background:#f9fafb;
 }
 

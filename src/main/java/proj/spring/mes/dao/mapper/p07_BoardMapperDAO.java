@@ -22,4 +22,7 @@ public interface p07_BoardMapperDAO {
     int update(P07_BoardDTO dto);
 
     int delete(@Param("id") String id);
+    
+    // 게시판용 리스트
+    List<P07_BoardDTO> mainList();
 }

@@ -50,4 +50,9 @@ public class P07_BoardServiceImpl implements P07_BoardService {
     public int remove(String id) {
         return mapper.delete(id);
     }
+
+	@Override
+	public List<P07_BoardDTO> mainlist() {
+		return mapper.mainList();
+	}
 }

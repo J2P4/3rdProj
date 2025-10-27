@@ -38,7 +38,7 @@ public class LoginController {
 	    // 강제 변경 모드일 때만 제한 걸기
 	    if ("force".equals(mode)) {
 	        if (!Boolean.TRUE.equals(must)) {
-	            return "redirect:/stocklist"; // 강제 변경 아님 → 차단
+	            return "redirect:/main"; // 강제 변경 아님 → 차단
 	        }
 	    }
 
@@ -98,7 +98,7 @@ public class LoginController {
          } else {
             newSession.setAttribute("mustChangePw", false);
             newSession.removeAttribute("showPwModal");
-            return "redirect:/stocklist";
+            return "redirect:/main";
          }
         
 	}
@@ -146,7 +146,7 @@ public class LoginController {
 	    session.setAttribute("mustChangePw", false);
 
 	    ra.addFlashAttribute("msg", "비밀번호 변경을 90일 후로 연장했습니다.");
-	    return "redirect:/stocklist";
+	    return "redirect:/main";
 	}
 
 	
