@@ -110,7 +110,7 @@
 	
 	<!-- 조회 : 작업 지시에 해당하는 공정 조회 -->
 	<!-- 품목별로 공정 차이 안 두기로 했으므로, 그냥 전체 조회로 해도 됨 -->
-	<select id = "selectPro" resultType = "P0502_WorkerOrderDTO">
+	<select id = "selectPro" resultType = "P0502_WorkOrderDTO">
 		select
 			process_id, process_name, process_img,
 			process_info, process_seq

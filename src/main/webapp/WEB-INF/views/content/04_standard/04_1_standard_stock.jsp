@@ -25,7 +25,7 @@
 </head>
 <body>
     <!-- 페이지 제목 -->
-    <h1>재고 관리</h1>
+    <div class = "title"><h1>재고 관리</h1></div>
     <!-- 페이징용 추가 코드 1-->
    	<c:url var="/stocklist" value="/stocklist"/> <%-- 모든 내부 링크의 기준 URL(중복 /mes/mes 방지) 이거 떄믄에 한시간.... --%>
 	<c:set var="selfPath" value="/stocklist"/> <%-- c:url value에 사용할 경로 문자열 --%>
@@ -116,6 +116,22 @@
             </tbody>
         </table>
     </div>
+    <!-- 테이블 하단 버튼 영역(bottom-btn)
+        - page : 페이징 들어가는 영역
+        - bottom-btn-boc : 등록, 삭제 등 버튼 영역
+            + btm-btn : 공통 양식 지정
+            + new, del : 개별 양식 지정
+    -->
+    <form class = "bottom-btn">
+        <div class = "page"></div>
+        <c:if test="${sessionScope.role != 'STAFF'}">
+            <div class = "bottom-btn-box">
+                <input type = "button" class = "btm-btn del" value="삭제">
+                <input type = "button" class = "btm-btn new" value="신규">
+            </div>
+        </c:if>
+        <c:if test="${sessionScope.role == 'STAFF'}"></c:if>
+    </form>
     <!-- 현재 페이지 유지 -->
     <input type="hidden" name="page" value="${page}">
     <input type="hidden" name="size" value="${pagePerRows}">
@@ -193,22 +209,7 @@
             </c:otherwise>
         </c:choose>
     </div>
-    <!-- 테이블 하단 버튼 영역(bottom-btn)
-        - page : 페이징 들어가는 영역
-        - bottom-btn-boc : 등록, 삭제 등 버튼 영역
-            + btm-btn : 공통 양식 지정
-            + new, del : 개별 양식 지정
-    -->
-    <form class = "bottom-btn">
-        <div class = "page"></div>
-        <c:if test="${sessionScope.role != 'STAFF'}">
-            <div class = "bottom-btn-box">
-                <input type = "button" class = "btm-btn del" value="삭제">
-                <input type = "button" class = "btm-btn new" value="신규">
-            </div>
-        </c:if>
-        <c:if test="${sessionScope.role == 'STAFF'}"></c:if>
-    </form>
+    
     <!-- 입력용 슬라이드 -->
     <div class = "slide" id = "slide-input">
         <button class="slide-close-btn">✕</button>

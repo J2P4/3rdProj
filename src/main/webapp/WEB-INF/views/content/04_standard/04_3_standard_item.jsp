@@ -22,7 +22,7 @@
 <title>품목 리스트</title>
 </head>
 <body>
-<h1>품목 리스트</h1>
+<div class = "title"><h1>품목 관리</h1></div>
 
 <c:url var="itemlistUrl" value="/itemlist"/>
 <c:set var="selfPath" value="/itemlist"/>
@@ -114,8 +114,15 @@
         </tbody>
     </table>
 </div>
-
-<div class="bottom-btn">
+<div class = "bottom-btn">
+	<div class="bottom-btn-box">
+        <input type="button" id="btnDelete" class="btm-btn del" value="삭제">
+        <input type="button" class="btm-btn new" value="신규">
+    </div>
+</div>
+	<!-- 현재 페이지 유지 -->
+    <input type="hidden" name="page" value="${page}">
+    <input type="hidden" name="size" value="${pagePerRows}">
     <div class="page">
 
         <c:if test="${empty page}"><c:set var="page" value="1"/></c:if>
@@ -200,11 +207,7 @@
         </c:choose>
 
     </div> 
-    <div class="bottom-btn-box">
-        <input type="button" class="btm-btn new" value="신규">
-        <input type="button" id="btnDelete" class="btm-btn del" value="삭제">
-    </div>
-</div>
+    
 
 <c:url var="deleteUrl" value="/item/delete"/>
 <form id="deleteForm" method="post" action="${deleteUrl}" style="display:none;">
@@ -264,8 +267,8 @@
 		<form id="item-register-form"> 
 		    <div class="slide-tb"></div>
 		    <div class="slide-btnbox">
-		        <input type="submit" class="slide-btn" value="등록">
 		        <input type="button" class="close-btn slide-btn" value="취소">
+		        <input type="submit" class="slide-btn" value="등록">
 		    </div>
 		</form>
 
@@ -301,8 +304,8 @@
     </div>
 
     <div class="slide-btnbox">
-      <input type="button" class="slide-btn" value="수정">
       <input type="button" class="close-btn slide-btn" value="취소">
+      <input type="button" class="slide-btn" value="수정">
     </div>
   </div>
 </div>

@@ -22,7 +22,7 @@
 </head>
 <body>
     <div class = "title">
-    	<h1>생산계획 관리</h1>
+    	<h1>생산계획</h1>
    	</div>
    	<c:url var="cpUrl" value="/cp"/> <%-- 모든 내부 링크의 기준 URL(중복 /mes/mes 방지) 이거 떄믄에 한시간.... --%>
 	<c:set var="selfPath" value="/cp"/> <%-- c:url value에 사용할 경로 문자열 --%>
@@ -108,8 +108,8 @@
     	<c:if test="${sessionScope.role != 'STAFF'}">
 		    <!-- 버튼 영역 전체 -->
 	    	<div class = "bottom-btn-box">
-	            <input type = "button" class = "btm-btn new" value="신규">
 	            <input type = "submit" class = "btm-btn del" value="삭제">
+	            <input type = "button" class = "btm-btn new" value="신규">
 	        </div>
 		</c:if>
 		<c:if test="${sessionScope.role == 'STAFF'}">
@@ -228,8 +228,8 @@
 	            </table>
 	        </div>
 	        <div class = "slide-btnbox">
-                <input type="button" id="btn-insert" class="slide-btn" value="등록">
                 <input type = "button" class = "close-btn slide-btn" value = "취소">
+                <input type="button" id="btn-insert" class="slide-btn" value="등록">
             </div>
        	</div>
     </form>
@@ -272,9 +272,9 @@
 	
 	      <div class="slide-btnbox">
 	        <c:if test="${sessionScope.role != 'STAFF'}">
+	          <input type="button" class="close-btn slide-btn" value="취소">
 	          <input type="button" class="slide-btn modify-btn" id="btn-modify" value="수정">
 	          <input type="button" class="slide-btn save-btn hide" id="btn-save" value="저장">
-	          <input type="button" class="close-btn slide-btn" value="취소">
 	        </c:if>
 	        <c:if test="${sessionScope.role == 'STAFF'}">
 	          <input type="button" class="close-btn slide-btn" value="취소">

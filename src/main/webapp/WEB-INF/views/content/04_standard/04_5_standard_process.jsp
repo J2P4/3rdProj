@@ -107,7 +107,6 @@
                     <input type="text" name="process_name" placeholder=" 공정명을 입력해주세요" value="${filter.process_name}"/>
                 </div>
             </div>
-            <div class="filter-item"></div>
         </div>
         <div class="filter-btn">
             <input type="submit" class="fil-btn" value="조회" />
@@ -150,8 +149,8 @@
     <div class="bottom-btn">
         <div class="page"></div>
         <div class="bottom-btn-box">
-            <input type="button" class="btm-btn new" value="등록" />
             <input type="button" id="btnDelete" class="btm-btn del" value="삭제" />
+            <input type="button" class="btm-btn new" value="신규" />
         </div>
     </div>
 
@@ -203,8 +202,8 @@
             </div>
 
             <div class="slide-btnbox">
-                <input type="submit" class="slide-btn" id="processCreateBtn" value="등록" />
                 <input type="button" class="close-btn slide-btn" value="취소" />
+                <input type="submit" class="slide-btn" id="processCreateBtn" value="등록" />
             </div>
         </form>
     </div>
@@ -247,8 +246,8 @@
         </div>
 
         <div class="slide-btnbox">
-          <input type="button" class="slide-btn" id="detailEditBtn" value="수정" />
           <input type="button" class="close-btn slide-btn" value="취소" />
+          <input type="button" class="slide-btn" id="detailEditBtn" value="수정" />
         </div>
       </div>
     </div>

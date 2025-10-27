@@ -25,7 +25,7 @@
 <title>거래처 리스트</title>
 </head>
 <body>
-<h1>거래처 리스트</h1>
+<div class = "title"><h1>거래처 관리</h1></div>
 
 <c:url var="clientlistUrl" value="/clientlist"/>
 <c:set var="selfPath" value="/clientlist"/>
@@ -92,8 +92,15 @@
         </tbody>
     </table>
 </div>
-
 <div class="bottom-btn">
+	<div class = "bottom-btn-box">
+        <input type="button" id="btnDelete" class="btm-btn del" value="삭제">
+        <input type="button" class="btm-btn new" value="신규" id="btnNew">
+	</div>
+</div>
+	<!-- 현재 페이지 유지 -->
+    <input type="hidden" name="page" value="${page}">
+    <input type="hidden" name="size" value="${pagePerRows}">
     <div class="page">
 
         <c:if test="${empty page}"><c:set var="page" value="1"/></c:if>
@@ -166,12 +173,6 @@
         </c:choose>
 
     </div> 
-    <div class="bottom-btn-box">
-        <input type="button" class="btm-btn new" value="신규" id="btnNew">
-        <input type="button" id="btnDelete" class="btm-btn del" value="삭제">
-    </div>
-</div>
-
 <c:url var="deleteUrl" value="/client/delete"/>
 <form id="deleteForm" method="post" action="${deleteUrl}" style="display:none;">
     <input type="hidden" name="ids" id="deleteIds">
@@ -242,8 +243,8 @@
     </form>
 
     <div class="slide-btnbox">
-      <input type="button" class="slide-btn" value="등록" id="btnSubmitClient">
       <input type="button" class="close-btn slide-btn" value="취소" id="btnCancel">
+      <input type="button" class="slide-btn" value="등록" id="btnSubmitClient">
     </div>
 
   </div>
@@ -279,8 +280,8 @@
     </div>
 
     <div class="slide-btnbox">
-      <input type="button" class="slide-btn" value="수정" id="btnEdit">
       <input type="button" class="close-btn slide-btn" value="취소" id="btnCloseDetail">
+      <input type="button" class="slide-btn" value="수정" id="btnEdit">
     </div>
   </div>
 </div>

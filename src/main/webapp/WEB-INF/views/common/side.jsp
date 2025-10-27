@@ -4,7 +4,6 @@
             <ul class="mainList space-y-2 text-base">
                 <!-- 메인 메뉴 추가 -->
                 <li class="relative p-3 rounded-md cursor-pointer transition-colors duration-200" data-link="${pageContext.request.contextPath}/main">메인</li>
-                <li class="relative p-3 rounded-md cursor-pointer transition-colors duration-200" data-link="${pageContext.request.contextPath}/orderlist" >발주 관리</li>
                 
                 <!-- 기준 관리 메뉴와 하위 메뉴 -->
                 <li class="parent-menu relative p-3 rounded-md cursor-pointer transition-colors duration-200">
@@ -39,33 +38,9 @@
                     </ul>
                 </li>
 
-                <!-- 품질 관리 메뉴와 하위 메뉴 -->
-                <li class="parent-menu relative p-3 rounded-md cursor-pointer transition-colors duration-200">
-                    <div class="flex items-center justify-between">
-                        <span>품질 관리</span>
-                        <svg class="w-4 h-4 transition-transform duration-200" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
-                        </svg>
-                    </div>
-                    <ul class="subList space-y-1 mt-2 pl-4">
-                        <li class="py-2 px-3 rounded-md cursor-pointer transition-colors duration-200" data-link="${pageContext.request.contextPath}/inInslist">품질 검사</li>
-                        <!-- <li class="py-2 px-3 rounded-md cursor-pointer transition-colors duration-200" data-link="${pageContext.request.contextPath}/outInslist">출고 검사</li>
-                        <li class="py-2 px-3 rounded-md cursor-pointer transition-colors duration-200" data-link="${pageContext.request.contextPath}/errorlist">불량 보고서</li> -->
-                    </ul>
-                </li>
+                <li class="py-2 px-3 rounded-md cursor-pointer transition-colors duration-200" data-link="${pageContext.request.contextPath}/inInslist">품질 검사</li>
 				
-                <li class="parent-menu relative p-3 rounded-md cursor-pointer transition-colors duration-200">
-                    <div class="flex items-center justify-between">
-                        <span> 게시판 </span>
-                        <svg class="w-4 h-4 transition-transform duration-200" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
-                        </svg>
-                    </div>
-                    <ul class="subList space-y-1 mt-2 pl-4">
-                        <li class="py-2 px-3 rounded-md cursor-pointer transition-colors duration-200" data-link="${pageContext.request.contextPath}/board">게시판 </li>
-                       
-                    </ul>
-                </li>
+                <li class="py-2 px-3 rounded-md cursor-pointer transition-colors duration-200" data-link="${pageContext.request.contextPath}/board">게시판 </li>
 
 
 

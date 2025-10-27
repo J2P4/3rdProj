@@ -109,6 +109,18 @@
             </tbody>
         </table>
     </div>
+    <!-- 테이블 하단 버튼 영역(bottom-btn)
+        - page : 페이징 들어가는 영역
+        - bottom-btn-boc : 등록, 삭제 등 버튼 영역
+            + btm-btn : 공통 양식 지정
+            + new, del : 개별 양식 지정
+    -->
+    <form class = "bottom-btn">
+        <div class = "page"></div>
+        <div class = "bottom-btn-box">
+            <input type = "button" class = "btm-btn del" value="삭제">
+        </div>
+    </form>
     <!-- 현재 페이지 유지 -->
     <input type="hidden" name="page" value="${page}">
     <input type="hidden" name="size" value="${pagePerRows}">
@@ -186,18 +198,7 @@
             </c:otherwise>
         </c:choose>
     </div>
-    <!-- 테이블 하단 버튼 영역(bottom-btn)
-        - page : 페이징 들어가는 영역
-        - bottom-btn-boc : 등록, 삭제 등 버튼 영역
-            + btm-btn : 공통 양식 지정
-            + new, del : 개별 양식 지정
-    -->
-    <form class = "bottom-btn">
-        <div class = "page"></div>
-        <div class = "bottom-btn-box">
-            <input type = "button" class = "btm-btn del" value="삭제">
-        </div>
-    </form>
+    
     <!-- 입력용 슬라이드 -->
     <div class = "slide" id = "slide-input">
         <form class = "slide-contents" id="stockInsertForm">
@@ -255,8 +256,8 @@
                 </table>
             </div>
             <div class = "slide-btnbox">
-                <input type = "button" class = "submit-btn slide-btn" value = "등록">
                 <input type = "button" class = "close-btn slide-btn" value = "취소">
+                <input type = "button" class = "submit-btn slide-btn" value = "등록">
             </div>
         </form>
     </div>
@@ -298,10 +299,10 @@
                 </table>
             </div>
             <div class = "slide-btnbox">
-                <input type = "button" class = "slide-btn" id="detailEditBtn" value = "수정">
                 <input type = "button" class = "close-btn slide-btn" value = "취소">
+                <input type = "button" class = "slide-btn" id="detailEditBtn" value = "수정">
             </div>
         </div>
     </div>
 </body>
-</html> vcb
+</html>

@@ -110,6 +110,25 @@
             </tbody>
         </table>
     </div>
+    <!-- 테이블 하단 버튼 영역(bottom-btn)
+        - page : 페이징 들어가는 영역
+        - bottom-btn-boc : 등록, 삭제 등 버튼 영역
+            + btm-btn : 공통 양식 지정
+            + new, del : 개별 양식 지정
+    -->
+    <form class = "bottom-btn">
+        <div class = "page"></div>
+        <c:if test="${sessionScope.role != 'STAFF'}">
+            <div class = "bottom-btn-box">
+                <input type = "button" class = "btm-btn del" value="삭제">
+                <input type = "button" class = "btm-btn new" value="신규">
+            </div>
+        </c:if>
+        <c:if test="${sessionScope.role == 'STAFF'}">
+		    <!-- STAFF는 조회만 가능 -->
+		    <!-- 버튼 없음 -->
+		</c:if>
+    </form>
     <!-- 현재 페이지 유지 -->
     <input type="hidden" name="page" value="${page}">
     <input type="hidden" name="size" value="${pagePerRows}">
@@ -187,25 +206,7 @@
             </c:otherwise>
         </c:choose>
     </div>
-    <!-- 테이블 하단 버튼 영역(bottom-btn)
-        - page : 페이징 들어가는 영역
-        - bottom-btn-boc : 등록, 삭제 등 버튼 영역
-            + btm-btn : 공통 양식 지정
-            + new, del : 개별 양식 지정
-    -->
-    <form class = "bottom-btn">
-        <div class = "page"></div>
-        <c:if test="${sessionScope.role != 'STAFF'}">
-            <div class = "bottom-btn-box">
-                <input type = "button" class = "btm-btn new" value="신규">
-                <input type = "button" class = "btm-btn del" value="삭제">
-            </div>
-        </c:if>
-        <c:if test="${sessionScope.role == 'STAFF'}">
-		    <!-- STAFF는 조회만 가능 -->
-		    <!-- 버튼 없음 -->
-		</c:if>
-    </form>
+    
     <!-- 입력용 슬라이드 -->
     <div class = "slide" id = "slide-input">
         <button type = "button" class="slide-close-btn">✕</button>
@@ -265,8 +266,8 @@
                 2. 담당 사원을 위 테이블 영역으로 올리고, 대신 생산 계획 id 옆에 목표 품목을 같이 표시해주기
             </div>
             <div class = "slide-btnbox">
-                <input type = "button" class = "submit-btn slide-btn" value = "등록">
                 <input type = "button" class = "close-btn slide-btn" value = "취소">
+                <input type = "button" class = "submit-btn slide-btn" value = "등록">
             </div>
         </form>
     </div>
@@ -342,8 +343,8 @@
                 <input type="button" class = "material" value="생산 수량 입력">
             </div>            
             <div class = "slide-btnbox">
-                <input type = "button" class = "slide-btn" id="detailEditBtn" value = "수정">
                 <input type = "button" class = "close-btn slide-btn" value = "취소">
+                <input type = "button" class = "slide-btn" id="detailEditBtn" value = "수정">
             </div>
         </div>
     </div>

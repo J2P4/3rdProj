@@ -125,8 +125,8 @@
   </section>
 
   <!-- footer -->
-  <footer>
-    <tiles:insertAttribute name="footer" />
-  </footer>
+<!--   <footer> -->
+<%--     <tiles:insertAttribute name="footer" /> --%>
+<!--   </footer> -->
 </body>
 </html>

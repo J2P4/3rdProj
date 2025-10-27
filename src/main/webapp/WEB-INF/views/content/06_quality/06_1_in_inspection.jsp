@@ -111,6 +111,18 @@
             </tbody>
         </table>
     </div>
+    <div class = "bottom-btn">
+        <c:if test="${sessionScope.role != 'STAFF'}">
+            <div class = "bottom-btn-box">
+                <input type = "button" class = "btm-btn del" value="삭제">
+                <input type = "button" class = "btm-btn new" value="신규">
+            </div>
+        </c:if>
+		<c:if test="${sessionScope.role == 'STAFF'}">
+		    <!-- STAFF는 조회만 가능 -->
+		    <!-- 버튼 없음 -->
+		</c:if>
+    </div>
     <!-- 현재 페이지 유지 -->
     <input type="hidden" name="page" value="${page}">
     <input type="hidden" name="size" value="${pagePerRows}">
@@ -193,18 +205,7 @@
             </c:otherwise>
         </c:choose>
     </div>
-    <div class = "bottom-btn">
-        <c:if test="${sessionScope.role != 'STAFF'}">
-            <div class = "bottom-btn-box">
-                <input type = "button" class = "btm-btn new" value="신규">
-                <input type = "button" class = "btm-btn del" value="삭제">
-            </div>
-        </c:if>
-		<c:if test="${sessionScope.role == 'STAFF'}">
-		    <!-- STAFF는 조회만 가능 -->
-		    <!-- 버튼 없음 -->
-		</c:if>
-    </div>
+    
     <div class = "slide" id = "slide-input">
         <button class="slide-close-btn">✕</button>
         <form class = "slide-contents" id="inInsInsertForm">
@@ -314,8 +315,8 @@
                 </div>
             </div>
             <div class = "slide-btnbox">
-                <input type = "button" class = "submit-btn slide-btn" value = "등록">
                 <input type = "button" class = "close-btn slide-btn" value = "취소">
+                <input type = "button" class = "submit-btn slide-btn" value = "등록">
             </div>
         </form>
     </div>
@@ -373,8 +374,8 @@
                 </table>
             </div>
             <div class = "slide-btnbox">
-                <input type = "button" class = "slide-btn" id="detailEditBtn" value = "수정">
                 <input type = "button" class = "close-btn slide-btn" value = "취소">
+                <input type = "button" class = "slide-btn" id="detailEditBtn" value = "수정">
             </div>
         </div>
     </div>
