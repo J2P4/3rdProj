@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -12,8 +13,19 @@
   <!-- UI 라이브러리 -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/tinymce@5/tinymce.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/tinymce@5/langs/ko.js"></script>
+  <!-- 주의: CDN의 langs/ko.js는 배포/버전에 따라 경로가 달라 로드 실패할 수 있습니다.
+       한국어 언어팩을 사용하려면 프로젝트 정적 리소스로 ko.js를 넣고
+       07_board2.js 내 tinymce.init에 language_url로 연결하세요. -->
+
   <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/07_board.css" type="text/css">
+
+  <!-- 서버(JSP) → 클라이언트(JS) 데이터 전달 (재선언 방지: window.sessionInfo 사용) -->
+  <script>
+    window.sessionInfo = window.sessionInfo || {
+      userName: "${fn:escapeXml(sessionScope.loginUser != null ? sessionScope.loginUser.worker_name : '')}",
+      userId:   "${fn:escapeXml(sessionScope.loginUser != null ? sessionScope.loginUser.worker_id : '')}"
+    };
+  </script>
 
   <!-- 페이지 스크립트 (defer: DOM 파싱 후 실행) -->
   <script src="${pageContext.request.contextPath}/resources/js/07_board2.js" defer></script>

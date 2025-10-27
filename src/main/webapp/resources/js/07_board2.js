@@ -1,25 +1,15 @@
-/* ============================
- *  07_board2.js (FULL, FIXED)
- *  - 컨텍스트 경로 자동 인식
- *  - JSON 파싱 방어(HTML 에러페이지 대비)
- *  - /board REST API 연동
- *  - 목록 중복 렌더 방지(뒤로가기 중복 바인딩 제거 + 레이스 가드)
- *  - 수정 시 DTO에 board_id 주입(JS만 수정)
- * ============================ */
-
 // === 컨텍스트/베이스 URL 자동 인식 ===
 const CTX =
   (document.body && document.body.getAttribute('data-ctx')) ||
   (function () {
     const parts = (window.location.pathname || '/').split('/');
-    // ['', 'mes', '...'] -> '/mes'
     return parts.length > 1 && parts[1] ? '/' + parts[1] : '';
   })();
 
 // === 유틸: 응답을 안전하게 JSON으로 변환(HTML 에러페이지 방어) ===
 async function toJSONorThrow(r) {
   const ct = r.headers.get('content-type') || '';
-  const text = await r.text(); // 먼저 문자열로 받는다(404/500 HTML 방어)
+  const text = await r.text();
   if (!r.ok) throw new Error(`HTTP ${r.status}: ${text.substring(0, 200)}`);
   if (ct.indexOf('application/json') === -1)
     throw new Error(`Not JSON: ${text.substring(0, 200)}`);
@@ -30,8 +20,10 @@ async function toJSONorThrow(r) {
 let currentDisplayedData = [];
 let currentPage = 1;
 const postsPerPage = 10;
-const currentUserName = '관리자(N24100001)';
 let currentEditingPostId = null; // 수정 모드에서 사용
+
+// === 세션 기반 현재 사용자 아이디 (JSP에서 window.sessionInfo로 주입함) ===
+const currentUserName = window.sessionInfo?.userId || ''; // <-- 여기가 핵심 변경점
 
 // ★ 목록 렌더 동시요청 방지 토큰(레이스 가드)
 let listRenderSeq = 0;
@@ -54,7 +46,7 @@ const API = {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(dto),
-    }).then(r => r.text()), // 서버가 텍스트를 돌려주는 경우 대비
+    }).then(r => r.text()),
   delete: (id) =>
     fetch(`${CTX}/board/${id}`, { method: 'DELETE' }).then(r => r.text()),
 };
@@ -80,16 +72,13 @@ async function renderList(page = 1) {
     const emptyBox = $('#empty-list');
     const keyword = ($('#searchInput')?.value || '').trim();
 
-    // ★ 이번 호출의 시퀀스 번호(가장 마지막 호출만 유효)
     const mySeq = ++listRenderSeq;
 
-    // 초기화
     tbody.innerHTML = '';
     emptyBox.classList.add('hidden');
 
     const res = await API.list(page, postsPerPage, keyword);
 
-    // ★ 내가 최신 호출이 아니면 렌더 중단(중복 그리기 방지)
     if (mySeq !== listRenderSeq) return;
 
     currentDisplayedData = res.list || [];
@@ -98,7 +87,6 @@ async function renderList(page = 1) {
     if (currentDisplayedData.length === 0) {
       emptyBox.classList.remove('hidden');
     } else {
-      // 템플릿 사용
       const tpl = $('#tpl-list-row');
       currentDisplayedData.forEach((post, idx) => {
         const clone = document.importNode(tpl.content, true);
@@ -110,6 +98,7 @@ async function renderList(page = 1) {
         numberTd.textContent = (total - ((page - 1) * postsPerPage)) - idx;
         typeSpan.textContent = post.board_type || '-';
         titleTd.textContent = post.board_title || '(제목 없음)';
+        // 기존 로직 유지: DB에 들어있는 작성자(worker_id) 표시
         authorTd.textContent = post.worker_id || '-';
 
         titleTd.addEventListener('click', () => openDetail(post.board_id));
@@ -181,7 +170,6 @@ async function openDetail(id) {
     $('#detail-date').textContent = post.board_date || '';
     $('#detail-content').innerHTML = post.board_content || '';
 
-    // 버튼 이벤트(중복 방지를 위해 '덮어쓰기' 방식)
     $('#backToListButton').onclick = () => renderList(currentPage);
     $('#editPostButton').onclick = () => openWrite(post);
     $('#deletePostButton').onclick = () => {
@@ -219,6 +207,10 @@ function openWrite(post) {
       tinymce.init({
         selector: '#postContentEditor',
         language: 'ko',
+        // 언어파일은 프로젝트에 호스팅해서 사용 권장:
+        // 예: `${CTX}/resources/js/tinymce/langs/ko.js`
+        // 만약 해당 파일을 호스팅하지 않으면 language_url 삭제(또는 language:'en' 사용)
+        language_url: `${CTX}/resources/js/tinymce/langs/ko.js`,
         menubar: false,
         plugins: 'link lists code',
         toolbar: 'undo redo | bold italic underline | bullist numlist | link | code',
@@ -254,13 +246,11 @@ async function onSave() {
       board_content: content,
       board_type: type,
       board_attatch: '',
-      worker_id: currentUserName
+      worker_id: currentUserName   // <-- 세션에서 가져온 worker_id를 DTO에 포함
     };
 
     if (currentEditingPostId) {
-      // ✅ 서버가 PathVariable을 DTO에 주입하지 않는 경우 대비: JS에서 직접 세팅
       dto.board_id = currentEditingPostId;
-
       await API.update(currentEditingPostId, dto);
       customAlert('게시글이 수정되었습니다.', () => openDetail(currentEditingPostId));
     } else {
@@ -298,10 +288,6 @@ function bindEvents() {
 
   const searchBtn = $('#searchButton');
   if (searchBtn) searchBtn.addEventListener('click', onSearch);
-
-  // ❌ '목록으로' 버튼은 상세 화면에서 상황별로 덮어쓰므로 여기선 바인딩하지 않는다.
-  // const backBtn = $('#backToListButton');
-  // if (backBtn) backBtn.addEventListener('click', () => renderList(currentPage));
 }
 
 // === 시작 ===
