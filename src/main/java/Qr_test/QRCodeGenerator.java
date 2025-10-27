@@ -14,7 +14,7 @@ public class QRCodeGenerator {
     public void generateQrCodeImage(String text, int width, int height, String filePath) throws Exception {
         QRCodeWriter qrCodeWriter = new QRCodeWriter();
         BitMatrix bitMatrix = qrCodeWriter.encode(text, BarcodeFormat.QR_CODE, width, height);
-
+        
         // BufferedImage로 변환
         BufferedImage image = MatrixToImageWriter.toBufferedImage(bitMatrix);
 
