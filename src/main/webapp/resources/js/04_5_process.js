@@ -32,8 +32,26 @@ document.addEventListener('DOMContentLoaded', () => {
     if (url.startsWith('/resources')) return `${ctx}${url}`;
     return url;
   };
-  
-  
+
+  // ---------------------------
+  // 공용(common.js) 닫기와 충돌 방지: 캡처 단계에서 닫기 시도 감지하여 dataset.allowClose 세팅
+  // ---------------------------
+  document.addEventListener('click', function(e){
+    try {
+      const tgt = e.target;
+      if (!tgt) return;
+      // 닫기 버튼 후보들: .slide-close-btn (상단 X), .close-btn (취소 버튼), [data-slide-close] (확장성)
+      const closeBtn = tgt.closest && (tgt.closest('.slide-close-btn') || tgt.closest('.close-btn') || tgt.closest('[data-slide-close]'));
+      if (!closeBtn) return;
+      const slide = closeBtn.closest && closeBtn.closest('.slide');
+      if (!slide) return;
+      slide.dataset.allowClose = 'true';
+      // 안전하게 플래그 제거 (짧은 시간 후)
+      setTimeout(() => { try { delete slide.dataset.allowClose; } catch(_){} }, 500);
+    } catch (err) {
+      // 무시
+    }
+  }, true); // 캡처 단계 등록 — common.js의 핸들러보다 먼저 실행
 
   // ===== 상세 채우기 =====
   async function fillprocessDetail(slide, payload = {}) {
@@ -99,11 +117,15 @@ document.addEventListener('DOMContentLoaded', () => {
       e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation();
     }
   }, true);
+
   if (detail) {
+    // MutationObserver 수정: dataset.allowClose 검사 추가
     new MutationObserver(function (muts) {
       muts.forEach(function (m) {
         if (m.attributeName === 'class') {
-          if (!detail.classList.contains('open') && !allowClose) detail.classList.add('open');
+          const domAllow = detail && detail.dataset && detail.dataset.allowClose === 'true';
+          const allow = (typeof allowClose !== 'undefined' && allowClose) || domAllow;
+          if (!detail.classList.contains('open') && !allow) detail.classList.add('open');
         }
       });
     }).observe(detail, { attributes: true, attributeFilter: ['class'] });
@@ -350,9 +372,14 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!confirm('수정을 취소하시겠습니까? 변경 내용은 저장되지 않습니다.')) return;
         exitEdit();
       }
+      // 내부에서 닫을 때도 dataset 플래그 설정 — common.js와의 충돌 방지
       allowClose = true;
+      try { if (detail) detail.dataset.allowClose = 'true'; } catch(_) {}
       detail.classList.remove('open');
-      setTimeout(() => { allowClose = false; }, 0);
+      setTimeout(() => {
+        allowClose = false;
+        try { if (detail) delete detail.dataset.allowClose; } catch(_) {}
+      }, 0);
     });
   }
 
@@ -440,7 +467,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   })();
 });
-
 
 // ──────────────────────────────────────────────
 // 등록 슬라이드: 멀티파트 1회 요청(서버에서 ID 발급 + 파일명=ID 저장)
