@@ -222,6 +222,7 @@
 </form>
 
 <div class="slide" id="slide-input">
+    	<button type="button" class="slide-close-btn">✕</button>
     <div class="slide-contents">
         <div class="silde-title"><h2>품목 등록</h2></div>
         <div class="slide-id">품목 ID : </div>
@@ -276,6 +277,7 @@
 </div>
 
 <div class="slide" id="slide-detail">
+    	<button type="button" class="slide-close-btn">✕</button>
   <div class="slide-contents">
     <div class="silde-title"><h2>품목 상세</h2></div>
 

@@ -162,6 +162,7 @@
 
     <!-- 등록 슬라이드: 기존 유지(설명은 contenteditable에서 추출, 이미지 업로드는 미연동/미리보기만) -->
     <div class="slide" id="slide-input">
+        	<button type="button" class="slide-close-btn">✕</button>
         <form class="slide-contents" id="processInsertForm">
             <div class="silde-title"><h2 id="slide-title">공정 등록</h2></div>
 
@@ -210,6 +211,7 @@
 
     <!-- 상세 슬라이드: 이미지 + 설명 추가 -->
     <div class="slide" id="slide-detail">
+        	<button type="button" class="slide-close-btn">✕</button>
       <div class="slide-contents">
         <div class="silde-title"><h2>공정 상세</h2></div>
 

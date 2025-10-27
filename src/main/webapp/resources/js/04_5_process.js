@@ -32,6 +32,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (url.startsWith('/resources')) return `${ctx}${url}`;
     return url;
   };
+  
+  
 
   // ===== 상세 채우기 =====
   async function fillprocessDetail(slide, payload = {}) {

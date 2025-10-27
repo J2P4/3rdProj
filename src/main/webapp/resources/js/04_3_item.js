@@ -50,6 +50,90 @@ document.addEventListener('DOMContentLoaded', () => {
   const state = { mode: 'view', backup: {} };
   let allowClose = false;
 
+
+
+
+
+
+
+
+
+
+  
+  
+  // item_min / item_max 검증: item_max가 item_min보다 작으면 제출 차단
+(function attachPriceRangeValidation(){
+  const searchForm = document.querySelector('form.panel'); // 품목 검색 폼
+  if (!searchForm) return;
+
+  searchForm.addEventListener('submit', function(e){
+    const minInput = searchForm.querySelector('[name="item_min"]');
+    const maxInput = searchForm.querySelector('[name="item_max"]');
+    if (!minInput || !maxInput) return;
+
+    const rawMin = (minInput.value || '').trim();
+    const rawMax = (maxInput.value || '').trim();
+    if (rawMin === '' || rawMax === '') return; // 비어있으면 검증 안함(서버에서 더 엄격하게 검증 권장)
+
+    // 숫자 형식 정리(콤마 제거) 및 파싱
+    const toNum = s => {
+      const cleaned = String(s).replace(/[^\d.-]/g, '');
+      return cleaned === '' ? NaN : Number(cleaned);
+    };
+    const minVal = toNum(rawMin);
+    const maxVal = toNum(rawMax);
+
+    if (isNaN(minVal) || isNaN(maxVal)) {
+      alert('단가는 숫자로 입력하세요.');
+      e.preventDefault();
+      (isNaN(minVal) ? minInput : maxInput).focus();
+      return;
+    }
+
+    if (maxVal < minVal) {
+      alert('최대 단가는 최소 단가보다 작을 수 없습니다.');
+      e.preventDefault();
+      maxInput.focus();
+      return;
+    }
+  });
+})();
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+  // -----------------------------
+  // 외부(공용) X/취소 클릭 캡처: dataset.allowClose 플래그 설정
+  // (common.js 같은 공용 스크립트가 먼저 open 클래스를 제거하더라도
+  //  이 플래그가 있으면 MutationObserver가 재오픈을 막게 함)
+  // -----------------------------
+  document.addEventListener('click', function(e) {
+    try {
+      const tgt = e.target;
+      if (!tgt) return;
+      // 닫기 버튼 후보: .slide-close-btn, .close-btn, 또는 data-slide-close 속성이 있는 것
+      const closeBtn = tgt.closest && (tgt.closest('.slide-close-btn') || tgt.closest('.close-btn') || tgt.closest('[data-slide-close]'));
+      if (!closeBtn) return;
+      const slide = closeBtn.closest && closeBtn.closest('.slide');
+      if (!slide) return;
+      // 외부에서 닫는 시도임을 표시
+      slide.dataset.allowClose = 'true';
+      // 안전하게 짧은 시간 후 플래그 제거
+      setTimeout(() => { try { delete slide.dataset.allowClose; } catch(_){} }, 500);
+    } catch (err) {
+      // 무시
+    }
+  }, true); // 캡처 단계로 등록해서 common.js의 핸들러보다 먼저 실행되게 함
+
   // 상세 슬라이드 바깥 닫힘 방지
   document.addEventListener('click', (e) => {
     if (!detail || !detail.classList.contains('open')) return;
@@ -69,7 +153,10 @@ document.addEventListener('DOMContentLoaded', () => {
     new MutationObserver(function (muts) {
       muts.forEach(function (m) {
         if (m.attributeName === 'class') {
-          if (!detail.classList.contains('open') && !allowClose) detail.classList.add('open');
+          // dataset.allowClose 체크하여 외부에서 닫는 경우 재오픈을 막음
+          const domAllow = detail && detail.dataset && detail.dataset.allowClose === 'true';
+          const allow = (typeof allowClose !== 'undefined' && allowClose) || domAllow;
+          if (!detail.classList.contains('open') && !allow) detail.classList.add('open');
         }
       });
     }).observe(detail, { attributes: true, attributeFilter: ['class'] });
@@ -95,7 +182,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setHTML(detail.querySelector('#d-itemDiv'), state.backup.itemDiv);
     setHTML(detail.querySelector('#d-itemUnit'), state.backup.itemUnit);
     setHTML(detail.querySelector('#d-itemPrice'),
-      '<input type="number" id="e-unitPrice" min="0" step="1" value="' + (state.backup.itemPrice || 0) + '">');
+      '<input type="number" id="e-unitPrice" min="0" step="1" value="' + (state.backup.itemPrice || 0) + '">' );
 
     // 거래처 ID: 수정 가능하도록 <select id="vendorId">로 교체 후 목록 로드
     setHTML(detail.querySelector('#d-clientId'),
@@ -263,8 +350,13 @@ document.addEventListener('DOMContentLoaded', () => {
         exitEdit(true);
       }
       allowClose = true;
+      // detail DOM 플래그도 설정 (common.js에서 직접 class를 제거할 때도 일관성 유지)
+      try { if (detail) detail.dataset.allowClose = 'true'; } catch(_) {}
       detail.classList.remove('open');
-      setTimeout(function(){ allowClose = false; }, 0);
+      setTimeout(function(){
+        allowClose = false;
+        try { if (detail) delete detail.dataset.allowClose; } catch(_) {}
+      }, 0);
     });
   }
 
