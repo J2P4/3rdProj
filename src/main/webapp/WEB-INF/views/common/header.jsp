@@ -7,10 +7,10 @@
 <!-- 레이아웃에서 <header>로 감싸므로 여기서는 div만 -->
 <div class="header-bg text-white p-4 shadow-lg flex justify-between items-center z-50 relative">
   <div class="flex items-center space-x-2">
-    <a href="<c:url value='/proj_mes/mainpage'/>">
+    <a href="<c:url value='/main'/>">
       <img src="https://i.postimg.cc/qMsq73hD/icon.png" class="w-10" alt="회사 로고">
     </a>
-    <a href="<c:url value='/proj_mes/mainpage'/>" class="text-white no-underline">
+    <a href="<c:url value='/main'/>" class="text-white no-underline">
       <h3 class="text-xl font-bold">J2P4</h3>
     </a>
   </div>
