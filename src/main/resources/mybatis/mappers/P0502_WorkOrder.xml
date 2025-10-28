@@ -44,14 +44,14 @@
 				left outer join v3_worker w
 				    on wo.worker_id = w.worker_id
 				<where>
-					<if test = "cp_id != null and cp_id != ''">
-						and wo.cp_id = #{cp_id}
+					<if test = "filter.cp_id != null and filter.cp_id != ''">
+						and wo.cp_id = #{filter.cp_id}
 					</if>
-					<if test = "worker_id != null and worker_id != ''">
-						and wo.worker_id = #{worker_id}
+					<if test = "filter.worker_id != null and filter.worker_id != ''">
+						and wo.worker_id = #{filter.worker_id}
 					</if>
-					<if test = "fromDate != null and fromDate != '' and toDate != null and toDate != ''">
-						and wo.work_order_date between #{fromDate} and #{toDate}
+					<if test = "filter.fromDate != null and filter.fromDate != '' and filter.toDate != null and filter.toDate != ''">
+						and wo.work_order_date between #{filter.fromDate} and #{filter.toDate}
 					</if>
 				</where>
 			) t
@@ -73,14 +73,14 @@
 		left outer join v3_worker w
 		    on wo.worker_id = w.worker_id
 		<where>
-			<if test = "cp_id != null and cp_id != ''">
-				and wo.cp_id = #{cp_id}
+			<if test = "filter.cp_id != null and filter.cp_id != ''">
+				and wo.cp_id = #{filter.cp_id}
 			</if>
-			<if test = "worker_id != null and worker_id != ''">
-				and wo.worker_id = #{worker_id}
+			<if test = "filter.worker_id != null and filter.worker_id != ''">
+				and wo.worker_id = #{filter.worker_id}
 			</if>
-			<if test = "fromDate != null and fromDate != '' and toDate != null and toDate != ''">
-				and wo.work_order_date between #{fromDate} and #{toDate}
+			<if test = "filter.fromDate != null and filter.fromDate != '' and filter.toDate != null and filter.toDate != ''">
+				and wo.work_order_date between #{filter.fromDate} and #{filter.toDate}
 			</if>
 		</where>
 	</select>

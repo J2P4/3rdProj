@@ -21,14 +21,14 @@
         const allItemsJson = `${itemListJson}`; 
     </script>
     <script src="${pageContext.request.contextPath}/resources/js/common.js" defer></script>
-    <script src="${pageContext.request.contextPath}/resources/js/04_1_stock.js" defer></script>
+    <script src="${pageContext.request.contextPath}/resources/js/05_3_cplist.js" defer></script>
 </head>
 <body>
     <!-- 페이지 제목 -->
     <div class = "title"><h1>생산 실적</h1></div>
     <!-- 페이징용 추가 코드 1-->
-   	<c:url var="/stocklist" value="/stocklist"/> <%-- 모든 내부 링크의 기준 URL(중복 /mes/mes 방지) 이거 떄믄에 한시간.... --%>
-	<c:set var="selfPath" value="/stocklist"/> <%-- c:url value에 사용할 경로 문자열 --%>
+   	<c:url var="/cplist" value="/cplist"/> <%-- 모든 내부 링크의 기준 URL(중복 /mes/mes 방지) 이거 떄믄에 한시간.... --%>
+	<c:set var="selfPath" value="/cplist"/> <%-- c:url value에 사용할 경로 문자열 --%>
     <!-- 검색 필터(filter)
         - filter-item-box : select란 모음
             + filter-item: 개별 select란
@@ -36,20 +36,13 @@
                 * filitem-input : 실제 select 영역
         - filter-btn : 조회 버튼 영억
     -->
-    <form class = "filter" method="get" action="${pageContext.request.contextPath}/stocklist">
+    <form class = "filter" method="get" action="${pageContext.request.contextPath}/cplist">
         <div class = "filter-item-box">
-            <div class = "filter-item">
-                <div class = "filitem-name">· 생산 실적 ID</div>
-                <div class = "filitem-input">
-                    <c:set var="filter.stock_id" value="${param.stock_id}" />
-                    <input type="text" name="stock_id" placeholder=" ID를 입력해주세요" value="${filter.stock_id}">
-                </div>
-            </div>
             <div class = "filter-item">
                 <div class = "filitem-name">· 생산계획 ID</div>
                  <div class = "filitem-input">
-                    <c:set var="filter.stock_id" value="${param.stock_id}" />
-                    <input type="text" name="stock_id" placeholder=" ID를 입력해주세요" value="${filter.stock_id}">
+                    <c:set var="filter.cp_id" value="${param.cp_id}" />
+                    <input type="text" name="cp_id" placeholder=" ID를 입력해주세요" value="${filter.cp_id}">
                 </div>
               
             </div>
@@ -59,10 +52,8 @@
 	                	<input type="date" name="fromDate" id="fromDate" value="${empty param.fromDate ? '' : param.fromDate}">
 	                	<span class="tilde">~</span>
 	                	<input type="date" name="toDate" id="toDate" value="${empty param.toDate ? todayStr : param.toDate}">
-	                   
-	               	 </div>
+                </div>
             </div>
-            <div class = "filter-item"></div>
         </div>
         <div class = "filter-btn">
             <input type="hidden" name="page" value="1"/> <%-- 조회 시 항상 1페이지부터 --%>
@@ -96,14 +87,14 @@
                 	</tr>
                	</c:if>
                	<c:if test="${not empty list}">
-               		<c:forEach var="P0401_StockDTO" items="${list}">
-	               		<tr data-id="${P0401_StockDTO.stock_id}">
-    <td><input type="checkbox" class="rowChk" name="delete_stock_id" value="${P0401_StockDTO.stock_id}"></td>
-    <td>${P0401_StockDTO.stock_id}</td>
-    <td>${P0401_StockDTO.stock_date}</td>               <%-- 작업 지시일 --%>
-    <td>${P0401_StockDTO.order_quantity}</td>           <%-- 지시 수량 --%>
-    <td>${P0401_StockDTO.production_quantity}</td>      <%-- 생산 수량 --%>
-</tr>
+               		<c:forEach var="P0503_CPListDTO" items="${list}">
+	               		<tr data-id="${P0503_CPListDTO.cp_list_id}">
+                        <td><input type="checkbox" class="rowChk" name="delete_stock_id" value="${P0401_StockDTO.stock_id}"></td>
+                        <td>${P0503_CPListDTO.cp_list_id}</td>
+                        <td>${P0503_CPListDTO.cp_rate}</td>              
+                        <td>${P0503_CPListDTO.cp_successrate}</td>          
+                        <td>${P0503_CPListDTO.cp_defectrate}</td>    
+                    </tr>
                     </c:forEach>
                  </c:if>
             </tbody>
@@ -133,9 +124,9 @@
 	
         <form id="sizeForm" method="get" action="${pageContext.request.contextPath}/stocklist" style="display:inline-block; margin-right:8px;">
             <input type="hidden" name="page" value="1"/> <%-- Rows 바꾸면 1페이지로 --%>
-            <input type="hidden" name="stock_id" value="${fn:escapeXml(param.stock_id)}"/> <%-- 기존 필터 유지 --%>
-            <input type="hidden" name="item_div" value="${fn:escapeXml(param.item_div)}"/>
-            <input type="hidden" name="stock_wrap" value="${fn:escapeXml(param.stock_wrap)}"/>
+            <input type="hidden" name="cp_id" value="${fn:escapeXml(param.stock_id)}"/> <%-- 기존 필터 유지 --%>
+            <input type="hidden" name="fromDate" value="${fn:escapeXml(param.fromDate)}"/> 
+            <input type="hidden" name="toDate" value="${fn:escapeXml(param.toDate)}"/>
 
             <label>Rows:
                 <select name="size" onchange="document.querySelector('#sizeForm').submit()">
@@ -153,9 +144,9 @@
                 <c:url var="prevBlockUrl" value="${selfPath}"> <%-- /list 에 파라미터 조합 --%>
                     <c:param name="page" value="${prevBlockStart}"/> <%-- 이전 블록 첫 페이지로 이동 --%>
                     <c:param name="size" value="${pagePerRows}"/> <%-- Rows 유지 --%>
-                    <c:param name="stock_id" value="${param.stock_id}"/> <%-- 필터 유지 --%>
-                    <c:param name="item_div" value="${param.item_div}"/>
-                    <c:param name="stock_wrap" value="${param.stock_wrap}"/>
+                    <c:param name="cp_id" value="${param.cp_id}"/> <%-- 필터 유지 --%>
+                    <c:param name="fromDate" value="${param.fromDate}"/>
+                    <c:param name="toDate" value="${param.toDate}"/>
                 </c:url>
                 <a class="page-link" href="${prevBlockUrl}">이전</a> <%-- 클릭 시 이전 블록 시작으로 --%>
             </c:when>
@@ -168,9 +159,9 @@
             <c:url var="pUrl" value="${selfPath}"> <%-- 각 페이지 숫자 링크 --%>
                 <c:param name="page" value="${p}"/>
                 <c:param name="size" value="${pagePerRows}"/>
-                <c:param name="stock_id" value="${param.stock_id}"/>
-                <c:param name="item_div" value="${param.item_div}"/>
-                <c:param name="stock_wrap" value="${param.stock_wrap}"/>
+                <c:param name="cp_id" value="${param.cp_id}"/>
+                <c:param name="fromDate" value="${param.fromDate}"/>
+                <c:param name="toDate" value="${param.toDate}"/>
             </c:url>
             <c:choose>
                 <c:when test="${p == page}">
@@ -187,9 +178,9 @@
                 <c:url var="nextBlockUrl" value="${selfPath}">
                     <c:param name="page" value="${nextBlockStart}"/> <%-- 다음 블록 시작 페이지 --%>
                     <c:param name="size" value="${pagePerRows}"/>
-                    <c:param name="stock_id" value="${param.stock_id}"/>
-                    <c:param name="item_div" value="${param.item_div}"/>
-                    <c:param name="stock_wrap" value="${param.stock_wrap}"/>
+                    <c:param name="cp_id" value="${param.cp_id}"/>
+                    <c:param name="fromDate" value="${param.fromDate}"/>
+                    <c:param name="toDate" value="${param.toDate}"/>
                 </c:url>
                 <a class="page-link" href="${nextBlockUrl}">다음</a> <%-- 클릭 시 11, 21, … --%>
             </c:when>
@@ -198,74 +189,11 @@
             </c:otherwise>
         </c:choose>
     </div>
-    
-    <!-- 입력용 슬라이드 -->
-    <div class = "slide" id = "slide-input">
-        <form class = "slide-contents" id="stockInsertForm">
-            <div class = "silde-title"><h2 id="slide-title">작업지시서 등록</h2></div>
-            <div class = "slide-id" id="stock-id-show" style = "display: none">
-                재고 ID: <span id="stock-id-val"></span>
-                <input type="hidden" id="input_stock_id" name="stock_id" value="">
-            </div>
-            <div class = "slide-tb">
-                <table>
-                    <thead>
-                        <!-- select 데이터 글씨가 너무 많으면 테이블이 깨져서 강제로 style 속성 지정 1 -->
-                        <th style = "width: 40%">작업 지시일</th>
-                        <th>지시 수량</th>
-                        <th>생산 수량</th>
-                    </thead>
-                    <tbody>
-                        <tr>
-                           
-                             <td data-type = "select">
-                               <input type = "text" id="input_item_name" placeholder = "작업지시일" style = "width: 100%;"></td> 
-                                </select>
-                                </td>
-       
-                            <td data-type = "select">
-                               <input type = "text" id="input_item_name" placeholder = "지시수량" style = "width: 100%;"></td> 
-                                </select>
-                            </td>
-                            <td><input type = "text" id="input_item_name" placeholder = "생산수량을 입력해주세요" style = "width: 100%;"></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class = "slide-tb">
-                <table>
-                    <thead>
-                        <th class = "amount">생산 계획 ID</th>
-                        <th>담당 사원</th>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><input type = "letter"  id="input_stock_amount" name="stock_amount" style = "width: 100%;"></td>
-                            <td data-type = "select">
-                                <select id="input_stock_wrap" name="stock_wrap" style = "width: 100%;">
-                                    <option value = "WH1 :: 1번 창고">고현지</option>
-                                    <option value = "WH2 :: 2번 창고">김재은</option>
-                                    <option value = "WH3 :: 3번 창고">윤성연</option>
-                                    <option value = "WH4 :: 4번 창고">조민서</option>
-                                    <option value = "WH4 :: 5번 창고">최아라</option>
-                                    <option value = "WH4 :: 5번 창고">최연지</option>
-                                </select>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class = "slide-btnbox">
-                <input type = "button" class = "close-btn slide-btn" value = "취소">
-                <input type = "button" class = "submit-btn slide-btn" value = "등록">
-            </div>
-        </form>
-    </div>
     <!-- 상세용 슬라이드 : ajax로 채울 거라 el 태그 사용 필요 X -->
     <div class = "slide" id = "slide-detail">
         <div class = "slide-contents">
-            <div class = "silde-title"><h2>재고 상세</h2></div>
-            <div class = "slide-id">재고 ID: </div>
+            <div class = "silde-title"><h2>생산 실적 상세</h2></div>
+            <div class = "slide-id">생산 실적 ID: </div>
             <div class = "slide-tb">
                 <!-- 상세 데이터 표시용 id 주는 영역 1 -->
                 <table id="itemDetail">

@@ -3,4 +3,49 @@
 	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="proj.spring.mes.dao.mapper.P0503_CPListMapperDAO">
+	
+	<!-- 전체 조회 : 페이지 넣는 기준 -->
+	<select id="selectCL" resultType="P0503_CPListDTO">
+	    <bind name="startRow" value="offset + 1"/>
+	    <bind name="endRow"   value="offset + limit"/>
+		SELECT *
+		FROM (
+			SELECT t.*, ROWNUM rn
+			FROM (
+				select
+					cp_list_id, cp_rate, cp_successrate, cp_defectrate,
+					cp_id
+				from v3_cp_list
+				<where>
+					<if test = "filter.cp_id != null and filter.cp_id != ''">
+						and cp_id = #{filter.cp_id}
+					</if>
+					<if test = "filter.fromDate != null and filter.fromDate != '' and filter.toDate != null and filter.toDate != ''">
+						and wo.work_order_date between #{filter.fromDate} and #{filter.toDate}
+					</if>
+				</where>
+			) t
+			<![CDATA[
+			WHERE ROWNUM <= #{endRow}
+			]]>
+		)
+		<![CDATA[
+		WHERE rn >= #{startRow}
+		]]>
+	</select>
+	
+	<!-- 총 레코드 수 -->
+	<select id="selectCPListCount" parameterType="map" resultType="long">
+		SELECT COUNT(*)
+		from v3_cp_list
+		<where>
+			<if test = "filter.cp_id != null and filter.cp_id != ''">
+				and cp_id = #{filter.cp_id}
+			</if>
+			<if test = "filter.fromDate != null and filter.fromDate != '' and filter.toDate != null and filter.toDate != ''">
+				and wo.work_order_date between #{filter.fromDate} and #{filter.toDate}
+			</if>
+		</where>
+	</select>
+
 </mapper>

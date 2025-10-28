@@ -104,6 +104,25 @@ public class P0404_BOMServiceImpl implements P0404_BOMService {
 		// 모든 작업이 성공적으로 수행되었다고 가정하고, 부분적인 실패 처리는 JS로 넘김
 		return success; 
 	}
+	
+	// 페이징
+	@Override
+	public List<P0404_BOMDTO> list(int page, int pagePerRows, P0404_BOMDTO searchFilter) {
+	    int size = Math.max(1, Math.min(pagePerRows, 100));
+        int p = Math.max(1, page);
+        int offset = (p - 1) * size;
+        
+        System.out.println(size);
+        System.out.println(p);
+        System.out.println(offset);
+		
+		return bomMapperDAO.selectOneBOMItemF(size, offset, searchFilter);
+	}
+	
+	@Override
+	public long count(P0404_BOMDTO searchFilter) {
+		return bomMapperDAO.selectBOMCount(searchFilter);
+	}
 
 	
 }

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import proj.spring.mes.dto.P0404_BOMDTO;
+import proj.spring.mes.dto.P0502_WorkOrderDTO;
 
 public interface P0404_BOMService {
 
@@ -20,5 +21,9 @@ public interface P0404_BOMService {
 	
 	// bom 추가 삭제 수정 일괄 처리용
 	boolean processBomUpdates(Map<String, Object> payload);
+	
+	// 페이징
+	List<P0404_BOMDTO> list(int page, int pagePerRows, P0404_BOMDTO searchFilter);
+	long count(P0404_BOMDTO searchFilter);
 	
 }

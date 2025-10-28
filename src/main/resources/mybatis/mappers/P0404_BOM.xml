@@ -94,25 +94,59 @@
 		order by b.bom_id
 	</select>
 	
-	<!-- 조회 : 품목 기준 전체 조회 -->
+	<!-- 조회 : 품목 기준 전체 조회(페이징 넣자...) -->
 	<select id = "selectOneBOMItemF" resultType = "P0404_BOMDTO">
-		select distinct
-			ip.item_id as product_item_id,
-			ip.item_name as product_item_name
-		from v3_bom b
-		left outer join v3_item ip
-			on b.item_id = ip.item_id
-		left outer join v3_item im
-			on im.item_id = ltrim(substr(b.bom_id, 1, length(b.bom_id) - 2), 'F')
-		<where>
-			<if test="material_item_name != null and material_item_name != ''">
-				and lower(im.item_name) like lower('%' || #{material_item_name} || '%')
-			</if>
-			<if test="product_item_name != null and product_item_name != ''">
-				and lower(ip.item_name) like lower('%' || #{product_item_name} || '%')
-			</if>
-		</where>
-		order by product_item_id
+		<bind name="startRow" value="offset + 1"/>
+	    <bind name="endRow"   value="offset + limit"/>
+	    SELECT *
+		FROM (
+			SELECT t.*, ROWNUM rn
+			FROM (
+				select distinct
+					ip.item_id as product_item_id,
+					ip.item_name as product_item_name
+				from v3_bom b
+				left outer join v3_item ip
+					on b.item_id = ip.item_id
+				left outer join v3_item im
+					on im.item_id = ltrim(substr(b.bom_id, 1, length(b.bom_id) - 2), 'F')
+				<where>
+					<if test="filter.material_item_name != null and filter.material_item_name != ''">
+						and lower(im.item_name) like lower('%' || #{filter.material_item_name} || '%')
+					</if>
+					<if test="filter.product_item_name != null and filter.product_item_name != ''">
+						and lower(ip.item_name) like lower('%' || #{filter.product_item_name} || '%')
+					</if>
+				</where>
+				order by product_item_id
+			) t
+			<![CDATA[
+			WHERE ROWNUM <= #{endRow}
+			]]>
+		)
+		<![CDATA[
+		WHERE rn >= #{startRow}
+		]]>
+	</select>
+	
+	<!-- 총 레코드 수 -->
+	<select id="selectBOMCount" parameterType="map" resultType="long">
+			select count(*)
+			from (
+				select * from v3_bom b
+				left outer join v3_item ip
+					on b.item_id = ip.item_id
+				left outer join v3_item im
+					on im.item_id = ltrim(substr(b.bom_id, 1, length(b.bom_id) - 2), 'F')
+				<where>
+					<if test="filter.material_item_name != null and filter.material_item_name != ''">
+						and lower(im.item_name) like lower('%' || #{filter.material_item_name} || '%')
+					</if>
+					<if test="filter.product_item_name != null and filter.product_item_name != ''">
+						and lower(ip.item_name) like lower('%' || #{filter.product_item_name} || '%')
+					</if>
+				</where>
+			)
 	</select>
 	
 	<!-- 조회 : 품목 고르기용 1(완제) -->
