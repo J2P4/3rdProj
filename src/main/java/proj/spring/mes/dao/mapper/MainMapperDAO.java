@@ -5,7 +5,6 @@ import java.util.Map;
 
 public interface MainMapperDAO {
 
-	Map<String, Object> selectStockByType();
 	Map<String, Object> selectMainDashboard();
 
 }

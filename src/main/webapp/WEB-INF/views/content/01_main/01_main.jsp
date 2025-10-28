@@ -10,9 +10,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>J2P4</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/main.css">
-    <script>window.contextPath='${pageContext.request.contextPath}';</script>
-    
     <script src="${pageContext.request.contextPath}/resources/js/main.js"></script>
+    <script>window.contextPath='${pageContext.request.contextPath}';</script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
 </head>
 <body>
   <div class="up">
@@ -80,13 +81,20 @@
     <section class="card">
       <header class="card_head">
         <h2 class="card_title">수요량</h2>
+        <div>
+        <form action="${pageContext.request.contextPath}/main" method="get">
+	        <label for="idSelect">ID 선택:</label>
+			<select id="idSelect">
+			</select>
+        </form>
+        </div>
         <a href="${pageContext.request.contextPath}/stocklist" class="card_more">+ 더보기</a>
       </header>
 
       <div class="chart">
+      	<canvas id="dataChart"></canvas>
       </div>
     </section>
-
 
 </body>
 </html>

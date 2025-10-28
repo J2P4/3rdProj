@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="proj.spring.mes.dao.mapper.DataMapperDAO">
+	<!-- SQL문 작성 영역 -->
+	<!-- ID 목록 (셀렉트 채우기용) -->
+  <select id="selectDistinctIds" resultType="int">
+    SELECT DISTINCT ID
+    FROM V3_FORECAST_RESULT_STG
+    ORDER BY ID
+  </select>
+
+  <!-- 특정 ID의 시계열 -->
+  <select id="selectDataById"
+          parameterType="int"
+          resultType="proj.spring.mes.dto.DataDTO">
+    SELECT
+      TO_CHAR(OBS_DATE, 'YYYY-MM-DD') AS obsDate,
+      CAST(ACTUAL     AS NUMBER)      AS actual,
+      CAST(PRED_LO_1  AS NUMBER)      AS predLo1,
+      CAST(PRED_HI_1  AS NUMBER)      AS predHi1
+    FROM V3_FORECAST_RESULT_STG
+    WHERE ID = #{id}
+    ORDER BY OBS_DATE
+  </select>
+	
+</mapper>
+
+
+
+

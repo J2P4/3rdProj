@@ -4,7 +4,6 @@ import java.util.Map;
 
 public interface MainService {
 
-//	Map<String, Object> getStockByType();
 	Map<String, Object> getMainDashboard();
 	
 }
