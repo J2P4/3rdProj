@@ -8,7 +8,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>계정 관리 < J2P4</title>
+    <title>사원 관리 < J2P4</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/common.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/user.css">
     <script>window.contextPath='${pageContext.request.contextPath}';</script>
@@ -18,7 +18,7 @@
 </head>
 <body>
     <div class = "title">
-    	<h1>계정 관리</h1>
+    	<h1>사원 관리</h1>
    	</div>
    	<c:url var="workerlistUrl" value="/workerlist"/> <%-- 모든 내부 링크의 기준 URL(중복 /mes/mes 방지) 이거 떄믄에 한시간.... --%>
 	<c:set var="selfPath" value="/workerlist"/> <%-- c:url value에 사용할 경로 문자열 --%>
@@ -91,13 +91,14 @@
             <tbody>
 	            <c:if test="${empty list }">
 					<tr>
+						<td><input type="checkbox" class="rowChk" disabled></td>
 						<td colspan="6"> 조회 내역이 없습니다.</td>
 					</tr>
 				</c:if>
 				<c:if test="${not empty list }">
 					<c:forEach var="workerDTO" items="${list }">			 
 		                <tr data-id="${workerDTO.worker_id}">
-		                    <td><input type="checkbox" class="rowChk" name="many_workers" value="${workerDTO.worker_id }"></td>
+		                	<td><input type="checkbox" class="rowChk" name="many_workers" value="${workerDTO.worker_id }"></td>
 		                    <td>${workerDTO.worker_id }</td>
 		                    <td class="worker-row" data-id="${workerDTO.worker_id}">
 							    ${workerDTO.worker_name}
@@ -118,8 +119,8 @@
     	<c:if test="${sessionScope.role != 'STAFF'}">
 		    <!-- 버튼 영역 전체 -->
 	    	<div class = "bottom-btn-box">
-	            <input type = "button" class = "btm-btn new" value="신규">
 	            <input type = "submit" class = "btm-btn del" value="삭제">
+	            <input type = "button" class = "btm-btn new" value="신규">
 	        </div>
 		</c:if>
 		<c:if test="${sessionScope.role == 'STAFF'}">
@@ -219,11 +220,11 @@
 	                </thead>
 	                <tbody>
 	                    <tr>
-	                        <td><input type="text" name="worker_name"></td>
+	                        <td><input type="text" name="worker_name" placeholder="이름을 입력하세요"></td>
 	                        <td><input type="date" name="worker_birth"></td>
 	                        <td>
-		                        <input type="text" name="person_email">@
-								<select name="domain_email">
+		                        <input type="text" name="person_email" class="email-input" placeholder="이메일을 입력하세요">@
+								<select name="domain_email" class="email-input">
 								    <option value="naver.com">naver.com</option>
 								    <option value="gmail.com">gmail.com</option>
 								    <option value="daum.net">daum.net</option>
@@ -268,8 +269,8 @@
 	            </table>
         	</div>
 	        <div class = "slide-btnbox">
-                <input type="button" id="btn-insert" class="slide-btn" value="등록">
                 <input type = "button" class = "close-btn slide-btn" value = "취소">
+                <input type="button" id="btn-insert" class="slide-btn" value="등록">
             </div>
        	</div>
     </form>
@@ -334,9 +335,9 @@
 	
 	      <div class="slide-btnbox">
 	        <c:if test="${sessionScope.role != 'STAFF'}">
+	          <input type="button" class="close-btn slide-btn" value="취소">
 	          <input type="button" class="slide-btn modify-btn" id="btn-modify" value="수정">
 	          <input type="button" class="slide-btn save-btn hide" id="btn-save" value="저장">
-	          <input type="button" class="close-btn slide-btn" value="취소">
 	        </c:if>
 	        <c:if test="${sessionScope.role == 'STAFF'}">
 	          <input type="button" class="close-btn slide-btn" value="취소">

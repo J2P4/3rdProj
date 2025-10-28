@@ -18,6 +18,12 @@
 .hide {
 	display:none !important;
 }
+.slide-tb {
+ 	text-align: center;
+}
+.number_amount {
+	text-align: right;
+}
 </style>
 </head>
 <body>
@@ -269,7 +275,7 @@
 	              <td></td>
 	              <td></td>
 	              <td></td>
-	              <td></td>
+	              <td class="number_amount" ></td>
 	            </tr>
 	          </tbody> 
 	        </table>

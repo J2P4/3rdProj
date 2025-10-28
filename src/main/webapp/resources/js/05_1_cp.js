@@ -141,8 +141,14 @@ function openCpDetail(detailSlide, data, fallbackName) {
         tds[0].textContent = data.cp_start ? toLocalYMD(data.cp_start) : '';
         tds[1].textContent = data.cp_end ? toLocalYMD(data.cp_end) : '';
         tds[2].textContent = itemName ? itemName : '';
-        tds[3].textContent = data.cp_amount ? data.cp_amount : '';
+        tds[3].textContent = data.cp_amount ? toComma(data.cp_amount) : '';
     }
+}
+
+function toComma(num) {
+    if (num == null || num === '') return '';
+    const n = Number(num);
+    return isNaN(n) ? num : n.toLocaleString('ko-KR');
 }
 
 // 목록의 해당 행 갱신
@@ -168,7 +174,7 @@ function updateListRowInTableCp(row) {
     }
 
     if (tds[4]) {
-        tds[4].textContent = row.cp_amount ? row.cp_amount : tds[4].textContent;
+        tds[4].textContent = row.cp_amount ? toComma(row.cp_amount) : tds[4].textContent;
     }
 }
 
@@ -228,16 +234,31 @@ function bindcp() {
         });
     }
 
-    // 상세 열기 (위임) — .cp-row 클릭
-    if (detailSlide) {
-        document.addEventListener('click', async function (e) {
-            if (e.target.closest('input[type="checkbox"]') || e.target.closest('button') || e.target.closest('a')) return;
+    /* ===== 행(tr) 클릭으로 상세 열기 (체크박스/버튼/링크 등 제외) ===== */
+    // 행(tr) 클릭으로 상세 열기 — 체크박스/첫번째 셀/버튼/링크 등은 제외
+    const tbody = document.querySelector('.table tbody');
+    if (detailSlide && tbody) {
+        tbody.addEventListener('click', async function (e) {
+            // 1) 클릭된 셀
+            const td = e.target.closest('td');
+            if (!td) return;
 
-            const cell = e.target.closest('.cp-row');
-            if (!cell) return;
+            // 2) 체크박스가 있는 첫 번째 셀(인덱스 0)은 무시
+            if (td.cellIndex === 0) return;
 
-            const cpId = cell.dataset.id;
+            // 3) 기타 무시 대상
+            if (e.target.closest('input[type="checkbox"], button, a, select, option, label, input[type="button"], input[type="submit"], .no-row-open')) {
+                return;
+            }
+
+            const tr = e.target.closest('tr[data-id]');
+            if (!tr) return;
+
+            const cpId = tr.getAttribute('data-id');
             if (!cpId) return;
+
+            const nameCell = tr.querySelector('td:nth-child(3)');
+            const fallbackName = nameCell ? (nameCell.textContent || '').trim() : '';
 
             try {
                 const res = await fetch(ctx + '/cpdetail?cp_id=' + encodeURIComponent(cpId), {
@@ -245,29 +266,35 @@ function bindcp() {
                     cache: 'no-store'
                 });
                 if (!res.ok) throw new Error('HTTP ' + res.status);
-                const data = await res.json(); // {cp_id,cp_start,cp_end,item_id?,item_name?,cp_amount?}
 
+                const data = await res.json();
                 ensureItemListFromInsertSelect();
-
-                // 목록에 보이는 품목명도 fallback으로 전달
-                const fallbackName = (cell.textContent || '').trim();
                 openCpDetail(detailSlide, data, fallbackName);
-
             } catch (err) {
-                console.error('상세 불러오기 실패:', err);
+                console.error('[cp] 상세 불러오기 실패:', err);
                 alert('상세 정보를 불러오는 중 오류가 발생했습니다.');
             }
         });
 
-        // 상세 닫기
-        const cancelBtn = detailSlide.querySelector('.close-btn');
-        if (cancelBtn) {
-            cancelBtn.addEventListener('click', function (e) {
-                e.preventDefault();
-                detailSlide.classList.remove('open');
-            });
-        }
+        // 체크박스 상호작용 시 행 클릭 전파 방지 (안전장치)
+        tbody.addEventListener('click', function (e) {
+            if (e.target.matches('.rowChk')) e.stopPropagation();
+        });
+        tbody.addEventListener('change', function (e) {
+            if (e.target.matches('.rowChk')) e.stopPropagation();
+        });
+    }
 
+
+    // 상세 닫기
+    const cancelBtn = detailSlide.querySelector('.close-btn');
+    if (cancelBtn) {
+        cancelBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            detailSlide.classList.remove('open');
+        });
+    }
+}
         // ===== 상세 수정/저장/취소 =====
         const btnModify = document.getElementById('btn-modify');
         const btnSave = document.getElementById('btn-save');
@@ -390,7 +417,8 @@ function bindcp() {
                 const start = startEl ? (startEl.value || '').trim() : '';
                 const end = endEl ? (endEl.value || '').trim() : '';
                 const itemId = itemEl ? (itemEl.value || '').trim() : '';
-                const amount = amtEl ? (amtEl.value || '').trim() : '';
+                const amount = amtEl ? (amtEl.value || '').replace(/,/g, '').trim() : '';
+
 
                 if (!start) { alert('시작일을 입력하세요.'); return; }
                 if (!end) { alert('종료일을 입력하세요.'); return; }
@@ -447,14 +475,14 @@ function bindcp() {
                 detailSlide.classList.remove('open');
             });
         }
-    }
+    
 
     // 다른 코드에서 갱신 브로드캐스트 수신 시 목록 업데이트
     window.addEventListener('cp:updated', function (e) {
         if (!e || !e.detail) return;
         updateListRowInTableCp(e.detail);
     });
-}
+
 
 /* ========================= bindcpInsert =========================
  * - 등록 슬라이드 등록 처리(성공 시 목록 새로고침)
