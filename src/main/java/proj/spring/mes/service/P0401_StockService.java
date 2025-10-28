@@ -14,6 +14,10 @@ public interface P0401_StockService {
 	public int removeStocks(List<String> stockIds);
 	public int addStock(P0401_StockDTO dto);
 	
+	public P0401_StockDTO getOneStockHistory(String stock_id);
+	
+	
+	
 	// 페이징
 	List<P0401_StockDTO> list(int page, int pagePerRows, P0401_StockDTO searchFilter);
 	long count(P0401_StockDTO searchFilter);

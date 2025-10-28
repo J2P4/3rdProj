@@ -31,4 +31,19 @@ public class P0502_WorkOrderServiceImpl implements P0502_WorkOrderService{
 	public long count(P0502_WorkOrderDTO searchFilter) {
 		return woDAO.selectWOCount(searchFilter);
 	}
+	
+	@Override
+	public int addWO(P0502_WorkOrderDTO dto) {
+		return woDAO.insertWO(dto);
+	}
+	
+	@Override
+	public int removeWos(List<String> wos) {
+		return woDAO.deleteWOs(wos);
+	}
+	
+	@Override
+	public P0502_WorkOrderDTO getOneWO(String work_order_id) {
+		return woDAO.selectOneWO(work_order_id);
+	}
 }

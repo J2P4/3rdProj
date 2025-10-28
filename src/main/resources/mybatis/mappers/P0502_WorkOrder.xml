@@ -50,7 +50,7 @@
 					<if test = "filter.worker_id != null and filter.worker_id != ''">
 						and wo.worker_id = #{filter.worker_id}
 					</if>
-					<if test = "filter.fromDate != null and filter.fromDate != '' and filter.toDate != null and filter.toDate != ''">
+					<if test = "filter.fromDate != null and filter.toDate != null">
 						and wo.work_order_date between #{filter.fromDate} and #{filter.toDate}
 					</if>
 				</where>
@@ -79,7 +79,7 @@
 			<if test = "filter.worker_id != null and filter.worker_id != ''">
 				and wo.worker_id = #{filter.worker_id}
 			</if>
-			<if test = "filter.fromDate != null and filter.fromDate != '' and filter.toDate != null and filter.toDate != ''">
+			<if test = "filter.fromDate != null and filter.toDate != null">
 				and wo.work_order_date between #{filter.fromDate} and #{filter.toDate}
 			</if>
 		</where>
@@ -116,4 +116,47 @@
 			process_info, process_seq
 		from v3_process
 	</select>
+	
+	<!-- 삽입 -->
+	<insert id = "insertWO" parameterType = "P0502_WorkOrderDTO">
+		<selectKey keyProperty="work_order_id" resultType="string" order="BEFORE">
+		  select 'I' || TO_CHAR(SYSDATE, 'YYMMDD') || LPAD(inspection_result_id_seq.NEXTVAL, 2, '0')
+		  from dual
+		</selectKey>
+		INSERT INTO V3_WORK_ORDER
+		    (
+		        WORK_ORDER_ID, WORK_ORDER_DATE, WORK_ORDER_NUM, WORK_ORDER_FIN,
+		        CP_ID, WORKER_ID
+		    )
+		VALUES
+			(
+				#{WORK_ORDER_ID}, #{WORK_ORDER_DATE}, #{WORK_ORDER_NUM},
+				#{WORK_ORDER_FIN}, #{CP_ID}, #{WORKER_ID}
+			)
+	</insert>
+	
+	<!-- 삭제 -->
+	<delete id = "deleteWOs" parameterType = "java.util.List">
+		delete from v3_work_order
+		where work_order_id in
+		<foreach item="id" collection="list" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+	
+	<!-- 수정 : 기본 수정 -->
+	<update id = "updateWO" parameterType = "P0502_WorkOrderDTO">
+		update v3_work_order
+		set work_order_date = #{work_order_date},
+			work_order_num = #{work_order_num},
+			worker_id = #{worker_id}
+		where work_order_id = #{work_order_id}
+	</update>
+	
+	<!-- 수정 : 생산 수량만 -->
+	<update id = "updateWOFin" parameterType = "P0502_WorkOrderDTO">
+		update v3_work_order
+		set work_order_fin = #{work_order_fin}
+		where work_order_id = #{work_order_id}
+	</update>
 </mapper>

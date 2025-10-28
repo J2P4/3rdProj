@@ -2,23 +2,29 @@ package proj.spring.mes.controller;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
-import proj.spring.mes.dto.P0401_StockDTO;
 import proj.spring.mes.dto.P0502_WorkOrderDTO;
 import proj.spring.mes.service.P0502_WorkOrderService;
 
 @Controller
 public class P0502_WorkOrderCtrl {
 	
+	private static final Logger logger = LoggerFactory.getLogger(P0502_WorkOrderCtrl.class);
+	
 	@Autowired
 	P0502_WorkOrderService service;
 	
-	@RequestMapping("/workorder")
+	@RequestMapping("/workorderlist")
     public String list(Model model,
     		@RequestParam(value = "size", required = false, defaultValue = "10") int pagePerRows, // 페이지당 행 수 파라미터 (기본 10)
             @RequestParam(value = "page", required = false, defaultValue = "1")  int page,         // 현재 페이지 번호 파라미터 (기본 1, 1-base)
@@ -72,6 +78,53 @@ public class P0502_WorkOrderCtrl {
         model.addAttribute("list", list);
         
         return "05_production/05_2_workorder.tiles"; 
-
-}
 	}
+	
+	@RequestMapping("/workorderdetail")
+	@ResponseBody
+	public P0502_WorkOrderDTO detail(@RequestParam("work_order_id") String work_order_id) {
+		P0502_WorkOrderDTO dto = service.getOneWO(work_order_id);
+		System.out.println(dto);
+		return dto;
+	}
+	
+	@RequestMapping("/woinsert")
+	@ResponseBody
+	public String insertWO(P0502_WorkOrderDTO dto) {
+		logger.info("작업 지시서 등록 요청 DTO: {}", dto);
+		
+		try {
+			int result = service.addWO(dto);
+			if(result > 0) {
+				return "success";
+			}
+			else {
+				return "fail";
+			}
+		}
+		catch (Exception e) {
+			logger.error("작업 지시서 등록 실패", e);
+			return "fail";
+		}
+	}
+	
+	@PostMapping("/wodelete")
+	@ResponseBody
+	public String deleteWO(@RequestBody List<String> wos) {
+		logger.info("선택된 작업 지시서 ID 삭제 요청: " + wos);
+		
+		if(wos == null || wos.isEmpty()) {
+			return "fail: No IDs provided";
+		}
+		
+		int deletedCount = service.removeWos(wos);
+		
+		if(deletedCount == wos.size()) {
+			return "success";
+		}
+		else {
+			logger.error("재고 삭제 실패. 요청 ID 수: {}, 실제 삭제 수: {}", wos.size(), deletedCount);
+			return "fail";
+		}
+	}
+}

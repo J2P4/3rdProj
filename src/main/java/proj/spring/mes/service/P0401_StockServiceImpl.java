@@ -25,6 +25,11 @@ public class P0401_StockServiceImpl implements P0401_StockService {
 	}
 	
 	@Override
+	public P0401_StockDTO getOneStockHistory(String stock_id) {
+		return stockMapperDAO.selectOneStockHistory(stock_id);
+	}
+	
+	@Override
 	public List<P0401_StockDTO> stockItem() {
 		return stockMapperDAO.selectStockItem();
 	}

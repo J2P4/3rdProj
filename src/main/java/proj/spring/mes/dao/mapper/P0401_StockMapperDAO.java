@@ -19,6 +19,8 @@ public interface P0401_StockMapperDAO {
 	int deleteStocks(List<String> stockIds);							// 삭제 - 전체
 	int insertStock(P0401_StockDTO dto);								// 등록
 
+	P0401_StockDTO selectOneStockHistory(String stock_id);
+	
 	// 신규(페이징) 및 필터
     List<P0401_StockDTO> selectStockPage(@Param("limit") int limit, @Param("offset") int offset, @Param("filter") P0401_StockDTO searchFilter);
 	// 신규(총계)

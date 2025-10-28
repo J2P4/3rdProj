@@ -148,10 +148,12 @@ public class P0601_InInsCtrl {
 	        int result = service.addInIns(dto);
 	        if(result > 0) {
 	            return "success";
-	        } else {
+	        }
+	        else {
 	            return "fail";
 	        }
-	    } catch (Exception e) {
+	    }
+	    catch (Exception e) {
 	        logger.error("입고 검사 등록 실패", e);
 	        return "fail";
 	    }

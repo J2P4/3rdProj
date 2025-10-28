@@ -219,22 +219,30 @@
             <div class = "slide-tb">
                 <table>
                     <thead>
-                        <!-- select 데이터 글씨가 너무 많으면 테이블이 깨져서 강제로 style 속성 지정 1 -->
-                        <th style = "width: 40%">작업 지시일</th>
-                        <th>지시 수량</th>
-                        <th>생산 수량</th>
+                        <tr>
+                            <!-- select 데이터 글씨가 너무 많으면 테이블이 깨져서 강제로 style 속성 지정 1 -->
+                            <th style = "width: 40%">작업 지시일</th>
+                            <th class = "gb">지시 수량</th>
+                            <th class = "gb">생산 수량</th>
+                            <th>담당자</th>
+                        </tr>
                     </thead>
                     <tbody>
                         <tr>
                             <td data-type = "date">
                                 <input type = "date" id="input_work_order_date" placeholder = "작업 지시일" style = "width: 100%;"></td> 
                             </td>
-                            <td data-type = "number">
-                                <input type = "number" id="input_work_order_num" placeholder = "지시 수량을 입력해주세요" style = "width: 100%;"></td> 
+                            <td data-type = "number" class = "gb">
+                                <input type = "number" id="input_work_order_num" placeholder = "지시 수량 입력" style = "width: 100%;"></td> 
                             </td>
-                            <td>
-                                <input type = "number" id="input_work_order_fin" placeholder = "생산 수량을 입력해주세요" value = "0" style = "width: 100%; display: none;">
+                            <td class = "gb">
+                                <input type = "number" id="input_work_order_fin" placeholder = "생산 수량 입력" value = "0" style = "width: 100%; display: none;">
                                 0
+                            </td>
+                            <td data-type = "select">
+                                <select id="input_worker_id" name="worker_id" style = "width: 100%;">
+                                    <option value="" selected>담당자 선택</option>
+                                </select>
                             </td>
                         </tr>
                     </tbody>
@@ -244,17 +252,15 @@
                 <table>
                     <thead>
                         <th>생산 계획 ID</th>
-                        <th>담당 사원</th>
+                        <th>목표 품목</th>
                     </thead>
                     <tbody>
                         <tr>
                             <td>
-                                <input type = "letter"  id="input_cp_id" name="cp_id" style = "width: 100%;">
+                                <input type = "text" id="input_cp_id" name="cp_id" style = "width: 100%;">
                             </td>
-                            <td data-type = "select">
-                                <select id="input_worker_id" name="worker_id" style = "width: 100%;">
-                                    <option>test</option>
-                                </select>
+                            <td>
+                                <input type = "text" id = "input_item_id" name = "item_id" value = "품목 입력 시 ID 연동?" style = "width: 100%;">
                             </td>
                         </tr>
                     </tbody>
@@ -262,8 +268,7 @@
             </div>
             <div>
                 계획<br>
-                1. 생산 계획 id 선택은 지시일 선택으로 select할 수 있는 option이 나오도록<br>
-                2. 담당 사원을 위 테이블 영역으로 올리고, 대신 생산 계획 id 옆에 목표 품목을 같이 표시해주기
+                1. 생산 계획 id 선택은 지시일 선택으로 select할 수 있는 option이 나오도록
             </div>
             <div class = "slide-btnbox">
                 <input type = "button" class = "close-btn slide-btn" value = "취소">

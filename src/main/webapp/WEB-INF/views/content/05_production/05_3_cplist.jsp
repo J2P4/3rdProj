@@ -89,8 +89,9 @@
                	<c:if test="${not empty list}">
                		<c:forEach var="P0503_CPListDTO" items="${list}">
 	               		<tr data-id="${P0503_CPListDTO.cp_list_id}">
-                        <td><input type="checkbox" class="rowChk" name="delete_stock_id" value="${P0401_StockDTO.stock_id}"></td>
+                        <td><input type="checkbox" class="rowChk" name="delete_cp_list_id" value="${P0503_CPListDTO.cp_list_id}"></td>
                         <td>${P0503_CPListDTO.cp_list_id}</td>
+                        <td>${P0503_CPListDTO.cp_id}</td>
                         <td>${P0503_CPListDTO.cp_rate}</td>              
                         <td>${P0503_CPListDTO.cp_successrate}</td>          
                         <td>${P0503_CPListDTO.cp_defectrate}</td>    

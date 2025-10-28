@@ -27,7 +27,7 @@
 			<if test="inspection_result_id != null and inspection_result_id != ''">
 				and lower(i.inspection_result_id) like lower('%' || #{inspection_result_id} || '%')
 			</if>
-	        <if test="fromDate != null and fromDate != '' and toDate != null and toDate != ''">
+	        <if test="fromDate != null and toDate != null">
 	            and i.inspection_result_date BETWEEN #{fromDate} AND #{toDate}
 	        </if>
 			<if test="item_name != null and item_name != ''">
@@ -60,7 +60,7 @@
 					<if test="filter.inspection_result_id != null and filter.inspection_result_id != ''">
 						and lower(i.inspection_result_id) like lower('%' || #{filter.inspection_result_id} || '%')
 					</if>
-					<if test="filter.fromDate != null and filter.fromDate != '' and filter.toDate != null and filter.toDate != ''">
+					<if test="filter.fromDate != null and filter.toDate != null">
 						and i.inspection_result_date BETWEEN #{filter.fromDate} AND #{filter.toDate}
 					</if>
 					<if test="filter.item_name != null and filter.item_name != ''">
@@ -92,7 +92,7 @@
 			<if test="filter.inspection_result_id != null and filter.inspection_result_id != ''">
 			and lower(i.inspection_result_id) like lower('%' || #{filter.inspection_result_id} || '%')
 			</if>
-			<if test="filter.fromDate != null and filter.fromDate != '' and filter.toDate != null and filter.toDate != ''">
+			<if test="filter.fromDate != null and filter.toDate != null">
 			and i.inspection_result_date BETWEEN #{filter.fromDate} AND #{filter.toDate}
 			</if>
 			<if test="filter.item_name != null and filter.item_name != ''">

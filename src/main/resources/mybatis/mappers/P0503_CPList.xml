@@ -20,7 +20,7 @@
 					<if test = "filter.cp_id != null and filter.cp_id != ''">
 						and cp_id = #{filter.cp_id}
 					</if>
-					<if test = "filter.fromDate != null and filter.fromDate != '' and filter.toDate != null and filter.toDate != ''">
+					<if test = "filter.fromDate != null and filter.toDate != null">
 						and wo.work_order_date between #{filter.fromDate} and #{filter.toDate}
 					</if>
 				</where>
@@ -42,10 +42,20 @@
 			<if test = "filter.cp_id != null and filter.cp_id != ''">
 				and cp_id = #{filter.cp_id}
 			</if>
-			<if test = "filter.fromDate != null and filter.fromDate != '' and filter.toDate != null and filter.toDate != ''">
+			<if test = "filter.fromDate != null and filter.toDate != null">
 				and wo.work_order_date between #{filter.fromDate} and #{filter.toDate}
 			</if>
 		</where>
 	</select>
+	
+	<!-- 삭제 -->
+	<delete id = "deleteCPLists" parameterType = "java.util.List">
+		delete from v3_cp_list
+		where cp_list_id in
+		<foreach item="id" collection="list" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+	
 
 </mapper>

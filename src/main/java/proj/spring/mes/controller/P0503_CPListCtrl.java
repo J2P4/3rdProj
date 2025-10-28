@@ -2,22 +2,27 @@ package proj.spring.mes.controller;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
-import proj.spring.mes.dto.P0502_WorkOrderDTO;
 import proj.spring.mes.dto.P0503_CPListDTO;
 import proj.spring.mes.service.P0503_CPListService;
 
 @Controller
 public class P0503_CPListCtrl {
-
+	
+	private static final Logger logger = LoggerFactory.getLogger(P0503_CPListCtrl.class);
+	
 	@Autowired
 	P0503_CPListService service;
-	
 	
 	/** 목록 */
 	@RequestMapping("/cplist")
@@ -74,6 +79,26 @@ public class P0503_CPListCtrl {
         model.addAttribute("list", list);
         
         return "05_production/05_3_cplist.tiles"; 
+	}
+	
+	@PostMapping("cplistdelete")
+	@ResponseBody
+	public String deleteCPLists(@RequestBody List<String> cpListIds) {
+ 		logger.info("선택된 생산 실적 ID 삭제 요청: " + cpListIds);
+ 		
+ 		if(cpListIds == null || cpListIds.isEmpty()) {
+ 			return "fail: No IDs provided";
+ 		}
+ 		
+ 		int deletedCount = service.removeCPLists(cpListIds);
+ 		
+ 		if(deletedCount == cpListIds.size()) {
+ 			return "success";
+ 		}
+ 		else {
+ 			logger.error("재고 삭제 실패. 요청 ID 수: {}, 실제 삭제 수: {}", cpListIds.size(), deletedCount);
+ 			return "fail";
+ 		}		
 	}
 	
 }

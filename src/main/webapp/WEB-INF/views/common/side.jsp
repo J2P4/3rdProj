@@ -33,7 +33,7 @@
                     </div>
                     <ul class="subList space-y-1 mt-2 pl-4">
                         <li class="py-2 px-3 rounded-md cursor-pointer transition-colors duration-200" data-link="${pageContext.request.contextPath}/cp">생산 계획</li>
-                        <li class="py-2 px-3 rounded-md cursor-pointer transition-colors duration-200" data-link="${pageContext.request.contextPath}/workorder">작업 지시서</li>
+                        <li class="py-2 px-3 rounded-md cursor-pointer transition-colors duration-200" data-link="${pageContext.request.contextPath}/workorderlist">작업 지시서</li>
                         <li class="py-2 px-3 rounded-md cursor-pointer transition-colors duration-200" data-link="${pageContext.request.contextPath}/cplist">생산 실적</li>
                     </ul>
                 </li>

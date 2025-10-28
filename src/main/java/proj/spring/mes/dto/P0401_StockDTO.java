@@ -18,5 +18,6 @@ public class P0401_StockDTO {
 	private int stock_history_before;
 	private int stock_history_after;
 	private Date stock_history_time;
-	private String stock_history_reaseon;
+	private String stock_history_reason;
+	private String stock_history_loc;
 }

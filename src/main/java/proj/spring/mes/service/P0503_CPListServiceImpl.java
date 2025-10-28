@@ -13,6 +13,7 @@ public class P0503_CPListServiceImpl implements P0503_CPListService {
 	@Autowired
 	P0503_CPListMapperDAO dao;
 	
+	@Override
 	public List<P0503_CPListDTO> list(int page, int pagePerRows, P0503_CPListDTO searchFilter) {
         int size = Math.max(1, Math.min(pagePerRows, 100));
         int p = Math.max(1, page);
@@ -24,7 +25,14 @@ public class P0503_CPListServiceImpl implements P0503_CPListService {
         
         return dao.selectCL(size, offset, searchFilter);
 	}
+	
+	@Override
 	public long count(P0503_CPListDTO searchFilter) {
 		return dao.selectCPListCount(searchFilter);
+	}
+	
+	@Override
+	public int removeCPLists(List<String> cpListIds) {
+		return dao.deleteCPLists(cpListIds);
 	}
 }

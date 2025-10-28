@@ -227,9 +227,9 @@
                             <td>
                                 <select name = "item_div" size = "1" id = "input_item_div">
                                     <option value="" selected>품목 분류 선택</option>
-                                        <c:forEach var="stock" items="${stockList}">
-                                            <option value="${stock.item_div}">${stock.item_div}</option>
-                                        </c:forEach>
+                                    <option value="도서">도서</option>
+                                    <option value="포장지">포장지</option>
+                                    <option value="완제품">완제품</option>
                                 </select>
                             </td>
                             <td>

@@ -322,6 +322,7 @@
                     </tbody>
                 </table>
             </div>
+            <!-- 빨 리 채 워 -->
             <h3 class = "slide-subTitle">재고 변동 이력</h3>
             <div class = "slide-tb detail-list" style="overflow-y: scroll; overflow-x: hidden;">
                 <!-- <div style="font-size:0.8em; color: red;">재고 이력 테이블!! 수정하기</div> -->

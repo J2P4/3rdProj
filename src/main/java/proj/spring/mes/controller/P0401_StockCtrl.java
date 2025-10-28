@@ -122,6 +122,9 @@ public class P0401_StockCtrl {
 	@ResponseBody
 	public P0401_StockDTO detail(@RequestParam("stock_id") String stock_id) {
 	    P0401_StockDTO dto = service.getOneStock(stock_id);
+	    // 이쪽에 합쳐서 해도 좋을 것 같은데 이대로 괜찮은지는...
+	    // 좀 고민.
+//	    			   dto = service.getOneStockHistory(stock_id);
 	    System.out.println(dto);
 	    return dto;
 	}
