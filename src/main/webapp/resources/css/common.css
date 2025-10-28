@@ -511,3 +511,31 @@ h1{
     text-align: center; 
 }
 /* =============== 슬라이드 패널 수정 끝 =============== */
+
+
+
+
+
+/*========  불량 사유 추가  ========*/
+#addD{
+  background: #8ab131; 
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  height : 35px;
+  font-weight: bold;
+}
+
+
+/*========  불량 사유 삭제  ========*/
+#delD{
+  background: #ef4444; 
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  height : 35px;
+  font-weight: bold;
+  margin-left: 10px;
+}
+
+
