@@ -200,7 +200,7 @@
         </div>
     <div class = "slide" id = "slide-input">
     	<button type="button" class="slide-close-btn">✕</button>
-    	<form id="cpInsertForm" method="post" action="cpinsert">
+    	<form id="cpInsertForm">
     	<div class = "slide-contents">
 	        <div class = "silde-title"><h2>생산계획 등록</h2></div>
 	        <div class = "slide-tb">

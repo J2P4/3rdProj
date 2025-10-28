@@ -7,9 +7,18 @@ const ctx = (typeof window.contextPath === 'string') ? window.contextPath : "";
 
 /* ========================= 유틸 ========================= */
 
-// YYYY-MM-DD (TZ 보정용 — 필요 시 사용)
-function fmtDateYYYYMMDD(d) {
-    return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+function toLocalYMD(val) {
+  if (!val) return '';
+  // 이미 'YYYY-MM-DD' 면 그대로
+  if (/^\d{4}-\d{2}-\d{2}$/.test(val)) return val;
+
+  // 그 외는 Date로 파싱 → 로컬 기준으로 YYYY-MM-DD 생성
+  const d = new Date(val);
+  if (isNaN(d)) return ''; // 파싱 실패시 빈값
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
 }
 
 // cp_start ≤ cp_end 보장 (등록/상세 내 각 TR 기준으로 상호 제약)
@@ -129,10 +138,10 @@ function openCpDetail(detailSlide, data, fallbackName) {
     // 값 렌더
     const tds = detailSlide.querySelectorAll('tbody tr td'); // 0 start, 1 end, 2 item_name, 3 amount
     if (tds.length >= 4) {
-        tds[0].textContent = data.cp_start ? String(data.cp_start) : '';
-        tds[1].textContent = data.cp_end ? String(data.cp_end) : '';
+        tds[0].textContent = data.cp_start ? toLocalYMD(data.cp_start) : '';
+        tds[1].textContent = data.cp_end ? toLocalYMD(data.cp_end) : '';
         tds[2].textContent = itemName ? itemName : '';
-        tds[3].textContent = data.cp_amount ? String(data.cp_amount) : '';
+        tds[3].textContent = data.cp_amount ? data.cp_amount : '';
     }
 }
 
@@ -303,8 +312,8 @@ function bindcp() {
                 opts += '<option value="' + irow.item_id + '"' + selected + '>' + irow.item_name + '</option>';
             }
 
-            tds[0].innerHTML = '<input type="date" name="cp_start" class="edit-input" value="' + state.original.cp_start + '">';
-            tds[1].innerHTML = '<input type="date" name="cp_end" class="edit-input" value="' + state.original.cp_end + '">';
+            tds[0].innerHTML = '<input type="date" name="cp_start" class="edit-input" value="' + toLocalYMD(state.original.cp_start) + '">';
+            tds[1].innerHTML = '<input type="date" name="cp_end" class="edit-input" value="' + toLocalYMD(state.original.cp_end) + '">';
             tds[2].innerHTML = '<select name="item_id" class="edit-select" id="itemSelectDetail">' + opts + '</select>';
             tds[3].innerHTML = '<input type="number" name="cp_amount" class="edit-input" value="' + state.original.cp_amount + '">';
 
