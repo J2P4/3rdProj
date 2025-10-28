@@ -7,12 +7,12 @@
 <!-- 	<select id = "selectWO" resultType = "P0502_WorkOrderDTO" parameterType = "P0502_WorkOrderDTO"> -->
 <!-- 		select -->
 <!-- 			wo.work_order_id, wo.work_order_date, wo.work_order_num, -->
-<!-- 			wo.work_order_fin, wo.cp_id, wo.worker_id, wo.worker_name -->
+<!-- 			wo.work_order_fin, wo.cp_id, wo.worker_id, w.worker_name -->
 <!-- 		from v3_work_order wo -->
 <!-- 		left outer join v3_cp c -->
 <!-- 			on wo.cp_id = c.cp_id -->
 <!-- 		left outer join v3_worker w -->
-<!-- 			on wo.worker_id = w.workder_id -->
+<!-- 			on wo.worker_id = w.worker_id -->
 <!-- 		<where> -->
 <!-- 			<if test = "cp_id != null and cp_id != ''"> -->
 <!-- 				and wo.cp_id = #{cp_id} -->
@@ -89,12 +89,12 @@
 	<select id = "selectOneWO" resultType = "P0502_WorkOrderDTO">
 		select
 			wo.work_order_id, wo.work_order_date, wo.work_order_num,
-			wo.work_order_fin, wo.cp_id, wo.worker_id, wo.worker_name
+			wo.work_order_fin, wo.cp_id, wo.worker_id, w.worker_name
 		from v3_work_order wo
 		left outer join v3_cp c
 			on wo.cp_id = c.cp_id
 		left outer join v3_worker w
-			on wo.worker_id = w.workder_id
+			on wo.worker_id = w.worker_id
 		<where>
 			wo.work_order_id = #{work_order_id}
 		</where>
@@ -117,6 +117,14 @@
 		from v3_process
 	</select>
 	
+	<!-- 조회 : 작업자 목록 -->
+	<select id="selectAllWorker" resultType="P0502_WorkOrderDTO">
+		SELECT
+			worker_id,
+			worker_name
+		FROM v3_worker
+		ORDER BY worker_id
+	</select>
 	<!-- 삽입 -->
 	<insert id = "insertWO" parameterType = "P0502_WorkOrderDTO">
 		<selectKey keyProperty="work_order_id" resultType="string" order="BEFORE">
@@ -159,4 +167,5 @@
 		set work_order_fin = #{work_order_fin}
 		where work_order_id = #{work_order_id}
 	</update>
+	
 </mapper>

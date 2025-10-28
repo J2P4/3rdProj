@@ -2,6 +2,7 @@ package proj.spring.mes.controller;
 
 import java.util.List;
 
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import java.util.Collections;
 
 import proj.spring.mes.dto.P0502_WorkOrderDTO;
 import proj.spring.mes.service.P0502_WorkOrderService;
@@ -84,7 +86,10 @@ public class P0502_WorkOrderCtrl {
 	@ResponseBody
 	public P0502_WorkOrderDTO detail(@RequestParam("work_order_id") String work_order_id) {
 		P0502_WorkOrderDTO dto = service.getOneWO(work_order_id);
-		System.out.println(dto);
+		System.out.println("작업 지시서 상세 및 BOM/공정 정보: " + dto);
+		if (dto == null) {
+	        return new P0502_WorkOrderDTO(); 
+	    }
 		return dto;
 	}
 	
@@ -125,6 +130,40 @@ public class P0502_WorkOrderCtrl {
 		else {
 			logger.error("재고 삭제 실패. 요청 ID 수: {}, 실제 삭제 수: {}", wos.size(), deletedCount);
 			return "fail";
+		}
+	}
+	
+	@PostMapping("/woupdate")
+	@ResponseBody
+	public String updateWO(P0502_WorkOrderDTO dto) {
+	    logger.info("작업 지시서 수정 요청 DTO: {}", dto);
+	    
+	    try {
+	        int result = service.modifyWO(dto);
+	        if(result > 0) {
+	            return "success";
+	        }
+	        else {
+	            return "fail";
+	        }
+	    }
+	    catch (Exception e) {
+	        logger.error("작업 지시서 수정 실패", e);
+	        return "fail";
+	    }
+	}
+	
+	@RequestMapping("/getWorkerList")
+	@ResponseBody
+	public List<P0502_WorkOrderDTO> getWorkerList() {
+		try {
+			List<P0502_WorkOrderDTO> workerList = service.getAllWorkers();
+			logger.info("작업자 목록 조회 성공. 수: {}", workerList.size());
+			return workerList;
+		}
+		catch (Exception e) {
+			logger.error("작업자 목록 조회 실패", e);
+			return Collections.emptyList(); // 오류 시 빈 목록 반환
 		}
 	}
 }

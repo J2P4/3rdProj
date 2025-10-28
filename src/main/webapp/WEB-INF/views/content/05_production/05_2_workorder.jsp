@@ -79,7 +79,7 @@
             + tbody : 데이터 영역
     -->
     <div class = "table">
-        <table>
+        <table id = "workOrderListTable">
             <thead>
                 <tr>
                     <th class = "chkbox"><input type="checkbox" id="chkAll"></th>
@@ -101,9 +101,9 @@
 	               		<tr data-id="${P0502_WorkOrderDTO.work_order_id}">
                             <td><input type="checkbox" class="rowChk" name="delete_work_order_id" value="${P0502_WorkOrderDTO.work_order_id}"></td>
                             <td>${P0502_WorkOrderDTO.work_order_id}</td>
-                            <td>${P0502_WorkOrderDTO.work_order_date}</td>               <%-- 작업 지시일 --%>
-                            <td>${P0502_WorkOrderDTO.work_order_num}</td>           <%-- 지시 수량 --%>
-                            <td>${P0502_WorkOrderDTO.work_order_fin}</td>      <%-- 생산 수량 --%>
+                            <td>${P0502_WorkOrderDTO.work_order_date}</td>
+                            <td>${P0502_WorkOrderDTO.work_order_num}</td>
+                            <td>${P0502_WorkOrderDTO.work_order_fin}</td>
                         </tr>
                     </c:forEach>
                  </c:if>
@@ -266,10 +266,6 @@
                     </tbody>
                 </table>
             </div>
-            <div>
-                계획<br>
-                1. 생산 계획 id 선택은 지시일 선택으로 select할 수 있는 option이 나오도록
-            </div>
             <div class = "slide-btnbox">
                 <input type = "button" class = "close-btn slide-btn" value = "취소">
                 <input type = "button" class = "submit-btn slide-btn" value = "등록">
@@ -281,23 +277,23 @@
         <button type = "button" class="slide-close-btn">✕</button>
         <div class = "slide-contents">
             <div class = "silde-title"><h2>작업 지시서 상세</h2></div>
-            <div class = "slide-id">작업 지시서 ID: </div>
-            <div class = "slide-tb">>
-                <table id="stockDetail">
+            <div class = "slide-id">작업 지시서&nbsp; <span id="detail-work-order-id"></span></div>
+            <div class = "slide-tb">
+                <table id="woBasicDetail1">
                     <thead>
                         <th>생산계획 ID</th>
                         <th>담당 사원</th>
                     </thead>
                     <tbody>
                         <tr>
-                            <td></td>
-                            <td></td>
+                            <td id="detail-cp-id"></td>
+                            <td id="detail-worker-name"></td>
                         </tr>
                     </tbody>
                 </table>
             </div>
             <div class = "slide-tb">
-                <table id="itemDetail">
+                <table id="woBasicDetail2">
                     <thead>
                         <th>작업 지시일</th>
                         <th>지시 수량</th>
@@ -305,39 +301,47 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
+                            <td id="detail-work-order-date"></td>
+                            <td id="detail-work-order-num"></td>
+                            <td id="detail-work-order-fin"></td>
                         </tr>
                     </tbody>
                 </table>
             </div>
+            <div class = "silde-title" style="margin-top: 20px;"><h3>BOM 정보</h3></div>
             <div class = "slide-tb">
                 <table id = "bomDetail">
                     <thead>
                         <tr>
+                            <th>No</th>
+                            <th>BOM ID</th>
                             <th>재료명</th>
                             <th>수량</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
+                        <!-- <tr>
                             <td></td>
                             <td></td>
-                        </tr>
+                            <td></td>
+                            <td></td>
+                        </tr> -->
                     </tbody>
                 </table>
             </div>
+            <div class = "silde-title" style="margin-top: 20px;"><h3>공정 정보</h3></div>
             <div class = "slide-tb">
                 <table id = "processDetail">
                     <thead>
                         <tr>
                             <th>순서</th>
+                            <th>공정 ID</th>
                             <th>공정명</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
+                            <td></td>
                             <td></td>
                             <td></td>
                         </tr>
@@ -349,7 +353,9 @@
             </div>            
             <div class = "slide-btnbox">
                 <input type = "button" class = "close-btn slide-btn" value = "취소">
-                <input type = "button" class = "slide-btn" id="detailEditBtn" value = "수정">
+                <c:if test="${sessionScope.role != 'STAFF'}">
+                    <input type = "button" class = "slide-btn" id="detailEditBtn" value = "수정">
+                </c:if>
             </div>
         </div>
     </div>

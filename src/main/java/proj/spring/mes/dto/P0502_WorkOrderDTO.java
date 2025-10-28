@@ -1,6 +1,8 @@
 package proj.spring.mes.dto;
 
 import java.sql.Date;
+import java.util.List;
+import java.util.Map;
 
 import lombok.Data;
 
@@ -17,4 +19,9 @@ public class P0502_WorkOrderDTO {
 	
 	private Date fromDate;
 	private Date toDate;
+
+	// bom, 작업 지시서 조회용
+	private List<Map<String, Object>> bomList;
+	private List<Map<String, Object>> processList;
+	
 }

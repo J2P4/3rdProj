@@ -20,12 +20,12 @@
 			on ip.item_id = b.item_id
 		
 		<where>
-			<if test="bom_id != null and bom_id != ''">
-				and lower(b.bom_id) like lower('%' || #{bom_id} || '%')
-			</if>
-			<if test="item_div != null and item_div != ''">
-				and im.item_div = #{item_div}
-			</if>
+<!-- 			<if test="bom_id != null and bom_id != ''"> -->
+<!-- 				and lower(b.bom_id) like lower('%' || #{bom_id} || '%') -->
+<!-- 			</if> -->
+<!-- 			<if test="item_div != null and item_div != ''"> -->
+<!-- 				and im.item_div = #{item_div} -->
+<!-- 			</if> -->
 			<if test="item_id != null and item_id != ''">
 				and lower(b.item_id) like lower('%' || #{item_id} || '%')
 			</if>					

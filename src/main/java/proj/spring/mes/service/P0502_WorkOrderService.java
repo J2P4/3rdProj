@@ -11,4 +11,7 @@ public interface P0502_WorkOrderService {
 	
 	public int addWO(P0502_WorkOrderDTO dto);
 	public int removeWos(List<String> wos);
+	public int modifyWO(P0502_WorkOrderDTO dto);
+	
+	public List<P0502_WorkOrderDTO> getAllWorkers();
 }

@@ -1,6 +1,24 @@
 document.addEventListener('DOMContentLoaded', () => {
 
 // ============================
+// 상세 슬라이드 어쩌고 모음집
+// ============================
+const detail = document.querySelector('#slide-detail');
+const detailCloseBtn = detail ? detail.querySelector('.close-btn') : null;
+
+// 상세 정보 표시 영역
+const detailWoId = detail ? detail.querySelector('#detail-work-order-id') : null;
+const detailWoDate = detail ? detail.querySelector('#detail-work-order-date') : null;
+const detailWoNum = detail ? detail.querySelector('#detail-work-order-num') : null;
+const detailWoFin = detail ? detail.querySelector('#detail-work-order-fin') : null;
+const detailCpId = detail ? detail.querySelector('#detail-cp-id') : null;
+const detailWorkerName = detail ? detail.querySelector('#detail-worker-name') : null;
+
+// BOM 및 공정 테이블의 Tbody
+const bomTbody = detail ? detail.querySelector('#bomDetail tbody') : null;
+const processTbody = detail ? detail.querySelector('#processDetail tbody') : null;
+
+// ============================
 // 삭제 기능
 // ============================
 
@@ -53,6 +71,116 @@ document.addEventListener('DOMContentLoaded', () => {
 // ============================
 // 상세 슬라이드 : 클릭된 행에 맞게 데이터 넣어서 보여주기
 // ============================
+    // 상세 데이터 로드 및 슬라이드 열기
+    async function openSlideDetail(woId) {
+        if (slideInput.classList.contains('open')) {
+            // 등록/수정 슬라이드가 열려있으면 닫고 시작
+            slideInput.classList.remove('open');
+        }
+
+        try {
+            const response = await fetch(`${contextPath}/workorderdetail?work_order_id=${woId}`);
+            if (!response.ok) throw new Error('상세 데이터 로드 오류');
+
+            const detailData = await response.json(); 
+
+            // 데이터 채우기
+            fillDetail(detail, detailData); 
+            
+            // 상세 슬라이드 열기
+            detail.classList.add('open');
+
+        } catch (err) {
+            console.error('상세 데이터를 불러오는 중 오류 발생:', err);
+            alert('작업 지시서 상세 정보를 불러오는 데 실패했습니다.');
+            detail.classList.remove('open');
+        }
+    }
+
+// ============================
+// 데이터 표시 함수
+// ============================
+// detailData = P0502_WorkOrderDTO
+    function fillDetail(detailElement, detailData) {
+        // 작업 지시서 정보
+        if (detailWoId) detailWoId.textContent = `ID: ${detailData.work_order_id || ''}`;
+        if (detailWoDate) detailWoDate.textContent = detailData.work_order_date || '';
+        if (detailWoNum) detailWoNum.textContent = detailData.work_order_num || 0;
+        if (detailWoFin) detailWoFin.textContent = detailData.work_order_fin || 0;
+        if (detailCpId) detailCpId.textContent = detailData.cp_id || '';
+        if (detailWorkerName) detailWorkerName.textContent = detailData.worker_name || '';
+
+        // BOM 목록
+        if (bomTbody) {
+            // 기존 내용 초기화
+            bomTbody.innerHTML = ''; 
+            const bomList = detailData.bomList || [];
+            if (bomList.length > 0) {
+                bomList.forEach((bom, index) => {
+                    const row = bomTbody.insertRow();
+                    row.insertCell().textContent = index + 1; // No
+                    row.insertCell().textContent = bom.BOM_ID || bom.bom_id;
+                    row.insertCell().textContent = bom.ITEM_ID || bom.item_id;
+                    row.insertCell().textContent = bom.BOM_AMOUNT || bom.bom_amount;
+                });
+            }
+            else {
+                const row = bomTbody.insertRow();
+                const cell = row.insertCell();
+                cell.colSpan = 4;
+                cell.textContent = '등록된 BOM 정보가 없습니다.';
+                cell.style.textAlign = 'center';
+            }
+        }
+
+        // 공정 상세 정보
+        if (processTbody) {
+            // 기존 내용 초기화
+            processTbody.innerHTML = ''; 
+            const processList = detailData.processList || [];
+            if (processList.length > 0) {
+                processList.forEach((pro, index) => {
+                    const row = processTbody.insertRow();
+                    row.insertCell().textContent = pro.PROCESS_SEQ || pro.process_seq;
+                    row.insertCell().textContent = pro.PROCESS_ID || pro.process_id;
+                    row.insertCell().textContent = pro.PROCESS_NAME || pro.process_name;
+                    row.insertCell().textContent = pro.PROCESS_INFO || pro.process_info;
+                });
+            }
+            else {
+                const row = processTbody.insertRow();
+                const cell = row.insertCell();
+                cell.colSpan = 4;
+                cell.textContent = '등록된 공정 정보가 없습니다.';
+                cell.style.textAlign = 'center';
+            }
+        }
+    }
+
+    // 목록 행 클릭 이벤트
+    const listRows = document.querySelectorAll('#workOrderListTable tbody tr');
+
+    listRows.forEach(row => {
+        row.addEventListener('click', (e) => {
+            if (e.target.type === 'checkbox') {
+                return;
+            }
+
+            const woId = row.dataset.id || row.querySelector('input[name="delete_work_order_id"]').value;
+
+            if (woId) {
+                openSlideDetail(woId);
+            }
+        });
+    });
+
+    // 상세 슬라이드 닫기 이벤트
+    if (detailCloseBtn) {
+        detailCloseBtn.addEventListener('click', () => {
+            detail.classList.remove('open');
+        });
+    }
+
 
 // ============================
 // 등록/수정 슬라이드 열기. 모드 설정.
@@ -77,10 +205,40 @@ document.addEventListener('DOMContentLoaded', () => {
     const inputItemId = document.querySelector('#input_item_id');
     const slideInput = document.querySelector('#slide-input');
 
-        function openSlideInput(mode, woId = null) {
+    // 작업자 목록 부르기
+    async function workerLoad() {
+        const selectWorker = document.getElementById('input_worker_id'); 
+        if (!selectWorker) return;
+
+        try {
+            const response = await fetch(`${contextPath}/getWorkerList`);
+            if (!response.ok) throw new Error('작업자 목록 로드 실패');
+
+            const workers = await response.json();
+
+            selectWorker.innerHTML = '<option value="" selected>담당자 선택</option>';
+
+            if (workers.length > 0) {
+                workers.forEach(worker => {
+                    const option = document.createElement('option');
+                    option.value = worker.worker_id; 
+                    option.textContent = worker.worker_name;
+                    selectWorker.appendChild(option);
+                });
+            }
+
+        }
+        catch (error) {
+            console.error("작업자 목록 로드 오류:", error);
+        }
+    }
+
+    function openSlideInput(mode, woId = null) {
         // 현재 슬라이드 모드에 따라 변경하기 위해 사용
         nowSlide = mode;
-        nowEditId = woId; 
+        nowEditId = woId;
+
+        workerLoad();
         
         // 등록 상태처럼 입력란 value 정리
         slideInput.querySelector('form').reset();
@@ -90,8 +248,6 @@ document.addEventListener('DOMContentLoaded', () => {
         inputWorkerId.value = '';
         inputCPId.value = '';
         inputItemId.value = '';
-        // 여기! 작업자 select 감안해서 넣은 거라 나중에 upItemIdOpt 수정 ㄱ!
-        upItemIdOpt(allWorkers);
 
         // 상세 -> 수정 전환 시 애니메이션 효과 없애서 바로 전환된 것처럼
         const editNoAnime = (mode === 'edit');
@@ -148,43 +304,38 @@ document.addEventListener('DOMContentLoaded', () => {
     async function loadData(woId) {
         try {
             const response = await fetch(`${contextPath}/workorderdetail?work_order_id=${woId}`);
-            if (!response.ok) throw new Error('수정 데이터 로드 오류');
+            if (!response.ok) {
+                throw new Error('상세 데이터 로드 오류: 서버 응답 상태 불량');
+            }
+            
+            const text = await response.text();
+            if (!text) {
+                console.log("서버가 빈 응답을 보냈습니다.");
+                return; 
+            }
 
-            const data = await response.json();
+            // const data = await response.json(); 
+            const data = JSON.parse(text);
 
             // 수정 -> 상세 전환 시 생기는 지연 최대한 방지
-            origDetail = data;
+            origDetail = data; // 원본 상세 데이터 (BOM/공정 포함) 저장
             
-            // form에 데이터 채우기
-            // 현재 재고 기준으로 되어 있으므로 바꾸기!!!
-            // 품목 ID (Select): 품목 ID 선택
-            inputItemId.value = data.item_id || '';
-            
-            // 품목 분류/이름 : 품목 ID 변경 이벤트를 수동으로 실행하여 관련 필드 자동 채우기
-            const itemOption = Array.
-                                    // item_id의 select-option 중에서
-                                    from(inputItemId.options).  
-                                    // option의 value가 받아온 데이터의 item_id와 일치하는 것을 찾아 반환
-                                    find((opt) => {
-                                        opt.value === data.item_id;
-                                    });
-            // 일치하는 게 있다면, 그에 해당하는 분류, 품목명으로 채우기
-            if (itemOption) {
-                inputItemDiv.value = itemOption.dataset.div || '';
-                inputItemName.value = itemOption.dataset.name || '';
-            }
-            else {
-                // 품목 ID가 목록에 없는 경우를 대비하여 직접 채우거나 초기화
-                inputItemDiv.value = data.item_div || '';
-                inputItemName.value = data.item_name || '';
-            }
-            
-            // 재고 수량 채우기
-            document.querySelector('#input_stock_amount').value = data.stock_amount || '';
-            
-            // 보관 위치 채우기
-            document.querySelector('#input_stock_wrap').value = data.stock_wrap || '';
 
+            // form에 데이터 채우기
+            const rawDate = data.work_order_date;
+            let formattedDate = '';
+            if (rawDate && rawDate.length === 8) {
+                // YYYYMMDD -> YYYY-MM-DD 변환
+                formattedDate = rawDate.substring(0, 4) + '-' + rawDate.substring(4, 6) + '-' + rawDate.substring(6, 8);
+            }
+        
+            inputWoDate.value = formattedDate;
+            // inputWoDate.value = data.work_order_date || '';
+            inputWoNum.value = data.work_order_num || '';
+            inputWoFin.value = data.work_order_fin || ''; 
+            inputWorkerId.value = data.worker_id || '';
+            inputCPId.value = data.cp_id || '';
+            
         }
         catch (err) {
             console.error('수정 데이터를 불러오는 중 오류 발생:', err);
@@ -257,7 +408,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const inputWoFin = document.querySelector('#input_work_order_fin').value;
         const inputWorkerId = document.querySelector('#input_worker_id').value;
         const inputCPId = document.querySelector('#input_cp_id').value;
-        const inputItemId = document.querySelector('#input_item_id').value;
 
         // 로딩 문제 추가 코드들
         const woId = document.querySelector('#input_work_order_id').value;
@@ -270,7 +420,7 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('작업 지시일을 선택해 주세요.');
             return;
         }
-        if (!inputWoNum || parseInt(inputWoNum)) {
+        if (!inputWoNum || parseInt(inputWoNum) <= 0) {
             alert('목표 수량은 0보다 큰 값을 입력해 주세요.');
             document.querySelector('#input_work_order_num').focus();
             return;
@@ -286,18 +436,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // 객체 구성
         const woData = {
-            item_id: item_id,
-            item_div: item_div,
-            item_name: item_name,
-            // 숫자 변환 필요
-            stock_amount: parseInt(stock_amount),
-            stock_wrap: stock_wrap
+            work_order_date: inputWoDate,
+            work_order_num: parseInt(inputWoNum),
+            // 입력 없으면 생산 수량 0으로 되게
+            work_order_fin: parseInt(inputWoFin) || 0,
+            worker_id: inputWorkerId,
+            cp_id: inputCPId
         };
 
+        let url = '';
         if (nowSlide === 'edit') {
-            url = `${contextPath}/stockupdate`;
-            // 수정 시에는 stock_id도 전송해야 함
-            woData.stock_id = nowEditId; 
+            url = `${contextPath}/woupdate`;
+            woData.work_order_id = woId;
         }
         else {
             url = `${contextPath}/woinsert`;
