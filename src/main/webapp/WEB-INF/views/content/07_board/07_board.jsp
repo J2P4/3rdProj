@@ -23,7 +23,8 @@
   <script>
     window.sessionInfo = window.sessionInfo || {
       userName: "${fn:escapeXml(sessionScope.loginUser != null ? sessionScope.loginUser.worker_name : '')}",
-      userId:   "${fn:escapeXml(sessionScope.loginUser != null ? sessionScope.loginUser.worker_id : '')}"
+      userId:   "${fn:escapeXml(sessionScope.loginUser != null ? sessionScope.loginUser.worker_id : '')}",
+      role:     "${fn:escapeXml(sessionScope.role)}"	
     };
   </script>
 
@@ -147,10 +148,41 @@
             <button id="backToListButton" class="py-2 px-4 rounded-[5px] font-semibold bg-gray-300 hover:bg-gray-400">
               목록으로
             </button>
-            <div class="flex gap-2">
-              <button id="deletePostButton" class="py-2 px-4 rounded-[5px] font-semibold text-white bg-red-600 hover:bg-red-700">삭제</button>
-              <button id="editPostButton" class="py-2 px-4 rounded-[5px] font-semibold text-white bg-indigo-600 hover:bg-indigo-700">수정</button>
-            </div>
+            <!-- 수정/삭제 버튼: 조건부 표시 -->
+  <c:choose>
+    <%-- 관리자는 항상 표시 --%>
+    <c:when test="${sessionScope.role eq 'ADMIN'}">
+      <div class="flex gap-2">
+        <button id="deletePostButton"
+                class="py-2 px-4 rounded-[5px] font-semibold text-white bg-red-600 hover:bg-red-700">
+          삭제
+        </button>
+        <button id="editPostButton"
+                class="py-2 px-4 rounded-[5px] font-semibold text-white bg-indigo-600 hover:bg-indigo-700">
+          수정
+        </button>
+      </div>
+    </c:when>
+
+    <%-- 일반 사용자(작성자 본인일 경우만) --%>
+    <c:when test="${sessionScope.loginUser.worker_id eq board.writer_id}">
+      <div class="flex gap-2">
+        <button id="deletePostButton"
+                class="py-2 px-4 rounded-[5px] font-semibold text-white bg-red-600 hover:bg-red-700">
+          삭제
+        </button>
+        <button id="editPostButton"
+                class="py-2 px-4 rounded-[5px] font-semibold text-white bg-indigo-600 hover:bg-indigo-700">
+          수정
+        </button>
+      </div>
+    </c:when>
+
+    <%-- 그 외엔 버튼 숨김 --%>
+    <c:otherwise>
+      <div></div>
+    </c:otherwise>
+  </c:choose>
           </div>
         </div>
 

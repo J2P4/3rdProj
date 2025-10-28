@@ -4,14 +4,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 // 필요 시 동일 타입 빈 여러 개면 @Qualifier 사용
 // import org.springframework.beans.factory.annotation.Qualifier;
-
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import proj.spring.mes.dto.P07_BoardDTO;
+import proj.spring.mes.dto.WorkerDTO;
 import proj.spring.mes.service.P07_BoardService;
 
 @Controller
@@ -62,33 +69,54 @@ public class p07_BoardCtrl {
     // 등록
     @RequestMapping(value="", method=RequestMethod.POST, consumes="application/json", produces="application/json;charset=UTF-8")
     @ResponseBody
-    public Map<String, Object> create(@RequestBody P07_BoardDTO dto) {
-        int inserted = boardService.add(dto);
+    public Map<String, Object> create(@RequestBody P07_BoardDTO dto, HttpSession session) {
         Map<String, Object> res = new HashMap<String, Object>();
-        res.put("inserted", inserted);
-        res.put("id", dto.getBoard_id()); // selectKey로 생성된 ID
+
+        // 로그인 사용자 확인
+        WorkerDTO login = (WorkerDTO) session.getAttribute("loginUser");
+        if (login == null) {
+            res.put("success", false);
+            res.put("message", "로그인이 필요합니다.");
+            return res;
+        }
+
+        // 작성자 정보 설정
+        dto.setWorker_id(login.getWorker_id());
+
+        int inserted = boardService.add(dto);
+
+        res.put("success", inserted > 0);
+        res.put("message", inserted > 0 ? "등록 성공" : "등록 실패");
         return res;
     }
 
-    // 수정  ★핵심: PathVariable -> DTO 주입
+    // 수정: 본인만 허용 (서비스 권한 메서드 호출) 
     @RequestMapping(value="/{id}", method=RequestMethod.PUT, consumes="application/json", produces="application/json;charset=UTF-8")
     @ResponseBody
     public Map<String, Object> update(@PathVariable("id") String id,
-                                      @RequestBody P07_BoardDTO dto) {
-        dto.setBoard_id(id); // 반드시 주입
-        int updated = boardService.modify(dto);
+                                      @RequestBody P07_BoardDTO dto,
+                                      HttpSession session) {            
+        String uid  = (String) session.getAttribute("worker_id");      
+        String role = (String) session.getAttribute("role");            
+        dto.setBoard_id(id);                                            
+        boardService.modifyWithAuth(dto, uid, role);                    
+
         Map<String, Object> res = new HashMap<String, Object>();
-        res.put("updated", updated); // 1 기대
+        res.put("updated", 1);                                          
         return res;
     }
 
-    // 삭제
+    // 삭제: 본인 또는 ADMIN 허용 (서비스 권한 메서드 호출)  ★ 핵심 변경
     @RequestMapping(value="/{id}", method=RequestMethod.DELETE, produces="application/json;charset=UTF-8")
     @ResponseBody
-    public Map<String, Object> delete(@PathVariable("id") String id) {
-        int deleted = boardService.remove(id);
+    public Map<String, Object> delete(@PathVariable("id") String id,
+                                      HttpSession session) {            
+        String uid  = (String) session.getAttribute("worker_id");       
+        String role = (String) session.getAttribute("role");           
+        boardService.removeWithAuth(id, uid, role);                    
+
         Map<String, Object> res = new HashMap<String, Object>();
-        res.put("deleted", deleted);
+        res.put("deleted", 1);                                         
         return res;
     }
 

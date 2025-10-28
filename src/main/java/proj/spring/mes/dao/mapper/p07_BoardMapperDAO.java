@@ -25,4 +25,9 @@ public interface p07_BoardMapperDAO {
     
     // 게시판용 리스트
     List<P07_BoardDTO> mainList();
+    
+    
+    
+    int updateOwnerGuard(P07_BoardDTO dto);
+    int deleteWithGuard(@Param("id") String id, @Param("worker_id") String worker_id, @Param("role") String role);
 }

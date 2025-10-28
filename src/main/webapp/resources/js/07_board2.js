@@ -245,8 +245,7 @@ async function onSave() {
       board_title: title,
       board_content: content,
       board_type: type,
-      board_attatch: '',
-      worker_id: currentUserName   // <-- 세션에서 가져온 worker_id를 DTO에 포함
+      board_attatch: ''
     };
 
     if (currentEditingPostId) {

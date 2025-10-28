@@ -20,6 +20,8 @@
 	    const sessionInfo = {
 	      isLogin: true,
 	      userName: "${sessionScope.loginUser.worker_name}",    // 로그인 사용자 이름
+	      userId:   "${fn:escapeXml(sessionScope.loginUser.worker_id)}",   
+	      role:     "${fn:escapeXml(sessionScope.role)}",
 	      remainSec: ${remainSec != null ? remainSec : 1800},    // 남은시간 (초)
 	      contextPath: "${pageContext.request.contextPath}"      // 프로젝트 루트 경로
 	    };

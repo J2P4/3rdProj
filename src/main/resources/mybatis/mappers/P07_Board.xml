@@ -98,18 +98,34 @@
 
   <!-- 수정 -->
   <update id="update" parameterType="proj.spring.mes.dto.P07_BoardDTO">
-    UPDATE v3_board
-       SET board_title   = #{board_title},
-           "board_content" = #{board_content},
-           board_type    = #{board_type},
-           board_attatch = #{board_attatch},     
-           worker_id     = #{worker_id}
-     WHERE board_id      = #{board_id}
-  </update>
+  UPDATE v3_board
+     SET board_title     = #{board_title},
+         "board_content" = #{board_content},
+         board_type      = #{board_type},
+         board_attatch   = #{board_attatch}
+   WHERE board_id        = #{board_id}
+</update>
+
+<!-- 추가 가드(작성자 일치 필요) -->
+<update id="updateOwnerGuard" parameterType="proj.spring.mes.dto.P07_BoardDTO">
+  UPDATE v3_board
+     SET board_title     = #{board_title},
+         "board_content" = #{board_content},
+         board_type      = #{board_type},
+         board_attatch   = #{board_attatch}
+   WHERE board_id        = #{board_id}
+     AND worker_id       = #{worker_id}
+</update>
 
   <!-- 삭제 -->
-  <delete id="delete" parameterType="string">
-    DELETE FROM v3_board WHERE board_id = #{id}
-  </delete>
+  <delete id="deleteWithGuard" parameterType="map">
+  DELETE FROM v3_board
+  WHERE board_id = #{id}
+  <if test="!('ADMIN'.equals(role))">
+    AND worker_id = #{worker_id}
+  </if>
+</delete>
+
+
 
 </mapper>

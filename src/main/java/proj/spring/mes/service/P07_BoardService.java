@@ -12,4 +12,8 @@ public interface P07_BoardService {
     int modify(P07_BoardDTO dto);
     int remove(String id);
 	List<P07_BoardDTO> mainlist();
+	
+	void modifyWithAuth(P07_BoardDTO dto, String sessionWorkerId, String role);
+    void removeWithAuth(String boardId, String sessionWorkerId, String role);
+	
 }
