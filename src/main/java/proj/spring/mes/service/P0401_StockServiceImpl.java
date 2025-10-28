@@ -2,6 +2,8 @@ package proj.spring.mes.service;
 
 import java.util.List;
 
+import java.util.Map;
+import java.util.HashMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,8 +27,21 @@ public class P0401_StockServiceImpl implements P0401_StockService {
 	}
 	
 	@Override
-	public P0401_StockDTO getOneStockHistory(String stock_id) {
-		return stockMapperDAO.selectOneStockHistory(stock_id);
+	public List<P0401_StockDTO> getStockHistory(String stock_id) {
+		return stockMapperDAO.selectHistory(stock_id); 
+	}
+	
+	@Override
+	public Map<String, Object> getStockDetailWithHistory(String stock_id) {
+		Map<String, Object> map = new HashMap<String, Object>();
+        
+        // 재고 상세 정보 조회
+        map.put("detail", this.getOneStock(stock_id));
+        
+        // 재고 이력 정보 조회
+        map.put("history", this.getStockHistory(stock_id));
+        
+        return map;
 	}
 	
 	@Override

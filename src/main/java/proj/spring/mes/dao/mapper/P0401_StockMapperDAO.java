@@ -25,4 +25,7 @@ public interface P0401_StockMapperDAO {
     List<P0401_StockDTO> selectStockPage(@Param("limit") int limit, @Param("offset") int offset, @Param("filter") P0401_StockDTO searchFilter);
 	// 신규(총계)
 	long selectStockCount(@Param("filter") P0401_StockDTO searchFilter);
+	
+	// 재고 이력용
+	List<P0401_StockDTO> selectHistory(String stock_id);
 }

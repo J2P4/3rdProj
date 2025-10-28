@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const itemDiv = document.querySelector('#input_item_div');
     const inInsId = document.querySelector('#input_inIns_id');
     const inspectionResultIdValue = inInsId ? inInsId.value : null;
+    let deletedDefectIds = [];
     
     // ============================
     // 삭제 기능
@@ -189,7 +190,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function openSlideInput(mode, inInsID = null) {
         // 현재 슬라이드 모드에 따라 변경하기 위해 사용
         nowSlide = mode;
-        nowEditId = inInsID; 
+        nowEditId = inInsID;
         
         // 등록 상태처럼 입력란 value 정리
         slideInput.querySelector('form').reset();
@@ -200,6 +201,8 @@ document.addEventListener('DOMContentLoaded', () => {
         inputStockId.value = '';
         upStockIdOpt(allItems); 
         inputWorkerName.value = '';
+
+        deletedDefectIds = [];
 
         // 상세 -> 수정 전환 시 애니메이션 효과 없애서 바로 전환된 것처럼
         const editNoAnime = (mode === 'edit');
@@ -402,8 +405,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const workerId = selectedOption.value;
         const workerName = selectedOption.dataset.name;
         const nowDivVal = itemDiv.value;
-        // 불량 사유용(추후 bom 쪽에도 참고해서 넣기)
-        const defectData = collectDefectData();
 
         // 기존 코드~~~
         const inInsId = document.querySelector('#input_inIns_id');
@@ -446,6 +447,9 @@ document.addEventListener('DOMContentLoaded', () => {
             worker_id: workerId,
             worker_name: workerName
         };
+
+        // 불량 사유 관련 코드
+        const defectData = collectDefectData();
 
         // 불량 사유 관련 코드
         // 수집된 불량 사유 데이터 배열을 메인 데이터 객체에 추가
@@ -597,9 +601,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 // 기존 행: 화면 즉시 제거 + 서버 전송 준비
                 checkedExistingRows.forEach(checkbox => {
+                    const defectId = checkbox.value;
+                    deletedDefectIds.push(defectId);
+                    
                     const rowToRemove = checkbox.closest('tr');
                     if (rowToRemove) {
-                        // 삭제 ID 수집
                         rowToRemove.remove();
                     }
                 });
@@ -614,8 +620,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const defectRows = defectTbody.querySelectorAll('tr:not(.initial-row)'); // 템플릿 행 제외
 
         const newDefects = []; // insert 데이터
-        const existingDefects = []; // update 데이터
-        const deletedDefectIds = []; // delete 데이터
+        // const existingDefects = []; // update 데이터
+        // const deletedDefectIds = []; // delete 데이터
 
         defectRows.forEach(row => {
             // 새로 추가된 행

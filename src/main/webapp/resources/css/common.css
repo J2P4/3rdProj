@@ -538,4 +538,11 @@ h1{
   margin-left: 10px;
 }
 
+/*========  재고 이력 변동값에 따라  ========*/
+.text-blue {
+  color: #4338ca;
+}
 
+.text-red {
+  color: #ef4444;
+}

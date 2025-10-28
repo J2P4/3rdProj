@@ -275,7 +275,7 @@
                                 <input type = "number" id="input_inIns_good" placeholder="양품 수를 입력해주세요">
                             </td>
                             <td>
-                                <input type = "number" id="input_inIns_bad" placeholder="총 불량 수 확인(조회용)" readonly = "readonly">
+                                <input type = "number" id="input_inIns_bad" placeholder="총 불량 수 확인(조회용)">
                             </td>
                         </tr>
                     </tbody>

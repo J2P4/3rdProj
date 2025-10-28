@@ -1,6 +1,7 @@
 package proj.spring.mes.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -120,13 +121,9 @@ public class P0401_StockCtrl {
 	
 	@RequestMapping("/stockdetail")
 	@ResponseBody
-	public P0401_StockDTO detail(@RequestParam("stock_id") String stock_id) {
-	    P0401_StockDTO dto = service.getOneStock(stock_id);
-	    // 이쪽에 합쳐서 해도 좋을 것 같은데 이대로 괜찮은지는...
-	    // 좀 고민.
-//	    			   dto = service.getOneStockHistory(stock_id);
-	    System.out.println(dto);
-	    return dto;
+	public Map<String, Object> detail(@RequestParam("stock_id") String stock_id) {
+        System.out.println(stock_id + " 상세 정보 및 이력 조회");
+        return service.getStockDetailWithHistory(stock_id);
 	}
 	
 	@RequestMapping("/stockinsert")

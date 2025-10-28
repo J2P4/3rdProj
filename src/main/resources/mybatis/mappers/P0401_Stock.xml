@@ -108,8 +108,10 @@
 		select
 			stock_history_id, stock_history_before,
 			stock_history_after, stock_history_time,
-			stock_history_reason, stock_id
+			stock_history_loc, stock_id
+		from v3_stock_history
 		where stock_id = #{stock_id}
+		order by stock_history_time desc
 	</select>
 	
 	<!-- 재고 입력용 -->

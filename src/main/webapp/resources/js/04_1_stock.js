@@ -147,29 +147,97 @@ document.addEventListener('DOMContentLoaded', () => {
     // 상세 슬라이드에 데이터 채우기
     // ==========================
     function fillDetail(slide, data) {
+        const detailData = data.detail;
+        const historyList = data.history;
+
         // json 없으면 리턴
         if (!data) return;
 
         // 재고 ID 표시
-        slide.querySelector('.slide-id').textContent = `재고 ID: ${data.stock_id}`;
+        slide.querySelector('.slide-id').textContent = `재고 ID: ${detailData.stock_id}`;
 
         // 첫 번째 테이블 (품목 정보). 테이블에 id 속성 넣어놔야 함.
         // 전달인자로 data를 받아, 거기에서 특정 변수만 뽑아오는 구조.
         const itemRow = slide.querySelector('#itemDetail tbody tr');
         if (itemRow) {
-            itemRow.children[0].textContent = data.item_id || '';
-            itemRow.children[1].textContent = data.item_div || '';
-            itemRow.children[2].textContent = data.item_name || '';
+            itemRow.children[0].textContent = detailData.item_id || '';
+            itemRow.children[1].textContent = detailData.item_div || '';
+            itemRow.children[2].textContent = detailData.item_name || '';
         }
 
         // 두 번째 테이블 (재고 수량, 보관 위치). 테이블에 id 속성 넣어놔야 함.
         const stockRow = slide.querySelector('#stockDetail tbody tr');
         if (stockRow) {
-            saData = data.stock_amount;
-            stockRow.children[0].textContent = saData.toLocaleString('en-US') || '';
+            const rawAmount = detailData.stock_amount;
+            const saData = parseInt(rawAmount) || 0;
+            stockRow.children[0].textContent = (saData || 0).toLocaleString('en-US') || '';
             // stockRow.children[0].textContent = data.stock_amount || '';
-            stockRow.children[1].textContent = data.stock_wrap || '';
+            stockRow.children[1].textContent = detailData.stock_wrap || '';
         }
+
+        const historyTbody = slide.querySelector('#stock_info tbody');
+        if (!historyTbody) {
+            console.error('재고 이력 테이블을 찾을 수 없습니다.');
+            return;
+        }
+
+        historyTbody.innerHTML = '';
+
+        if (historyList && historyList.length > 0) {
+            historyList.forEach(history => {
+                const tr = document.createElement('tr');
+                
+                const timestamp = history.stock_history_time;
+                let dateDisplay = 'N/A';
+
+                if (timestamp) {
+                    const date = new Date(Number(timestamp));
+                    
+                    const datePart = date.toLocaleDateString('ko-KR', {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit',
+                    }).replace(/\s/g, '');
+
+                    const timePart = date.toLocaleTimeString('ko-KR', {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit',
+                        hour12: false
+                    });
+
+                    dateDisplay = `${datePart} ${timePart}`;
+                }
+
+                const before = parseInt(history.stock_history_before) || 0;
+                const after = parseInt(history.stock_history_after) || 0;
+                const change = after - before;
+                
+                let changeDisplay = change.toLocaleString('en-US');
+                let changeClass = '';
+                
+                if (change > 0) {
+                    changeDisplay = `+${changeDisplay}`;
+                    changeClass = 'text-blue';
+                }
+                else if (change < 0) {
+                    changeClass = 'text-red';
+                }
+
+                tr.innerHTML = `
+                    <td>${dateDisplay}</td>
+                    <td>${history.stock_history_loc || ''}</td>
+                    <td class="${changeClass}">${changeDisplay}</td>
+                    <td>${after.toLocaleString('en-US')}</td>
+                `;
+                
+                historyTbody.appendChild(tr);
+            });
+        }
+        else {
+            // 이력이 없는 경우
+            historyTbody.innerHTML = '<tr><td colspan="4">재고 변동 이력이 없습니다.</td></tr>';
+        }        
 
     }
 
@@ -275,10 +343,14 @@ async function loadData(stockId) {
 
         // 수정 -> 상세 전환 시 생기는 지연 최대한 방지
         originalDetailData = data;
+
+        // 수정 폼 용도
+        const detailData = data.detail;
+        if (!detailData) throw new Error('상세 데이터가 없습니다.');
         
         // form에 데이터 채우기
         // 품목 ID (Select): 품목 ID 선택
-        inputItemId.value = data.item_id || '';
+        inputItemId.value = detailData.item_id || '';
         
         // 품목 분류/이름 : 품목 ID 변경 이벤트를 수동으로 실행하여 관련 필드 자동 채우기
         const itemOption = Array.
@@ -286,7 +358,7 @@ async function loadData(stockId) {
                                 from(inputItemId.options).  
                                 // option의 value가 받아온 데이터의 item_id와 일치하는 것을 찾아 반환
                                 find((opt) => {
-                                    opt.value === data.item_id;
+                                    return opt.value === detailData.item_id;
                                 });
         // 일치하는 게 있다면, 그에 해당하는 분류, 품목명으로 채우기
         if (itemOption) {
@@ -295,15 +367,15 @@ async function loadData(stockId) {
         }
         else {
             // 품목 ID가 목록에 없는 경우를 대비하여 직접 채우거나 초기화
-            inputItemDiv.value = data.item_div || '';
-            inputItemName.value = data.item_name || '';
+            inputItemDiv.value = detailData.item_div || '';
+            inputItemName.value = detailData.item_name || '';
         }
         
         // 재고 수량 채우기
-        document.querySelector('#input_stock_amount').value = data.stock_amount || '';
+        document.querySelector('#input_stock_amount').value = detailData.stock_amount || '';
         
         // 보관 위치 채우기
-        document.querySelector('#input_stock_wrap').value = data.stock_wrap || '';
+        document.querySelector('#input_stock_wrap').value = detailData.stock_wrap || '';
 
     }
     catch (err) {

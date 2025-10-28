@@ -9,7 +9,7 @@
 		<put-attribute name="header" value="/WEB-INF/views/common/header.jsp" />
 		<put-attribute name="side" value="/WEB-INF/views/common/side.jsp" />
 		<put-attribute name="footer" value="/WEB-INF/views/common/footer.jsp" />
-		<put-attribute name="title" value="title-text" />
+		<put-attribute name="title" value="J2P4" />
 	</definition>
 	<!-- baseLayout 기준 -->
 	<definition name="*.tiles" extends="baseLayout">

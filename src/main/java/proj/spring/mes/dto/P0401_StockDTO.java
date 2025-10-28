@@ -18,6 +18,9 @@ public class P0401_StockDTO {
 	private int stock_history_before;
 	private int stock_history_after;
 	private Date stock_history_time;
-	private String stock_history_reason;
 	private String stock_history_loc;
+	
+	// Mapper에서 계산하여 채울 필드
+    private int stock_history_change;     // 증감 수량 (after - before)
+    private String stock_history_time_str; // 포맷팅된 날짜 문자열 (YYYY-MM-DD HH24:MI)
 }
