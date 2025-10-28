@@ -70,3 +70,11 @@ canvas {
 .row {
   margin: 10px;
 }
+
+#searchInput {
+	width: 60%;
+}
+
+.bg-white {
+	display: flex;
+}

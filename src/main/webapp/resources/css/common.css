@@ -11,16 +11,20 @@
   --grid: #eceef4;
   --text: #1f2937;
   --text-color: #111827;
+  /* 버튼 그림자 변수 추가 */
+  --tw-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --tw-shadow-colored: 0 4px 6px -1px var(--tw-shadow-color), 0 2px 4px -2px var(--tw-shadow-color);
 }
 
 
 html, body {
   height: 100%;
+}
 
 /* 전체 배경 설정용 */
-body { 
-    background-color:transparent; /* 배경색 흰색 강제 (Tailwind 기본 배경 덮어쓰기) */
-    color: var(--text);
+body {
+  background-color:transparent; /* 배경색 흰색 강제 (Tailwind 기본 배경 덮어쓰기) */
+  color: var(--text);
 }
 
 body {
@@ -45,13 +49,13 @@ body {
 /* =============== 필터 영역 =============== */
 /* 페이지 제목 영역 내 텍스트 */
 h1{
-    margin: 0; /* 기존 상하 여백 제거 */
-    font-size: 1.875rem;
- 	line-height: 2.25rem;
-    font-weight: bold;
-    color: var(--text-color); /* #1f2937 */
-    letter-spacing: -0.3px;
-    margin-bottom: 1.5rem;
+  margin: 0; /* 기존 상하 여백 제거 */
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+  font-weight: bold;
+  color: var(--text-color); /* #1f2937 */
+  letter-spacing: -0.3px;
+  margin-bottom: 1.5rem;
 }
 
 /* 각 페이지 별로 있는 조회 조건 선택 영역 */
@@ -60,9 +64,9 @@ h1{
   padding: 16px;
   background: #fff;
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: 10px;
   box-shadow: 0 6px 24px rgba(0,0,0,.08),
-              0 1px 2px rgba(0,0,0,.06);
+               0 1px 2px rgba(0,0,0,.06);
   display: flex;
   align-items: center;
   gap: 12px;
@@ -129,23 +133,27 @@ h1{
   color: #334155;
 }
 
-/* 조회 버튼 */
+/* 조회 버튼 영역 수정 (너비 제거) */
 .filter-btn {
-  width: 120px;
-  min-width: 120px;
+  width: auto;
+  min-width: 100px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
+/* 조회 버튼 수정: 슬라이드 버튼보다 짧게 조정 및 그림자 추가 */
 .filter-btn .fil-btn {
-  width: 80%;
-  height: 44px;
+  width: 100%;
+  height: 42px; /* 슬라이드 버튼 높이로 통일 */
   font-size: 16px;
   font-weight: 800;
-  border-radius: 12px;
+  border-radius: 5px; /* 슬라이드 버튼 모서리로 통일 */
   background-color: #4338ca;
   color: white;
+  padding: 0 16px; /* 슬라이드 버튼 패딩(28px)보다 짧게 조정 */
+  /* 그림자 효과 추가 */
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
 
 /* =============== 테이블 =============== */
@@ -247,51 +255,50 @@ h1{
   gap: 10px;
 }
 
+/* 하단 버튼 (신규, 삭제, 수정 버튼) 수정: 슬라이드 버튼 크기로 통일 및 그림자 추가 */
 .btm-btn {
-  height: 42px;
-  padding: 0 18px;
-  border-radius: 12px;
+  height: 42px; /* 슬라이드 버튼 높이로 통일 */
+  border-radius: 5px; /* 슬라이드 버튼 모서리로 통일 */
   font-weight: 800;
+  /* 공통 아이콘 설정 */
+  background-repeat: no-repeat;
+  background-size: 20px 20px;
+  background-position: 12px 50%;
+  /* 그림자 효과 추가 */
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
 
+/* 신규 버튼 수정: 아이콘 제거, 길이 통일 */
 .btm-btn.new {
   background: #4f46e5;
   color: #fff;
+  background-image: none; /* 아이콘 제거 */
+  padding: 0 28px; /* 아이콘 없는 버튼 길이 통일 */
 }
 
 .btm-btn.new:hover {
   background: #4338ca;
 }
 
+/* 삭제 버튼 수정: 아이콘 복구, 길이 재조정 */
 .btm-btn.del {
   background: #ef4444;
   color: #fff;
+  /* 삭제 아이콘 복구 */
+  background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAyNCAyNCcgcHJlc2VydmVBc3BlY3RSYXRpbz0nbm9uZScgZmlsbD0nd2hpdGUnPjxwYXRoIGQ9J005IDNoNmExIDEgMCAwMSAxIDF2Mmg0djJINFY2aDRWNGExIDEgMCAwMSAxLTF6bTEgM2g0VjVoLTR2MXpNNiA5aDEybC0xIDExYTIgMiAwIDAxLTIgMkg5YTIgMiAwIDAxLTItMkw2IDl6bTUgMnY4aDJ2LThoLTJ6Jy9wYXRoPjwvc3ZnPg==");
+  /* 아이콘 공간 확보를 위한 패딩 재조정: 아이콘이 중앙에 배치되도록 */
+  padding: 0 28px;
 }
 
 .btm-btn.del:hover {
   background: #b91c1c;
 }
 
-/* 공통: 아이콘 위치/크기 */
-.btm-btn.new,
-.btm-btn.del{
-  background-repeat: no-repeat;
-  background-size: 20px 20px;     /* 아이콘 크기 */
-  background-position: 12px 50%;  /* 왼쪽 여백 + 수직 가운데 */
-  padding-left: 34px;             /* 아이콘 자리만큼 텍스트 밀기 */
+/* 이전에 사용자 코드에 추가되었던 부분. */
+.submit-btn.slide-btn {
+  background: #4f46e5;
+  color: #fff;
 }
-
-/* 신규(＋) */
-.btm-btn.new{
-  background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAyNCAyNCcgcHJlc2VydmVBc3BlY3RSYXRpbz0nbm9uZScgZmlsbD0nd2hpdGUnPjxwYXRoIGQ9J00xMSAxMVY1aDJ2Nmg2djJoLTZ2NmgtMnYtNkg1di0yeicvPjwvc3ZnPg==");
-}
-
-/* 삭제(휴지통) */
-.btm-btn.del{
-  background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAyNCAyNCcgcHJlc2VydmVBc3BlY3RSYXRpbz0nbm9uZScgZmlsbD0nd2hpdGUnPjxwYXRoIGQ9J005IDNoNmExIDEgMCAwMSAxIDF2Mmg0djJINFY2aDRWNGExIDEgMCAwMSAxLTF6bTEgM2g0VjVoLTR2MXpNNiA5aDEybC0xIDExYTIgMiAwIDAxLTIgMkg5YTIgMiAwIDAxLTItMkw2IDl6bTUgMnY4aDJ2LThoLTJ6Jy8+PC9zdmc+");
-}
-
-
 
 /* 페이지네이션 */
 .page {
@@ -323,12 +330,14 @@ h1{
   border-color: #e2e8f0;
 }
 
-/* =============== 슬라이드 패널 =============== */
+/* =============== 슬라이드 패널 수정 시작 =============== */
+
+/* 슬라이드 패널 너비 조정: 사이드바 옆까지 */
 .slide {
   position: fixed;
   top: 0;
   right: -110%;
-  width: calc(100% - 14rem);
+  width: calc(100% - 14rem); 
   height: 100%;
   background: #fff;
   border-left: 1px solid var(--border);
@@ -363,13 +372,13 @@ h1{
   padding: 14px 0 10px;
   font-size: 22px;
   font-weight: 800;
-  border-bottom: 2px solid #eef2ff;
 }
 
 .slide-id {
   margin: 10px 24px;
   font-weight: 700;
   color: #475569;
+  display: flex;
 }
 
 /* 내용 */
@@ -402,49 +411,100 @@ h1{
   border-bottom: none;
 }
 
-/* 인풋 */
+/* 인풋/셀렉트 스타일 조정 */
+.slide-contents input[type="text"],
 .slide-contents input[type="date"],
 .slide-contents input[type="number"],
 .slide-contents select {
   width: 100%;
-  height: 38px;
-  padding: 0 10px;
+  height: 42px;
+  padding: 0 12px;
   border: 1px solid var(--border);
-  border-radius: 10px;
+  border-radius: 8px;
+  font-size: 14px;
+  box-sizing: border-box;
+  color: #1f2937; /* 폰트 색상 유지 */
 }
 
-/* 버튼 */
+/* 버튼 박스 (하단에 위치) */
 .slide-btnbox {
   display: flex;
   justify-content: flex-end;
   gap: 10px;
-  margin-top: 14px;
+  margin: 14px 24px 24px 24px;
 }
 
+/* 슬라이드 버튼 크기/길이 통일 및 그림자 추가 */
 .slide-btn {
-  height: 40px;
-  padding: 0 16px;
-  border-radius: 10px;
+  background-color: #4338ca;
+  color: white;
+  height: 42px; 
+  padding: 0 28px; 
+  border-radius: 5px; 
   font-weight: 800;
-  background: #4f46e5;
-  color: #fff;
+  cursor: pointer;
+  border: none;
+  transition: background-color 0.2s ease;
+  /* 그림자 효과 추가 */
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
 
-.slide-btn.modify-btn {
-  background: #4f46e5;
-  color: #fff;
-}
-
+/* 수정/등록 버튼 색상 변경 (요청: #4f46e5 유지 - 조회 버튼과 동일 계열) */
+.slide-btn.modify-btn,
 .slide-btn.save-btn {
-  background: #4f46e5;
+  background: #4f46e5; 
   color: #fff;
 }
 
+.slide-btn.modify-btn:hover,
+.slide-btn.save-btn:hover {
+  background: #4338ca;
+}
+
+/* 취소 버튼 색상 변경 (요청: #ef4444 유지) */
 .slide-btn.close-btn {
-  background: #ef4444;
+  background: #ef4444; 
   color: #fff;
+  border: none;
+}
+
+.slide-btn.close-btn:hover {
+  background: #b91c1c; 
 }
 
 .hide {
   display: none !important;
 }
+
+/* 거래처 등록 폼 레이아웃 조정: 글꼴 디자인 및 전화번호 필드 너비 조정 */
+/* 폼 항목 (거래처 ID, 거래처 이름 등)이 포함된 div의 클래스에 적용된다고 가정 */
+.slide-contents td > div {
+    display: flex;
+    align-items: center;
+    /* 전화번호 필드 간격을 최소화하기 위해 gap을 5px로 줄입니다 */
+    gap: 5px; 
+}
+
+/* 라벨 텍스트 ('거래처 ID', '거래처 명' 등) 디자인 개선 */
+.slide-contents td > div > span:first-child {
+    width: 150px; /* 라벨 너비 고정 */
+    min-width: 150px;
+    font-weight: 600; /* 재고 등록처럼 세련된 느낌 */
+    color: #374151; /* 더 진하고 명확한 회색 */
+    font-size: 15px;
+}
+
+/* 전화번호 입력 필드 그룹 조정 */
+.slide-contents td > div > select {
+    width: 100px; /* 국가 코드 셀렉트 너비를 좁게 조정 */
+    flex-shrink: 0;
+}
+
+/* 전화번호 입력 필드 너비 조정 (좁게) */
+.slide-contents td > div > input[type="text"] {
+    flex-grow: 0; 
+    width: 40px; /* 너비를 더 좁게 조정 */
+    max-width: 40px; /* 최대 너비 제한 */
+    text-align: center; 
+}
+/* =============== 슬라이드 패널 수정 끝 =============== */

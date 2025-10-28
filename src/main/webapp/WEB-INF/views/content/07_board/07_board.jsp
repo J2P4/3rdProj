@@ -37,10 +37,6 @@
     <!-- 상단 바 -->
     <div class="flex justify-between items-center mb-6">
       <h1 class="text-3xl font-bold">게시판</h1>
-      <button id="writePostButton"
-              class="bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-indigo-700">
-        글쓰기
-      </button>
     </div>
 
     <!-- 검색 바 -->
@@ -57,6 +53,12 @@
                  class="w-full p-2 pr-10 border rounded-lg">
           <button id="searchButton" class="absolute right-0 top-0 h-full px-3 text-gray-500">검색</button>
         </div>
+        
+      <button id="writePostButton"
+              class="bg-indigo-600 text-white font-semibold py-2 px-4 rounded-[5px] shadow-md hover:bg-indigo-700">
+        글쓰기
+      </button>
+      
       </div>
     </div>
 
@@ -113,7 +115,7 @@
             <label class="block text-sm font-medium mb-1">첨부 파일</label>
             <div class="p-3 border rounded-lg bg-gray-50">
               <input type="file" id="file-upload" class="hidden" multiple>
-              <label for="file-upload" class="cursor-pointer bg-gray-200 hover:bg-gray-300 text-gray-700 py-1 px-3 rounded-lg text-sm font-medium inline-block">
+              <label for="file-upload" class="cursor-pointer bg-gray-200 hover:bg-gray-300 text-gray-700 py-1 px-3 rounded-[5px] text-sm font-medium inline-block">
                 파일 선택
               </label>
               <span id="fileNameDisplay" class="ml-3 text-sm text-gray-500">선택된 파일 없음</span>
@@ -142,12 +144,12 @@
           <div id="detail-content" class="prose max-w-none text-gray-800 min-h-[300px] border-b pb-8 mb-8"></div>
 
           <div class="flex justify-between items-center pt-4 border-t">
-            <button id="backToListButton" class="py-2 px-4 rounded-lg font-semibold bg-gray-300 hover:bg-gray-400">
+            <button id="backToListButton" class="py-2 px-4 rounded-[5px] font-semibold bg-gray-300 hover:bg-gray-400">
               목록으로
             </button>
             <div class="flex gap-2">
-              <button id="deletePostButton" class="py-2 px-4 rounded-lg font-semibold text-white bg-red-600 hover:bg-red-700">삭제</button>
-              <button id="editPostButton" class="py-2 px-4 rounded-lg font-semibold text-white bg-indigo-600 hover:bg-indigo-700">수정</button>
+              <button id="deletePostButton" class="py-2 px-4 rounded-[5px] font-semibold text-white bg-red-600 hover:bg-red-700">삭제</button>
+              <button id="editPostButton" class="py-2 px-4 rounded-[5px] font-semibold text-white bg-indigo-600 hover:bg-indigo-700">수정</button>
             </div>
           </div>
         </div>
@@ -156,10 +158,10 @@
         <div class="mt-6 bg-white p-6 rounded-xl shadow border border-gray-200">
           <h3 id="commentCount" class="text-xl font-bold mb-4">0개의 댓글</h3>
 
-          <div class="flex items-start gap-2 p-4 bg-gray-100 rounded-xl mb-6">
+          <div class="flex items-center gap-2 p-4 bg-gray-100 rounded-xl mb-6">
             <textarea id="newCommentContent" rows="3" class="w-full p-3 border rounded-lg text-sm"
                       placeholder="댓글을 입력하세요."></textarea>
-            <button id="addCommentButton" class="py-3 px-5 bg-indigo-600 text-white rounded-lg text-sm font-semibold">
+            <button id="addCommentButton" class="py-3 px-5 bg-indigo-600 text-white rounded-[5px] text-sm font-semibold">
               등록
             </button>
           </div>
