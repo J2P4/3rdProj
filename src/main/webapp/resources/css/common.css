@@ -13,8 +13,14 @@
   --text-color: #111827;
 }
 
+
 html, body {
   height: 100%;
+
+/* 전체 배경 설정용 */
+body { 
+    background-color:transparent; /* 배경색 흰색 강제 (Tailwind 기본 배경 덮어쓰기) */
+    color: var(--text);
 }
 
 body {
@@ -37,6 +43,18 @@ body {
 }
 
 /* =============== 필터 영역 =============== */
+/* 페이지 제목 영역 내 텍스트 */
+h1{
+    margin: 0; /* 기존 상하 여백 제거 */
+    font-size: 1.875rem;
+ 	line-height: 2.25rem;
+    font-weight: bold;
+    color: var(--text-color); /* #1f2937 */
+    letter-spacing: -0.3px;
+    margin-bottom: 1.5rem;
+}
+
+/* 각 페이지 별로 있는 조회 조건 선택 영역 */
 .filter {
   width: 100%;
   padding: 16px;
