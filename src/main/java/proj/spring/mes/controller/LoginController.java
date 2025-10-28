@@ -13,6 +13,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import proj.spring.mes.dto.PwDTO;
 import proj.spring.mes.dto.WorkerDTO;
+import proj.spring.mes.service.EmailService;
 import proj.spring.mes.service.WorkerService;
 
 @Controller
@@ -23,6 +24,10 @@ public class LoginController {
  	@Autowired
 	WorkerService workerService;
 	
+ 	@Autowired
+ 	EmailService emailService;  
+
+ 	
 	@RequestMapping("/login")
 	public String loginPage() {
 		System.out.println("로그인");
@@ -119,6 +124,15 @@ public class LoginController {
 
             workerService.changePassword(worker_id, dto);
 
+            WorkerDTO worker = workerService.get(worker_id);
+            if (worker != null && worker.getWorker_email() != null) {
+                try {
+                    emailService.sendPwChangedMail(worker);
+                } catch (Exception e) {
+                    e.printStackTrace(); // 메일 실패 시에도 흐름은 계속
+                }
+            }
+            
             // 강제 변경 모드 해제
             session.setAttribute("mustChangePw", false);
 

@@ -1,5 +1,7 @@
 package proj.spring.mes.service;
 
+import proj.spring.mes.dto.WorkerDTO;
+
 public interface EmailService {
 
 	/**
@@ -10,5 +12,5 @@ public interface EmailService {
      * @param tempPw 임시 비밀번호 (평문)
      */
     void sendTempPassword(String to, String worker_id, String tempPw);
-	
+    void sendPwChangedMail(WorkerDTO worker);
 }
