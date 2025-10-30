@@ -72,10 +72,15 @@ async function renderList(page = 1) {
     const emptyBox = $('#empty-list');
     const keyword = ($('#searchInput')?.value || '').trim();
 
+    if (!tbody) {
+      console.error('renderList: #list-tbody not found in DOM');
+      return;
+    }
+
     const mySeq = ++listRenderSeq;
 
     tbody.innerHTML = '';
-    emptyBox.classList.add('hidden');
+    if (emptyBox) emptyBox.classList.add('hidden');
 
     const res = await API.list(page, postsPerPage, keyword);
 
@@ -85,25 +90,30 @@ async function renderList(page = 1) {
     const total = res.totalCount || 0;
 
     if (currentDisplayedData.length === 0) {
-      emptyBox.classList.remove('hidden');
+      if (emptyBox) emptyBox.classList.remove('hidden');
     } else {
       const tpl = $('#tpl-list-row');
-      currentDisplayedData.forEach((post, idx) => {
-        const clone = document.importNode(tpl.content, true);
-        const numberTd = clone.querySelector('.td-number');
-        const typeSpan = clone.querySelector('.td-type');
-        const titleTd = clone.querySelector('.td-title');
-        const authorTd = clone.querySelector('.td-author');
+      if (!tpl || !tpl.content) {
+        console.error('renderList: #tpl-list-row template not found or invalid');
+      } else {
+        currentDisplayedData.forEach((post, idx) => {
+          const clone = document.importNode(tpl.content, true);
+          const numberTd = clone.querySelector('.td-number');
+          const typeSpan = clone.querySelector('.td-type');
+          const titleTd = clone.querySelector('.td-title');
+          const authorTd = clone.querySelector('.td-author');
 
-        numberTd.textContent = (total - ((page - 1) * postsPerPage)) - idx;
-        typeSpan.textContent = post.board_type || '-';
-        titleTd.textContent = post.board_title || '(제목 없음)';
-        // 기존 로직 유지: DB에 들어있는 작성자(worker_id) 표시
-        authorTd.textContent = post.worker_id || '-';
+          if (numberTd) numberTd.textContent = (total - ((page - 1) * postsPerPage)) - idx;
+          if (typeSpan) typeSpan.textContent = post.board_type || '-';
+          if (titleTd) {
+            titleTd.textContent = post.board_title || '(제목 없음)';
+            titleTd.addEventListener('click', () => openDetail(post.board_id));
+          }
+          if (authorTd) authorTd.textContent = post.worker_id || '-';
 
-        titleTd.addEventListener('click', () => openDetail(post.board_id));
-        tbody.appendChild(clone);
-      });
+          tbody.appendChild(clone);
+        });
+      }
     }
 
     renderPagination(total, page);
@@ -117,6 +127,10 @@ async function renderList(page = 1) {
 function renderPagination(total, page) {
   const totalPages = Math.max(1, Math.ceil(total / postsPerPage));
   const container = $('#pagination');
+  if (!container) {
+    console.warn('renderPagination: #pagination not found in DOM');
+    return;
+  }
   container.innerHTML = '';
 
   const makeBtn = (label, target, disabled = false, active = false) => {
@@ -161,28 +175,61 @@ async function openDetail(id) {
     }
     setView('detail');
 
-    $('#detail-title').textContent = post.board_title || '';
+    const detailTitle = $('#detail-title');
+    if (detailTitle) detailTitle.textContent = post.board_title || '';
+
     const typeEl = $('#detail-type');
-    typeEl.textContent = post.board_type || '';
-    typeEl.className = 'inline-flex items-center px-3 py-1 text-sm font-semibold rounded-lg bg-indigo-50 text-indigo-700';
+    if (typeEl) {
+      typeEl.textContent = post.board_type || '';
+      typeEl.className = 'inline-flex items-center px-3 py-1 text-sm font-semibold rounded-lg bg-indigo-50 text-indigo-700';
+    } else {
+      console.warn('openDetail: #detail-type not found');
+    }
 
-    $('#detail-author').textContent = post.worker_id || '';
-    $('#detail-date').textContent = post.board_date || '';
-    $('#detail-content').innerHTML = post.board_content || '';
+    const authorEl = $('#detail-author');
+    if (authorEl) authorEl.textContent = post.worker_id || '';
+    else console.warn('openDetail: #detail-author not found');
 
-    $('#backToListButton').onclick = () => renderList(currentPage);
-    $('#editPostButton').onclick = () => openWrite(post);
-    $('#deletePostButton').onclick = () => {
-      customConfirm('정말로 이 게시글을 삭제하시겠습니까?', async (ok) => {
-        if (!ok) return;
-        try {
-          await API.delete(post.board_id);
-          customAlert('게시글이 삭제되었습니다.', () => renderList(currentPage));
-        } catch (err) {
-          alert(`[삭제 실패] ${err.message}`);
-        }
-      });
-    };
+    const dateEl = $('#detail-date');
+    if (dateEl) dateEl.textContent = post.board_date || '';
+    else console.warn('openDetail: #detail-date not found');
+
+    const contentEl = $('#detail-content');
+    if (contentEl) contentEl.innerHTML = post.board_content || '';
+    else console.warn('openDetail: #detail-content not found');
+
+    // 버튼들: 존재 여부 체크 후 안전하게 할당
+    const backBtn = $('#backToListButton');
+    const editBtn = $('#editPostButton');
+    const deleteBtn = $('#deletePostButton');
+
+    if (backBtn) {
+      backBtn.onclick = () => renderList(currentPage);
+    } else {
+      console.warn('openDetail: #backToListButton not found');
+    }
+
+    if (editBtn) {
+      editBtn.onclick = () => openWrite(post);
+    } else {
+      console.warn('openDetail: #editPostButton not found');
+    }
+
+    if (deleteBtn) {
+      deleteBtn.onclick = () => {
+        customConfirm('정말로 이 게시글을 삭제하시겠습니까?', async (ok) => {
+          if (!ok) return;
+          try {
+            await API.delete(post.board_id);
+            customAlert('게시글이 삭제되었습니다.', () => renderList(currentPage));
+          } catch (err) {
+            alert(`[삭제 실패] ${err.message}`);
+          }
+        });
+      };
+    } else {
+      console.warn('openDetail: #deletePostButton not found');
+    }
   } catch (err) {
     alert(`[상세 조회 실패] ${err.message}`);
     console.error(err);
@@ -194,10 +241,16 @@ function openWrite(post) {
   setView('write');
   currentEditingPostId = post ? post.board_id : null;
 
-  $('#write-title').textContent = post ? '게시글 수정' : '새 게시글 작성';
-  $('#postType').value = post ? (post.board_type || '') : '';
-  $('#postTitle').value = post ? (post.board_title || '') : '';
-  $('#postContentEditor').value = post ? (post.board_content || '') : '';
+  const writeTitleEl = $('#write-title');
+  if (writeTitleEl) writeTitleEl.textContent = post ? '게시글 수정' : '새 게시글 작성';
+
+  const postTypeEl = $('#postType');
+  const postTitleEl = $('#postTitle');
+  const postContentEditorEl = $('#postContentEditor');
+
+  if (postTypeEl) postTypeEl.value = post ? (post.board_type || '') : '';
+  if (postTitleEl) postTitleEl.value = post ? (post.board_title || '') : '';
+  if (postContentEditorEl) postContentEditorEl.value = post ? (post.board_content || '') : '';
 
   // TinyMCE 사용 시 초기화
   if (window.tinymce) {
@@ -221,20 +274,29 @@ function openWrite(post) {
     }
   }
 
-  $('#cancelPostButton').onclick = () => {
-    if (post && post.board_id) openDetail(post.board_id);
-    else renderList(currentPage);
-  };
+  const cancelBtn = $('#cancelPostButton');
+  if (cancelBtn) {
+    cancelBtn.onclick = () => {
+      if (post && post.board_id) openDetail(post.board_id);
+      else renderList(currentPage);
+    };
+  } else {
+    console.warn('openWrite: #cancelPostButton not found');
+  }
 }
 
 // === 저장 버튼 핸들러 ===
 async function onSave() {
   try {
-    const type = $('#postType').value.trim();
-    const title = $('#postTitle').value.trim();
+    const typeEl = $('#postType');
+    const titleEl = $('#postTitle');
+    const contentEditorEl = $('#postContentEditor');
+
+    const type = typeEl ? typeEl.value.trim() : '';
+    const title = titleEl ? titleEl.value.trim() : '';
     const content = (window.tinymce && tinymce.get('postContentEditor'))
       ? tinymce.get('postContentEditor').getContent()
-      : $('#postContentEditor').value.trim();
+      : (contentEditorEl ? contentEditorEl.value.trim() : '');
 
     if (!type || !title || !content) {
       customAlert('유형, 제목, 내용을 모두 입력하세요.');
@@ -281,12 +343,15 @@ function customConfirm(msg, callback) {
 function bindEvents() {
   const writeBtn = $('#writePostButton');
   if (writeBtn) writeBtn.addEventListener('click', () => openWrite(null));
+  else console.warn('bindEvents: #writePostButton not found');
 
   const saveBtn = $('#savePostButton');
   if (saveBtn) saveBtn.addEventListener('click', onSave);
+  else console.warn('bindEvents: #savePostButton not found');
 
   const searchBtn = $('#searchButton');
   if (searchBtn) searchBtn.addEventListener('click', onSearch);
+  else console.warn('bindEvents: #searchButton not found');
 }
 
 // === 시작 ===
