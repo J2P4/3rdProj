@@ -216,7 +216,7 @@
 
         <div class="form-row">
           <label for="userpw">비밀번호</label>
-          <input id="userpw" name="worker_pw" type="password" placeholder="비밀번호를 입력하세요" value="Sk060201q.@">
+          <input id="userpw" name="worker_pw" type="password" placeholder="비밀번호를 입력하세요" value="S">
         </div>
 
 		<c:if test="${not empty msg}">
